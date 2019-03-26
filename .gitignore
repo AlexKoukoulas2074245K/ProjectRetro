@@ -1,0 +1,9 @@
+*project_files*/
+CMakeLists.txt.user
+*~
+/**/*.xcodeproj/**/xcuserdata/
+/**/*.xcodeproj/**/xcshareddata/
+/extern/
+*.pyc
+*.log
+*.hle
