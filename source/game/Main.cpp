@@ -9,7 +9,7 @@
 
 int main(int, char**)
 {
-    
+    World world;
 /*
     App app;
     
