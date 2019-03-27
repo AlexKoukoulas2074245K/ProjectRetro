@@ -5,6 +5,10 @@
 //  Created by Alex Koukoulas on 26/03/2019.
 //
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 #include "ECS.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +77,7 @@ void World::RemoveEntitiesWithoutAnyComponents()
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
     {
-        if (CalculateEntityComponentUsageMask(entityIter->first) == 0)
+        if (CalculateEntityComponentUsageMask(entityIter->first) == EMPTY_COMPONENT_MASK)
         {
             entityIter = mEntityComponentStore.erase(entityIter);
         }
