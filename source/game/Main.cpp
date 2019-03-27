@@ -36,25 +36,28 @@ public:
     float mHeight = 1.0f;
 };
 
+class SingletonComponent : public IComponent
+{
+public:
+    float singletonValue = -1.0e-10f;
+};
 
 class IntersectionSystem: public BaseSystem
 {
 public:
     void VUpdate(const float, World& world) override 
     {
-        const auto& entityComponentStore = world.GetEntityComponentStore();
-        for (const auto& entityEntry : entityComponentStore)
+        const auto& activeEntities = world.GetActiveEntities();
+
+        for (const auto& entityId: activeEntities)
         {
-            const auto entityId = entityEntry.first;
-            if (world.HasComponent<DummyPositionComponent>(entityId) && world.HasComponent<DummyDimensionsComponent>(entityId))
+            if (ShouldProcessEntity(entityId, world))
             {
                 const auto& positionComponent = world.GetComponent<DummyPositionComponent>(entityId);
                 const auto& dimensionsComponent = world.GetComponent<DummyDimensionsComponent>(entityId);
 
                 mIntersecting = positionComponent.mX == positionComponent.mY + logf(dimensionsComponent.mWidth) + sqrtf(positionComponent.mY);
-            }
-
-            world.RemoveEntity(RandomInt(0, 199));
+            }            
         }
     }
 
@@ -70,7 +73,9 @@ int main(int, char**)
     world.RegisterComponentType<DummyPositionComponent>();
     world.RegisterComponentType<DummyDimensionsComponent>();
     
-    world.RegisterSystem<DummyPositionComponent, DummyDimensionsComponent>(std::make_unique<IntersectionSystem>());
+    world.SetSystem<IntersectionSystem, DummyPositionComponent, DummyDimensionsComponent>(std::make_unique<IntersectionSystem>());
+    world.SetSingletonComponent<SingletonComponent>(std::make_unique<SingletonComponent>());
+    world.SetSingletonComponent<SingletonComponent>(std::make_unique<SingletonComponent>());
 
     for (int i = 0; i < ENTITY_COUNT; ++i)
     {
@@ -105,6 +110,8 @@ int main(int, char**)
     std::cout << "Average update: " << miliSecondAccumulator / 10.0f << "ms" << std::endl;
     std::cout << "Profiling for TypeIndex ended: " << std::endl;
 
+    world.RemoveSystem<IntersectionSystem>();
+    world.RemoveSingletonComponent<SingletonComponent>();
     std::getchar();
 }
 

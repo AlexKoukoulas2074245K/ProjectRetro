@@ -30,17 +30,19 @@ void BaseSystem::SetComponentUsageMask(const ComponentMask& componentUsageMask)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const EntityComponentStoreMap& World::GetEntityComponentStore() const
+const std::vector<EntityId>& World::GetActiveEntities() const
 {
-    return mEntityComponentStore;
+    return mActiveEntitiesInFrame;
 }
 
 void World::Update(const float dt)
 {
     RemoveEntitiesWithoutAnyComponents();
-    for (auto& system : mSystems)
+    CongregateActiveEntitiesInCurrentFrame();
+
+    for (auto& systemEntry : mSystems)
     {
-        system->VUpdate(dt, *this);
+        systemEntry.second->VUpdate(dt, *this);
     }
 }
 
@@ -79,5 +81,16 @@ void World::RemoveEntitiesWithoutAnyComponents()
         {
             entityIter++;
         }
+    }
+}
+
+void World::CongregateActiveEntitiesInCurrentFrame()
+{
+    mActiveEntitiesInFrame.clear();
+    mActiveEntitiesInFrame.resize(mEntityComponentStore.size());
+
+    for (const auto& entityEntry : mEntityComponentStore)
+    {
+        mActiveEntitiesInFrame.push_back(entityEntry.first);
     }
 }
