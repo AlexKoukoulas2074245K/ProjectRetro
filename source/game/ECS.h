@@ -275,23 +275,14 @@ public:
         mSingletonComponents.erase(componentTypeId);
     }
 
-    // Sets and takes ownership of the given system. Needs to be called
-    // AFTER all component types have been registered to the world, as the
-    // system mask (which is dependent on the registered components also gets computed here
-    template<class SystemType, class FirstUtilizedComponentType, class... OtherUtilizedComponentTypes>
+    // Sets and takes ownership of the given system.
+    template<class SystemType>
     inline void SetSystem(std::unique_ptr<BaseSystem> system)
     {
-        static_assert(std::is_base_of<BaseSystem, SystemType>::value,
-            "SystemType does not derive from BaseSystem");
-
-        assert(mComponentMasks.size() != 0 &&
-            "No masks have been registered in the world for any component");        
-
-        const auto systemTypeId = GetStringHash(typeid(SystemType).name());
+        const auto systemTypeId = GetTypeHash<SystemType>();
         assert(mSystems.count(systemTypeId) == 0 &&
             "System of the same type already registered in the world");
-
-        system->SetComponentUsageMask(CalculateComponentUsageMask<FirstUtilizedComponentType, OtherUtilizedComponentTypes...>());
+        
         mSystems[systemTypeId] = std::move(system);
     }            
 
@@ -301,7 +292,8 @@ public:
     {
         static_assert(std::is_base_of<BaseSystem, SystemType>::value,
             "SystemType does not derive from BaseSystem");
-        const auto systemTypeId = GetStringHash(typeid(SystemType).name());
+        
+        const auto systemTypeId = GetTypeHash<SystemType>();
         assert(mSystems.count(systemTypeId) != 0 &&
             "System of the specified type is not registered in the world");
 

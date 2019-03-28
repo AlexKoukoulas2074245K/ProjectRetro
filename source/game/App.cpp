@@ -17,23 +17,11 @@
 
 void App::Run()
 {
-    RegisterComponents();
-    SetSingletonComponents();
-    SetSystems();
+    InitializeSystems();
     GameLoop();
 }
 
-void App::RegisterComponents()
-{
-    
-}
-
-void App::SetSingletonComponents()
-{
-    
-}
-
-void App::SetSystems()
+void App::InitializeSystems()
 {
     
 }
@@ -42,3 +30,7 @@ void App::GameLoop()
 {
     
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
