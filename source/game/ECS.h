@@ -299,6 +299,31 @@ public:
         mSystems.erase(systemTypeId);
     }
 
+    // Calculates the bit mask of the given template argument (FirstUtilizedComponentType)
+    template<class FirstUtilizedComponentType>
+    inline ComponentMask CalculateComponentUsageMask() const
+    {
+        static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
+            "Attempted to extract mask from class not derived from IComponent");
+        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 &&
+            "Component type not registered in the world");
+
+        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>());
+    }
+
+    // Recursively calculates the bit mask formed of all given templates arguments
+    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
+    inline ComponentMask CalculateComponentUsageMask() const
+    {
+        static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
+            "Attempted to extract mask from class not derived from IComponent");
+        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 &&
+            "Component type not registered in the world");
+
+        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>()) |
+            CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
+    }
+
 private:    
     // Removes all entities with no components currently attached to them
     void RemoveEntitiesWithoutAnyComponents();
@@ -322,32 +347,7 @@ private:
     {
         InitializeEmptyComponentForEntity<FirstUtilizedComponentType>(entityId);
         InitializeEmptyComponentForEntity<SecondUtilizedComponentType, RestUtilizedComponentTypes...>(entityId);
-    }
-
-    // Calculates the bit mask of the given template argument (FirstUtilizedComponentType)
-    template<class FirstUtilizedComponentType>
-    inline ComponentMask CalculateComponentUsageMask() const
-    {
-        static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
-                      "Attempted to extract mask from class not derived from IComponent");
-        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 && 
-                      "Component type not registered in the world");
-
-        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>());
-    }
-    
-    // Recursively calculates the bit mask formed of all given templates arguments
-    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
-    inline ComponentMask CalculateComponentUsageMask() const
-    {
-        static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
-                      "Attempted to extract mask from class not derived from IComponent");
-        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 && 
-                      "Component type not registered in the world");
-
-        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>()) |
-            CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
-    }        
+    }   
     
 private:    
     using SystemsMap              = std::unordered_map<SystemTypeId, std::unique_ptr<BaseSystem>, SystemTypeIdHasher>;
