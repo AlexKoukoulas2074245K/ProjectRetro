@@ -30,7 +30,8 @@ public:
 private:    
     void InitializeSystems();
     void GameLoop();
-    
+    bool AppShouldQuit();
+
 private:
     ecs::World mWorld;    
 };
