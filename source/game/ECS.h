@@ -28,6 +28,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+namespace ecs
+{
+
 // Max component type count allowed
 static constexpr int MAX_COMPONENTS       = 16;
 static constexpr int EMPTY_COMPONENT_MASK = 0;
@@ -91,24 +94,20 @@ public:
 class BaseSystem
 {
 public:
+    BaseSystem(World&);
+
     virtual ~BaseSystem() = default;
     BaseSystem(const BaseSystem&) = delete;
     const BaseSystem& operator = (const BaseSystem&) = delete;
     
+    virtual void VUpdate(const float dt) = 0;
+    
+protected:          
     // Determines whether the given entity (entityId) should be processed by this system
     // based on their respective component usage masks
-    bool ShouldProcessEntity(EntityId, const World&) const;
+    bool ShouldProcessEntity(EntityId) const;
 
-    // Gets this system's component usage mask
-    const ComponentMask& GetComponentUsageMask() const;
-
-    // Sets this system's component usage mask
-    void SetComponentUsageMask(const ComponentMask&);
-    
-    virtual void VUpdate(const float dt, World&) = 0;
-    
-protected:
-    BaseSystem() = default;        
+    World& mWorld;
 
 protected:
     ComponentMask mComponentUsageMask;    
@@ -369,5 +368,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif /* ECS_h */

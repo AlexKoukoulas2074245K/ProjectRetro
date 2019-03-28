@@ -15,42 +15,37 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-bool BaseSystem::ShouldProcessEntity(const EntityId entityId, const World& world) const
-{
-    return (world.CalculateEntityComponentUsageMask(entityId) & mComponentUsageMask) == mComponentUsageMask;
+ecs::BaseSystem::BaseSystem(World& world)
+    : mWorld(world)
+{    
 }
 
-const ComponentMask& BaseSystem::GetComponentUsageMask() const
+bool ecs::BaseSystem::ShouldProcessEntity(const EntityId entityId) const
 {
-    return mComponentUsageMask;    
-}
-
-void BaseSystem::SetComponentUsageMask(const ComponentMask& componentUsageMask)
-{
-    mComponentUsageMask = componentUsageMask;
+    return (mWorld.CalculateEntityComponentUsageMask(entityId) & mComponentUsageMask) == mComponentUsageMask;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::vector<EntityId>& World::GetActiveEntities() const
+const std::vector<ecs::EntityId>& ecs::World::GetActiveEntities() const
 {
     return mActiveEntitiesInFrame;
 }
 
-void World::Update(const float dt)
+void ecs::World::Update(const float dt)
 {
     RemoveEntitiesWithoutAnyComponents();
     CongregateActiveEntitiesInCurrentFrame();
 
     for (auto& systemEntry : mSystems)
     {        
-        systemEntry.second->VUpdate(dt, *this);
+        systemEntry.second->VUpdate(dt);
     }
 }
 
-void World::RemoveEntity(const EntityId entityId)
+void ecs::World::RemoveEntity(const EntityId entityId)
 {
     assert(mEntityComponentStore.count(entityId) != 0 &&
         "Entity does not exist in the world");
@@ -58,7 +53,7 @@ void World::RemoveEntity(const EntityId entityId)
     mEntityComponentStore.at(entityId).clear();
 }
 
-ComponentMask World::CalculateEntityComponentUsageMask(const EntityId entityId) const
+ecs::ComponentMask ecs::World::CalculateEntityComponentUsageMask(const EntityId entityId) const
 {
     ComponentMask componentUsageMask;
     const auto& componentMap = mEntityComponentStore.at(entityId);
@@ -72,7 +67,7 @@ ComponentMask World::CalculateEntityComponentUsageMask(const EntityId entityId) 
     return componentUsageMask;
 }
 
-void World::RemoveEntitiesWithoutAnyComponents()
+void ecs::World::RemoveEntitiesWithoutAnyComponents()
 {
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
@@ -88,7 +83,7 @@ void World::RemoveEntitiesWithoutAnyComponents()
     }
 }
 
-void World::CongregateActiveEntitiesInCurrentFrame()
+void ecs::World::CongregateActiveEntitiesInCurrentFrame()
 {
     mActiveEntitiesInFrame.clear();
     mActiveEntitiesInFrame.resize(mEntityComponentStore.size());
