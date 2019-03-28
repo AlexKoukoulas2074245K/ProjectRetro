@@ -39,9 +39,11 @@ void ecs::World::Update(const float dt)
     RemoveEntitiesWithoutAnyComponents();
     CongregateActiveEntitiesInCurrentFrame();
 
-    for (auto& systemEntry : mSystems)
+    auto systemReverseIter = mSystems.rbegin();
+    while (systemReverseIter != mSystems.rend())
     {        
-        systemEntry.second->VUpdate(dt);
+        systemReverseIter->second->VUpdate(dt);
+        systemReverseIter++;
     }
 }
 

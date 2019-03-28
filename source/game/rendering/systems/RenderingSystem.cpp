@@ -19,6 +19,60 @@
 #include <SDL.h>   // Many SDL init related methods
 #include <cstdlib> // exit
 
+GLfloat cube_vertices[] = {
+    // front
+    -1.0, -1.0,  1.0,
+    1.0, -1.0,  1.0,
+    1.0,  1.0,  1.0,
+    -1.0,  1.0,  1.0,
+    // back
+    -1.0, -1.0, -1.0,
+    1.0, -1.0, -1.0,
+    1.0,  1.0, -1.0,
+    -1.0,  1.0, -1.0
+};
+
+GLfloat cube_colors[] = {
+    // front colors
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0,
+    // back colors
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0
+};
+
+/* init_resources */
+GLushort cube_elements[] = {
+    // front
+    0, 1, 2,
+    2, 3, 0,
+    // right
+    1, 5, 6,
+    6, 2, 1,
+    // back
+    7, 6, 5,
+    5, 4, 7,
+    // left
+    4, 0, 3,
+    3, 7, 4,
+    // bottom
+    4, 5, 1,
+    1, 0, 4,
+    // top
+    3, 2, 6,
+    6, 7, 3
+};
+
+struct attributes
+{
+    GLfloat coord3d[3];
+    GLfloat color3d[3];
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +85,20 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 
 void RenderingSystem::VUpdate(const float)
 {
-
+    const auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextComponent>();
+    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowComponent>();
+    
+    // Execute first pass rendering
+    GL_CHECK(glClearColor(1.0f, 1.0f, 0.4f, 1.0f));
+    GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    
+    GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent.mIndexBufferObject));
+    int size;
+    GL_CHECK(glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
+    GL_CHECK(glDrawElements(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0));
+    
+    // Swap window buffers
+    SDL_GL_SwapWindow(windowComponent.mWindowHandle);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -111,26 +178,31 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     renderingContextComponent->mBlending = true;
 
-    // Create Frame Buffer
-    GL_CHECK(glGenFramebuffers(1, &renderingContextComponent->mFrameBufferId));
-    GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, renderingContextComponent->mFrameBufferId));
-
-    // Create Frame Buffer Texture
-    GL_CHECK(glGenTextures(1, &renderingContextComponent->mScreenRenderingTexture));
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, renderingContextComponent->mScreenRenderingTexture));
-    GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, static_cast<GLsizei>(windowComponent->mRenderableWidth), static_cast<GLsizei>(windowComponent->mRenderableHeight), 0, GL_RGB, GL_UNSIGNED_BYTE, 0));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-    GL_CHECK(glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderingContextComponent->mScreenRenderingTexture, 0));
-
-    // Check frame buffer creation outcome
-    if (GL_NO_CHECK(glCheckFramebufferStatus(GL_FRAMEBUFFER)) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        assert(false);
-    }
-
+    // Configure Depth
+    GL_CHECK(glEnable(GL_DEPTH_TEST));
+    renderingContextComponent->mDepthTest = true;
+    
+    // Create VBO & IBO
+    GL_CHECK(glGenBuffers(1, &renderingContextComponent->mVertexBufferObject));
+    GL_CHECK(glGenBuffers(1, &renderingContextComponent->mIndexBufferObject));
+    
+    // Bind VAO & VBO
+    GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mVertexBufferObject));
+    GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW));
+    
+    // Set Attribute Pointers
+    GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices)/sizeof(GLfloat), nullptr));
+    GL_CHECK(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices)/sizeof(GLfloat), (void*)(sizeof(float) * 3)));
+    
+    // TODO: Maybe move this
+    GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent->mIndexBufferObject));
+    GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW));
+    
+    // Enable vertex attribute arrays
+    GL_CHECK(glEnableVertexAttribArray(0));
+    GL_CHECK(glEnableVertexAttribArray(1));
+    
+    
     // Transfer ownership of singleton components to world
     mWorld.SetSingletonComponent<WindowComponent>(std::move(windowComponent));
     mWorld.SetSingletonComponent<RenderingContextComponent>(std::move(renderingContextComponent));

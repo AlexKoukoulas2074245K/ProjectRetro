@@ -21,6 +21,7 @@
 #include <bitset>        // bitset
 #include <memory>        // unique_ptr
 #include <vector>        // vector
+#include <map>           // map
 #include <unordered_map> // unordered_map
 #include <cassert>       // assert
 
@@ -122,7 +123,6 @@ class World final
 public:
     World()
     {
-        mSystems.reserve(20);
         mEntityComponentStore.reserve(100);
     }
     
@@ -350,7 +350,7 @@ private:
     }   
     
 private:    
-    using SystemsMap              = std::unordered_map<SystemTypeId, std::unique_ptr<BaseSystem>, SystemTypeIdHasher>;
+    using SystemsMap              = std::map<SystemTypeId, std::unique_ptr<BaseSystem>>;
     using ComponentMap            = std::unordered_map<ComponentTypeId, std::unique_ptr<IComponent>, ComponentTypeIdHasher>;
     using EntityComponentStoreMap = std::unordered_map<EntityId, ComponentMap, EntityIdHasher>;
     using ComponentMaskMap        = std::unordered_map<ComponentTypeId, ComponentMask, ComponentTypeIdHasher>;
