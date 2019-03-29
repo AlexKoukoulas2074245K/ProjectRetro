@@ -1,9 +1,10 @@
 //
 //  ResourceLoadingService.h
-//  Hardcore2D
+//  ProjectRetro
 //
-//  Created by Alex Koukoulas on 10/01/2019.
+//  Created by Alex Koukoulas on 29/03/2019.
 //
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,7 @@ class ResourceLoadingService final
     friend class App;
 public:
     static const std::string RES_ROOT;
+    static const std::string RES_SHADERS_ROOT;
     
     static ResourceLoadingService& GetInstance();
 
@@ -99,7 +101,9 @@ private:
     std::unordered_map<std::string, IResourceLoader*> mResourceExtensionsToLoadersMap;
     
     std::unique_ptr<IResourceLoader> mDataFileLoader;
-    std::unique_ptr<IResourceLoader> mTextureLoader;    
+    std::unique_ptr<IResourceLoader> mTextureLoader;  
+    std::unique_ptr<IResourceLoader> mShaderLoader;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

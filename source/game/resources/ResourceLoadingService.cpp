@@ -1,9 +1,10 @@
 //
 //  ResourceLoadingService.cpp
-//  Hardcore2D
+//  ProjectRetro
 //
-//  Created by Alex Koukoulas on 10/01/2019.
+//  Created by Alex Koukoulas on 29/03/2019.
 //
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -12,6 +13,7 @@
 #include "ResourceLoadingService.h"
 #include "TextureLoader.h"
 #include "DataFileLoader.h"
+#include "ShaderLoader.h"
 #include "IResource.h"
 #include "../common_utils/TypeTraits.h"
 #include "../common_utils/Logging.h"
@@ -30,6 +32,8 @@ const std::string ResourceLoadingService::RES_ROOT = "../res/";
 const std::string ResourceLoadingService::RES_ROOT = "../../res/";
 #endif
 
+const std::string ResourceLoadingService::RES_SHADERS_ROOT = RES_ROOT + "shaders/";
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +51,8 @@ ResourceLoadingService::~ResourceLoadingService()
 void ResourceLoadingService::InitializeResourceLoaders()
 {
     mTextureLoader->VInitialize();
-    mDataFileLoader->VInitialize();        
+    mDataFileLoader->VInitialize();     
+    mShaderLoader->VInitialize();
 }
 
 ResourceId ResourceLoadingService::LoadResource(const std::string& resourceRelativePath)
@@ -92,6 +97,7 @@ void ResourceLoadingService::UnloadResource(const ResourceId resourceId)
 ResourceLoadingService::ResourceLoadingService()
     : mDataFileLoader(new DataFileLoader)
     , mTextureLoader(new TextureLoader)
+    , mShaderLoader(new ShaderLoader)
 
 {
     MapResourceExtensionsToLoaders();
@@ -119,8 +125,8 @@ void ResourceLoadingService::MapResourceExtensionsToLoaders()
 {
     mResourceExtensionsToLoadersMap["png"]  = mTextureLoader.get();
     mResourceExtensionsToLoadersMap["json"] = mDataFileLoader.get();
-    mResourceExtensionsToLoadersMap["vs"]   = mDataFileLoader.get();
-    mResourceExtensionsToLoadersMap["fs"]   = mDataFileLoader.get();
+    mResourceExtensionsToLoadersMap["vs"]   = mShaderLoader.get();
+    mResourceExtensionsToLoadersMap["fs"]   = mShaderLoader.get();
 }
 
 void ResourceLoadingService::LoadResourceInternal(const std::string& resourceRelativePath, const ResourceId resourceId)

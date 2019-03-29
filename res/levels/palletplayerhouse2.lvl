@@ -1,0 +1,20 @@
+#Desc#
+8,7
+12.8,11.2
+#Comps#
+in_wall_1:0.0,0.0|in_wall_1:-1.6,0.0|in_wall_window:-3.2,0.0|in_wall_1:-4.8,0.0|in_wall_1:-6.4,0.0|in_wall_1:-8.0,0.0|in_wall_window:-9.6,0.0|in_wall_1:-11.200001,0.0
+in_wall_1:0.0,1.6|in_bookcase_1:-1.6,1.6|in_bookcase_1:-3.2,1.6|2d_in_1_floor:-4.8,1.6|2d_in_1_floor:-6.4,1.6|2d_in_1_floor:-8.0,1.6|in_stairsdown_1_floor:-9.6,1.6|in_wall_1:-11.200001,1.6
+in_wall_1:0.0,3.2|2d_in_1_floor:-1.6,3.2|2d_in_1_floor:-3.2,3.2|in_tv_1_shortmedium:-4.8,3.2|2d_in_1_floor:-6.4,3.2|2d_in_1_floor:-8.0,3.2|2d_in_1_floor:-9.6,3.2|in_wall_1:-11.200001,3.2
+in_wall_1:0.0,4.8|2d_in_1_floor:-1.6,4.8|2d_in_1_floor:-3.2,4.8|2d_in_1_floor:-4.8,4.8|2d_in_1_floor:-6.4,4.8|2d_in_1_floor:-8.0,4.8|2d_in_1_floor:-9.6,4.8|in_wall_1:-11.200001,4.8
+in_wall_1:0.0,6.4|2d_in_1_floor:-1.6,6.4|2d_in_1_floor:-3.2,6.4|2d_in_1_floor:-4.8,6.4|2d_in_1_floor:-6.4,6.4|2d_in_1_floor:-8.0,6.4|2d_in_1_floor:-9.6,6.4|in_wall_1:-11.200001,6.4
+in_wall_1:0.0,8.0|2d_in_1_floor:-1.6,8.0|2d_in_1_floor:-3.2,8.0|2d_in_1_floor:-4.8,8.0|2d_in_1_floor:-6.4,8.0|2d_in_1_floor:-8.0,8.0|2d_in_1_floor:-9.6,8.0|in_wall_1:-11.200001,8.0
+in_wall_1:0.0,9.6|in_wall_1:-1.6,9.6|in_wall_1:-3.2,9.6|in_wall_1:-4.8,9.6|in_wall_1:-6.4,9.6|in_wall_1:-8.0,9.6|in_wall_1:-9.6,9.6|in_wall_1:-11.200001,9.6
+#Houses#
+#LevelMap#
+0 0 0 0 0 0 0 0
+0 1 1 1 1 1 1 0
+0 1 1 0 1 1 1 0
+0 1 1 1 1 1 1 0
+0 1 1 1 1 1 1 0
+0 1 1 1 1 1 1 0
+0 0 0 0 0 0 0 0

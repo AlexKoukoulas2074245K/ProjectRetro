@@ -14,6 +14,7 @@
 #include "../../common_utils/MessageBox.h"
 #include "../../common_utils/Logging.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "../../common_utils/FileUtils.h"
 #include "../components/WindowComponent.h"
 #include "../components/RenderingContextComponent.h"
 
@@ -82,6 +83,7 @@ RenderingSystem::RenderingSystem(ecs::World& world)
     : ecs::BaseSystem(world)
 {
     InitializeRenderingWindowAndContext();
+    CompileAndLoadShaders();
 }
 
 void RenderingSystem::VUpdate(const float)
@@ -200,6 +202,24 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     // Now that the GL context has been initialized, the ResourceLoadingService
     // can be properly initialized (given that many of them call SDL services)
     ResourceLoadingService::GetInstance().InitializeResourceLoaders();
+    ResourceLoadingService::GetInstance().LoadResource("shaders/p_default.fs");
+}
+
+void RenderingSystem::CompileAndLoadShaders()
+{
+    const auto shaderNames = GetAndFilterShaderNames();
+}
+
+std::set<std::string> RenderingSystem::GetAndFilterShaderNames() const
+{
+    const auto vertexAndFragmentShaderFilenames = GetAllFilenamesInDirectory(ResourceLoadingService::RES_SHADERS_ROOT);
+
+    std::set<std::string> shaderNames;
+    for (const auto& shaderFilename : vertexAndFragmentShaderFilenames)
+    {
+        shaderNames.insert(GetFileNameWithoutExtension(shaderFilename));
+    }
+    return shaderNames;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
