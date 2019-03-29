@@ -96,6 +96,7 @@ private:
     void MapResourceExtensionsToLoaders();
     void LoadResourceInternal(const std::string& resourceRelativePath, const ResourceId resourceId);
    
+    // Strips the leading RES_ROOT from the resourcePath given, if present
     std::string AdjustResourcePath(const std::string& resourcePath) const;
     
 private:

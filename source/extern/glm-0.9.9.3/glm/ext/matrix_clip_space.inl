@@ -441,10 +441,13 @@ namespace glm
 	template<typename T>
 	GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspectiveFovLH(T fov, T width, T height, T zNear, T zFar)
 	{
+__pragma(warning(push))
+__pragma(warning(disable:4127))
 		if(GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT)
 			return perspectiveFovLH_ZO(fov, width, height, zNear, zFar);
 		else
 			return perspectiveFovLH_NO(fov, width, height, zNear, zFar);
+__pragma(warning(pop))
 	}
 
 	template<typename T>

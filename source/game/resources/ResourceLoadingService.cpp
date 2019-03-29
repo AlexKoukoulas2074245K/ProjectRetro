@@ -143,8 +143,8 @@ void ResourceLoadingService::LoadResourceInternal(const std::string& resourcePat
 }
 
 std::string ResourceLoadingService::AdjustResourcePath(const std::string& resourcePath) const
-{
-    return !StringStartsWith(RES_ROOT, resourcePath) ? resourcePath : resourcePath.substr(RES_ROOT.size(), resourcePath.size() - RES_ROOT.size());
+{    
+    return !StringStartsWith(resourcePath, RES_ROOT) ? resourcePath : resourcePath.substr(RES_ROOT.size(), resourcePath.size() - RES_ROOT.size());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

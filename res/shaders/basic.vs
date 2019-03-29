@@ -7,7 +7,6 @@ uniform mat4 world;
 uniform mat4 view;
 uniform mat4 proj;
 
-// will be used in fragment shader
 out vec2 uv_frag;
 
 void main()

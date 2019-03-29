@@ -34,13 +34,17 @@ void ShaderLoader::VInitialize()
 {
 }
 
-std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::string& path)
+std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::string& resourcePathWithExtension)
 {
+        // Since the shader loading is signalled by the .vs or .fs extension, we need to trim it here after
+    // being added by the ResourceLoadingService prior to this call
+    const auto resourcePath = resourcePathWithExtension.substr(0, resourcePathWithExtension.size() - 3);
+
     // Generate vertex shader id
     const auto vertexShaderId = GL_NO_CHECK(glCreateShader(GL_VERTEX_SHADER));
     
     // Read vertex shader source
-    const auto vertexShaderFileContents = ReadFileContents(path + VERTEX_SHADER_FILE_EXTENSION);
+    const auto vertexShaderFileContents = ReadFileContents(resourcePath + VERTEX_SHADER_FILE_EXTENSION);
     const char* vertexShaderFileContentsPtr = vertexShaderFileContents.c_str();
 
     // Compile vertex shader
@@ -63,7 +67,7 @@ std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::strin
     const auto fragmentShaderId = GL_NO_CHECK(glCreateShader(GL_FRAGMENT_SHADER));
     
     // Read vertex shader source
-    const auto fragmentShaderFileContents = ReadFileContents(path + FRAGMENT_SHADER_FILE_EXTENSION);
+    const auto fragmentShaderFileContents = ReadFileContents(resourcePath + FRAGMENT_SHADER_FILE_EXTENSION);
     const char* fragmentShaderFileContentsPtr = fragmentShaderFileContents.c_str();
     
     GL_CHECK(glShaderSource(fragmentShaderId, 1, &fragmentShaderFileContentsPtr, nullptr));
@@ -154,9 +158,8 @@ std::string ShaderLoader::ReadFileContents(const std::string& filePath) const
     return contents;
 }
 
-std::unordered_map<StringId, GLuint, StringIdHasher> ShaderLoader::GetUniformNamesToLocationsMap(const GLuint programId,
-                                                                                                 const std::string& vertexShaderFileContents,
-                                                                                                 const std::string& fragmentShaderFileContents) const
+std::unordered_map<StringId, GLuint, StringIdHasher> 
+ShaderLoader::GetUniformNamesToLocationsMap(const GLuint programId, const std::string& vertexShaderFileContents, const std::string& fragmentShaderFileContents) const
 {
     std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocationsMap;
     

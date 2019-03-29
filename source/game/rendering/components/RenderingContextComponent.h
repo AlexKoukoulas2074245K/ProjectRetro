@@ -32,11 +32,12 @@ using GLuint        = unsigned int;
 class RenderingContextComponent final : public ecs::IComponent
 {
 public:
-    SDL_GLContext mGLContext   = nullptr;
-    GLuint mIndexBufferObject  = 0;
-    GLuint mVertexBufferObject = 0;
-    bool mBlending             = false;
-    bool mDepthTest            = false;
+    SDL_GLContext mGLContext      = nullptr;
+    GLuint mIndexBufferObject     = 0;
+    GLuint mVertexBufferObject    = 0;
+    GLuint mTexCoordsBufferObject = 0;
+    bool mBlending                = false;
+    bool mDepthTest               = false;
 };
 
 #endif /* RenderingContextComponent_h */
