@@ -130,7 +130,7 @@ void RenderingSystem::VUpdate(const float)
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&view));    
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&proj));
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, ResourceLoadingService::GetInstance().GetResource<TextureResource>("textures/materials/2d_in_carpet1_floor.png").GetGLTextureId()));
+    GL_CHECK(glBindTexture(GL_TEXTURE_2D, ResourceLoadingService::GetInstance().GetResource<TextureResource>("textures/materials/debug_outline_square.png").GetGLTextureId()));
     
     GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices) / sizeof(GLfloat), nullptr));
     GL_CHECK(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(cube_texcoords) / sizeof(GLfloat), (void*)(sizeof(float) * 3)));

@@ -171,8 +171,8 @@ ShaderLoader::GetUniformNamesToLocationsMap(const GLuint programId, const std::s
             const auto uniformLineSplitBySpace = StringSplit(vertexShaderLine, ' ');
             
             // Uniform names will always be the third components in the line
-            // e.g. uniform bool foo
-            const auto uniformName = uniformLineSplitBySpace[2];
+            // e.g. uniform bool foo. The semicolumn at the end also needs to be trimmed
+            const auto uniformName = uniformLineSplitBySpace[2].substr(0, uniformLineSplitBySpace[2].size() - 1);
             const auto uniformLocation = GL_NO_CHECK(glGetUniformLocation(programId, uniformName.c_str()));
             
             uniformNamesToLocationsMap[StringId(uniformName)] = uniformLocation;
