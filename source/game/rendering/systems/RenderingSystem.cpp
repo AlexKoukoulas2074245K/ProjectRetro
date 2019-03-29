@@ -90,13 +90,6 @@ GLushort cube_elements[] = {
     22, 23, 20,
 };
 
-
-struct attributes
-{
-    GLfloat coord3d[3];
-    GLfloat color3d[3];
-};
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -127,23 +120,49 @@ void RenderingSystem::VUpdate(const float)
     const auto view = glm::lookAtLH(glm::vec3(-5.0f, 5.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     const auto proj = glm::perspectiveFovLH(45.0f, windowComponent.mRenderableWidth, windowComponent.mRenderableHeight, 0.001f, 1000.0f);
 
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&world));
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&view));    
+    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("world")), 1, GL_FALSE, (GLfloat*)&world));
+    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&view));    
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&proj));
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, ResourceLoadingService::GetInstance().GetResource<TextureResource>("textures/materials/debug_outline_square.png").GetGLTextureId()));
     
-    GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices) / sizeof(GLfloat), nullptr));
-    GL_CHECK(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(cube_texcoords) / sizeof(GLfloat), (void*)(sizeof(float) * 3)));
-
-    // Enable vertex attribute arrays
+    // 1rst attribute buffer : vertices
     GL_CHECK(glEnableVertexAttribArray(0));
+    GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent.mVertexBufferObject));
+    GL_CHECK(glVertexAttribPointer(
+                          0,                  // attribute
+                          3,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          (void*)0            // array buffer offset
+                          ));
+    
+    // 2nd attribute buffer : UVs
     GL_CHECK(glEnableVertexAttribArray(1));
+    GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent.mTexCoordsBufferObject));
+    GL_CHECK(glVertexAttribPointer(
+                          1,                                // attribute
+                          2,                                // size
+                          GL_FLOAT,                         // type
+                          GL_FALSE,                         // normalized?
+                          0,                                // stride
+                          (void*)0                          // array buffer offset
+                          ));
 
+    
+    // Index buffer
     GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent.mIndexBufferObject));
-    int size;  
-    GL_CHECK(glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
-    GL_CHECK(glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0));
-
+    
+    // Draw the triangles !
+    GL_CHECK(glDrawElements(
+                   GL_TRIANGLES,      // mode
+                   sizeof(cube_elements)/sizeof(GLushort),    // count
+                   GL_UNSIGNED_SHORT,   // type
+                   (void*)0           // element array buffer offset
+                   ));
+    
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
     
     // Swap window buffers
     SDL_GL_SwapWindow(windowComponent.mWindowHandle);
@@ -230,6 +249,10 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     GL_CHECK(glEnable(GL_DEPTH_TEST));
     renderingContextComponent->mDepthTest = true;
     
+    GLuint vertexArrayObject;
+    GL_CHECK(glGenVertexArrays(1, &vertexArrayObject));
+    GL_CHECK(glBindVertexArray(vertexArrayObject));
+    
     // Create VBO & IBO
     GL_CHECK(glGenBuffers(1, &renderingContextComponent->mVertexBufferObject));
     GL_CHECK(glGenBuffers(1, &renderingContextComponent->mTexCoordsBufferObject));
@@ -238,6 +261,9 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     // Bind and Buffer VBO
     GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mVertexBufferObject));
     GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW));    
+
+    for (int i = 1; i < 6; i++)
+        memcpy(&cube_texcoords[i*4*2], &cube_texcoords[0], 2*4*sizeof(GLfloat));
 
     GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mTexCoordsBufferObject));
     GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_texcoords), cube_texcoords, GL_STATIC_DRAW));
