@@ -13,6 +13,7 @@
 #include "../opengl/Context.h"
 #include "../../common_utils/MessageBox.h"
 #include "../../common_utils/Logging.h"
+#include "../../resources/ResourceLoadingService.h"
 #include "../components/WindowComponent.h"
 #include "../components/RenderingContextComponent.h"
 
@@ -93,9 +94,7 @@ void RenderingSystem::VUpdate(const float)
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     
     GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent.mIndexBufferObject));
-    int size;
-    GL_CHECK(glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size));
-    GL_CHECK(glDrawElements(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0));
+    GL_CHECK(glDrawElements(GL_TRIANGLES, sizeof(cube_elements)/sizeof(GLushort), GL_UNSIGNED_SHORT, 0));
     
     // Swap window buffers
     SDL_GL_SwapWindow(windowComponent.mWindowHandle);
@@ -186,26 +185,21 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     GL_CHECK(glGenBuffers(1, &renderingContextComponent->mVertexBufferObject));
     GL_CHECK(glGenBuffers(1, &renderingContextComponent->mIndexBufferObject));
     
-    // Bind VAO & VBO
+    // Bind and Buffer VBO
     GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mVertexBufferObject));
-    GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW));
-    
-    // Set Attribute Pointers
-    GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices)/sizeof(GLfloat), nullptr));
-    GL_CHECK(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(cube_vertices)/sizeof(GLfloat), (void*)(sizeof(float) * 3)));
-    
-    // TODO: Maybe move this
+    GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW));    
+
+    // Bind and Buffer IBO
     GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent->mIndexBufferObject));
-    GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW));
-    
-    // Enable vertex attribute arrays
-    GL_CHECK(glEnableVertexAttribArray(0));
-    GL_CHECK(glEnableVertexAttribArray(1));
-    
-    
+    GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW));  
+ 
     // Transfer ownership of singleton components to world
     mWorld.SetSingletonComponent<WindowComponent>(std::move(windowComponent));
     mWorld.SetSingletonComponent<RenderingContextComponent>(std::move(renderingContextComponent));
+
+    // Now that the GL context has been initialized, the ResourceLoadingService
+    // can be properly initialized (given that many of them call SDL services)
+    ResourceLoadingService::GetInstance().InitializeResourceLoaders();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

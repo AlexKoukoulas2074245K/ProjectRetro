@@ -18,12 +18,12 @@
 
 #include "common_utils/TypeTraits.h"
 
-#include <bitset>        // bitset
-#include <memory>        // unique_ptr
-#include <vector>        // vector
-#include <map>           // map
-#include <unordered_map> // unordered_map
-#include <cassert>       // assert
+#include <bitset>        
+#include <memory>        
+#include <vector>        
+#include <map>           
+#include <unordered_map> 
+#include <cassert>       
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -121,10 +121,7 @@ protected:
 class World final
 {
 public:
-    World()
-    {
-        mEntityComponentStore.reserve(100);
-    }
+    World();
     
     // Returns a non-mutable reference to the active entity component store
     const std::vector<EntityId>& GetActiveEntities() const;

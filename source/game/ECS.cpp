@@ -29,6 +29,11 @@ bool ecs::BaseSystem::ShouldProcessEntity(const EntityId entityId) const
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+ecs::World::World()
+{
+    mEntityComponentStore.reserve(100);
+}
+
 const std::vector<ecs::EntityId>& ecs::World::GetActiveEntities() const
 {
     return mActiveEntitiesInFrame;
