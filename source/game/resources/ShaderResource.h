@@ -36,10 +36,16 @@ using GLuint = unsigned int;
 class ShaderResource final: public IResource
 {
 public:
+    ShaderResource() = default;
     ShaderResource(const GLuint programId, const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations);
+    ShaderResource& operator = (const ShaderResource&);
+    ShaderResource(const ShaderResource&);
     
     GLuint GetProgramId() const;
     const std::unordered_map<StringId, GLuint, StringIdHasher>& GetUniformNamesToLocations() const;
+    
+private:
+    void CopyConstruction(const ShaderResource&);
     
 private:
     GLuint mProgramId;

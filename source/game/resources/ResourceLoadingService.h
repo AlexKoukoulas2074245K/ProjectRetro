@@ -67,19 +67,19 @@ public:
     
     // Loads a single or number of resouces base on the relative path(s) supplied
     // respectively
-    ResourceId LoadResource(const std::string& resourceRelativePath);
-    void LoadResources(const std::vector<std::string>& resourceRelativePaths);
+    ResourceId LoadResource(const std::string& resourcePath);
+    void LoadResources(const std::vector<std::string>& resourcePaths);
     
     // Unloads the specified resource. Any subsequent calls to get that 
     // resource will need to be preceeded by another Load to get the resource 
     // back to the map of resources held by this service
-    void UnloadResource(const std::string& resourceRelativePath);
+    void UnloadResource(const std::string& resourcePath);
     void UnloadResource(const ResourceId resourceId);
           
 	template<class ResourceType>
-	inline ResourceType& GetResource(const std::string& resourceRelativePath)
+	inline ResourceType& GetResource(const std::string& resourcePath)
 	{
-		return static_cast<ResourceType&>(GetResource(resourceRelativePath));
+		return static_cast<ResourceType&>(GetResource(resourcePath));
 	}
 
 	template<class ResourceType>
@@ -96,6 +96,8 @@ private:
     void MapResourceExtensionsToLoaders();
     void LoadResourceInternal(const std::string& resourceRelativePath, const ResourceId resourceId);
    
+    std::string AdjustResourcePath(const std::string& resourcePath) const;
+    
 private:
     std::unordered_map<ResourceId, std::unique_ptr<IResource>, ResourceIdHasher> mResourceMap;
     std::unordered_map<std::string, IResourceLoader*> mResourceExtensionsToLoadersMap;

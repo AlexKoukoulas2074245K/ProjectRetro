@@ -13,10 +13,12 @@
 #include "../opengl/Context.h"
 #include "../../common_utils/MessageBox.h"
 #include "../../common_utils/Logging.h"
+#include "../../common_utils/StringId.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../common_utils/FileUtils.h"
 #include "../components/WindowComponent.h"
 #include "../components/RenderingContextComponent.h"
+#include "../components/ShaderStoreComponent.h"
 
 #include <SDL.h>   // Many SDL init related methods
 #include <cstdlib> // exit
@@ -202,12 +204,24 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     // Now that the GL context has been initialized, the ResourceLoadingService
     // can be properly initialized (given that many of them call SDL services)
     ResourceLoadingService::GetInstance().InitializeResourceLoaders();
-    ResourceLoadingService::GetInstance().LoadResource("shaders/p_default.fs");
 }
 
 void RenderingSystem::CompileAndLoadShaders()
 {
-    const auto shaderNames = GetAndFilterShaderNames();
+    const auto shaderNames    = GetAndFilterShaderNames();
+    auto shaderStoreComponent = std::make_unique<ShaderStoreComponent>();
+    
+    for (const auto& shaderName: shaderNames)
+    {
+        auto shaderResourceId = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_SHADERS_ROOT + shaderName);
+        auto& shaderResource = ResourceLoadingService::GetInstance().GetResource<ShaderResource>(shaderResourceId);
+        
+        shaderStoreComponent->shaders[StringId(shaderName)] = shaderResource;
+        
+        ResourceLoadingService::GetInstance().UnloadResource(shaderResourceId);
+    }
+    
+    mWorld.SetSingletonComponent<ShaderStoreComponent>(std::move(shaderStoreComponent));
 }
 
 std::set<std::string> RenderingSystem::GetAndFilterShaderNames() const

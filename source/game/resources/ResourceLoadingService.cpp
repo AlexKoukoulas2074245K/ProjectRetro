@@ -19,6 +19,7 @@
 #include "../common_utils/Logging.h"
 #include "../common_utils/FileUtils.h"
 #include "../common_utils/MessageBox.h"
+#include "../common_utils/StringUtils.h"
 
 #include <cassert>
 
@@ -55,33 +56,35 @@ void ResourceLoadingService::InitializeResourceLoaders()
     mShaderLoader->VInitialize();
 }
 
-ResourceId ResourceLoadingService::LoadResource(const std::string& resourceRelativePath)
+ResourceId ResourceLoadingService::LoadResource(const std::string& resourcePath)
 {
-    const auto resourceId = GetStringHash(resourceRelativePath);
+    const auto adjustedPath = AdjustResourcePath(resourcePath);
+    const auto resourceId = GetStringHash(adjustedPath);
     
     if (mResourceMap.count(resourceId))
     {
-        Log(LogType::WARNING, "Resource %s already loaded", resourceRelativePath.c_str());
+        Log(LogType::WARNING, "Resource %s already loaded", adjustedPath.c_str());
         return resourceId;
     }
     else
     {
-        LoadResourceInternal(resourceRelativePath, resourceId);
+        LoadResourceInternal(adjustedPath, resourceId);
         return resourceId;
     }
 }
 
-void ResourceLoadingService::LoadResources(const std::vector<std::string>& resourceRelativePaths)
+void ResourceLoadingService::LoadResources(const std::vector<std::string>& resourcePaths)
 {
-    for (const auto path: resourceRelativePaths)
+    for (const auto path: resourcePaths)
     {
         LoadResource(path);
     }
 }
 
-void ResourceLoadingService::UnloadResource(const std::string& resourceRelativePath)
+void ResourceLoadingService::UnloadResource(const std::string& resourcePath)
 {
-    const auto resourceId = GetStringHash(resourceRelativePath);
+    const auto adjustedPath = AdjustResourcePath(resourcePath);
+    const auto resourceId = GetStringHash(adjustedPath);
     mResourceMap.erase(resourceId);
 }
 
@@ -103,9 +106,10 @@ ResourceLoadingService::ResourceLoadingService()
     MapResourceExtensionsToLoaders();
 }
 
-IResource& ResourceLoadingService::GetResource(const std::string& resourceRelativePath)
+IResource& ResourceLoadingService::GetResource(const std::string& resourcePath)
 {
-    const auto resourceId = GetStringHash(resourceRelativePath);
+    const auto adjustedPath = AdjustResourcePath(resourcePath);
+    const auto resourceId = GetStringHash(adjustedPath);
     return GetResource(resourceId);
 }
 
@@ -129,13 +133,18 @@ void ResourceLoadingService::MapResourceExtensionsToLoaders()
     mResourceExtensionsToLoadersMap["fs"]   = mShaderLoader.get();
 }
 
-void ResourceLoadingService::LoadResourceInternal(const std::string& resourceRelativePath, const ResourceId resourceId)
+void ResourceLoadingService::LoadResourceInternal(const std::string& resourcePath, const ResourceId resourceId)
 {
-    const auto resourceFileExtension = GetFileExtension(resourceRelativePath);
+    const auto resourceFileExtension = GetFileExtension(resourcePath);
     
-    auto loadedResource = mResourceExtensionsToLoadersMap[resourceFileExtension]->VCreateAndLoadResource(RES_ROOT + resourceRelativePath);
+    auto loadedResource = mResourceExtensionsToLoadersMap[resourceFileExtension]->VCreateAndLoadResource(RES_ROOT + resourcePath);
     
     mResourceMap[resourceId] = std::move(loadedResource);
+}
+
+std::string ResourceLoadingService::AdjustResourcePath(const std::string& resourcePath) const
+{
+    return !StringStartsWith(RES_ROOT, resourcePath) ? resourcePath : resourcePath.substr(RES_ROOT.size(), resourcePath.size() - RES_ROOT.size());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
