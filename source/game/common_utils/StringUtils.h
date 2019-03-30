@@ -83,9 +83,15 @@ inline std::vector<std::string> StringSplit(const std::string& s, char delim)
 class StringId final
 {
 public:
+    StringId()
+        : mString("")
+        , mStringId(0)
+    {
+    }
+    
     StringId(const std::string& str)
-    : mString(str)
-    , mStringId(GetStringHash(str))
+        : mString(str)
+        , mStringId(GetStringHash(str))
     {
     }
     
@@ -96,8 +102,8 @@ public:
     size_t GetStringId() const { return mStringId; }
     
 private:
-    const std::string mString;
-    const size_t      mStringId;
+    std::string mString;
+    size_t      mStringId;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

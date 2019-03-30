@@ -99,7 +99,7 @@ public:
 	}
 
 private:    
-    ResourceLoadingService();
+    ResourceLoadingService() = default;
 
     IResource& GetResource(const std::string& resourceRelativePath);
     IResource& GetResource(const ResourceId resourceId);

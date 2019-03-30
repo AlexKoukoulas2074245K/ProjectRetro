@@ -42,6 +42,7 @@ public:
 private:
     TextureResource(SDL_Surface*, GLuint);
     
+private:
     SDL_Surface* mSdlSurface;
     GLuint mGLTextureId;
 

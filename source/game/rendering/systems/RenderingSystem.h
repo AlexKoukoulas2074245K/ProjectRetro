@@ -36,6 +36,7 @@ private:
     void InitializeRenderingWindowAndContext();
     void InitializeCamera();
     void CompileAndLoadShaders();
+    
     std::set<std::string> GetAndFilterShaderNames() const;
 };
 

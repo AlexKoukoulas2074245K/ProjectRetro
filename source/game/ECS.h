@@ -195,6 +195,8 @@ public:
             "Entity does not exist in the world");
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
+        assert(mComponentMasks.count(componentTypeId) != 0 &&
+            "Component not registered");
         assert(mEntityComponentStore.at(entityId).count(componentTypeId) == 0 &&
             "Component is already present in this entity's component store");
 

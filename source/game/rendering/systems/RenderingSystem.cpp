@@ -10,13 +10,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "RenderingSystem.h"
+#include "../../common_components/TransformComponent.h"
 #include "../../common_utils/FileUtils.h"
 #include "../../common_utils/Logging.h"
+#include "../../common_utils/MathUtils.h"
 #include "../../common_utils/MessageBox.h"
 #include "../../common_utils/StringUtils.h"
+#include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
 #include "../components/CameraComponent.h"
+#include "../components/RenderableComponent.h"
 #include "../components/RenderingContextComponent.h"
 #include "../components/ShaderStoreComponent.h"
 #include "../components/WindowComponent.h"
@@ -26,70 +30,6 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL.h>   // Many SDL init related methods
-
-GLfloat cube_vertices[] = {
-    // front
-    -1.0, -1.0,  1.0,
-    1.0, -1.0,  1.0,
-    1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    // top
-    -1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,
-    1.0,  1.0, -1.0,
-    -1.0,  1.0, -1.0,
-    // back
-    1.0, -1.0, -1.0,
-    -1.0, -1.0, -1.0,
-    -1.0,  1.0, -1.0,
-    1.0,  1.0, -1.0,
-    // bottom
-    -1.0, -1.0, -1.0,
-    1.0, -1.0, -1.0,
-    1.0, -1.0,  1.0,
-    -1.0, -1.0,  1.0,
-    // left
-    -1.0, -1.0, -1.0,
-    -1.0, -1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    -1.0,  1.0, -1.0,
-    // right
-    1.0, -1.0,  1.0,
-    1.0, -1.0, -1.0,
-    1.0,  1.0, -1.0,
-    1.0,  1.0,  1.0,
-
-};
-
-GLfloat cube_texcoords[2 * 4 * 6] = {
-    // front
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
-    0.0, 1.0,
-};
-
-
-GLushort cube_elements[] = {
-    // front
-    0,  1,  2,
-    2,  3,  0,
-    // top
-    4,  5,  6,
-    6,  7,  4,
-    // back
-    8,  9, 10,
-    10, 11,  8,
-    // bottom
-    12, 13, 14,
-    14, 15, 12,
-    // left
-    16, 17, 18,
-    18, 19, 16,
-    // right
-    20, 21, 22,
-    22, 23, 20,
-};
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -101,38 +41,57 @@ RenderingSystem::RenderingSystem(ecs::World& world)
     InitializeRenderingWindowAndContext();
     InitializeCamera();
     CompileAndLoadShaders();
-    ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
+    mComponentUsageMask = mWorld.CalculateComponentUsageMask<RenderableComponent, TransformComponent>();
 }
 
-static float rot = 0.0f;
-
-void RenderingSystem::VUpdate(const float dt)
+void RenderingSystem::VUpdate(const float)
 {
-    const auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextComponent>();
-    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowComponent>();
-    const auto& cameraComponent           = mWorld.GetSingletonComponent<CameraComponent>();
-    const auto& currentShader             = mWorld.GetSingletonComponent<ShaderStoreComponent>().shaders.at(StringId("basic"));
-
+    // Get common rendering singleton components
+    const auto& windowComponent      = mWorld.GetSingletonComponent<WindowComponent>();
+    const auto& cameraComponent      = mWorld.GetSingletonComponent<CameraComponent>();
+    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
+    
+    // Calculate constant camera view matrix
+    const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
+    
     // Execute first pass rendering
     GL_CHECK(glClearColor(1.0f, 1.0f, 0.4f, 1.0f));
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     
-    // Use shader
-    GL_CHECK(glUseProgram(currentShader.GetProgramId()));
-    
-    rot += dt;
-    glm::mat4 world(1.0f);
-    world = glm::rotate(world, rot, glm::vec3(0.0f, 1.0f, 0.0f));
-    
-    const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
-
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("world")), 1, GL_FALSE, (GLfloat*)&world));
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&view));
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, ResourceLoadingService::GetInstance().GetResource<TextureResource>("textures/materials/wood2.png").GetGLTextureId()));
-    
-    GL_CHECK(glBindVertexArray(renderingContextComponent.mVertexArrayObject));
-    GL_CHECK(glDrawElements(GL_TRIANGLES, sizeof(cube_elements)/sizeof(GLushort), GL_UNSIGNED_SHORT, (void*)0));
+    const auto& activeEntities = mWorld.GetActiveEntities();
+    for (const auto& entityId: activeEntities)
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+            const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
+            const auto& currentShader       = shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
+            const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+            const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(renderableComponent.mMeshResourceId);
+            
+            // Use shader
+            GL_CHECK(glUseProgram(currentShader.GetProgramId()));
+            
+            // Calculate world matrix for entity
+            glm::mat4 world(1.0f);
+            world = glm::translate(world, transformComponent.mPosition);
+            world = glm::rotate(world, transformComponent.mRotation.x, X_AXIS);
+            world = glm::rotate(world, transformComponent.mRotation.y, Y_AXIS);
+            world = glm::rotate(world, transformComponent.mRotation.z, Z_AXIS);
+            world = glm::scale(world, transformComponent.mScale);
+            
+            // Set rendering uniforms
+            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("world")), 1, GL_FALSE, (GLfloat*)&world));
+            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&view));
+            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
+            GL_CHECK(glBindTexture(GL_TEXTURE_2D, currentTexture.GetGLTextureId()));
+            
+            // Perform indexed draw
+            GL_CHECK(glBindVertexArray(currentMesh.GetVertexArrayObject()));
+            GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh.GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
+            
+        }
+    }
     
     // Swap window buffers
     SDL_GL_SwapWindow(windowComponent.mWindowHandle);
@@ -198,8 +157,8 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
 #endif
 
     // Get actual render buffer width/height
-    int renderableWidth  = 0;
-    int renderableHeight = 0;
+    auto renderableWidth = 0;
+    auto renderableHeight = 0;
     SDL_GL_GetDrawableSize(windowComponent->mWindowHandle, &renderableWidth, &renderableHeight);
 
     windowComponent->mRenderableWidth  = static_cast<float>(renderableWidth);
@@ -218,37 +177,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     // Configure Depth
     GL_CHECK(glEnable(GL_DEPTH_TEST));
     GL_CHECK(glDepthFunc(GL_LESS));
-    
     renderingContextComponent->mDepthTest = true;
-    
-    GL_CHECK(glGenVertexArrays(1, &renderingContextComponent->mVertexArrayObject));
-    GL_CHECK(glBindVertexArray(renderingContextComponent->mVertexArrayObject));
-    
-    // Create VBO & IBO
-    GL_CHECK(glGenBuffers(1, &renderingContextComponent->mVertexBufferObject));
-    GL_CHECK(glGenBuffers(1, &renderingContextComponent->mTexCoordsBufferObject));
-    GL_CHECK(glGenBuffers(1, &renderingContextComponent->mIndexBufferObject));
-    
-    // Bind and Buffer VBO
-    GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mVertexBufferObject));
-    GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW));    
-    
-    // 1rst attribute buffer : vertices
-    GL_CHECK(glEnableVertexAttribArray(0));
-    GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
-    
-    for (int i = 1; i < 6; i++)
-        memcpy(&cube_texcoords[i*4*2], &cube_texcoords[0], 2*4*sizeof(GLfloat));
-
-    GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, renderingContextComponent->mTexCoordsBufferObject));
-    GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(cube_texcoords), cube_texcoords, GL_STATIC_DRAW));
-
-    GL_CHECK(glEnableVertexAttribArray(1));
-    GL_CHECK(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0));
-    
-    // Bind and Buffer IBO
-    GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderingContextComponent->mIndexBufferObject));
-    GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_elements), cube_elements, GL_STATIC_DRAW));
     
     // Transfer ownership of singleton components to world
     mWorld.SetSingletonComponent<WindowComponent>(std::move(windowComponent));
@@ -264,7 +193,7 @@ void RenderingSystem::InitializeCamera()
     const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
     auto cameraComponent = std::make_unique<CameraComponent>();
     
-    cameraComponent->mPosition         = glm::vec3(-5.0f, 5.0f, -5.0f);
+    cameraComponent->mPosition         = glm::vec3(0.0f, 5.0f, -5.0f);
     cameraComponent->mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
     cameraComponent->mProjectionMatrix = glm::perspectiveFovLH(45.0f, windowComponent.mRenderableWidth, windowComponent.mRenderableHeight, 0.001f, 1000.0f);
     
@@ -273,6 +202,12 @@ void RenderingSystem::InitializeCamera()
 
 void RenderingSystem::CompileAndLoadShaders()
 {
+    auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextComponent>();
+    
+    // Bind default VAO for correct shader compilation
+    GL_CHECK(glGenVertexArrays(1, &renderingContextComponent.mDefaultVertexArrayObject));
+    GL_CHECK(glBindVertexArray(renderingContextComponent.mDefaultVertexArrayObject));
+    
     const auto shaderNames    = GetAndFilterShaderNames();
     auto shaderStoreComponent = std::make_unique<ShaderStoreComponent>();
     
@@ -284,13 +219,13 @@ void RenderingSystem::CompileAndLoadShaders()
         auto& shaderResource = ResourceLoadingService::GetInstance().GetResource<ShaderResource>(shaderResourceId);
         
         // Save a copy of the shader to the ShaderStoreComponent
-        shaderStoreComponent->shaders[StringId(shaderName)] = shaderResource;
+        shaderStoreComponent->mShaders[StringId(shaderName)] = shaderResource;
         
         // And unload the resource
         ResourceLoadingService::GetInstance().UnloadResource(shaderResourceId);
     }
     
-    // Unbind VAO
+    // Unbind any VAO currently bound
     GL_CHECK(glBindVertexArray(0));
     
     mWorld.SetSingletonComponent<ShaderStoreComponent>(std::move(shaderStoreComponent));

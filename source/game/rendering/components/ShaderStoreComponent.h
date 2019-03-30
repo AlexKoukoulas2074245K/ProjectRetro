@@ -33,7 +33,7 @@
 class ShaderStoreComponent final: public ecs::IComponent
 {
 public:
-    std::unordered_map<StringId, ShaderResource, StringIdHasher> shaders;
+    std::unordered_map<StringId, ShaderResource, StringIdHasher> mShaders;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

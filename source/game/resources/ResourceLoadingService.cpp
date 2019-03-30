@@ -13,6 +13,7 @@
 #include "ResourceLoadingService.h"
 #include "DataFileLoader.h"
 #include "IResource.h"
+#include "MeshLoader.h"
 #include "ShaderLoader.h"
 #include "TextureLoader.h"
 #include "../common_utils/FileUtils.h"
@@ -56,12 +57,14 @@ void ResourceLoadingService::InitializeResourceLoaders()
     mResourceLoaders.push_back(std::unique_ptr<TextureLoader>(new TextureLoader));
     mResourceLoaders.push_back(std::unique_ptr<DataFileLoader>(new DataFileLoader));
     mResourceLoaders.push_back(std::unique_ptr<ShaderLoader>(new ShaderLoader));
+    mResourceLoaders.push_back(std::unique_ptr<MeshLoader>(new MeshLoader));
     
     // Map resource extensions to loaders
     mResourceExtensionsToLoadersMap[StringId("png")]  = mResourceLoaders[0].get();
     mResourceExtensionsToLoadersMap[StringId("json")] = mResourceLoaders[1].get();
     mResourceExtensionsToLoadersMap[StringId("vs")]   = mResourceLoaders[2].get();
     mResourceExtensionsToLoadersMap[StringId("fs")]   = mResourceLoaders[2].get();
+    mResourceExtensionsToLoadersMap[StringId("obj")]  = mResourceLoaders[3].get();
     
     for (auto& resourceLoader: mResourceLoaders)
     {
@@ -117,11 +120,6 @@ void ResourceLoadingService::UnloadResource(const ResourceId resourceId)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
-ResourceLoadingService::ResourceLoadingService()
-{
-    InitializeResourceLoaders();
-}
 
 IResource& ResourceLoadingService::GetResource(const std::string& resourcePath)
 {

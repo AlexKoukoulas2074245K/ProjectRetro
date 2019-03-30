@@ -10,8 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "App.h"
+#include "common_components/TransformComponent.h"
+#include "rendering/components/RenderableComponent.h"
 #include "rendering/components/WindowComponent.h"
 #include "rendering/systems/RenderingSystem.h"
+#include "resources/ResourceLoadingService.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  
@@ -22,6 +25,7 @@
 
 void App::Run()
 {
+    RegisterCommonComponents();
     InitializeSystems();
     GameLoop();
 }
@@ -29,6 +33,12 @@ void App::Run()
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+void App::RegisterCommonComponents()
+{
+    mWorld.RegisterComponentType<RenderableComponent>();
+    mWorld.RegisterComponentType<TransformComponent>();
+}
 
 void App::InitializeSystems()
 {
@@ -40,6 +50,32 @@ void App::GameLoop()
     float elapsedTicks          = 0.0f;
     float dtAccumulator         = 0.0f;
     long long framesAccumulator = 0;
+    
+    const auto dummyEntity = mWorld.CreateEntity();
+    
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mPosition.x = -2.0f;
+    
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    renderableComponent->mShaderNameId = StringId("basic");
+    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
+    renderableComponent->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/stdcube.obj");
+    
+    mWorld.AddComponent<TransformComponent>(dummyEntity, std::move(transformComponent));
+    mWorld.AddComponent<RenderableComponent>(dummyEntity, std::move(renderableComponent));
+    
+    const auto dummyEntity2 = mWorld.CreateEntity();
+    
+    auto transformComponent2 = std::make_unique<TransformComponent>();
+    transformComponent2->mPosition.x = 2.0f;
+    
+    auto renderableComponent2 = std::make_unique<RenderableComponent>();
+    renderableComponent2->mShaderNameId = StringId("basic");
+    renderableComponent2->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
+    renderableComponent2->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/stdcube.obj");
+    
+    mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
+    mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
     
     while (!AppShouldQuit())
     {
