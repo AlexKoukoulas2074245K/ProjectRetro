@@ -10,8 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "App.h"
-#include "rendering/systems/RenderingSystem.h"
 #include "rendering/components/WindowComponent.h"
+#include "rendering/systems/RenderingSystem.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  

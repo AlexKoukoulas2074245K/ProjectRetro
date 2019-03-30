@@ -16,16 +16,16 @@
 #include "../../common_utils/StringUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
-#include "../components/WindowComponent.h"
-#include "../components/RenderingContextComponent.h"
 #include "../components/CameraComponent.h"
+#include "../components/RenderingContextComponent.h"
 #include "../components/ShaderStoreComponent.h"
+#include "../components/WindowComponent.h"
 #include "../opengl/Context.h"
 
-#include <SDL.h>   // Many SDL init related methods
 #include <cstdlib> // exit
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <SDL.h>   // Many SDL init related methods
 
 GLfloat cube_vertices[] = {
     // front

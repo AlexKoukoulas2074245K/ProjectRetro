@@ -10,11 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "ShaderLoader.h"
+#include "../common_utils/Logging.h"
+#include "../common_utils/MessageBox.h"
+#include "../common_utils/StringUtils.h"
 #include "../resources/ShaderResource.h"
 #include "../rendering/opengl/Context.h"
-#include "../common_utils/MessageBox.h"
-#include "../common_utils/Logging.h"
-#include "../common_utils/StringUtils.h"
 
 #include <fstream>   // ifstream
 #include <streambuf> // istreambuf_iterator

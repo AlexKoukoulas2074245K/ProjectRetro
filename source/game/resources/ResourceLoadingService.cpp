@@ -11,15 +11,15 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "ResourceLoadingService.h"
-#include "TextureLoader.h"
 #include "DataFileLoader.h"
-#include "ShaderLoader.h"
 #include "IResource.h"
-#include "../common_utils/TypeTraits.h"
-#include "../common_utils/Logging.h"
+#include "ShaderLoader.h"
+#include "TextureLoader.h"
 #include "../common_utils/FileUtils.h"
+#include "../common_utils/Logging.h"
 #include "../common_utils/MessageBox.h"
 #include "../common_utils/StringUtils.h"
+#include "../common_utils/TypeTraits.h"
 
 #include <cassert>
 

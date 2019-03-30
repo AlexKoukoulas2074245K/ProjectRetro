@@ -19,11 +19,11 @@
 #include "common_utils/TypeTraits.h"
 
 #include <bitset>        
-#include <memory>        
+#include <cassert>
+#include <map>
+#include <memory>
+#include <unordered_map>
 #include <vector>        
-#include <map>           
-#include <unordered_map> 
-#include <cassert>       
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
