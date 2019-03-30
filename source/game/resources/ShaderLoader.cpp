@@ -34,7 +34,7 @@ void ShaderLoader::VInitialize()
 {
 }
 
-std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::string& resourcePathWithExtension)
+std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::string& resourcePathWithExtension) const
 {
         // Since the shader loading is signalled by the .vs or .fs extension, we need to trim it here after
     // being added by the ResourceLoadingService prior to this call

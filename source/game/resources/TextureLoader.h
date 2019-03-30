@@ -30,7 +30,7 @@ class TextureLoader final: public IResourceLoader
 
 public:
     void VInitialize() override;
-    std::unique_ptr<IResource> VCreateAndLoadResource(const std::string& path) override;
+    std::unique_ptr<IResource> VCreateAndLoadResource(const std::string& path) const override;
 
 private:
     TextureLoader() = default;

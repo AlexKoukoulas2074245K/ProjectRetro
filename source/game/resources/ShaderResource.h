@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "IResource.h"
-#include "../common_utils/StringId.h"
+#include "../common_utils/StringUtils.h"
 
 #include <string>
 #include <unordered_map>

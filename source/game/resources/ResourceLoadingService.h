@@ -17,6 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../common_utils/StringUtils.h"
+
 #include <string>        
 #include <vector>        
 #include <memory>        
@@ -66,16 +68,24 @@ public:
     void InitializeResourceLoaders();
     
     // Loads a single or number of resouces base on the relative path(s) supplied
-    // respectively
+    // respectively. Both full paths, relative paths including the Resource Root, and relative
+    // paths not including the Resource Root are supported
     ResourceId LoadResource(const std::string& resourcePath);
     void LoadResources(const std::vector<std::string>& resourcePaths);
+    
+    // Checks whether the given resource has been loaded.
+    // Both full paths, relative paths including the Resource Root, and relative
+    // paths not including the Resource Root are supported
+    bool HasLoadedResource(const std::string& resourcePath);
     
     // Unloads the specified resource. Any subsequent calls to get that 
     // resource will need to be preceeded by another Load to get the resource 
     // back to the map of resources held by this service
     void UnloadResource(const std::string& resourcePath);
     void UnloadResource(const ResourceId resourceId);
-          
+    
+    // Both full paths, relative paths including the Resource Root, and relative
+    // paths not including the Resource Root are supported
 	template<class ResourceType>
 	inline ResourceType& GetResource(const std::string& resourcePath)
 	{
@@ -101,12 +111,8 @@ private:
     
 private:
     std::unordered_map<ResourceId, std::unique_ptr<IResource>, ResourceIdHasher> mResourceMap;
-    std::unordered_map<std::string, IResourceLoader*> mResourceExtensionsToLoadersMap;
-    
-    std::unique_ptr<IResourceLoader> mDataFileLoader;
-    std::unique_ptr<IResourceLoader> mTextureLoader;  
-    std::unique_ptr<IResourceLoader> mShaderLoader;
-
+    std::unordered_map<StringId, IResourceLoader*, StringIdHasher> mResourceExtensionsToLoadersMap;
+    std::vector<std::unique_ptr<IResourceLoader>> mResourceLoaders;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

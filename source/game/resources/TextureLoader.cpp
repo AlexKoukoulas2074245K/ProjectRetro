@@ -44,7 +44,7 @@ void TextureLoader::VInitialize()
     Log(LogType::INFO, "Successfully initialized SDL_image version %d.%d.%d", imgCompiledVersion.major, imgCompiledVersion.minor, imgCompiledVersion.patch);        
 }
 
-std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::string& resourcePath)
+std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::string& resourcePath) const
 {
     std::ifstream file(resourcePath);
     

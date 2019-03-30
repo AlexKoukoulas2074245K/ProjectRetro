@@ -66,7 +66,7 @@ void App::GameLoop()
 #endif        
 
         // Simulate world
-        mWorld.Update(dtAccumulator);
+        mWorld.Update(dt);
     }
 }
 

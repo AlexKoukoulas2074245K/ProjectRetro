@@ -33,6 +33,7 @@ class RenderingContextComponent final : public ecs::IComponent
 {
 public:
     SDL_GLContext mGLContext      = nullptr;
+    GLuint mVertexArrayObject     = 0;
     GLuint mIndexBufferObject     = 0;
     GLuint mVertexBufferObject    = 0;
     GLuint mTexCoordsBufferObject = 0;

@@ -13,6 +13,7 @@
 #include "DataFileLoader.h"
 #include "DataFileResource.h"
 #include "../common_utils/MessageBox.h"
+#include "../common_utils/StringUtils.h"
 
 #include <fstream>   // ifstream
 #include <streambuf> // istreambuf_iterator
@@ -25,7 +26,7 @@ void DataFileLoader::VInitialize()
 { 
 }
 
-std::unique_ptr<IResource> DataFileLoader::VCreateAndLoadResource(const std::string& resourcePath)
+std::unique_ptr<IResource> DataFileLoader::VCreateAndLoadResource(const std::string& resourcePath) const
 {
     std::ifstream file(resourcePath);
     

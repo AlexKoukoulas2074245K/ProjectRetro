@@ -51,9 +51,22 @@ ResourceLoadingService::~ResourceLoadingService()
 
 void ResourceLoadingService::InitializeResourceLoaders()
 {
-    mTextureLoader->VInitialize();
-    mDataFileLoader->VInitialize();     
-    mShaderLoader->VInitialize();
+    // No make unique due to constructing the loaders with their private constructors
+    // via friendship
+    mResourceLoaders.push_back(std::unique_ptr<TextureLoader>(new TextureLoader));
+    mResourceLoaders.push_back(std::unique_ptr<DataFileLoader>(new DataFileLoader));
+    mResourceLoaders.push_back(std::unique_ptr<ShaderLoader>(new ShaderLoader));
+    
+    // Map resource extensions to loaders
+    mResourceExtensionsToLoadersMap[StringId("png")]  = mResourceLoaders[0].get();
+    mResourceExtensionsToLoadersMap[StringId("json")] = mResourceLoaders[1].get();
+    mResourceExtensionsToLoadersMap[StringId("vs")]   = mResourceLoaders[2].get();
+    mResourceExtensionsToLoadersMap[StringId("fs")]   = mResourceLoaders[2].get();
+    
+    for (auto& resourceLoader: mResourceLoaders)
+    {
+        resourceLoader->VInitialize();
+    }
 }
 
 ResourceId ResourceLoadingService::LoadResource(const std::string& resourcePath)
@@ -81,6 +94,14 @@ void ResourceLoadingService::LoadResources(const std::vector<std::string>& resou
     }
 }
 
+bool ResourceLoadingService::HasLoadedResource(const std::string& resourcePath)
+{
+    const auto adjustedPath = AdjustResourcePath(resourcePath);
+    const auto resourceId = GetStringHash(adjustedPath);
+    
+    return mResourceMap.count(resourceId) != 0;
+}
+
 void ResourceLoadingService::UnloadResource(const std::string& resourcePath)
 {
     const auto adjustedPath = AdjustResourcePath(resourcePath);
@@ -98,12 +119,8 @@ void ResourceLoadingService::UnloadResource(const ResourceId resourceId)
 ////////////////////////////////////////////////////////////////////////////////////
 
 ResourceLoadingService::ResourceLoadingService()
-    : mDataFileLoader(new DataFileLoader)
-    , mTextureLoader(new TextureLoader)
-    , mShaderLoader(new ShaderLoader)
-
 {
-    MapResourceExtensionsToLoaders();
+    InitializeResourceLoaders();
 }
 
 IResource& ResourceLoadingService::GetResource(const std::string& resourcePath)
@@ -120,25 +137,20 @@ IResource& ResourceLoadingService::GetResource(const ResourceId resourceId)
         return *mResourceMap[resourceId];
     }
 
-    Log(LogType::ERROR, "Resource not loaded when requested. Aborting");
-    assert(false);
+    assert(false && "Resource could not be found");
     return *mResourceMap[resourceId];
-}
-
-void ResourceLoadingService::MapResourceExtensionsToLoaders()
-{
-    mResourceExtensionsToLoadersMap["png"]  = mTextureLoader.get();
-    mResourceExtensionsToLoadersMap["json"] = mDataFileLoader.get();
-    mResourceExtensionsToLoadersMap["vs"]   = mShaderLoader.get();
-    mResourceExtensionsToLoadersMap["fs"]   = mShaderLoader.get();
 }
 
 void ResourceLoadingService::LoadResourceInternal(const std::string& resourcePath, const ResourceId resourceId)
 {
+    // Get resource extension
     const auto resourceFileExtension = GetFileExtension(resourcePath);
     
-    auto loadedResource = mResourceExtensionsToLoadersMap[resourceFileExtension]->VCreateAndLoadResource(RES_ROOT + resourcePath);
+    // Pick appropriate loader
+    auto& selectedLoader = mResourceExtensionsToLoadersMap.at(StringId(GetFileExtension(resourcePath)));
+    auto loadedResource = selectedLoader->VCreateAndLoadResource(RES_ROOT + resourcePath);
     
+    assert(loadedResource != nullptr && "No loader was able to load resource");
     mResourceMap[resourceId] = std::move(loadedResource);
 }
 
