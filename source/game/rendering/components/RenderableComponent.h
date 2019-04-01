@@ -32,10 +32,9 @@ using ResourceId = unsigned int;
 class RenderableComponent final: public ecs::IComponent
 {
 public:
-    ResourceId mMeshResourceId    = 0;
-    ResourceId mTextureResourceId = 0;
     StringId mShaderNameId        = StringId();
-    
+    ResourceId mMeshResourceId    = 0;
+    ResourceId mTextureResourceId = 0;        
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -88,11 +88,11 @@ void App::GameLoop()
         framesAccumulator++;
         dtAccumulator += dt;
         
-        auto& transformComponent1 = mWorld.GetComponent<TransformComponent>(dummyEntity);
-        auto& transformComponent2 = mWorld.GetComponent<TransformComponent>(dummyEntity2);
+        auto& transformComponent11 = mWorld.GetComponent<TransformComponent>(dummyEntity);
+        auto& transformComponent22 = mWorld.GetComponent<TransformComponent>(dummyEntity2);
         
-        transformComponent1.mPosition.z -= 0.1f * dt;
-        transformComponent2.mPosition.z -= 0.1f * dt;
+        transformComponent11.mPosition.z -= 1.0f * dt;
+        transformComponent22.mPosition.z -= 1.0f * dt;
 #ifndef NDEBUG
         if (dtAccumulator > 1.0f)
         {

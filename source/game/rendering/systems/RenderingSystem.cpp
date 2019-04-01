@@ -116,6 +116,10 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    
+    // MS
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
     // Get Current Display Mode Resolution
     SDL_DisplayMode displayMode;
