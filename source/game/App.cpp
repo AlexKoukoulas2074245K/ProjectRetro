@@ -58,8 +58,8 @@ void App::GameLoop()
     
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mShaderNameId = StringId("basic");
-    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
-    renderableComponent->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/stdcube.obj");
+    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
+    renderableComponent->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj");
     
     mWorld.AddComponent<TransformComponent>(dummyEntity, std::move(transformComponent));
     mWorld.AddComponent<RenderableComponent>(dummyEntity, std::move(renderableComponent));
@@ -71,8 +71,8 @@ void App::GameLoop()
     
     auto renderableComponent2 = std::make_unique<RenderableComponent>();
     renderableComponent2->mShaderNameId = StringId("basic");
-    renderableComponent2->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
-    renderableComponent2->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/stdcube.obj");
+    renderableComponent2->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
+    renderableComponent2->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.125000,1.000000-0.000000,1.000000-0.000000,0.984375-0.125000,0.984375].obj");
     
     mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
     mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
@@ -87,7 +87,12 @@ void App::GameLoop()
 
         framesAccumulator++;
         dtAccumulator += dt;
-
+        
+        auto& transformComponent1 = mWorld.GetComponent<TransformComponent>(dummyEntity);
+        auto& transformComponent2 = mWorld.GetComponent<TransformComponent>(dummyEntity2);
+        
+        transformComponent1.mPosition.z -= 0.1f * dt;
+        transformComponent2.mPosition.z -= 0.1f * dt;
 #ifndef NDEBUG
         if (dtAccumulator > 1.0f)
         {

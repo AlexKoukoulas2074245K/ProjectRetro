@@ -33,6 +33,7 @@ public:
 private:
     MeshLoader() = default;
     
+    std::string ExtractAndRemoveInjectedTexCoordsIfAny(std::string& path) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

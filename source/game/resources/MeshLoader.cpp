@@ -12,6 +12,7 @@
 
 #include "MeshLoader.h"
 #include "MeshResource.h"
+#include "../common_utils/StringUtils.h"
 #include "../rendering/opengl/Context.h"
 
 #include <cassert>
@@ -31,6 +32,8 @@ void MeshLoader::VInitialize()
 
 std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string& path) const
 {
+    auto trimmedPath = path;
+    const auto injectedTexCoordsString = ExtractAndRemoveInjectedTexCoordsIfAny(trimmedPath);
     std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
     
     std::vector<glm::vec3> temp_vertices;
@@ -43,7 +46,7 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
     
     std::vector<unsigned short> final_indices;
     
-    FILE * file = std::fopen(path.c_str(), "r");
+    FILE * file = std::fopen(trimmedPath.c_str(), "r");
     assert(file != nullptr && "Model file not found");
     
     while(1)
@@ -101,6 +104,17 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
             // Probably a comment, eat up the rest of the line
             char stupidBuffer[1000];
             fgets(stupidBuffer, 1000, file);
+        }
+    }
+    
+    if (injectedTexCoordsString.length() > 0)
+    {
+        temp_uvs.clear();
+        const auto injectedCoordPairs = StringSplit(injectedTexCoordsString, '-');
+        for (const auto injectedCoordPairString: injectedCoordPairs)
+        {
+            const auto injectedCoordPairSplitByComma = StringSplit(injectedCoordPairString, ',');
+            temp_uvs.push_back(glm::vec2(std::stof(injectedCoordPairSplitByComma[0]), std::stof(injectedCoordPairSplitByComma[1])));
         }
     }
     
@@ -163,6 +177,38 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
     GL_CHECK(glBindVertexArray(0));
     
     return std::unique_ptr<MeshResource>(new MeshResource(vertexArrayObject, final_indices.size()));
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+std::string MeshLoader::ExtractAndRemoveInjectedTexCoordsIfAny(std::string& path) const
+{
+    std::string injectedTexCoordString;
+    std::string cleanPath;
+    
+    auto recordingInjectedTexCoords = false;
+    
+    for (auto i = 0U; i < path.length(); ++i)
+    {
+        const auto c = path[i];
+        if (c == '[' || c == ']')
+        {
+            recordingInjectedTexCoords = !recordingInjectedTexCoords;
+        }
+        else if (recordingInjectedTexCoords)
+        {
+            injectedTexCoordString += c;
+        }
+        else
+        {
+            cleanPath += c;
+        }
+    }
+    
+    path = cleanPath;
+    return injectedTexCoordString;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
