@@ -21,7 +21,7 @@
 
 #include "MeshLoader.h"
 #include "MeshResource.h"
-#include "../common_utils/StringUtils.h"
+#include "../common/utils/StringUtils.h"
 #include "../rendering/opengl/Context.h"
 
 #include <cassert>

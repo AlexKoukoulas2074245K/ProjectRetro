@@ -10,9 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "ShaderLoader.h"
-#include "../common_utils/Logging.h"
-#include "../common_utils/MessageBox.h"
-#include "../common_utils/StringUtils.h"
+#include "../common/utils/Logging.h"
+#include "../common/utils/MessageBox.h"
+#include "../common/utils/StringUtils.h"
 #include "../resources/ShaderResource.h"
 #include "../rendering/opengl/Context.h"
 
@@ -129,7 +129,7 @@ std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::strin
     GL_CHECK(glDeleteShader(fragmentShaderId));
     
     const auto uniformNamesToLocations = GetUniformNamesToLocationsMap(programId, vertexShaderFileContents, fragmentShaderFileContents);
-    return std::make_unique<ShaderResource>(programId, uniformNamesToLocations);
+    return std::make_unique<ShaderResource>(uniformNamesToLocations, programId);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

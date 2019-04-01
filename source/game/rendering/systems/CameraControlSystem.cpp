@@ -10,6 +10,41 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "CameraControlSystem.h"
+#include "../components/CameraComponent.h"
+#include "../../common/components/TransformComponent.h"
+#include "../../components/PlayerTagComponent.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const float CameraControlSystem::CAMERA_Z_DISTANCE_FROM_PLAYER = 5.0f;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+CameraControlSystem::CameraControlSystem(ecs::World& world)
+    : BaseSystem(world)
+{
+    CalculateAndSetComponentUsageMask<PlayerTagComponent>();
+}
+
+void CameraControlSystem::VUpdate(const float)
+{    
+    for (const auto& entityId : mWorld.GetActiveEntities())
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            const auto& focusedTransformComponent = mWorld.GetComponent<TransformComponent>(entityId);
+            auto& cameraComponent = mWorld.GetSingletonComponent<CameraComponent>();
+            
+            cameraComponent.mFocusPosition = focusedTransformComponent.mPosition;
+            cameraComponent.mPosition.x = focusedTransformComponent.mPosition.x;
+            cameraComponent.mPosition.z = focusedTransformComponent.mPosition.z - CAMERA_Z_DISTANCE_FROM_PLAYER;
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

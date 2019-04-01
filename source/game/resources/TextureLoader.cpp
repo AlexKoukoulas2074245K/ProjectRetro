@@ -12,8 +12,8 @@
 
 #include "TextureLoader.h"
 #include "TextureResource.h"
-#include "../common_utils/Logging.h"
-#include "../common_utils/MessageBox.h"
+#include "../common/utils/Logging.h"
+#include "../common/utils/MessageBox.h"
 #include "../rendering/opengl/Context.h"
 
 #include <fstream>     // ifstream

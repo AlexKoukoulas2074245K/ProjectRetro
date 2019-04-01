@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "common_utils/TypeTraits.h"
+#include "common/utils/TypeTraits.h"
 
 #include <bitset>        
 #include <cassert>
@@ -108,9 +108,22 @@ protected:
     // based on their respective component usage masks
     bool ShouldProcessEntity(EntityId) const;
 
+    template<class FirstUtilizedComponentType>
+    void CalculateAndSetComponentUsageMask()
+    {
+        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>();
+    }
+
+    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
+    void CalculateAndSetComponentUsageMask()
+    {
+        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>() |
+            mWorld.CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
+    }
+
     World& mWorld;
 
-protected:
+private:
     ComponentMask mComponentUsageMask;    
 };
 

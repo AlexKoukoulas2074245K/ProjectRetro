@@ -10,6 +10,39 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "AnimationSystem.h"
+#include "../components/AnimationComponent.h"
+#include "../components/RenderableComponent.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+AnimationSystem::AnimationSystem(ecs::World& world)
+    : BaseSystem(world)
+{
+    CalculateAndSetComponentUsageMask<AnimationComponent, RenderableComponent>();
+}
+
+void AnimationSystem::VUpdate(const float dt)
+{
+    for (const auto& entityId : mWorld.GetActiveEntities())
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            auto& animationComponent = mWorld.GetComponent<AnimationComponent>(entityId);
+
+            animationComponent.mAnimationTimer->Update(dt);
+
+            if (animationComponent.mAnimationTimer->HasTicked())
+            {
+                animationComponent.mAnimationTimer->Reset();
+
+                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+                renderableComponent.mActiveMeshIndex = (renderableComponent.mActiveMeshIndex + 1) % renderableComponent.mMeshes.size();
+            }                        
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

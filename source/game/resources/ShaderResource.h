@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "IResource.h"
-#include "../common_utils/StringUtils.h"
+#include "../common/utils/StringUtils.h"
 
 #include <string>
 #include <unordered_map>
@@ -37,7 +37,7 @@ class ShaderResource final: public IResource
 {
 public:
     ShaderResource() = default;
-    ShaderResource(const GLuint programId, const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations);
+    ShaderResource(const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations, const GLuint programId);
     ShaderResource& operator = (const ShaderResource&);
     ShaderResource(const ShaderResource&);
     
@@ -48,9 +48,8 @@ private:
     void CopyConstruction(const ShaderResource&);
     
 private:
-    GLuint mProgramId;
     std::unordered_map<StringId, GLuint, StringIdHasher> mShaderUniformNamesToLocations;
-
+    GLuint mProgramId;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

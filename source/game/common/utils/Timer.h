@@ -25,27 +25,15 @@
 
 class Timer final
 {
-public:
-    using TimerTickCallback = std::function<void()>;
-    
-    Timer(const float period, TimerTickCallback timerTickCallback)
+public:    
+    Timer(const float period)
         : mPeriod(period)
-        , mTimerTickCallback(timerTickCallback)
-        , mIsRunning(true)
         , mTimeCounter(mPeriod)
+        , mIsRunning(true)
+        , mHasTicked(false)
     {
     }
-    
-    inline float GetTimerValue()
-    {
-        return mTimeCounter;
-    }
-    
-    inline void SetTimerTickCallback(const TimerTickCallback timerTickCallback)
-    {
-        mTimerTickCallback = timerTickCallback;
-    }
-    
+
     inline void Update(const float dt)
     {
         if (!mIsRunning)
@@ -56,11 +44,21 @@ public:
         mTimeCounter -= dt;
         if (mTimeCounter <= 0.0f)
         {
-            mTimeCounter = mPeriod;
-            mTimerTickCallback();
+            mHasTicked = true;
         }
     }
     
+
+    inline float GetTimerValue() const
+    {
+        return mTimeCounter;
+    }
+
+    inline bool HasTicked() const
+    {
+        return mHasTicked;
+    }
+
     inline void Pause()
     {
         mIsRunning = false;
@@ -74,15 +72,14 @@ public:
     inline void Reset()
     {
         mTimeCounter = mPeriod;
+        mHasTicked   = false;
     }
     
 private:
     const float mPeriod;
-
-    TimerTickCallback mTimerTickCallback;
-    bool              mIsRunning;
-    float             mTimeCounter;
-
+    float       mTimeCounter;
+    bool        mHasTicked;
+    bool        mIsRunning;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

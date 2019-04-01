@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "IResourceLoader.h"
-#include "../common_utils/StringUtils.h"
+#include "../common/utils/StringUtils.h"
 
 #include <memory>
 #include <string>

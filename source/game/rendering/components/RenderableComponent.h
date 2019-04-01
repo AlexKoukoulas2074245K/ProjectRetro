@@ -17,7 +17,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
-#include "../../common_utils/StringUtils.h"
+#include "../../common/utils/StringUtils.h"
+
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -32,8 +34,9 @@ using ResourceId = unsigned int;
 class RenderableComponent final: public ecs::IComponent
 {
 public:
-    StringId mShaderNameId        = StringId();
-    ResourceId mMeshResourceId    = 0;
+    std::vector<ResourceId> mMeshes;
+    StringId mShaderNameId        = StringId();    
+    size_t mActiveMeshIndex       = 0;
     ResourceId mTextureResourceId = 0;        
 };
 

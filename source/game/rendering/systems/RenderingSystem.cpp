@@ -10,12 +10,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "RenderingSystem.h"
-#include "../../common_components/TransformComponent.h"
-#include "../../common_utils/FileUtils.h"
-#include "../../common_utils/Logging.h"
-#include "../../common_utils/MathUtils.h"
-#include "../../common_utils/MessageBox.h"
-#include "../../common_utils/StringUtils.h"
+#include "../../common/components/TransformComponent.h"
+#include "../../common/utils/FileUtils.h"
+#include "../../common/utils/Logging.h"
+#include "../../common/utils/MathUtils.h"
+#include "../../common/utils/MessageBox.h"
+#include "../../common/utils/StringUtils.h"
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
@@ -29,7 +29,7 @@
 #include <cstdlib> // exit
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <SDL.h>   // Many SDL init related methods
+#include <SDL.h> 
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ RenderingSystem::RenderingSystem(ecs::World& world)
     InitializeRenderingWindowAndContext();
     InitializeCamera();
     CompileAndLoadShaders();
-    mComponentUsageMask = mWorld.CalculateComponentUsageMask<RenderableComponent, TransformComponent>();
+    CalculateAndSetComponentUsageMask<RenderableComponent, TransformComponent>();
 }
 
 void RenderingSystem::VUpdate(const float)
@@ -51,7 +51,7 @@ void RenderingSystem::VUpdate(const float)
     const auto& cameraComponent      = mWorld.GetSingletonComponent<CameraComponent>();
     const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
     
-    // Calculate constant camera view matrix
+    // Calculate render-constant camera view matrix
     const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
     
     // Execute first pass rendering
@@ -67,7 +67,8 @@ void RenderingSystem::VUpdate(const float)
             const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
             const auto& currentShader       = shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
             const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
-            const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(renderableComponent.mMeshResourceId);
+            const auto& currentMeshes       = renderableComponent.mMeshes;
+            const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
             
             // Use shader
             GL_CHECK(glUseProgram(currentShader.GetProgramId()));

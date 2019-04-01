@@ -12,8 +12,8 @@
 
 #include "DataFileLoader.h"
 #include "DataFileResource.h"
-#include "../common_utils/MessageBox.h"
-#include "../common_utils/StringUtils.h"
+#include "../common/utils/MessageBox.h"
+#include "../common/utils/StringUtils.h"
 
 #include <fstream>   // ifstream
 #include <streambuf> // istreambuf_iterator

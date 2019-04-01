@@ -10,9 +10,15 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "App.h"
-#include "common_components/TransformComponent.h"
+#include "common/components/TransformComponent.h"
+#include "components/PlayerTagComponent.h"
+#include "input/components/InputStateComponent.h"
+#include "input/systems/RawInputHandlingSystem.h"
+#include "rendering/components/AnimationComponent.h"
 #include "rendering/components/RenderableComponent.h"
 #include "rendering/components/WindowComponent.h"
+#include "rendering/systems/AnimationSystem.h"
+#include "rendering/systems/CameraControlSystem.h"
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/ResourceLoadingService.h"
 
@@ -36,12 +42,17 @@ void App::Run()
 
 void App::RegisterCommonComponents()
 {
+    mWorld.RegisterComponentType<AnimationComponent>();
+    mWorld.RegisterComponentType<PlayerTagComponent>();
     mWorld.RegisterComponentType<RenderableComponent>();
     mWorld.RegisterComponentType<TransformComponent>();
 }
 
 void App::InitializeSystems()
 {
+    mWorld.SetSystem<RawInputHandlingSystem>(std::make_unique<RawInputHandlingSystem>(mWorld));
+    mWorld.SetSystem<AnimationComponent>(std::make_unique<AnimationSystem>(mWorld));
+    mWorld.SetSystem<CameraControlSystem>(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.SetSystem<RenderingSystem>(std::make_unique<RenderingSystem>(mWorld));
 }
 
@@ -59,7 +70,7 @@ void App::GameLoop()
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mShaderNameId = StringId("basic");
     renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    renderableComponent->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj");
+    renderableComponent->mMeshes.push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj"));
     
     mWorld.AddComponent<TransformComponent>(dummyEntity, std::move(transformComponent));
     mWorld.AddComponent<RenderableComponent>(dummyEntity, std::move(renderableComponent));
@@ -72,10 +83,16 @@ void App::GameLoop()
     auto renderableComponent2 = std::make_unique<RenderableComponent>();
     renderableComponent2->mShaderNameId = StringId("basic");
     renderableComponent2->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    renderableComponent2->mMeshResourceId = ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.125000,1.000000-0.000000,1.000000-0.000000,0.984375-0.125000,0.984375].obj");
+    renderableComponent2->mMeshes.push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.125000,1.000000-0.000000,1.000000-0.000000,0.984375-0.125000,0.984375].obj"));
+    renderableComponent2->mMeshes.push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.500000,1.000000-0.3750000,1.000000-0.375000,0.984375-0.500000,0.984375].obj"));
     
-    mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
+    auto animationComponent = std::make_unique<AnimationComponent>();
+    animationComponent->mAnimationTimer = std::make_unique<Timer>(0.5f);
+
+    mWorld.AddComponent<AnimationComponent>(dummyEntity2, std::move(animationComponent));    
+    mWorld.AddComponent<PlayerTagComponent>(dummyEntity2, std::make_unique<PlayerTagComponent>());
     mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
+    mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
     
     while (!AppShouldQuit())
     {
@@ -88,11 +105,26 @@ void App::GameLoop()
         framesAccumulator++;
         dtAccumulator += dt;
         
-        auto& transformComponent11 = mWorld.GetComponent<TransformComponent>(dummyEntity);
+        const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateComponent>();
         auto& transformComponent22 = mWorld.GetComponent<TransformComponent>(dummyEntity2);
-        
-        transformComponent11.mPosition.z -= 1.0f * dt;
-        transformComponent22.mPosition.z -= 1.0f * dt;
+               
+        if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::PRESSED)
+        {
+            transformComponent22.mPosition.x -= 2.0f * dt;
+        }
+        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::PRESSED)
+        {
+            transformComponent22.mPosition.x += 2.0f * dt;
+        }
+        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::PRESSED)
+        {
+            transformComponent22.mPosition.z += 2.0f * dt;
+        }
+        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
+        {
+            transformComponent22.mPosition.z -= 2.0f * dt;
+        }
+
 #ifndef NDEBUG
         if (dtAccumulator > 1.0f)
         {

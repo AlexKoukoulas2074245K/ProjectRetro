@@ -16,11 +16,11 @@
 #include "MeshLoader.h"
 #include "ShaderLoader.h"
 #include "TextureLoader.h"
-#include "../common_utils/FileUtils.h"
-#include "../common_utils/Logging.h"
-#include "../common_utils/MessageBox.h"
-#include "../common_utils/StringUtils.h"
-#include "../common_utils/TypeTraits.h"
+#include "../common/utils/FileUtils.h"
+#include "../common/utils/Logging.h"
+#include "../common/utils/MessageBox.h"
+#include "../common/utils/StringUtils.h"
+#include "../common/utils/TypeTraits.h"
 
 #include <cassert>
 
