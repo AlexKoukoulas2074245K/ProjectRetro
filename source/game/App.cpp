@@ -11,7 +11,7 @@
 
 #include "App.h"
 #include "common/components/TransformComponent.h"
-#include "components/PlayerTagComponent.h"
+#include "common/components/PlayerTagComponent.h"
 #include "input/components/InputStateComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationComponent.h"

@@ -12,7 +12,7 @@
 #include "CameraControlSystem.h"
 #include "../components/CameraComponent.h"
 #include "../../common/components/TransformComponent.h"
-#include "../../components/PlayerTagComponent.h"
+#include "../../common/components/PlayerTagComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
