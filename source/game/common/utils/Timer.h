@@ -29,8 +29,9 @@ public:
     Timer(const float period)
         : mPeriod(period)
         , mTimeCounter(mPeriod)
-        , mIsRunning(true)
         , mHasTicked(false)
+        , mIsRunning(true)
+    
     {
     }
 
@@ -48,7 +49,6 @@ public:
         }
     }
     
-
     inline float GetTimerValue() const
     {
         return mTimeCounter;

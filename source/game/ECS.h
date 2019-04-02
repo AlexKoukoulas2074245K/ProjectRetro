@@ -92,45 +92,6 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class BaseSystem
-{
-public:
-    BaseSystem(World&);
-
-    virtual ~BaseSystem() = default;
-    BaseSystem(const BaseSystem&) = delete;
-    const BaseSystem& operator = (const BaseSystem&) = delete;
-    
-    virtual void VUpdate(const float dt) = 0;
-    
-protected:          
-    // Determines whether the given entity (entityId) should be processed by this system
-    // based on their respective component usage masks
-    bool ShouldProcessEntity(EntityId) const;
-
-    template<class FirstUtilizedComponentType>
-    void CalculateAndSetComponentUsageMask()
-    {
-        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>();
-    }
-
-    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
-    void CalculateAndSetComponentUsageMask()
-    {
-        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>() |
-            mWorld.CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
-    }
-
-    World& mWorld;
-
-private:
-    ComponentMask mComponentUsageMask;    
-};
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
 class World final
 {
 public:
@@ -380,7 +341,46 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
+    
+class BaseSystem
+{
+public:
+    BaseSystem(World&);
+        
+    virtual ~BaseSystem() = default;
+    BaseSystem(const BaseSystem&) = delete;
+    const BaseSystem& operator = (const BaseSystem&) = delete;
+        
+    virtual void VUpdate(const float dt) = 0;
+        
+protected:
+    // Determines whether the given entity (entityId) should be processed by this system
+    // based on their respective component usage masks
+    bool ShouldProcessEntity(EntityId) const;
+        
+    template<class FirstUtilizedComponentType>
+    void CalculateAndSetComponentUsageMask()
+    {
+        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>();
+    }
+        
+    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
+    void CalculateAndSetComponentUsageMask()
+    {
+        mComponentUsageMask = mWorld.CalculateComponentUsageMask<FirstUtilizedComponentType>() |
+        mWorld.CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
+    }
+    
+    World& mWorld;
+        
+    private:
+        ComponentMask mComponentUsageMask;
+    };
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 
 #endif /* ECS_h */
