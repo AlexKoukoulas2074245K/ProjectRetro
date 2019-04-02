@@ -373,9 +373,10 @@ protected:
     
     World& mWorld;
         
-    private:
-        ComponentMask mComponentUsageMask;
-    };
+private:
+    ComponentMask mComponentUsageMask;
+};
+
 }
 
 

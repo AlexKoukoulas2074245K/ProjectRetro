@@ -62,12 +62,13 @@ void App::GameLoop()
     float dtAccumulator         = 0.0f;
     long long framesAccumulator = 0;
     
-    const auto dummyEntity2 = mWorld.CreateEntity();
-    const auto dummyEntity = mWorld.CreateEntity();
     const auto otherDummyEntity = mWorld.CreateEntity();
+    const auto dummyEntity = mWorld.CreateEntity();
+    const auto dummyEntity2 = mWorld.CreateEntity();
     
     auto transformComponent = std::make_unique<TransformComponent>();
     transformComponent->mPosition.x = -2.0f;
+    transformComponent->mPosition.z = -2.0f;
     
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mShaderNameId = StringId("basic");
@@ -78,15 +79,11 @@ void App::GameLoop()
     mWorld.AddComponent<RenderableComponent>(dummyEntity, std::move(renderableComponent));
     
     auto othertransformComponent = std::make_unique<TransformComponent>();
-    othertransformComponent->mPosition.x = -1.5f;
-    othertransformComponent->mRotation.x = 90.0f;
-    othertransformComponent->mScale.x = 10.0f;
-    othertransformComponent->mScale.y = 10.0f;
-    othertransformComponent->mScale.z = 10.0f;
-    
+    othertransformComponent->mPosition.x = -1.5f;    
+
     auto otherrenderableComponent = std::make_unique<RenderableComponent>();
     otherrenderableComponent->mShaderNameId = StringId("basic");
-    otherrenderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/wood2.png");
+    otherrenderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
     otherrenderableComponent->mMeshes.push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj"));
     
     
@@ -95,6 +92,7 @@ void App::GameLoop()
     
     auto transformComponent2 = std::make_unique<TransformComponent>();
     transformComponent2->mPosition.x = 2.0f;
+    transformComponent2->mPosition.x = -1.0f;
     
     auto renderableComponent2 = std::make_unique<RenderableComponent>();
     renderableComponent2->mShaderNameId = StringId("basic");

@@ -16,6 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../../common/utils/StringUtils.h"
 #include "../../ECS.h"
 
 #include <set>
@@ -38,6 +39,12 @@ private:
     void CompileAndLoadShaders();
     
     std::set<std::string> GetAndFilterShaderNames() const;
+
+private:
+    static const StringId WORLD_MARIX_UNIFORM_NAME;
+    static const StringId VIEW_MARIX_UNIFORM_NAME;
+    static const StringId PROJECTION_MARIX_UNIFORM_NAME;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

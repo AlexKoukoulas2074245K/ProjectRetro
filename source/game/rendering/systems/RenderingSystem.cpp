@@ -15,7 +15,6 @@
 #include "../../common/utils/Logging.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/MessageBox.h"
-#include "../../common/utils/StringUtils.h"
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
@@ -26,10 +25,20 @@
 #include "../components/WindowComponent.h"
 #include "../opengl/Context.h"
 
-#include <cstdlib> // exit
+#include <algorithm> // sort
+#include <cstdlib>   // exit
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL.h> 
+#include <vector>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME      = StringId("world");
+const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME       = StringId("view");
+const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME = StringId("proj");
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -46,54 +55,70 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 
 void RenderingSystem::VUpdate(const float)
 {
-    // Get common rendering singleton components
-    const auto& windowComponent      = mWorld.GetSingletonComponent<WindowComponent>();
-    const auto& cameraComponent      = mWorld.GetSingletonComponent<CameraComponent>();
-    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
-    
-    // Calculate render-constant camera view matrix
-    const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
-    
-    // Execute first pass rendering
-    GL_CHECK(glClearColor(1.0f, 1.0f, 0.4f, 1.0f));
-    GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-    
+    // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
+    std::vector<ecs::EntityId> mEntitiesToProcess(activeEntities.size(), 0);
     for (const auto& entityId: activeEntities)
     {
         if (ShouldProcessEntity(entityId))
         {
-            const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-            const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
-            const auto& currentShader       = shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
-            const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
-            const auto& currentMeshes       = renderableComponent.mMeshes;
-            const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
-            
-            // Use shader
-            GL_CHECK(glUseProgram(currentShader.GetProgramId()));
-            
-            // Calculate world matrix for entity
-            glm::mat4 world(1.0f);
-            world = glm::translate(world, transformComponent.mPosition);
-            world = glm::rotate(world, transformComponent.mRotation.x, X_AXIS);
-            world = glm::rotate(world, transformComponent.mRotation.y, Y_AXIS);
-            world = glm::rotate(world, transformComponent.mRotation.z, Z_AXIS);
-            world = glm::scale(world, transformComponent.mScale);
-            
-            // Set rendering uniforms
-            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("world")), 1, GL_FALSE, (GLfloat*)&world));
-            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("view")), 1, GL_FALSE, (GLfloat*)&view));
-            GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(StringId("proj")), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
-            GL_CHECK(glBindTexture(GL_TEXTURE_2D, currentTexture.GetGLTextureId()));
-            
-            // Perform indexed draw
-            GL_CHECK(glBindVertexArray(currentMesh.GetVertexArrayObject()));
-            GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh.GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
-            
+            mEntitiesToProcess.push_back(entityId);
         }
     }
-    
+       
+    // Sort entities based on their depth order to correct transparency
+    std::sort(mEntitiesToProcess.begin(), mEntitiesToProcess.end(), [this](const ecs::EntityId& lhs, const ecs::EntityId& rhs) 
+    {
+        const auto& lhsTransformComponent = mWorld.GetComponent<TransformComponent>(lhs);
+        const auto& rhsTransformComponent = mWorld.GetComponent<TransformComponent>(rhs);
+
+        return lhsTransformComponent.mPosition.z > rhsTransformComponent.mPosition.z;
+    });
+
+    // Get common rendering singleton components
+    const auto& windowComponent      = mWorld.GetSingletonComponent<WindowComponent>();
+    const auto& cameraComponent      = mWorld.GetSingletonComponent<CameraComponent>();
+    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
+
+    // Calculate render-constant camera view matrix
+    const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
+
+    // Clear buffers
+    GL_CHECK(glClearColor(1.0f, 1.0f, 0.4f, 1.0f));
+    GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+    // Execute render pass
+    for (const auto& entityId : mEntitiesToProcess)
+    {
+        const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
+        const auto& currentShader       = shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
+        const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+        const auto& currentMeshes       = renderableComponent.mMeshes;
+        const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
+
+        // Use shader
+        GL_CHECK(glUseProgram(currentShader.GetProgramId()));
+
+        // Calculate world matrix for entity
+        glm::mat4 world(1.0f);
+        world = glm::translate(world, transformComponent.mPosition);
+        world = glm::rotate(world, transformComponent.mRotation.x, X_AXIS);
+        world = glm::rotate(world, transformComponent.mRotation.y, Y_AXIS);
+        world = glm::rotate(world, transformComponent.mRotation.z, Z_AXIS);
+        world = glm::scale(world, transformComponent.mScale);
+
+        // Set rendering uniforms
+        GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
+        GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&view));
+        GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
+        GL_CHECK(glBindTexture(GL_TEXTURE_2D, currentTexture.GetGLTextureId()));
+
+        // Perform indexed draw
+        GL_CHECK(glBindVertexArray(currentMesh.GetVertexArrayObject()));
+        GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh.GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
+    }
+
     // Swap window buffers
     SDL_GL_SwapWindow(windowComponent.mWindowHandle);
 }
@@ -178,7 +203,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     GL_CHECK(glEnable(GL_BLEND));
     GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     renderingContextComponent->mBlending = true;
-
+    
     // Configure Depth
     GL_CHECK(glEnable(GL_DEPTH_TEST));
     GL_CHECK(glDepthFunc(GL_LESS));
