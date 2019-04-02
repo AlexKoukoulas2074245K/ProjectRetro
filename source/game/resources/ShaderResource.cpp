@@ -16,7 +16,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ShaderResource::ShaderResource(const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations, const GLuint programId)
+ShaderResource::ShaderResource
+(
+    const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations,
+    const GLuint programId
+)
     : mShaderUniformNamesToLocations(uniformNamesToLocations) 
     , mProgramId(programId)
 {

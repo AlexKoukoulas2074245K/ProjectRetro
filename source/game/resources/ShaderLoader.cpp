@@ -158,8 +158,12 @@ std::string ShaderLoader::ReadFileContents(const std::string& filePath) const
     return contents;
 }
 
-std::unordered_map<StringId, GLuint, StringIdHasher> 
-ShaderLoader::GetUniformNamesToLocationsMap(const GLuint programId, const std::string& vertexShaderFileContents, const std::string& fragmentShaderFileContents) const
+std::unordered_map<StringId, GLuint, StringIdHasher> ShaderLoader::GetUniformNamesToLocationsMap
+(
+    const GLuint programId,
+    const std::string& vertexShaderFileContents,
+    const std::string& fragmentShaderFileContents
+) const
 {
     std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocationsMap;
     

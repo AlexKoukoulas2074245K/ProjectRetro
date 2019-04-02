@@ -37,7 +37,11 @@ class ShaderResource final: public IResource
 {
 public:
     ShaderResource() = default;
-    ShaderResource(const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations, const GLuint programId);
+    ShaderResource
+    (
+        const std::unordered_map<StringId, GLuint, StringIdHasher> uniformNamesToLocations,
+        const GLuint programId
+    );
     ShaderResource& operator = (const ShaderResource&);
     ShaderResource(const ShaderResource&);
     

@@ -225,7 +225,14 @@ void RenderingSystem::InitializeCamera()
     
     cameraComponent->mPosition         = glm::vec3(0.0f, 5.0f, -5.0f);
     cameraComponent->mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
-    cameraComponent->mProjectionMatrix = glm::perspectiveFovLH(45.0f, windowComponent.mRenderableWidth, windowComponent.mRenderableHeight, 0.001f, 1000.0f);
+    cameraComponent->mProjectionMatrix = glm::perspectiveFovLH
+    (
+        cameraComponent->mFieldOfView,
+        windowComponent.mRenderableWidth,
+        windowComponent.mRenderableHeight,
+        cameraComponent->mZNear,
+        cameraComponent->mZFar
+     );
     
     mWorld.SetSingletonComponent<CameraComponent>(std::move(cameraComponent));
 }

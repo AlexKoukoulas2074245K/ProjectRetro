@@ -48,10 +48,12 @@ private:
     ShaderLoader() = default;
     
     std::string ReadFileContents(const std::string& filePath) const;
-    std::unordered_map<StringId, GLuint, StringIdHasher> 
-    GetUniformNamesToLocationsMap(const GLuint programId,
-                                  const std::string& vertexShaderFileContents,
-                                  const std::string& fragmentShaderFileContents) const;
+    std::unordered_map<StringId, GLuint, StringIdHasher> GetUniformNamesToLocationsMap
+    (
+        const GLuint programId,
+        const std::string& vertexShaderFileContents,
+        const std::string& fragmentShaderFileContents
+    ) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
