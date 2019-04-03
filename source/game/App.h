@@ -27,8 +27,7 @@ class App final
 public:
     void Run();
     
-private:
-    void RegisterCommonComponents();
+private:    
     void InitializeSystems();
     void GameLoop();
     bool AppShouldQuit();

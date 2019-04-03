@@ -190,21 +190,6 @@ public:
         
         mEntityComponentStore.at(entityId).erase(componentTypeId);
     }
-
-    // Registers the given component type (ComponentType) to the world
-    // and computes its mask. All components that are used as data containers 
-    // for entities, must be registered here first before used
-    template<class ComponentType>
-    inline void RegisterComponentType()
-    {
-        static_assert(std::is_base_of<IComponent, ComponentType>::value,
-            "ComponentType does not derive from IComponent");
-        assert(mComponentMasks.size() != MAX_COMPONENTS &&
-            "Exceeded maximum number of different component types");
-        
-        const auto componentTypeId = GetTypeHash<ComponentType>();
-        mComponentMasks[componentTypeId] = 1LL << mComponentMasks.size();
-    }
     
     template<class ComponentType>
     inline ComponentType& GetSingletonComponent()
@@ -272,28 +257,38 @@ public:
         mSystems.erase(systemTypeId);
     }
 
-    // Calculates the bit mask of the given template argument (FirstUtilizedComponentType)
+    // Calculates the bit mask of the given template argument (FirstUtilizedComponentType).
+    // Registers the given component type if not already registered in the world
     template<class FirstUtilizedComponentType>
-    inline ComponentMask CalculateComponentUsageMask() const
+    inline ComponentMask CalculateComponentUsageMask()
     {
         static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
             "Attempted to extract mask from class not derived from IComponent");
-        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 &&
-            "Component type not registered in the world");
 
-        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>());
+        const auto componentTypeId = GetTypeHash<FirstUtilizedComponentType>();
+        if (mComponentMasks.count(componentTypeId) == 0)
+        {
+            RegisterComponentType<FirstUtilizedComponentType>();
+        }
+
+        return mComponentMasks.at(componentTypeId);
     }
 
     // Recursively calculates the bit mask formed of all given templates arguments
+    // Registers the given component types if not already registered in the world
     template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
-    inline ComponentMask CalculateComponentUsageMask() const
+    inline ComponentMask CalculateComponentUsageMask()
     {
         static_assert(std::is_base_of<IComponent, FirstUtilizedComponentType>::value,
             "Attempted to extract mask from class not derived from IComponent");
-        assert(mComponentMasks.count(GetTypeHash<FirstUtilizedComponentType>()) != 0 &&
-            "Component type not registered in the world");
 
-        return mComponentMasks.at(GetTypeHash<FirstUtilizedComponentType>()) |
+        const auto componentTypeId = GetTypeHash<FirstUtilizedComponentType>();
+        if (mComponentMasks.count(componentTypeId) == 0)
+        {
+            RegisterComponentType<FirstUtilizedComponentType>();
+        }
+
+        return mComponentMasks.at(componentTypeId) |
             CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
     }
 
@@ -303,6 +298,21 @@ private:
 
     // Collects all active entities (with at least one component) for processing by systems for this frame
     void CongregateActiveEntitiesInCurrentFrame();
+
+    // Registers the given component type (ComponentType) to the world
+    // and computes its mask. All components that are used as data containers 
+    // for entities, must be registered here first before used
+    template<class ComponentType>
+    inline void RegisterComponentType()
+    {
+        static_assert(std::is_base_of<IComponent, ComponentType>::value,
+            "ComponentType does not derive from IComponent");
+        assert(mComponentMasks.size() != MAX_COMPONENTS &&
+            "Exceeded maximum number of different component types");
+
+        const auto componentTypeId = GetTypeHash<ComponentType>();
+        mComponentMasks[componentTypeId] = 1LL << mComponentMasks.size();
+    }
 
     // Initializes a component of the given type for the given entity (entityId)
     template<class FirstUtilizedComponentType>
