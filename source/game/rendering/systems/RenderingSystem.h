@@ -21,6 +21,7 @@
 
 #include <set>
 #include <string>
+#include <glm/vec4.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,10 +42,10 @@ private:
     std::set<std::string> GetAndFilterShaderNames() const;
 
 private:
-    static const StringId WORLD_MARIX_UNIFORM_NAME;
-    static const StringId VIEW_MARIX_UNIFORM_NAME;
-    static const StringId PROJECTION_MARIX_UNIFORM_NAME;
-
+    static const StringId  WORLD_MARIX_UNIFORM_NAME;
+    static const StringId  VIEW_MARIX_UNIFORM_NAME;
+    static const StringId  PROJECTION_MARIX_UNIFORM_NAME;
+    static const glm::vec4 CLEAR_COLOR;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

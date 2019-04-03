@@ -33,7 +33,13 @@ namespace ecs
 {
 
 // Max component type count allowed
-static constexpr int MAX_COMPONENTS       = 16;
+static constexpr int MAX_COMPONENTS = 16;
+
+// Initial guess for the average entities handled
+// so that multiple resizes won't be needed
+static constexpr int ANTICIPATED_ENTITY_COUNT = 100;
+
+// Empty component mask constant
 static constexpr int EMPTY_COMPONENT_MASK = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -110,24 +116,6 @@ public:
     
     // Calculates the aggregate component mask for a given entity id (entityId)
     ComponentMask CalculateEntityComponentUsageMask(const EntityId entityId) const;
-
-    // Creates an entity and returns its corresponding entity id. 
-    // Also initializes a components of the specified type to be used by the entity
-    template<class FirstUtilizedComponentType>
-    inline EntityId CreateEntity()
-    {
-        InitializeEmptyComponentForEntity<FirstUtilizedComponentType>(mEntityCounter);
-        return mEntityCounter++;
-    }
-
-    // Creates an entity and returns its corresponding entity id. 
-    // Also initializes a list of components of the specified types to be used by the entity
-    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
-    inline EntityId CreateEntity()
-    {                
-        InitializeEmptyComponentForEntity<FirstUtilizedComponentType, SecondUtilizedComponentType, RestUtilizedComponentTypes...>(mEntityCounter);
-        return mEntityCounter++;
-    }
 
     // Creates an entity and returns its corresponding entity id. 
     inline EntityId CreateEntity()
@@ -312,25 +300,7 @@ private:
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
         mComponentMasks[componentTypeId] = 1LL << mComponentMasks.size();
-    }
-
-    // Initializes a component of the given type for the given entity (entityId)
-    template<class FirstUtilizedComponentType>
-    inline void InitializeEmptyComponentForEntity(const EntityId entityId)
-    {
-        const auto componentTypeId = GetTypeHash<FirstUtilizedComponentType>();
-        assert(mEntityComponentStore[entityId].count(componentTypeId) == 0 &&
-            "A component of that type already exists in this entity's component store");
-        mEntityComponentStore[entityId][componentTypeId] = std::make_unique<FirstUtilizedComponentType>();
-    }
-
-    // Recusrively initializes various different components of the given types for the given entity (entityId)
-    template<class FirstUtilizedComponentType, class SecondUtilizedComponentType, class ...RestUtilizedComponentTypes>
-    inline void InitializeEmptyComponentForEntity(const EntityId entityId)
-    {
-        InitializeEmptyComponentForEntity<FirstUtilizedComponentType>(entityId);
-        InitializeEmptyComponentForEntity<SecondUtilizedComponentType, RestUtilizedComponentTypes...>(entityId);
-    }   
+    }  
     
 private:    
     using SystemsMap              = std::map<SystemTypeId, std::unique_ptr<BaseSystem>>;

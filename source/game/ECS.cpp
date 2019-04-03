@@ -18,7 +18,7 @@
 
 ecs::World::World()
 {
-    mEntityComponentStore.reserve(100);
+    mEntityComponentStore.reserve(ANTICIPATED_ENTITY_COUNT);
 }
 
 const std::vector<ecs::EntityId>& ecs::World::GetActiveEntities() const

@@ -39,6 +39,7 @@
 const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME      = StringId("world");
 const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME       = StringId("view");
 const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME = StringId("proj");
+const glm::vec4 RenderingSystem::CLEAR_COLOR                  = glm::vec4(0.7215f, 0.5333f, 0.9725f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +85,6 @@ void RenderingSystem::VUpdate(const float)
     const auto view = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
 
     // Clear buffers
-    GL_CHECK(glClearColor(1.0f, 1.0f, 0.4f, 1.0f));
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     // Execute render pass
@@ -199,6 +199,9 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
     Log(LogType::INFO, "Renderer   : %s", GL_NO_CHECK(glGetString(GL_RENDERER)));
     Log(LogType::INFO, "Version    : %s", GL_NO_CHECK(glGetString(GL_VERSION)));
 
+    // Set Clear Color
+    GL_CHECK(glClearColor(CLEAR_COLOR.x, CLEAR_COLOR.y, CLEAR_COLOR.z, CLEAR_COLOR.w));
+
     // Configure Blending
     GL_CHECK(glEnable(GL_BLEND));
     GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -221,10 +224,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext()
 void RenderingSystem::InitializeCamera()
 {
     const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
-    auto cameraComponent = std::make_unique<CameraComponent>();
-    
-    cameraComponent->mPosition         = glm::vec3(0.0f, 5.0f, -5.0f);
-    cameraComponent->mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
+    auto cameraComponent = std::make_unique<CameraComponent>();            
     cameraComponent->mProjectionMatrix = glm::perspectiveFovLH
     (
         cameraComponent->mFieldOfView,

@@ -29,7 +29,7 @@ class CameraComponent final: public ecs::IComponent
 {
 public:
     glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
-    glm::vec3 mPosition         = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 mPosition         = glm::vec3(0.0f, 5.0f, -5.0f);
     glm::vec3 mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 mUpVector         = glm::vec3(0.0f, 1.0f, 0.0f);
     float mFieldOfView          = 45.0f;
