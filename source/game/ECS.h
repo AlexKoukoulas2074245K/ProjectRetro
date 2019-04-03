@@ -221,6 +221,10 @@ public:
     }
 
     // Sets and takes ownership of the given system.
+    // IMPORTANT: The order systems are set, is equivalent 
+    // to the order in which they will be updated each frame,
+    // i.e. the first system set here will always be the first one 
+    // to be updated.
     template<class SystemType>
     inline void SetSystem(std::unique_ptr<BaseSystem> system)
     {
