@@ -115,7 +115,7 @@ public:
     void RemoveEntity(const EntityId);
     
     // Calculates the aggregate component mask for a given entity id (entityId)
-    ComponentMask CalculateEntityComponentUsageMask(const EntityId entityId) const;
+    ComponentMask CalculateComponentUsageMaskForEntity(const EntityId entityId) const;
 
     // Creates an entity and returns its corresponding entity id. 
     inline EntityId CreateEntity()

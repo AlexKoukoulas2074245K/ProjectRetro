@@ -47,7 +47,7 @@ void ecs::World::RemoveEntity(const EntityId entityId)
     mEntityComponentStore.at(entityId).clear();
 }
 
-ecs::ComponentMask ecs::World::CalculateEntityComponentUsageMask(const EntityId entityId) const
+ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const EntityId entityId) const
 {
     ComponentMask componentUsageMask;
     const auto& componentMap = mEntityComponentStore.at(entityId);
@@ -66,7 +66,7 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
     {
-        if (CalculateEntityComponentUsageMask(entityIter->first) == EMPTY_COMPONENT_MASK)
+        if (CalculateComponentUsageMaskForEntity(entityIter->first) == EMPTY_COMPONENT_MASK)
         {
             entityIter = mEntityComponentStore.erase(entityIter);
         }
@@ -99,7 +99,7 @@ ecs::BaseSystem::BaseSystem(World& world)
 
 bool ecs::BaseSystem::ShouldProcessEntity(const EntityId entityId) const
 {
-    return (mWorld.CalculateEntityComponentUsageMask(entityId) & mComponentUsageMask) == mComponentUsageMask;
+    return (mWorld.CalculateComponentUsageMaskForEntity(entityId) & mComponentUsageMask) == mComponentUsageMask;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
