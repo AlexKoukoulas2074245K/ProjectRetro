@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "AnimationSystem.h"
-#include "../components/AnimationComponent.h"
+#include "../components/AnimationTimerComponent.h"
 #include "../components/RenderableComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@
 AnimationSystem::AnimationSystem(ecs::World& world)
     : BaseSystem(world)
 {
-    CalculateAndSetComponentUsageMask<AnimationComponent, RenderableComponent>();
+    CalculateAndSetComponentUsageMask<AnimationTimerComponent, RenderableComponent>();
 }
 
 void AnimationSystem::VUpdate(const float dt)
@@ -29,16 +29,18 @@ void AnimationSystem::VUpdate(const float dt)
     {
         if (ShouldProcessEntity(entityId))
         {
-            auto& animationComponent = mWorld.GetComponent<AnimationComponent>(entityId);
+            auto& animationComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
 
             animationComponent.mAnimationTimer->Update(dt);
 
             if (animationComponent.mAnimationTimer->HasTicked())
             {
                 animationComponent.mAnimationTimer->Reset();
-
+                
                 auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-                renderableComponent.mActiveMeshIndex = (renderableComponent.mActiveMeshIndex + 1) % renderableComponent.mMeshes.size();
+                const auto& activeAnimationMeshes = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
+
+                renderableComponent.mActiveMeshIndex = (renderableComponent.mActiveMeshIndex + 1) % activeAnimationMeshes.size();
             }                        
         }
     }

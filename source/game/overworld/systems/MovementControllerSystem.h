@@ -29,6 +29,8 @@ public:
     
     void VUpdate(const float dt) override;
     
+private:
+    static const float CHARACTER_MOVEMENT_SPEED;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

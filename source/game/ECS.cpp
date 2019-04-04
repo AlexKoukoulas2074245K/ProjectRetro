@@ -41,6 +41,9 @@ void ecs::World::Update(const float dt)
 
 void ecs::World::RemoveEntity(const EntityId entityId)
 {
+    assert(entityId != NULL_ENTITY_ID &&
+        "NULL_ENTITY_ID entity removal request");
+
     assert(mEntityComponentStore.count(entityId) != 0 &&
         "Entity does not exist in the world");
 
@@ -49,6 +52,9 @@ void ecs::World::RemoveEntity(const EntityId entityId)
 
 ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const EntityId entityId) const
 {
+    assert(entityId != NULL_ENTITY_ID &&
+        "Mask calculation requested for NULL_ENTITY_ID");
+
     ComponentMask componentUsageMask;
     const auto& componentMap = mEntityComponentStore.at(entityId);
     auto componentIter = componentMap.begin();
@@ -66,7 +72,7 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
     {
-        if (CalculateComponentUsageMaskForEntity(entityIter->first) == EMPTY_COMPONENT_MASK)
+        if (entityIter->second.size() == 0)
         {
             entityIter = mEntityComponentStore.erase(entityIter);
         }
@@ -80,7 +86,7 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
 void ecs::World::CongregateActiveEntitiesInCurrentFrame()
 {
     mActiveEntitiesInFrame.clear();
-    mActiveEntitiesInFrame.resize(mEntityComponentStore.size());
+    mActiveEntitiesInFrame.reserve(mEntityComponentStore.size());
 
     for (const auto& entityEntry : mEntityComponentStore)
     {
@@ -93,12 +99,15 @@ void ecs::World::CongregateActiveEntitiesInCurrentFrame()
 ////////////////////////////////////////////////////////////////////////////////////
 
 ecs::BaseSystem::BaseSystem(World& world)
-: mWorld(world)
+    : mWorld(world)
 {
 }
 
 bool ecs::BaseSystem::ShouldProcessEntity(const EntityId entityId) const
 {
+    assert(entityId != NULL_ENTITY_ID &&
+        "Entity process check for NULL_ENTITY_ID");
+
     return (mWorld.CalculateComponentUsageMaskForEntity(entityId) & mComponentUsageMask) == mComponentUsageMask;
 }
 

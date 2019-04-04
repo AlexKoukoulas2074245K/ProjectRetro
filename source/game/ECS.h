@@ -42,6 +42,9 @@ static constexpr int ANTICIPATED_ENTITY_COUNT = 100;
 // Empty component mask constant
 static constexpr int EMPTY_COMPONENT_MASK = 0;
 
+// Null entity ID
+static constexpr long long NULL_ENTITY_ID = 0LL;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +123,7 @@ public:
     // Creates an entity and returns its corresponding entity id. 
     inline EntityId CreateEntity()
     {
-        mEntityComponentStore[mEntityCounter];
+        mEntityComponentStore.operator[](mEntityCounter);
         return mEntityCounter++;
     }
     
@@ -128,6 +131,9 @@ public:
     template<class ComponentType>
     inline ComponentType& GetComponent(const EntityId entityId) const
     {        
+        assert(entityId != NULL_ENTITY_ID &&
+            "Requested a component from NULL_ENTITY_ID");
+
         assert(mEntityComponentStore.count(entityId) != 0 &&
             "Entity does not exist in the world");
 
@@ -142,6 +148,9 @@ public:
     template<class ComponentType>
     inline bool HasComponent(const EntityId entityId) const
     {
+        assert(entityId != NULL_ENTITY_ID &&
+            "Component check from NULL_ENTITY_ID");
+
         assert(mEntityComponentStore.count(entityId) != 0 &&
             "Entity does not exist in the world");
 
@@ -153,14 +162,21 @@ public:
     template<class ComponentType>
     inline void AddComponent(const EntityId entityId, std::unique_ptr<IComponent> component)
     {
+        assert(entityId != NULL_ENTITY_ID &&
+            "Component addition for NULL_ENTITY_ID");
+
         assert(mEntityComponentStore.count(entityId) != 0 &&
             "Entity does not exist in the world");
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
-        assert(mComponentMasks.count(componentTypeId) != 0 &&
-            "Component not registered");
+
         assert(mEntityComponentStore.at(entityId).count(componentTypeId) == 0 &&
             "Component is already present in this entity's component store");
+
+        if (mComponentMasks.count(componentTypeId) == 0)
+        {
+            RegisterComponentType<ComponentType>();
+        }
 
         mEntityComponentStore.at(entityId)[componentTypeId] = std::move(component);
     }
@@ -169,6 +185,9 @@ public:
     template<class ComponentType>
     inline void RemoveComponent(const EntityId entityId)
     {
+        assert(entityId != NULL_ENTITY_ID &&
+            "Component removal from NULL_ENTITY_ID");
+
         assert(mEntityComponentStore.count(entityId) != 0 &&
             "Entity does not exist in the world");
 
@@ -319,7 +338,7 @@ private:
     
     std::vector<EntityId> mActiveEntitiesInFrame;
 
-    EntityId mEntityCounter = 0LL;
+    EntityId mEntityCounter = 1LL;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

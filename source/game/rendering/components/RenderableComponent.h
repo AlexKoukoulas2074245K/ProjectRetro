@@ -19,6 +19,7 @@
 #include "../../ECS.h"
 #include "../../common/utils/StringUtils.h"
 
+#include <unordered_map>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -34,10 +35,12 @@ using ResourceId = unsigned int;
 class RenderableComponent final: public ecs::IComponent
 {
 public:
-    std::vector<ResourceId> mMeshes;
-    StringId mShaderNameId        = StringId();    
-    size_t mActiveMeshIndex       = 0;
-    ResourceId mTextureResourceId = 0;        
+    // This should be a map of vectors (animation name to meshes)
+    std::unordered_map<StringId, std::vector<ResourceId>, StringIdHasher> mAnimationsToMeshes;
+    StringId mShaderNameId          = StringId();    
+    StringId mActiveAnimationNameId = StringId();
+    size_t mActiveMeshIndex         = 0;
+    ResourceId mTextureResourceId   = 0;        
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

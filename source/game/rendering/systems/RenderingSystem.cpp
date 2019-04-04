@@ -58,7 +58,9 @@ void RenderingSystem::VUpdate(const float)
 {
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
-    std::vector<ecs::EntityId> mEntitiesToProcess(activeEntities.size(), 0);
+    std::vector<ecs::EntityId> mEntitiesToProcess;
+    mEntitiesToProcess.reserve(activeEntities.size());
+
     for (const auto& entityId: activeEntities)
     {
         if (ShouldProcessEntity(entityId))
@@ -94,7 +96,7 @@ void RenderingSystem::VUpdate(const float)
         const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
         const auto& currentShader       = shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
         const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
-        const auto& currentMeshes       = renderableComponent.mMeshes;
+        const auto& currentMeshes       = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
         const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
 
         // Use shader

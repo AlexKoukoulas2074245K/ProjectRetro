@@ -11,7 +11,7 @@
 
 #include "PlayerActionControllerSystem.h"
 #include "../../common/components/PlayerTagComponent.h"
-#include "../../common/components/TransformComponent.h"
+#include "../../common/components/DirectionComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -20,12 +20,18 @@
 PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
     : BaseSystem(world)
 {
-    CalculateAndSetComponentUsageMask<PlayerTagComponent, TransformComponent>();
+    CalculateAndSetComponentUsageMask<PlayerTagComponent, DirectionComponent>();
 }
 
 void PlayerActionControllerSystem::VUpdate(const float)
 {
-    
+    for (const auto& entityId : mWorld.GetActiveEntities())
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            // Do stuff with player
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
