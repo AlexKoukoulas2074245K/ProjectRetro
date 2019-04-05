@@ -11,6 +11,7 @@
 
 #include "App.h"
 #include "common/GameConstants.h"
+#include "common/components/DirectionComponent.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "input/components/InputStateComponent.h"
@@ -22,8 +23,10 @@
 #include "rendering/systems/CameraControlSystem.h"
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/ResourceLoadingService.h"
+#include "resources/TextureUtils.h"
 #include "overworld/components/LevelGridComponent.h"
 #include "overworld/utils/LevelUtils.h"
+#include "overworld/systems/PlayerActionControllerSystem.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  
@@ -45,6 +48,7 @@ void App::Run()
 void App::InitializeSystems()
 {
     mWorld.SetSystem<RawInputHandlingSystem>(std::make_unique<RawInputHandlingSystem>(mWorld));
+    mWorld.SetSystem<PlayerActionControllerSystem>(std::make_unique<PlayerActionControllerSystem>(mWorld));
     mWorld.SetSystem<AnimationSystem>(std::make_unique<AnimationSystem>(mWorld));
     mWorld.SetSystem<CameraControlSystem>(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.SetSystem<RenderingSystem>(std::make_unique<RenderingSystem>(mWorld));
@@ -102,9 +106,10 @@ void App::GameLoop()
     renderableComponent2->mActiveAnimationNameId = StringId("test");
 
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
-    animationComponent->mAnimationTimer = std::make_unique<Timer>(0.5f);
+    animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
 
     mWorld.AddComponent<AnimationTimerComponent>(dummyEntity2, std::move(animationComponent));
+    mWorld.AddComponent<DirectionComponent>(dummyEntity2, std::make_unique<DirectionComponent>());
     mWorld.AddComponent<PlayerTagComponent>(dummyEntity2, std::make_unique<PlayerTagComponent>());
     mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
     mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
@@ -116,7 +121,7 @@ void App::GameLoop()
         {
             auto tileEntity = mWorld.CreateEntity();
             auto tileTransformComponent = std::make_unique<TransformComponent>();
-            tileTransformComponent->mPosition = glm::vec3(x * OVERWORLD_TILE_SIZE, 0.0f, y * OVERWORLD_TILE_SIZE);
+            tileTransformComponent->mPosition = glm::vec3(x * OVERWORLD_TILE_SIZE, -OVERWORLD_TILE_SIZE * 0.5f, y * OVERWORLD_TILE_SIZE);
 
             auto tileRenderableComponent = std::make_unique<RenderableComponent>();
             tileRenderableComponent->mShaderNameId = StringId("basic");
@@ -141,26 +146,6 @@ void App::GameLoop()
 
         framesAccumulator++;
         dtAccumulator += dt;
-        
-        const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateComponent>();
-        auto& transformComponent22 = mWorld.GetComponent<TransformComponent>(dummyEntity2);
-               
-        if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::PRESSED)
-        {
-            transformComponent22.mPosition.x -= 2.0f * dt;
-        }
-        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::PRESSED)
-        {
-            transformComponent22.mPosition.x += 2.0f * dt;
-        }
-        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::PRESSED)
-        {
-            transformComponent22.mPosition.z += 2.0f * dt;
-        }
-        else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
-        {
-            transformComponent22.mPosition.z -= 2.0f * dt;
-        }
 
 #ifndef NDEBUG
         if (dtAccumulator > 1.0f)

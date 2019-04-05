@@ -32,7 +32,7 @@ enum class TileOccupierType
 struct Tile
 {
     TileOccupierType mTileOccupierType = TileOccupierType::NONE;
-    ecs::EntityId mOccupierEntityId = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOccupierEntityId    = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
