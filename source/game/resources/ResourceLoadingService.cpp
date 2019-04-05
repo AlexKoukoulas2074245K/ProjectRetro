@@ -35,6 +35,7 @@ const std::string ResourceLoadingService::RES_ROOT = "../../res/";
 #endif
 
 const std::string ResourceLoadingService::RES_SHADERS_ROOT = RES_ROOT + "shaders/";
+const std::string ResourceLoadingService::RES_MODELS_ROOT = RES_ROOT + "models/";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

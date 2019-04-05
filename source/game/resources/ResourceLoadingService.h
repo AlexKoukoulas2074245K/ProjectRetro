@@ -54,7 +54,8 @@ class ResourceLoadingService final
 public:
     static const std::string RES_ROOT;
     static const std::string RES_SHADERS_ROOT;
-    
+    static const std::string RES_MODELS_ROOT;
+
     static ResourceLoadingService& GetInstance();
 
     ~ResourceLoadingService();

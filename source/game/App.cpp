@@ -35,6 +35,104 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+static const StringId NORTH_ANIMATION_NAME_ID = StringId("north");
+static const StringId SOUTH_ANIMATION_NAME_ID = StringId("south");
+static const StringId WEST_ANIMATION_NAME_ID = StringId("west");
+static const StringId EAST_ANIMATION_NAME_ID = StringId("east");
+
+enum class SpriteType
+{
+    DYNAMIC, STATIONARY, STATIC
+};
+
+class SpriteData
+{
+public:
+    SpriteData(const SpriteType spriteType, const int atlasColOffset, const int atlasRowOffset)
+        : mSpriteType(spriteType)
+        , mAtlasColOffset(atlasColOffset)
+        , mAtlasRowOffset(atlasRowOffset)
+    {
+    }
+
+    const SpriteType mSpriteType;
+    const int mAtlasColOffset;
+    const int mAtlasRowOffset;
+};
+
+std::string CreateTexCoordInjectedModelPath(const std::string& modelName, const std::vector<glm::vec2>& texCoords)
+{
+    std::string path = ResourceLoadingService::RES_MODELS_ROOT + modelName + "[";
+    
+    path += std::to_string(texCoords[0].x) + "," + std::to_string(texCoords[0].y);
+
+    for (auto i = 1U; i < texCoords.size(); ++i)
+    {
+        path += "-" + std::to_string(texCoords[i].x) + "," + std::to_string(texCoords[i].y);        
+    }
+    
+    path += "].obj";
+
+    return path;
+}
+
+void LoadMeshFromTexCoordsAndAddToRenderableComponent(const int meshAtlasCol, const int meshAtlasRow, const bool horFlipped, const StringId& animationNameId, RenderableComponent& renderableComponent)
+{
+    const auto atlasCols = 8;
+    const auto atlasRows = 64;
+
+    auto correctedMeshCol = meshAtlasCol;
+    auto correctedMeshRow = meshAtlasRow;
+
+    if (correctedMeshCol >= atlasCols)
+    {
+        correctedMeshCol %= atlasCols;
+        correctedMeshRow++;
+    }
+
+    const auto texCoords = CalculateTextureCoordsFromColumnAndRow(correctedMeshCol, correctedMeshRow, atlasCols, atlasRows, horFlipped);
+    const auto meshPath  = CreateTexCoordInjectedModelPath("camera_facing_quad", texCoords);
+
+    renderableComponent.mAnimationsToMeshes[animationNameId].push_back(ResourceLoadingService::GetInstance().LoadResource(meshPath));
+}
+
+//TEMP
+std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const SpriteData& spriteData)
+{    
+    auto renderableComponent = std::make_unique<RenderableComponent>();    
+
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
+    renderableComponent->mActiveAnimationNameId = SOUTH_ANIMATION_NAME_ID;
+    renderableComponent->mShaderNameId          = StringId("basic");
+            
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+
+    if (spriteData.mSpriteType == SpriteType::STATIC) return std::move(renderableComponent);
+
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 1, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
+
+    if (spriteData.mSpriteType == SpriteType::STATIONARY) return std::move(renderableComponent);
+
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, true, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+    renderableComponent->mAnimationsToMeshes[StringId("south")].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, true, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+    renderableComponent->mAnimationsToMeshes[StringId("north")].push_back(renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID][0]);
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
+
+    return std::move(renderableComponent);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 void App::Run()
 {    
     InitializeSystems();
@@ -95,15 +193,8 @@ void App::GameLoop()
     mWorld.AddComponent<RenderableComponent>(otherDummyEntity, std::move(otherrenderableComponent));
     
     auto transformComponent2 = std::make_unique<TransformComponent>();
-    transformComponent2->mPosition.x = 2.0f;
-    transformComponent2->mPosition.x = -1.0f;
-    
-    auto renderableComponent2 = std::make_unique<RenderableComponent>();
-    renderableComponent2->mShaderNameId = StringId("basic");
-    renderableComponent2->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    renderableComponent2->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.125000,1.000000-0.000000,1.000000-0.000000,0.984375-0.125000,0.984375].obj"));
-    renderableComponent2->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.500000,1.000000-0.3750000,1.000000-0.375000,0.984375-0.500000,0.984375].obj"));
-    renderableComponent2->mActiveAnimationNameId = StringId("test");
+    transformComponent2->mPosition.x = 4.0f;
+    transformComponent2->mPosition.z = -1.0f;
 
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
@@ -111,7 +202,7 @@ void App::GameLoop()
     mWorld.AddComponent<AnimationTimerComponent>(dummyEntity2, std::move(animationComponent));
     mWorld.AddComponent<DirectionComponent>(dummyEntity2, std::make_unique<DirectionComponent>());
     mWorld.AddComponent<PlayerTagComponent>(dummyEntity2, std::make_unique<PlayerTagComponent>());
-    mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
+    mWorld.AddComponent<RenderableComponent>(dummyEntity2, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
     mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
     
     bool topRightTexture = true;

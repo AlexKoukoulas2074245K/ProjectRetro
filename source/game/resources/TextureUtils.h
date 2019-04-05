@@ -29,22 +29,34 @@ inline std::vector<glm::vec2> CalculateTextureCoordsFromColumnAndRow
     const int row,
     const int atlasNumberOfCols,
     const int atlasNumberOfRows,
-    const int atlasImageWidth,
-    const int atlasImageHeight
+    const bool horFlipped
 )
 {
     const auto cols       = static_cast<float>(atlasNumberOfCols);
     const auto rows       = static_cast<float>(atlasNumberOfRows);
-    const auto cellWidth  = cols/atlasImageWidth;
-    const auto cellHeight = rows/atlasImageHeight;
-    
-    return
+    const auto cellWidth  = 1.0f/cols;    
+    const auto cellHeight = 1.0f/rows;
+
+    if (horFlipped)
     {
-        glm::vec2((col + 1) * cellWidth, 1.0f - row * cellHeight),
-        glm::vec2(col * cellWidth,       1.0f - row * cellHeight),
-        glm::vec2(col * cellWidth,       1.0f - (row + 1) * cellHeight),
-        glm::vec2((col + 1) * cellWidth, 1.0f - (row + 1) * cellHeight)
-    };
+        return
+        {
+            glm::vec2((col + 1) * cellWidth, 1.0f - row * cellHeight),
+            glm::vec2(col * cellWidth,       1.0f - row * cellHeight),
+            glm::vec2(col * cellWidth,       1.0f - (row + 1) * cellHeight),
+            glm::vec2((col + 1) * cellWidth, 1.0f - (row + 1) * cellHeight)
+        };
+    }
+    else
+    {
+        return
+        {
+            glm::vec2(col * cellWidth,       1.0f - row * cellHeight),
+            glm::vec2((col + 1) * cellWidth, 1.0f - row * cellHeight),
+            glm::vec2((col + 1) * cellWidth, 1.0f - (row + 1) * cellHeight),
+            glm::vec2(col * cellWidth,       1.0f - (row + 1) * cellHeight)
+        };
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
