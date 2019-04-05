@@ -1,63 +1,54 @@
 //
-//  TextureResource.cpp
+//  TextureUtils.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 29/03/2019.
+//  Created by Alex Koukoulas on 05/04/2019.
 //
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef TextureUtils_h
+#define TextureUtils_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "TextureResource.h"
-#include "../rendering/opengl/Context.h"
-
-#include <cassert>
-#include <SDL_surface.h>
+#include <vector>
+#include <glm/vec2.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-TextureResource::~TextureResource()
+inline std::vector<glm::vec2> CalculateTextureCoordsFromColumnAndRow
+(
+    const int col,
+    const int row,
+    const int atlasNumberOfCols,
+    const int atlasNumberOfRows,
+    const int atlasImageWidth,
+    const int atlasImageHeight
+)
 {
-    SDL_FreeSurface(mSdlSurface);
-    GL_CHECK(glDeleteTextures(1, &mGLTextureId));
-}
-
-GLuint TextureResource::GetGLTextureId() const
-{
-    return mGLTextureId;
-}
-
-int TextureResource::GetWidth() const
-{
-    return mSdlSurface->w;
-}
-
-int TextureResource::GetHeight() const
-{
-    return mSdlSurface->h;
-}
-
-bool TextureResource::HasTransparentPixels() const
-{
-    return mHasTransparentPixels;
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-TextureResource::TextureResource(SDL_Surface* sdlSurface, GLuint glTextureId, bool hasTransparentPixels)
-    : mSdlSurface(sdlSurface)
-    , mGLTextureId(glTextureId)
-    , mHasTransparentPixels(hasTransparentPixels)
-{
-
+    const auto cols       = static_cast<float>(atlasNumberOfCols);
+    const auto rows       = static_cast<float>(atlasNumberOfRows);
+    const auto cellWidth  = cols/atlasImageWidth;
+    const auto cellHeight = rows/atlasImageHeight;
+    
+    return
+    {
+        glm::vec2((col + 1) * cellWidth, 1.0f - row * cellHeight),
+        glm::vec2(col * cellWidth,       1.0f - row * cellHeight),
+        glm::vec2(col * cellWidth,       1.0f - (row + 1) * cellHeight),
+        glm::vec2((col + 1) * cellWidth, 1.0f - (row + 1) * cellHeight)
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+#endif /* TextureUtils_h */
