@@ -193,11 +193,11 @@ void App::GameLoop()
     mWorld.AddComponent<RenderableComponent>(otherDummyEntity, std::move(otherrenderableComponent));
     
     auto transformComponent2 = std::make_unique<TransformComponent>();
-    transformComponent2->mPosition.x = 4.0f;
-    transformComponent2->mPosition.z = -1.0f;
+    transformComponent2->mPosition = LevelGridCoordsToPosition(2, 2);
 
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
+    animationComponent->mAnimationTimer->Pause();
 
     mWorld.AddComponent<AnimationTimerComponent>(dummyEntity2, std::move(animationComponent));
     mWorld.AddComponent<DirectionComponent>(dummyEntity2, std::make_unique<DirectionComponent>());

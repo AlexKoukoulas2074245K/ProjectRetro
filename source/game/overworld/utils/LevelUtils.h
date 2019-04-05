@@ -18,7 +18,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../components/LevelGridComponent.h"
+#include "../../common/GameConstants.h"
 
+#include <glm/vec3.hpp>
 #include <cstddef>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +37,11 @@ inline LevelGrid InitializeLevelGridOfDimensions(const unsigned int cols, const 
     }
 
     return result;
+}
+
+inline glm::vec3 LevelGridCoordsToPosition(const int col, const int row)
+{
+    return glm::vec3(col * OVERWORLD_TILE_SIZE, 0.0f, row * OVERWORLD_TILE_SIZE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
