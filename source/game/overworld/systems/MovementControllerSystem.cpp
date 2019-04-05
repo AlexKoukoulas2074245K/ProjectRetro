@@ -30,7 +30,7 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<PlayerTagComponent, TransformComponent>();
 }
 
-void MovementControllerSystem::VUpdate(const float)
+void MovementControllerSystem::VUpdate(const float) const
 {
     
 }

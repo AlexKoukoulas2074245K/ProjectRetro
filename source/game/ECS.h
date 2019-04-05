@@ -354,7 +354,7 @@ public:
     BaseSystem(const BaseSystem&) = delete;
     const BaseSystem& operator = (const BaseSystem&) = delete;
         
-    virtual void VUpdate(const float dt) = 0;
+    virtual void VUpdate(const float dt) const = 0;
         
 protected:
     // Determines whether the given entity (entityId) should be processed by this system

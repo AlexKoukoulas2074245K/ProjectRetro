@@ -27,7 +27,7 @@ class RawInputHandlingSystem final : public ecs::BaseSystem
 public:
     RawInputHandlingSystem(ecs::World&);
 
-    void VUpdate(const float dt) override;
+    void VUpdate(const float dt) const override;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

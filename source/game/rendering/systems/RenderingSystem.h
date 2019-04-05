@@ -27,18 +27,33 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+class CameraComponent;
+class ShaderStoreComponent;
+class RenderableComponent;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 class RenderingSystem final: public ecs::BaseSystem
 {
 public:
     RenderingSystem(ecs::World& world);
     
-    void VUpdate(const float dt) override;
+    void VUpdate(const float dt) const override;
 
 private:
-    void InitializeRenderingWindowAndContext();
-    void InitializeCamera();
-    void CompileAndLoadShaders();
-    
+    void RenderEntityInternal
+    (
+        const ecs::EntityId entityId,
+        const RenderableComponent& entityRenderableComponent,
+        const CameraComponent& globalCameraComponent, 
+        const ShaderStoreComponent& globalShaderStoreComponent
+    ) const;
+    void InitializeRenderingWindowAndContext() const;
+    void InitializeCamera() const;
+    void CompileAndLoadShaders() const;
+
     std::set<std::string> GetAndFilterShaderNames() const;
 
 private:
@@ -46,6 +61,7 @@ private:
     static const StringId  VIEW_MARIX_UNIFORM_NAME;
     static const StringId  PROJECTION_MARIX_UNIFORM_NAME;
     static const glm::vec4 CLEAR_COLOR;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

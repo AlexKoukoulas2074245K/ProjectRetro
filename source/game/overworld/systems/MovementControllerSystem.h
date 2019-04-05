@@ -27,7 +27,7 @@ class MovementControllerSystem final: public ecs::BaseSystem
 public:
     MovementControllerSystem(ecs::World&);
     
-    void VUpdate(const float dt) override;
+    void VUpdate(const float dt) const override;
     
 private:
     static const float CHARACTER_MOVEMENT_SPEED;

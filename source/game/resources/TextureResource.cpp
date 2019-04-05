@@ -31,13 +31,19 @@ GLuint TextureResource::GetGLTextureId() const
     return mGLTextureId;
 }
 
+bool TextureResource::HasTransparentPixels() const
+{
+    return mHasTransparentPixels;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-TextureResource::TextureResource(SDL_Surface* sdlSurface, GLuint glTextureId)
+TextureResource::TextureResource(SDL_Surface* sdlSurface, GLuint glTextureId, bool hasTransparentPixels)
     : mSdlSurface(sdlSurface)
     , mGLTextureId(glTextureId)
+    , mHasTransparentPixels(hasTransparentPixels)
 {
 
 }

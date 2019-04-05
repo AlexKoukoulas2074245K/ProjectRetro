@@ -18,6 +18,8 @@
 
 #include <fstream>     // ifstream
 #include <SDL_image.h>
+#include <SDL.h>
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +63,10 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
         return nullptr;
     }
     
+    SDL_LockSurface(sdlSurface);
+    const auto hasTransparentPixels = HasTransparentPixels(sdlSurface);
+    SDL_UnlockSurface(sdlSurface);
+
     GLuint glTextureId;
     GL_CHECK(glGenTextures(1, &glTextureId));
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, glTextureId));
@@ -101,9 +107,27 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
     GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
     
-    return std::unique_ptr<IResource>(new TextureResource(sdlSurface, glTextureId));
+    return std::unique_ptr<IResource>(new TextureResource(sdlSurface, glTextureId, hasTransparentPixels));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+bool TextureLoader::HasTransparentPixels(SDL_Surface* const sdlSurface) const
+{    
+    auto* pixels = (Uint32*)sdlSurface->pixels;
+    for (int y = 0; y < sdlSurface->h; ++y)
+    {
+        for (int x = 0; x < sdlSurface->w; ++x)
+        {                                  
+            auto pixel = pixels[y * sdlSurface->w + x];
+            if (pixel == 0)
+            {                
+                return true;
+            }
+        }
+    }
+
+    return false;    
+}

@@ -27,7 +27,7 @@ class AnimationSystem final : public ecs::BaseSystem
 public:
     AnimationSystem(ecs::World&);
 
-    void VUpdate(const float dt) override;
+    void VUpdate(const float dt) const override;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

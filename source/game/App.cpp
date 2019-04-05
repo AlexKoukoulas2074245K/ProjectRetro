@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "App.h"
+#include "common/GameConstants.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "input/components/InputStateComponent.h"
@@ -108,6 +109,28 @@ void App::GameLoop()
     mWorld.AddComponent<RenderableComponent>(dummyEntity2, std::move(renderableComponent2));
     mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
     
+    bool topRightTexture = true;
+    for (int y = 0; y < 5; ++y)
+    {
+        for (int x = 0; x < 5; ++x)
+        {
+            auto tileEntity = mWorld.CreateEntity();
+            auto tileTransformComponent = std::make_unique<TransformComponent>();
+            tileTransformComponent->mPosition = glm::vec3(x * OVERWORLD_TILE_SIZE, 0.0f, y * OVERWORLD_TILE_SIZE);
+
+            auto tileRenderableComponent = std::make_unique<RenderableComponent>();
+            tileRenderableComponent->mShaderNameId = StringId("basic");
+            tileRenderableComponent->mActiveAnimationNameId = StringId("test");
+            tileRenderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(topRightTexture ? "textures/materials/2d_out_full_floor.png": "textures/materials/2d_out_empty_floor.png");
+            tileRenderableComponent->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/2d_out_empty_floor.obj"));
+
+            mWorld.AddComponent<TransformComponent>(tileEntity, std::move(tileTransformComponent));
+            mWorld.AddComponent<RenderableComponent>(tileEntity, std::move(tileRenderableComponent));
+
+            topRightTexture = !topRightTexture;
+        }
+    }
+
     while (!AppShouldQuit())
     {
         // Calculate frame delta

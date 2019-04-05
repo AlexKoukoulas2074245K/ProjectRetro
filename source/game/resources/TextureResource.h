@@ -38,13 +38,15 @@ public:
     ~TextureResource();
     
     GLuint GetGLTextureId() const;
+    bool HasTransparentPixels() const;
+
+private:
+    TextureResource(SDL_Surface*, GLuint, bool hasTransparentPixels);
     
 private:
-    TextureResource(SDL_Surface*, GLuint);
-    
-private:
-    SDL_Surface* mSdlSurface;
-    GLuint mGLTextureId;
+    SDL_Surface* const mSdlSurface;
+    const GLuint mGLTextureId;
+    const bool mHasTransparentPixels;
 
 };
 

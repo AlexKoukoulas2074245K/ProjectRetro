@@ -23,7 +23,7 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<PlayerTagComponent, DirectionComponent>();
 }
 
-void PlayerActionControllerSystem::VUpdate(const float)
+void PlayerActionControllerSystem::VUpdate(const float) const
 {
     for (const auto& entityId : mWorld.GetActiveEntities())
     {

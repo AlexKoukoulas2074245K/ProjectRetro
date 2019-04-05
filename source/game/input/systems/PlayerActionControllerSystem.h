@@ -27,7 +27,7 @@ class PlayerActionControllerSystem final: public ecs::BaseSystem
 public:
     PlayerActionControllerSystem(ecs::World&);
     
-    void VUpdate(const float dt) override;
+    void VUpdate(const float dt) const override;
     
 };
 
