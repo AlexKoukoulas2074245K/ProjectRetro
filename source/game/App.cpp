@@ -102,31 +102,31 @@ std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const Sp
     auto renderableComponent = std::make_unique<RenderableComponent>();    
 
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    renderableComponent->mActiveAnimationNameId = SOUTH_ANIMATION_NAME_ID;
+    renderableComponent->mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
     renderableComponent->mShaderNameId          = StringId("basic");
             
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
 
-    if (spriteData.mSpriteType == SpriteType::STATIC) return std::move(renderableComponent);
+    if (spriteData.mSpriteType == SpriteType::STATIC) return renderableComponent;
 
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 1, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
 
-    if (spriteData.mSpriteType == SpriteType::STATIONARY) return std::move(renderableComponent);
+    if (spriteData.mSpriteType == SpriteType::STATIONARY) return renderableComponent;
 
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, true, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
-    renderableComponent->mAnimationsToMeshes[StringId("south")].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
+    renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
 
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, true, NORTH_ANIMATION_NAME_ID, *renderableComponent);
-    renderableComponent->mAnimationsToMeshes[StringId("north")].push_back(renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID][0]);
+    renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID][0]);
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
 
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
 
-    return std::move(renderableComponent);
+    return renderableComponent;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ void App::GameLoop()
     mWorld.AddComponent<AnimationTimerComponent>(dummyEntity2, std::move(animationComponent));
     mWorld.AddComponent<DirectionComponent>(dummyEntity2, std::make_unique<DirectionComponent>());
     mWorld.AddComponent<PlayerTagComponent>(dummyEntity2, std::make_unique<PlayerTagComponent>());
-    mWorld.AddComponent<RenderableComponent>(dummyEntity2, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
+    mWorld.AddComponent<RenderableComponent>(dummyEntity2, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
     mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
     
     bool topRightTexture = true;
