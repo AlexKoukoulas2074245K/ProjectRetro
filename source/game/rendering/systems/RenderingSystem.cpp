@@ -59,12 +59,11 @@ void RenderingSystem::VUpdate(const float) const
 {
     // Get common rendering singleton components
     auto& cameraComponent = mWorld.GetSingletonComponent<CameraComponent>();
+    const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
+    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
 
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
-
-    const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
-    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
     
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
@@ -80,6 +79,10 @@ void RenderingSystem::VUpdate(const float) const
             const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
             const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
 
+            // If entity is solid-textured (has no semi transparent pixels)
+            // then it is rendered in this pass here. Otherwise the entity is added
+            // to a vector of semi-transparent entities that need to be sorted 
+            // prior to rendering
             if (currentTexture.HasTransparentPixels())
             {
                 semiTransparentTexturedEntities.push_back(entityId);
@@ -101,7 +104,7 @@ void RenderingSystem::VUpdate(const float) const
     });
 
 
-    // Execute render pass
+    // Execute semi-tranasparent render pass
     for (const auto& entityId : semiTransparentTexturedEntities)
     {
         const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
