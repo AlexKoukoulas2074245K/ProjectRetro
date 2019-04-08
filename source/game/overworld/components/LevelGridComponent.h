@@ -49,7 +49,8 @@ class LevelGridComponent final: public ecs::IComponent
 {
 public:    
      LevelGrid mLevelGrid;
-
+     unsigned int mCols;
+     unsigned int mRows;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -39,9 +39,22 @@ inline LevelGrid InitializeLevelGridOfDimensions(const unsigned int cols, const 
     return result;
 }
 
-inline glm::vec3 LevelGridCoordsToPosition(const int col, const int row)
+inline glm::vec3 LevelTileCoordsToPosition(const TileCoords& coords)
 {
-    return glm::vec3(col * OVERWORLD_TILE_SIZE, 0.0f, row * OVERWORLD_TILE_SIZE);
+    return glm::vec3(coords.mCol * OVERWORLD_TILE_SIZE, 0.0f, coords.mRow * OVERWORLD_TILE_SIZE);
+}
+
+inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Direction direction)
+{
+    switch (direction)
+    {
+        case Direction::EAST:  return TileCoords(coords.mCol + 1, coords.mRow);
+        case Direction::NORTH: return TileCoords(coords.mCol,     coords.mRow + 1);
+        case Direction::SOUTH: return TileCoords(coords.mCol,     coords.mRow - 1);
+        case Direction::WEST:  return TileCoords(coords.mCol - 1, coords.mRow);
+    }
+
+    return TileCoords();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

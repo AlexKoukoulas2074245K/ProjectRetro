@@ -25,8 +25,10 @@
 #include "resources/ResourceLoadingService.h"
 #include "resources/TextureUtils.h"
 #include "overworld/components/LevelGridComponent.h"
-#include "overworld/utils/LevelUtils.h"
+#include "overworld/components/MovementStateComponent.h"
+#include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
+#include "overworld/utils/LevelUtils.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  
@@ -34,7 +36,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
+//TEMP move to levelloading flow when implemented 
+//
 static const StringId NORTH_ANIMATION_NAME_ID = StringId("north");
 static const StringId SOUTH_ANIMATION_NAME_ID = StringId("south");
 static const StringId WEST_ANIMATION_NAME_ID = StringId("west");
@@ -96,7 +99,6 @@ void LoadMeshFromTexCoordsAndAddToRenderableComponent(const int meshAtlasCol, co
     renderableComponent.mAnimationsToMeshes[animationNameId].push_back(ResourceLoadingService::GetInstance().LoadResource(meshPath));
 }
 
-//TEMP
 std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const SpriteData& spriteData)
 {    
     auto renderableComponent = std::make_unique<RenderableComponent>();    
@@ -148,6 +150,7 @@ void App::InitializeSystems()
     mWorld.SetSystem<RawInputHandlingSystem>(std::make_unique<RawInputHandlingSystem>(mWorld));
     mWorld.SetSystem<PlayerActionControllerSystem>(std::make_unique<PlayerActionControllerSystem>(mWorld));
     mWorld.SetSystem<AnimationSystem>(std::make_unique<AnimationSystem>(mWorld));
+    mWorld.SetSystem<MovementControllerSystem>(std::make_unique<MovementControllerSystem>(mWorld));
     mWorld.SetSystem<CameraControlSystem>(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.SetSystem<RenderingSystem>(std::make_unique<RenderingSystem>(mWorld));
 }
@@ -161,11 +164,14 @@ void App::GameLoop()
     const auto levelEntity = mWorld.CreateEntity();
     const auto otherDummyEntity = mWorld.CreateEntity();
     const auto dummyEntity = mWorld.CreateEntity();
-    const auto dummyEntity2 = mWorld.CreateEntity();
+    const auto playerEntity = mWorld.CreateEntity();
     
     auto levelGridComponent = std::make_unique<LevelGridComponent>();
-    levelGridComponent->mLevelGrid = InitializeLevelGridOfDimensions(5, 5);
-    mWorld.AddComponent<LevelGridComponent>(levelEntity, std::move(levelGridComponent));
+    levelGridComponent->mRows = 5U;
+    levelGridComponent->mCols = 5U;
+    levelGridComponent->mLevelGrid = InitializeLevelGridOfDimensions(levelGridComponent->mCols, levelGridComponent->mRows);
+    
+    mWorld.SetSingletonComponent<LevelGridComponent>(std::move(levelGridComponent));    
 
     auto transformComponent = std::make_unique<TransformComponent>();
     transformComponent->mPosition.x = -2.0f;
@@ -193,17 +199,22 @@ void App::GameLoop()
     mWorld.AddComponent<RenderableComponent>(otherDummyEntity, std::move(otherrenderableComponent));
     
     auto transformComponent2 = std::make_unique<TransformComponent>();
-    transformComponent2->mPosition = LevelGridCoordsToPosition(2, 2);
+    transformComponent2->mPosition = LevelTileCoordsToPosition(TileCoords(2, 2));
 
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
     animationComponent->mAnimationTimer->Pause();
 
-    mWorld.AddComponent<AnimationTimerComponent>(dummyEntity2, std::move(animationComponent));
-    mWorld.AddComponent<DirectionComponent>(dummyEntity2, std::make_unique<DirectionComponent>());
-    mWorld.AddComponent<PlayerTagComponent>(dummyEntity2, std::make_unique<PlayerTagComponent>());
-    mWorld.AddComponent<RenderableComponent>(dummyEntity2, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
-    mWorld.AddComponent<TransformComponent>(dummyEntity2, std::move(transformComponent2));
+    auto movementStateComponent = std::make_unique<MovementStateComponent>();
+    movementStateComponent->mCurrentCoords = TileCoords(2, 2);
+    movementStateComponent->mTargetCoords  = TileCoords(2, 2);
+
+    mWorld.AddComponent<AnimationTimerComponent>(playerEntity, std::move(animationComponent));
+    mWorld.AddComponent<DirectionComponent>(playerEntity, std::make_unique<DirectionComponent>());
+    mWorld.AddComponent<MovementStateComponent>(playerEntity, std::move(movementStateComponent));
+    mWorld.AddComponent<PlayerTagComponent>(playerEntity, std::make_unique<PlayerTagComponent>());
+    mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
+    mWorld.AddComponent<TransformComponent>(playerEntity, std::move(transformComponent2));
     
     bool topRightTexture = true;
     for (int y = 0; y < 5; ++y)
