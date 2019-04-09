@@ -33,10 +33,17 @@ const StringId PlayerActionControllerSystem::EAST_ANIMATION_NAME_ID  = StringId(
 PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
     : BaseSystem(world)
 {
-    CalculateAndSetComponentUsageMask<AnimationTimerComponent, DirectionComponent, PlayerTagComponent, RenderableComponent, MovementStateComponent>();
+    CalculateAndSetComponentUsageMask
+    <
+        AnimationTimerComponent, 
+        DirectionComponent, 
+        PlayerTagComponent, 
+        RenderableComponent, 
+        MovementStateComponent
+    >();
 }
 
-void PlayerActionControllerSystem::VUpdate(const float) const
+void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateComponent>();
     
@@ -47,7 +54,15 @@ void PlayerActionControllerSystem::VUpdate(const float) const
             const auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
             auto& movementStateComponent        = mWorld.GetComponent<MovementStateComponent>(entityId);
             auto& renderableComponent           = mWorld.GetComponent<RenderableComponent>(entityId);
-            auto& directionComponent            = mWorld.GetComponent<DirectionComponent>(entityId);
+            
+            if (movementStateComponent.mMoving)
+            {
+                continue;
+            }
+
+            // We'll set the intended movement direction and intent of movement (mMoving) 
+            // in this system's udpate, and do the checks (and possibly revert the intent) in MovementControllerSystem
+            auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
             
             if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
             {
@@ -102,7 +117,7 @@ void PlayerActionControllerSystem::VUpdate(const float) const
                 animationTimerComponent.mAnimationTimer->Resume();
             }
             // All movement keys released and is currently not moving to another tile
-            else if (movementStateComponent.mMoving == false)
+            else
             {
                 renderableComponent.mActiveMeshIndex = 0;
                 animationTimerComponent.mAnimationTimer->Pause();

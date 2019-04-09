@@ -55,7 +55,7 @@ RenderingSystem::RenderingSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<RenderableComponent, TransformComponent>();
 }
 
-void RenderingSystem::VUpdate(const float) const
+void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
     auto& cameraComponent = mWorld.GetSingletonComponent<CameraComponent>();

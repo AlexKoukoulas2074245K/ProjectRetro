@@ -31,8 +31,8 @@ enum class TileOccupierType
 
 struct Tile
 {
-    TileOccupierType mTileOccupierType = TileOccupierType::NONE;
-    ecs::EntityId mOccupierEntityId    = ecs::NULL_ENTITY_ID;
+    TileOccupierType mTileOccupierType  = TileOccupierType::NONE;
+    ecs::EntityId mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +49,8 @@ class LevelGridComponent final: public ecs::IComponent
 {
 public:    
      LevelGrid mLevelGrid;
-     unsigned int mCols;
-     unsigned int mRows;
+     int mCols;
+     int mRows;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

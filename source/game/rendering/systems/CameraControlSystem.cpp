@@ -30,7 +30,7 @@ CameraControlSystem::CameraControlSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<PlayerTagComponent>();
 }
 
-void CameraControlSystem::VUpdate(const float) const
+void CameraControlSystem::VUpdateAssociatedComponents(const float) const
 {    
     for (const auto& entityId : mWorld.GetActiveEntities())
     {

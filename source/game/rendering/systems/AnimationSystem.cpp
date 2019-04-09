@@ -23,7 +23,7 @@ AnimationSystem::AnimationSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<AnimationTimerComponent, RenderableComponent>();
 }
 
-void AnimationSystem::VUpdate(const float dt) const
+void AnimationSystem::VUpdateAssociatedComponents(const float dt) const
 {
     for (const auto& entityId : mWorld.GetActiveEntities())
     {

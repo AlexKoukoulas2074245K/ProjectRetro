@@ -40,7 +40,7 @@ class RenderingSystem final: public ecs::BaseSystem
 public:
     RenderingSystem(ecs::World& world);
     
-    void VUpdate(const float dt) const override;
+    void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
     void RenderEntityInternal

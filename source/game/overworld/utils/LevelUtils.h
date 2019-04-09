@@ -18,7 +18,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../components/LevelGridComponent.h"
+#include "../components/MovementStateComponent.h"
+#include "../../Common/components/TransformComponent.h"
 #include "../../common/GameConstants.h"
+#include "../../ECS.h"
 
 #include <glm/vec3.hpp>
 #include <cstddef>
@@ -27,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline LevelGrid InitializeLevelGridOfDimensions(const unsigned int cols, const unsigned int rows)
+inline LevelGrid InitializeLevelGridOfDimensions(const int cols, const int rows)
 {
     LevelGrid result(rows);
 
@@ -55,6 +58,23 @@ inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Directio
     }
 
     return TileCoords();
+}
+
+inline void PlaceEntityOnTile
+(
+    const ecs::EntityId entityId,
+    const TileCoords& coords,
+    const TileOccupierType tileOccupierType,
+    TransformComponent& entityTransformCompoennt,
+    MovementStateComponent& entityMovementStateComponent,
+    LevelGrid& levelGrid
+)
+{   
+    entityTransformCompoennt.mPosition          = LevelTileCoordsToPosition(coords);    
+    entityMovementStateComponent.mCurrentCoords = coords;
+
+    levelGrid[coords.mRow][coords.mCol].mTileOccupierEntityId = entityId;
+    levelGrid[coords.mRow][coords.mCol].mTileOccupierType     = tileOccupierType;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

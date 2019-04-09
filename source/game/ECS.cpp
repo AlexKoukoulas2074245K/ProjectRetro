@@ -34,7 +34,7 @@ void ecs::World::Update(const float dt)
     auto systemReverseIter = mSystems.rbegin();
     while (systemReverseIter != mSystems.rend())
     {        
-        systemReverseIter->second->VUpdate(dt);
+        systemReverseIter->second->VUpdateAssociatedComponents(dt);
         systemReverseIter++;
     }
 }

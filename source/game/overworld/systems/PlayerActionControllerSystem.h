@@ -28,7 +28,7 @@ class PlayerActionControllerSystem final: public ecs::BaseSystem
 public:
     PlayerActionControllerSystem(ecs::World&);
     
-    void VUpdate(const float dt) const override;
+    void VUpdateAssociatedComponents(const float dt) const override;
     
 private:
     static const StringId NORTH_ANIMATION_NAME_ID;

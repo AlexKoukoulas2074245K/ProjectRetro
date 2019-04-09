@@ -197,24 +197,17 @@ void App::GameLoop()
     
     mWorld.AddComponent<TransformComponent>(otherDummyEntity, std::move(othertransformComponent));
     mWorld.AddComponent<RenderableComponent>(otherDummyEntity, std::move(otherrenderableComponent));
-    
-    auto transformComponent2 = std::make_unique<TransformComponent>();
-    transformComponent2->mPosition = LevelTileCoordsToPosition(TileCoords(2, 2));
-
+        
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
     animationComponent->mAnimationTimer->Pause();
 
-    auto movementStateComponent = std::make_unique<MovementStateComponent>();
-    movementStateComponent->mCurrentCoords = TileCoords(2, 2);
-    movementStateComponent->mTargetCoords  = TileCoords(2, 2);
-
     mWorld.AddComponent<AnimationTimerComponent>(playerEntity, std::move(animationComponent));
     mWorld.AddComponent<DirectionComponent>(playerEntity, std::make_unique<DirectionComponent>());
-    mWorld.AddComponent<MovementStateComponent>(playerEntity, std::move(movementStateComponent));
+    mWorld.AddComponent<MovementStateComponent>(playerEntity, std::make_unique<MovementStateComponent>());
     mWorld.AddComponent<PlayerTagComponent>(playerEntity, std::make_unique<PlayerTagComponent>());
     mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
-    mWorld.AddComponent<TransformComponent>(playerEntity, std::move(transformComponent2));
+    mWorld.AddComponent<TransformComponent>(playerEntity, std::make_unique<TransformComponent>());
     
     bool topRightTexture = true;
     for (int y = 0; y < 5; ++y)
@@ -237,6 +230,16 @@ void App::GameLoop()
             topRightTexture = !topRightTexture;
         }
     }
+
+    PlaceEntityOnTile
+    (
+        playerEntity, 
+        TileCoords(2, 2),
+        TileOccupierType::PLAYER,
+        mWorld.GetComponent<TransformComponent>(playerEntity), 
+        mWorld.GetComponent<MovementStateComponent>(playerEntity),
+        mWorld.GetSingletonComponent<LevelGridComponent>().mLevelGrid
+    );
 
     while (!AppShouldQuit())
     {

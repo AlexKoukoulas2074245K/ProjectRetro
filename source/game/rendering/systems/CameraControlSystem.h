@@ -27,7 +27,7 @@ class CameraControlSystem final : public ecs::BaseSystem
 public:
     CameraControlSystem(ecs::World&);
 
-    void VUpdate(const float dt) const override;
+    void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
     static const float CAMERA_Z_DISTANCE_FROM_PLAYER;
