@@ -32,9 +32,6 @@ public:
 private:
     static const float CHARACTER_MOVEMENT_SPEED;
 
-private:
-    void RejectMovementToNewTile() const;
-    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

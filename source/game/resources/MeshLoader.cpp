@@ -22,12 +22,11 @@
 #include "MeshLoader.h"
 #include "MeshResource.h"
 #include "../common/utils/StringUtils.h"
+#include "../common/utils/MathUtils.h"
 #include "../rendering/opengl/Context.h"
 
 #include <cassert>
 #include <cstdio>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 #include <vector>
 
 

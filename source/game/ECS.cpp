@@ -31,11 +31,9 @@ void ecs::World::Update(const float dt)
     RemoveEntitiesWithoutAnyComponents();
     CongregateActiveEntitiesInCurrentFrame();
 
-    auto systemReverseIter = mSystems.rbegin();
-    while (systemReverseIter != mSystems.rend())
+    for(const auto& system: mSystems)
     {        
-        systemReverseIter->second->VUpdateAssociatedComponents(dt);
-        systemReverseIter++;
+        system->VUpdateAssociatedComponents(dt);
     }
 }
 

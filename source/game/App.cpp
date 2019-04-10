@@ -147,12 +147,12 @@ void App::Run()
 
 void App::InitializeSystems()
 {
-    mWorld.SetSystem<RawInputHandlingSystem>(std::make_unique<RawInputHandlingSystem>(mWorld));
-    mWorld.SetSystem<PlayerActionControllerSystem>(std::make_unique<PlayerActionControllerSystem>(mWorld));
-    mWorld.SetSystem<AnimationSystem>(std::make_unique<AnimationSystem>(mWorld));
-    mWorld.SetSystem<MovementControllerSystem>(std::make_unique<MovementControllerSystem>(mWorld));
-    mWorld.SetSystem<CameraControlSystem>(std::make_unique<CameraControlSystem>(mWorld));
-    mWorld.SetSystem<RenderingSystem>(std::make_unique<RenderingSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<RawInputHandlingSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<PlayerActionControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<MovementControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<RenderingSystem>(mWorld));
 }
 
 void App::GameLoop()
@@ -231,15 +231,16 @@ void App::GameLoop()
         }
     }
 
-    PlaceEntityOnTile
-    (
-        playerEntity, 
-        TileCoords(2, 2),
-        TileOccupierType::PLAYER,
-        mWorld.GetComponent<TransformComponent>(playerEntity), 
-        mWorld.GetComponent<MovementStateComponent>(playerEntity),
-        mWorld.GetSingletonComponent<LevelGridComponent>().mLevelGrid
-    );
+    auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
+    auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
+    auto& gridComponent = mWorld.GetSingletonComponent<LevelGridComponent>();
+
+    playerTransformComponent.mPosition = TileCoordsToPosition(TileCoords(2, 2));
+    playerMovementStateComponent.mCurrentCoords = TileCoords(2, 2);    
+    gridComponent.mLevelGrid[2][2].mTileOccupierEntityId = playerEntity;
+    gridComponent.mLevelGrid[2][2].mTileOccupierType = TileOccupierType::PLAYER;
+
+    const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
 
     while (!AppShouldQuit())
     {
@@ -252,18 +253,15 @@ void App::GameLoop()
         framesAccumulator++;
         dtAccumulator += dt;
 
-#ifndef NDEBUG
         if (dtAccumulator > 1.0f)
         {
-            const auto windowTitle = "FPS: " + std::to_string(framesAccumulator);
-            const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
-            
-            SDL_SetWindowTitle(windowComponent.mWindowHandle, windowTitle.c_str());
+            const auto fpsString = " - FPS: " + std::to_string(framesAccumulator);
+            SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString).c_str());
             
             framesAccumulator = 0;
             dtAccumulator     = 0.0f;
         }
-#endif        
+
 
         // Simulate world
         mWorld.Update(dt);

@@ -18,6 +18,7 @@
 
 #include "common/utils/TypeTraits.h"
 
+#include <algorithm>
 #include <bitset>        
 #include <cassert>
 #include <map>
@@ -238,35 +239,11 @@ public:
 
         mSingletonComponents.erase(componentTypeId);
     }
-
-    // Sets and takes ownership of the given system.
-    // IMPORTANT: The order systems are set, is equivalent 
-    // to the order in which they will be updated each frame,
-    // i.e. the first system set here will always be the first one 
-    // to be updated.
-    template<class SystemType>
-    inline void SetSystem(std::unique_ptr<BaseSystem> system)
-    {
-        const auto systemTypeId = GetTypeHash<SystemType>();
-        assert(mSystems.count(systemTypeId) == 0 &&
-            "System of the same type already registered in the world");
         
-        mSystems[systemTypeId] = std::move(system);
+    inline void AddSystem(std::unique_ptr<BaseSystem> system)
+    {
+        mSystems.push_back(std::move(system));
     }            
-
-    // Removes the system of the specified type registered in the world
-    template<class SystemType>
-    inline void RemoveSystem()
-    {
-        static_assert(std::is_base_of<BaseSystem, SystemType>::value,
-            "SystemType does not derive from BaseSystem");
-        
-        const auto systemTypeId = GetTypeHash<SystemType>();
-        assert(mSystems.count(systemTypeId) != 0 &&
-            "System of the specified type is not registered in the world");
-
-        mSystems.erase(systemTypeId);
-    }
 
     // Calculates the bit mask of the given template argument (FirstUtilizedComponentType).
     // Registers the given component type if not already registered in the world
@@ -325,8 +302,7 @@ private:
         mComponentMasks[componentTypeId] = 1LL << mComponentMasks.size();
     }  
     
-private:    
-    using SystemsMap              = std::map<SystemTypeId, std::unique_ptr<BaseSystem>>;
+private:        
     using ComponentMap            = std::unordered_map<ComponentTypeId, std::unique_ptr<IComponent>, ComponentTypeIdHasher>;
     using EntityComponentStoreMap = std::unordered_map<EntityId, ComponentMap, EntityIdHasher>;
     using ComponentMaskMap        = std::unordered_map<ComponentTypeId, ComponentMask, ComponentTypeIdHasher>;
@@ -334,8 +310,8 @@ private:
     EntityComponentStoreMap mEntityComponentStore;
     ComponentMaskMap        mComponentMasks;    
     ComponentMap            mSingletonComponents;
-    SystemsMap              mSystems;
-    
+                  
+    std::vector<std::unique_ptr<BaseSystem>> mSystems;
     std::vector<EntityId> mActiveEntitiesInFrame;
 
     EntityId mEntityCounter = 1LL;

@@ -66,54 +66,50 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             
             if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection              = Direction::WEST;
-                renderableComponent.mActiveAnimationNameId = WEST_ANIMATION_NAME_ID;
-                renderableComponent.mActiveMeshIndex       = 0;
+                directionComponent.mDirection = Direction::WEST;
+                ChangeAnimationIfCurrentPlayingIsDifferent(WEST_ANIMATION_NAME_ID, renderableComponent);                
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection              = Direction::WEST;
-                renderableComponent.mActiveAnimationNameId = WEST_ANIMATION_NAME_ID;
-                movementStateComponent.mMoving             = true;
+                directionComponent.mDirection  = Direction::WEST;
+                movementStateComponent.mMoving = true;
+                ChangeAnimationIfCurrentPlayingIsDifferent(WEST_ANIMATION_NAME_ID, renderableComponent);
                 animationTimerComponent.mAnimationTimer->Resume();
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection              = Direction::EAST;
-                renderableComponent.mActiveAnimationNameId = EAST_ANIMATION_NAME_ID;
-                renderableComponent.mActiveMeshIndex       = 0;
+                directionComponent.mDirection = Direction::EAST;
+                ChangeAnimationIfCurrentPlayingIsDifferent(EAST_ANIMATION_NAME_ID, renderableComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection              = Direction::EAST;
-                renderableComponent.mActiveAnimationNameId = EAST_ANIMATION_NAME_ID;
-                movementStateComponent.mMoving             = true;
+                directionComponent.mDirection  = Direction::EAST;
+                movementStateComponent.mMoving = true;
+                ChangeAnimationIfCurrentPlayingIsDifferent(EAST_ANIMATION_NAME_ID, renderableComponent);
                 animationTimerComponent.mAnimationTimer->Resume();
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection              = Direction::NORTH;
-                renderableComponent.mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
-                renderableComponent.mActiveMeshIndex       = 0;
+                directionComponent.mDirection = Direction::NORTH;
+                ChangeAnimationIfCurrentPlayingIsDifferent(NORTH_ANIMATION_NAME_ID, renderableComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection              = Direction::NORTH;
-                renderableComponent.mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
-                movementStateComponent.mMoving             = true;
+                directionComponent.mDirection  = Direction::NORTH;
+                movementStateComponent.mMoving = true;
+                ChangeAnimationIfCurrentPlayingIsDifferent(NORTH_ANIMATION_NAME_ID, renderableComponent);
                 animationTimerComponent.mAnimationTimer->Resume();
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection              = Direction::SOUTH;
-                renderableComponent.mActiveAnimationNameId = SOUTH_ANIMATION_NAME_ID;
-                renderableComponent.mActiveMeshIndex       = 0;
+                directionComponent.mDirection = Direction::SOUTH;
+                ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection              = Direction::SOUTH;
-                renderableComponent.mActiveAnimationNameId = SOUTH_ANIMATION_NAME_ID;
-                movementStateComponent.mMoving             = true;
+                directionComponent.mDirection = Direction::SOUTH;
+                movementStateComponent.mMoving = true;
+                ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);
                 animationTimerComponent.mAnimationTimer->Resume();
             }
             // All movement keys released and is currently not moving to another tile
@@ -123,6 +119,23 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
                 animationTimerComponent.mAnimationTimer->Pause();
             }
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void PlayerActionControllerSystem::ChangeAnimationIfCurrentPlayingIsDifferent
+(
+    const StringId animationNameId, 
+    RenderableComponent& renderableComponent
+) const
+{
+    if (renderableComponent.mActiveAnimationNameId != animationNameId)
+    {
+        renderableComponent.mActiveAnimationNameId = animationNameId;
+        renderableComponent.mActiveMeshIndex = 0;
     }
 }
 

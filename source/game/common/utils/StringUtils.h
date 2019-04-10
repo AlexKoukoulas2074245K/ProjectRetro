@@ -97,7 +97,8 @@ public:
     
     operator size_t () { return mStringId; }
     bool operator == (const StringId& other) const { return mStringId == other.GetStringId(); }
-    
+    bool operator != (const StringId& other) const { return mStringId != other.GetStringId(); }
+
     const std::string& GetString() const { return mString; }
     size_t GetStringId() const { return mStringId; }
     

@@ -27,8 +27,6 @@
 
 #include <algorithm> // sort
 #include <cstdlib>   // exit
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <SDL.h> 
 #include <vector>
 #include <iterator>
@@ -139,9 +137,9 @@ void RenderingSystem::RenderEntityInternal
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
     world = glm::translate(world, transformComponent.mPosition);
-    world = glm::rotate(world, transformComponent.mRotation.x, X_AXIS);
-    world = glm::rotate(world, transformComponent.mRotation.y, Y_AXIS);
-    world = glm::rotate(world, transformComponent.mRotation.z, Z_AXIS);
+    world = glm::rotate(world, transformComponent.mRotation.x, math::X_AXIS);
+    world = glm::rotate(world, transformComponent.mRotation.y, math::Y_AXIS);
+    world = glm::rotate(world, transformComponent.mRotation.z, math::Z_AXIS);
     world = glm::scale(world, transformComponent.mScale);
 
     // Set rendering uniforms
@@ -183,8 +181,9 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     const auto desiredWindowHeight = static_cast<int>(displayMode.h * 0.66f);
 
     // Create SDL window
-    auto windowComponent = std::make_unique<WindowComponent>();    
-    windowComponent->mWindowHandle = SDL_CreateWindow("Hardcore2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, desiredWindowWidth, desiredWindowHeight, SDL_WINDOW_OPENGL);
+    auto windowComponent           = std::make_unique<WindowComponent>();   
+    windowComponent->mWindowTitle  = "ProjectRetro";
+    windowComponent->mWindowHandle = SDL_CreateWindow(windowComponent->mWindowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, desiredWindowWidth, desiredWindowHeight, SDL_WINDOW_OPENGL);
    
     if (windowComponent->mWindowHandle == nullptr)
     {
@@ -215,7 +214,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
 #endif
 
     // Get actual render buffer width/height
-    auto renderableWidth = 0;
+    auto renderableWidth  = 0;
     auto renderableHeight = 0;
     SDL_GL_GetDrawableSize(windowComponent->mWindowHandle, &renderableWidth, &renderableHeight);
 
@@ -281,7 +280,7 @@ void RenderingSystem::CompileAndLoadShaders() const
         // By signaling to load either a .vs or a .fs, the ShaderLoader will load the pair automatically,
         // hence why the addition of the .vs here
         auto shaderResourceId = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_SHADERS_ROOT + shaderName + ".vs");
-        auto& shaderResource = ResourceLoadingService::GetInstance().GetResource<ShaderResource>(shaderResourceId);
+        auto& shaderResource  = ResourceLoadingService::GetInstance().GetResource<ShaderResource>(shaderResourceId);
         
         // Save a copy of the shader to the ShaderStoreComponent
         shaderStoreComponent->mShaders[StringId(shaderName)] = shaderResource;

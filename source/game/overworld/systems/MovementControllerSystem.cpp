@@ -13,6 +13,7 @@
 #include "../components/LevelGridComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../utils/LevelUtils.h"
+#include "../utils/MovementUtils.h"
 #include "../../common/GameConstants.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
@@ -22,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * OVERWORLD_TILE_SIZE;
+const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 2 * OVERWORLD_TILE_SIZE;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
     CalculateAndSetComponentUsageMask<MovementStateComponent, DirectionComponent, TransformComponent>();
 }
 
-void MovementControllerSystem::VUpdateAssociatedComponents(const float) const
+void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
     auto& levelGridComponent = mWorld.GetSingletonComponent<LevelGridComponent>();
 
@@ -43,6 +44,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float) const
         if (ShouldProcessEntity(entityId))
         {            
             const auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
+            auto& transformComponent       = mWorld.GetComponent<TransformComponent>(entityId);
             auto& movementStateComponent   = mWorld.GetComponent<MovementStateComponent>(entityId);
                         
             if (movementStateComponent.mMoving == false)
@@ -98,18 +100,24 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float) const
             targetTile.mTileOccupierEntityId = entityId;
             targetTile.mTileOccupierType     = mWorld.HasComponent<PlayerTagComponent>(entityId) ? TileOccupierType::PLAYER : TileOccupierType::NPC;
 
-            
+            // Move the transform to target by a tick
+            const auto moveOutcome = MoveToTargetPosition
+            (
+                TileCoordsToPosition(targetTileCoords),
+                CHARACTER_MOVEMENT_SPEED, 
+                dt, 
+                transformComponent.mPosition
+            );
+
+            // Target position reached in this frame
+            if (moveOutcome == MoveOutcome::COMPLETED)
+            {
+                movementStateComponent.mMoving        = false;
+                transformComponent.mPosition          = TileCoordsToPosition(targetTileCoords);
+                movementStateComponent.mCurrentCoords = targetTileCoords;
+            }
         }
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-void MovementControllerSystem::RejectMovementToNewTile() const
-{
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
