@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MovementControllerSystem.h"
-#include "../components/LevelGridComponent.h"
+#include "../components/LevelTilemapComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/MovementUtils.h"
@@ -37,7 +37,7 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
 
 void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
-    auto& levelGridComponent = mWorld.GetSingletonComponent<LevelGridComponent>();
+    auto& levelTilemapComponent = mWorld.GetSingletonComponent<LevelTilemapComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
@@ -53,7 +53,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }            
 
             const auto& currentTileCoords = movementStateComponent.mCurrentCoords;
-            auto& currentTile = levelGridComponent.mLevelGrid.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
+            auto& currentTile = levelTilemapComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
 
             const auto targetTileCoords = GetNeighborTileCoords(currentTileCoords, directionComponent.mDirection);
             
@@ -62,8 +62,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             (   
                 targetTileCoords.mCol < 0 ||
                 targetTileCoords.mRow < 0 ||
-                targetTileCoords.mCol >= levelGridComponent.mCols ||
-                targetTileCoords.mRow >= levelGridComponent.mRows
+                targetTileCoords.mCol >= levelTilemapComponent.mCols ||
+                targetTileCoords.mRow >= levelTilemapComponent.mRows
             )
             {
                 movementStateComponent.mMoving = false;
@@ -71,7 +71,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }
 
             // Safe to now get the actual target tile            
-            auto& targetTile  = levelGridComponent.mLevelGrid.at(targetTileCoords.mRow).at(targetTileCoords.mCol);
+            auto& targetTile  = GetTile(targetTileCoords, levelTilemapComponent.mLevelTilemap);
 
             // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::SOLID)

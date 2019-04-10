@@ -60,7 +60,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
                 continue;
             }
 
-            // We'll set the intended movement direction and intent of movement (mMoving) 
+            // We'll set the movement direction and intent of movement (mMoving) 
             // in this system's udpate, and do the checks (and possibly revert the intent) in MovementControllerSystem
             auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
             

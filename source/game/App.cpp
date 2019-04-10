@@ -13,6 +13,7 @@
 #include "common/GameConstants.h"
 #include "common/components/DirectionComponent.h"
 #include "common/components/TransformComponent.h"
+#include "common/utils/MathUtils.h"
 #include "common/components/PlayerTagComponent.h"
 #include "input/components/InputStateComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
@@ -24,7 +25,7 @@
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/ResourceLoadingService.h"
 #include "resources/TextureUtils.h"
-#include "overworld/components/LevelGridComponent.h"
+#include "overworld/components/LevelTilemapComponent.h"
 #include "overworld/components/MovementStateComponent.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
@@ -166,37 +167,26 @@ void App::GameLoop()
     const auto dummyEntity = mWorld.CreateEntity();
     const auto playerEntity = mWorld.CreateEntity();
     
-    auto levelGridComponent = std::make_unique<LevelGridComponent>();
-    levelGridComponent->mRows = 5U;
-    levelGridComponent->mCols = 5U;
-    levelGridComponent->mLevelGrid = InitializeLevelGridOfDimensions(levelGridComponent->mCols, levelGridComponent->mRows);
+    auto levelTilemapComponent = std::make_unique<LevelTilemapComponent>();    
+    levelTilemapComponent->mLevelName = StringId("Test");
+    levelTilemapComponent->mRows = 5U;
+    levelTilemapComponent->mCols = 5U;
+    levelTilemapComponent->mLevelTilemap = InitializeLevelTilemapOfDimensions(levelTilemapComponent->mCols, levelTilemapComponent->mRows);
     
-    mWorld.SetSingletonComponent<LevelGridComponent>(std::move(levelGridComponent));    
+    mWorld.SetSingletonComponent<LevelTilemapComponent>(std::move(levelTilemapComponent));    
 
-    auto transformComponent = std::make_unique<TransformComponent>();
-    transformComponent->mPosition.x = -2.0f;
-    transformComponent->mPosition.z = -2.0f;
-    
-    auto renderableComponent = std::make_unique<RenderableComponent>();
-    renderableComponent->mShaderNameId = StringId("basic");
-    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    renderableComponent->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj"));
-    renderableComponent->mActiveAnimationNameId = StringId("test");
+    auto dummyAnimationComponent = std::make_unique<AnimationTimerComponent>();
+    dummyAnimationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
+    dummyAnimationComponent->mAnimationTimer->Pause();
 
-    mWorld.AddComponent<TransformComponent>(dummyEntity, std::move(transformComponent));
-    mWorld.AddComponent<RenderableComponent>(dummyEntity, std::move(renderableComponent));
-    
-    auto othertransformComponent = std::make_unique<TransformComponent>();
-    othertransformComponent->mPosition.x = -1.5f;    
-
-    auto otherrenderableComponent = std::make_unique<RenderableComponent>();
-    otherrenderableComponent->mShaderNameId = StringId("basic");
-    otherrenderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
-    otherrenderableComponent->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/camera_facing_quad[0.250000,1.000000-0.125000,1.000000-0.125000,0.984375-0.250000,0.984375].obj"));
-    otherrenderableComponent->mActiveAnimationNameId = StringId("test");
-    
-    mWorld.AddComponent<TransformComponent>(otherDummyEntity, std::move(othertransformComponent));
-    mWorld.AddComponent<RenderableComponent>(otherDummyEntity, std::move(otherrenderableComponent));
+    mWorld.AddComponent<AnimationTimerComponent>(dummyEntity, std::move(dummyAnimationComponent));
+    mWorld.AddComponent<TransformComponent>(dummyEntity, std::make_unique<TransformComponent>());
+    mWorld.AddComponent<DirectionComponent>(dummyEntity, std::make_unique<DirectionComponent>());
+    mWorld.AddComponent<MovementStateComponent>(dummyEntity, std::make_unique<MovementStateComponent>());
+    mWorld.AddComponent<RenderableComponent>(dummyEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
+        
+    mWorld.AddComponent<TransformComponent>(otherDummyEntity, std::make_unique<TransformComponent>());
+    mWorld.AddComponent<RenderableComponent>(otherDummyEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
         
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
@@ -233,12 +223,22 @@ void App::GameLoop()
 
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
-    auto& gridComponent = mWorld.GetSingletonComponent<LevelGridComponent>();
+    auto& levelTilemapComp = mWorld.GetSingletonComponent<LevelTilemapComponent>();
 
-    playerTransformComponent.mPosition = TileCoordsToPosition(TileCoords(2, 2));
+    playerTransformComponent.mPosition = TileCoordsToPosition(2, 2);
     playerMovementStateComponent.mCurrentCoords = TileCoords(2, 2);    
-    gridComponent.mLevelGrid[2][2].mTileOccupierEntityId = playerEntity;
-    gridComponent.mLevelGrid[2][2].mTileOccupierType = TileOccupierType::PLAYER;
+    GetTile(2, 2, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = playerEntity;
+    GetTile(2, 2, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+
+    auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);    
+    dummyTransformComponent.mPosition = TileCoordsToPosition(0, 4);
+    GetTile(0, 4, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = dummyEntity;
+    GetTile(0, 4, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+
+    auto& otherDummyTransformComponent = mWorld.GetComponent<TransformComponent>(otherDummyEntity);
+    otherDummyTransformComponent.mPosition = TileCoordsToPosition(4, 4);
+    GetTile(4, 4, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
+    GetTile(4, 4, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
 
     const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
 
@@ -257,11 +257,10 @@ void App::GameLoop()
         {
             const auto fpsString = " - FPS: " + std::to_string(framesAccumulator);
             SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString).c_str());
-            
-            framesAccumulator = 0;
-            dtAccumulator     = 0.0f;
-        }
 
+            framesAccumulator = 0;
+            dtAccumulator = 0.0f;
+        }
 
         // Simulate world
         mWorld.Update(dt);

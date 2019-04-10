@@ -30,7 +30,7 @@ static constexpr float OVERWORLD_TILE_SIZE = 1.6f;
 
 enum class Direction
 {
-    NORTH, SOUTH, WEST, EAST
+    NORTH = 0, SOUTH, WEST, EAST
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
