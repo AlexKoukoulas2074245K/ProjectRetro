@@ -30,6 +30,7 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
+    static const float CAMERA_Y_ELEVATION_FROM_GROUND;
     static const float CAMERA_Z_DISTANCE_FROM_PLAYER;
 
 };

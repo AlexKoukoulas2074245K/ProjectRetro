@@ -10,8 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MovementControllerSystem.h"
+#include "../components/ActiveLevelComponent.h"
 #include "../components/LevelTilemapComponent.h"
 #include "../components/MovementStateComponent.h"
+#include "../components/WarpConnectionsComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/MovementUtils.h"
 #include "../../common/GameConstants.h"
@@ -23,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 2 * OVERWORLD_TILE_SIZE;
+const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * OVERWORLD_TILE_SIZE;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,8 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
 
 void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
-    auto& levelTilemapComponent = mWorld.GetSingletonComponent<LevelTilemapComponent>();
+    auto& activeLevelComponent  = mWorld.GetSingletonComponent<ActiveLevelComponent>();
+    auto& levelTilemapComponent = mWorld.GetComponent<LevelTilemapComponent>(activeLevelComponent.mActiveLevelEntityId);
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
@@ -97,8 +100,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             currentTile.mTileOccupierType     = TileOccupierType::NONE;
 
             // Set occupier status on the target tile
+            const auto hasPlayerTag = mWorld.HasComponent<PlayerTagComponent>(entityId);
             targetTile.mTileOccupierEntityId = entityId;
-            targetTile.mTileOccupierType     = mWorld.HasComponent<PlayerTagComponent>(entityId) ? TileOccupierType::PLAYER : TileOccupierType::NPC;
+            targetTile.mTileOccupierType     = hasPlayerTag ? TileOccupierType::PLAYER : TileOccupierType::NPC;
 
             // Move the transform to target by a tick
             const auto moveOutcome = MoveToTargetPosition
@@ -115,6 +119,12 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mMoving        = false;
                 transformComponent.mPosition          = TileCoordsToPosition(targetTileCoords);
                 movementStateComponent.mCurrentCoords = targetTileCoords;
+
+                // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
+                if (targetTile.mTileOccupierType == TileOccupierType::WARP && hasPlayerTag)
+                {
+                    mWorld.GetSingletonComponent<WarpConnectionsComponent>().mHasPendingWarpConnection = true;                    
+                }
             }
         }
     }

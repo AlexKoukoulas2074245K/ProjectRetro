@@ -18,7 +18,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float CameraControlSystem::CAMERA_Z_DISTANCE_FROM_PLAYER = 5.0f;
+const float CameraControlSystem::CAMERA_Y_ELEVATION_FROM_GROUND = 10.0f;
+const float CameraControlSystem::CAMERA_Z_DISTANCE_FROM_PLAYER  = 10.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,7 @@ void CameraControlSystem::VUpdateAssociatedComponents(const float) const
             
             cameraComponent.mFocusPosition = focusedTransformComponent.mPosition;
             cameraComponent.mPosition.x    = focusedTransformComponent.mPosition.x;
+            cameraComponent.mPosition.y    = CAMERA_Y_ELEVATION_FROM_GROUND;
             cameraComponent.mPosition.z    = focusedTransformComponent.mPosition.z - CAMERA_Z_DISTANCE_FROM_PLAYER;
         }
     }

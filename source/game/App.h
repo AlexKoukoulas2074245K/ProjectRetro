@@ -31,6 +31,7 @@ private:
     void InitializeSystems();
     void GameLoop();
     bool AppShouldQuit();
+    void DummyInitialization();
     
 private:
     ecs::World mWorld;    
