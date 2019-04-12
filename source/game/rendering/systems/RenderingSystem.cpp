@@ -10,6 +10,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "RenderingSystem.h"
+#include "../components/CameraComponent.h"
+#include "../components/RenderableComponent.h"
+#include "../components/RenderingContextComponent.h"
+#include "../components/ShaderStoreComponent.h"
+#include "../components/WindowComponent.h"
+#include "../opengl/Context.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/Logging.h"
@@ -18,12 +24,7 @@
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
-#include "../components/CameraComponent.h"
-#include "../components/RenderableComponent.h"
-#include "../components/RenderingContextComponent.h"
-#include "../components/ShaderStoreComponent.h"
-#include "../components/WindowComponent.h"
-#include "../opengl/Context.h"
+#include "../../overworld/components/LevelGeometryTagComponent.h"
 
 #include <algorithm> // sort
 #include <cstdlib>   // exit
@@ -81,7 +82,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             // then it is rendered in this pass here. Otherwise the entity is added
             // to a vector of semi-transparent entities that need to be sorted 
             // prior to rendering
-            if (currentTexture.HasTransparentPixels())
+            if (currentTexture.HasTransparentPixels() && mWorld.HasComponent<LevelGeometryTagComponent>(entityId) == false)
             {
                 semiTransparentTexturedEntities.push_back(entityId);
             }

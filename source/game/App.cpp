@@ -26,6 +26,7 @@
 #include "resources/ResourceLoadingService.h"
 #include "resources/TextureUtils.h"
 #include "overworld/components/ActiveLevelComponent.h"
+#include "overworld/components/LevelGeometryTagComponent.h"
 #include "overworld/components/LevelTilemapComponent.h"
 #include "overworld/components/MovementStateComponent.h"
 #include "overworld/components/WarpConnectionsComponent.h"
@@ -231,8 +232,8 @@ void App::DummyInitialization()
     {
         GetTile(0, y, levelTilemapComponent->mLevelTilemap).mTileTrait = TileTrait::SOLID;
     }
-    GetTile(0, levelTilemapComponent->mRows -1, levelTilemapComponent->mLevelTilemap).mTileTrait = TileTrait::WARP;
-        
+    GetTile(0, levelTilemapComponent->mRows - 1, levelTilemapComponent->mLevelTilemap).mTileTrait = TileTrait::WARP;
+
 
     auto activeLevelComponent = std::make_unique<ActiveLevelComponent>();
     activeLevelComponent->mActiveLevelEntityId = testLevelAEntityId;
@@ -262,24 +263,49 @@ void App::DummyInitialization()
     mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
     mWorld.AddComponent<TransformComponent>(playerEntity, std::make_unique<TransformComponent>());
 
-    const auto levelGroundLayer = mWorld.CreateEntity();
-    auto transformComponent = std::make_unique<TransformComponent>();
-    transformComponent->mScale.x = 32.0f;
-    transformComponent->mScale.z = 32.0f;
-    transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
-    transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
-    transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+    {
+        const auto levelGroundLayer = mWorld.CreateEntity();
+        auto transformComponent = std::make_unique<TransformComponent>();
+        transformComponent->mScale.x = 32.0f;
+        transformComponent->mScale.z = 32.0f;
+        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+        transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
+        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
 
-    auto renderableComponent = std::make_unique<RenderableComponent>();
-    renderableComponent->mShaderNameId = StringId("basic");
-    renderableComponent->mAnimationsToMeshes[StringId("default")].
-        push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
-    renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mTextureResourceId =
-        ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_ground_layer.png");
+        auto renderableComponent = std::make_unique<RenderableComponent>();
+        renderableComponent->mShaderNameId = StringId("basic");
+        renderableComponent->mAnimationsToMeshes[StringId("default")].
+            push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
+        renderableComponent->mActiveAnimationNameId = StringId("default");
+        renderableComponent->mTextureResourceId =
+            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_ground_layer.png");
 
-    mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
-    mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
+        mWorld.AddComponent<LevelGeometryTagComponent>(levelGroundLayer, std::make_unique<LevelGeometryTagComponent>());
+        mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
+        mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
+    }
+
+    {
+        const auto levelGrassLayer = mWorld.CreateEntity();
+        auto transformComponent = std::make_unique<TransformComponent>();
+        transformComponent->mScale.x = 32.0f;
+        transformComponent->mScale.z = 32.0f;
+        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+        transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 4.0f;
+        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+
+        auto renderableComponent = std::make_unique<RenderableComponent>();
+        renderableComponent->mShaderNameId = StringId("basic");
+        renderableComponent->mAnimationsToMeshes[StringId("default")].
+            push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
+        renderableComponent->mActiveAnimationNameId = StringId("default");
+        renderableComponent->mTextureResourceId =
+            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_grass_layer.png");
+
+        mWorld.AddComponent<LevelGeometryTagComponent>(levelGrassLayer, std::make_unique<LevelGeometryTagComponent>());
+        mWorld.AddComponent<TransformComponent>(levelGrassLayer, std::move(transformComponent));
+        mWorld.AddComponent<RenderableComponent>(levelGrassLayer, std::move(renderableComponent));
+    }
 
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
