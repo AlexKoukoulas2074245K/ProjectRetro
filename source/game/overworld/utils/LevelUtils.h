@@ -19,7 +19,7 @@
 
 #include "../components/LevelTilemapComponent.h"
 #include "../components/MovementStateComponent.h"
-#include "../../Common/components/TransformComponent.h"
+#include "../../common/components/TransformComponent.h"
 #include "../../common/GameConstants.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../ECS.h"

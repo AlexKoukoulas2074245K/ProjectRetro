@@ -53,13 +53,21 @@ MoveOutcome MoveToTargetPosition
         if (movingRight)
         {
             currentPosition.x += speed * dt;
+            if (currentPosition.x >= targetPosition.x)
+            {
+                currentPosition.x = targetPosition.x;
+                return MoveOutcome::COMPLETED;
+            }
         }
         else
         {
             currentPosition.x -= speed * dt;
+            if (currentPosition.x <= targetPosition.x)
+            {
+                currentPosition.x = targetPosition.x;
+                return MoveOutcome::COMPLETED;
+            }
         }
-
-        return math::FloatsSufficientlyClose(currentPosition.x, targetPosition.x) ? MoveOutcome::COMPLETED : MoveOutcome::IN_PROGRESS;
     }
     else
     {
@@ -67,14 +75,24 @@ MoveOutcome MoveToTargetPosition
         if (movingForward)
         {
             currentPosition.z += speed * dt;
+            if (currentPosition.z >= targetPosition.z)
+            {
+                currentPosition.z = targetPosition.z;
+                return MoveOutcome::COMPLETED;
+            }
         }
         else
         {
             currentPosition.z -= speed * dt;
+            if (currentPosition.z <= targetPosition.z)
+            {
+                currentPosition.z = targetPosition.z;
+                return MoveOutcome::COMPLETED;
+            }
         }
-
-        return math::FloatsSufficientlyClose(currentPosition.z, targetPosition.z) ? MoveOutcome::COMPLETED : MoveOutcome::IN_PROGRESS;
     }
+    
+    return MoveOutcome::IN_PROGRESS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
