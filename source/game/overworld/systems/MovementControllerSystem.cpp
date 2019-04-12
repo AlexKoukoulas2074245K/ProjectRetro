@@ -77,7 +77,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             auto& targetTile  = GetTile(targetTileCoords, levelTilemapComponent.mLevelTilemap);
 
             // Occupier checks
-            if (targetTile.mTileOccupierType == TileOccupierType::SOLID)
+            if (targetTile.mTileTrait == TileTrait::SOLID)
             {
                 movementStateComponent.mMoving = false;
                 continue;
@@ -121,7 +121,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mCurrentCoords = targetTileCoords;
 
                 // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
-                if (targetTile.mTileOccupierType == TileOccupierType::WARP && hasPlayerTag)
+                if (targetTile.mTileTrait == TileTrait::WARP && hasPlayerTag)
                 {
                     mWorld.GetSingletonComponent<WarpConnectionsComponent>().mHasPendingWarpConnection = true;                    
                 }

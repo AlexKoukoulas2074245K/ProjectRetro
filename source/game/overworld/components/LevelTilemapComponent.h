@@ -27,11 +27,17 @@
 
 enum class TileOccupierType
 {
-    NONE, SOLID, NPC, PLAYER, WARP
+    NONE, NPC, PLAYER
+};
+
+enum class TileTrait
+{
+    NONE, SOLID, WARP
 };
 
 struct Tile
 {
+    TileTrait mTileTrait                = TileTrait::NONE;
     TileOccupierType mTileOccupierType  = TileOccupierType::NONE;
     ecs::EntityId mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
 };

@@ -190,8 +190,8 @@ void App::GameLoop()
             dtAccumulator = 0.0f;
         }
 
-        // Simulate world
-        mWorld.Update(dt);
+        // Simulate world. Limit DT passed in to 6 frames a second
+        mWorld.Update(math::Min(dt, 0.1666f));
     }
 }
 
@@ -224,12 +224,15 @@ void App::DummyInitialization()
 
     auto levelTilemapComponent = std::make_unique<LevelTilemapComponent>();
     levelTilemapComponent->mLevelName = StringId("testLevelA");
-    levelTilemapComponent->mRows = 10U;
-    levelTilemapComponent->mCols = 10U;
+    levelTilemapComponent->mRows = 32;
+    levelTilemapComponent->mCols = 32;
     levelTilemapComponent->mLevelTilemap = InitializeLevelTilemapOfDimensions(levelTilemapComponent->mCols, levelTilemapComponent->mRows);
-    GetTile(0, 9, levelTilemapComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::WARP;
-    
-    mWorld.AddComponent<LevelTilemapComponent>(testLevelAEntityId, std::move(levelTilemapComponent));
+    for (int y = 0; y < levelTilemapComponent->mRows - 1; ++y)
+    {
+        GetTile(0, y, levelTilemapComponent->mLevelTilemap).mTileTrait = TileTrait::SOLID;
+    }
+    GetTile(0, levelTilemapComponent->mRows -1, levelTilemapComponent->mLevelTilemap).mTileTrait = TileTrait::WARP;
+        
 
     auto activeLevelComponent = std::make_unique<ActiveLevelComponent>();
     activeLevelComponent->mActiveLevelEntityId = testLevelAEntityId;
@@ -259,47 +262,44 @@ void App::DummyInitialization()
     mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
     mWorld.AddComponent<TransformComponent>(playerEntity, std::make_unique<TransformComponent>());
 
-    bool topRightTexture = true;
-    for (int y = 0; y < 10; ++y)
-    {
-        for (int x = 0; x < 10; ++x)
-        {
-            auto tileEntity = mWorld.CreateEntity();
-            auto tileTransformComponent = std::make_unique<TransformComponent>();
-            tileTransformComponent->mPosition = glm::vec3(x * OVERWORLD_TILE_SIZE, -OVERWORLD_TILE_SIZE * 0.5f, y * OVERWORLD_TILE_SIZE);
+    const auto levelGroundLayer = mWorld.CreateEntity();
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mScale.x = 32.0f;
+    transformComponent->mScale.z = 32.0f;
+    transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+    transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
+    transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
 
-            auto tileRenderableComponent = std::make_unique<RenderableComponent>();
-            tileRenderableComponent->mShaderNameId = StringId("basic");
-            tileRenderableComponent->mActiveAnimationNameId = StringId("test");
-            tileRenderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(topRightTexture ? "textures/materials/2d_out_full_floor.png" : "textures/materials/2d_out_empty_floor.png");
-            tileRenderableComponent->mAnimationsToMeshes[StringId("test")].push_back(ResourceLoadingService::GetInstance().LoadResource("models/2d_out_empty_floor.obj"));
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    renderableComponent->mShaderNameId = StringId("basic");
+    renderableComponent->mAnimationsToMeshes[StringId("default")].
+        push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mTextureResourceId =
+        ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_ground_layer.png");
 
-            mWorld.AddComponent<TransformComponent>(tileEntity, std::move(tileTransformComponent));
-            mWorld.AddComponent<RenderableComponent>(tileEntity, std::move(tileRenderableComponent));
-
-            topRightTexture = !topRightTexture;
-        }
-    }
+    mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
+    mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
 
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
-    auto& levelTilemapComp = mWorld.GetComponent<LevelTilemapComponent>(mWorld.GetSingletonComponent<ActiveLevelComponent>().mActiveLevelEntityId);
-
-    playerTransformComponent.mPosition = TileCoordsToPosition(2, 2);
-    playerMovementStateComponent.mCurrentCoords = TileCoords(2, 2);
-    GetTile(2, 2, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = playerEntity;
-    GetTile(2, 2, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    
+    playerTransformComponent.mPosition = TileCoordsToPosition(15, 14);
+    playerMovementStateComponent.mCurrentCoords = TileCoords(15, 14);
+    GetTile(15, 14, levelTilemapComponent->mLevelTilemap).mTileOccupierEntityId = playerEntity;
+    GetTile(15, 14, levelTilemapComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
     auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);
-    dummyTransformComponent.mPosition = TileCoordsToPosition(0, 4);
-    GetTile(0, 4, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = dummyEntity;
-    GetTile(0, 4, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+    dummyTransformComponent.mPosition = TileCoordsToPosition(20, 16);
+    GetTile(20, 16, levelTilemapComponent->mLevelTilemap).mTileOccupierEntityId = dummyEntity;
+    GetTile(20, 16, levelTilemapComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
 
     auto& otherDummyTransformComponent = mWorld.GetComponent<TransformComponent>(otherDummyEntity);
-    otherDummyTransformComponent.mPosition = TileCoordsToPosition(4, 4);
-    GetTile(4, 4, levelTilemapComp.mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
-    GetTile(4, 4, levelTilemapComp.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+    otherDummyTransformComponent.mPosition = TileCoordsToPosition(10, 12);
+    GetTile(10, 12, levelTilemapComponent->mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
+    GetTile(10, 12, levelTilemapComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
 
+    mWorld.AddComponent<LevelTilemapComponent>(testLevelAEntityId, std::move(levelTilemapComponent));
     //auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsComponent>();
 
     
