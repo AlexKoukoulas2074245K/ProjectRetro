@@ -40,7 +40,8 @@ public:
     StringId mShaderNameId          = StringId();    
     StringId mActiveAnimationNameId = StringId();
     size_t mActiveMeshIndex         = 0;
-    ResourceId mTextureResourceId   = 0;        
+    ResourceId mTextureResourceId   = 0;
+    bool mAffectedByPerspective     = true;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -111,7 +111,8 @@ std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const Sp
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
     renderableComponent->mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
     renderableComponent->mShaderNameId          = StringId("basic");
-            
+    renderableComponent->mAffectedByPerspective = false;
+    
     LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
 
     if (spriteData.mSpriteType == SpriteType::STATIC) return renderableComponent;
@@ -285,27 +286,6 @@ void App::DummyInitialization()
         mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
     }
 
-    {
-        const auto levelGrassLayer = mWorld.CreateEntity();
-        auto transformComponent = std::make_unique<TransformComponent>();
-        transformComponent->mScale.x = 32.0f;
-        transformComponent->mScale.z = 32.0f;
-        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
-        transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 4.0f;
-        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
-
-        auto renderableComponent = std::make_unique<RenderableComponent>();
-        renderableComponent->mShaderNameId = StringId("basic");
-        renderableComponent->mAnimationsToMeshes[StringId("default")].
-            push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
-        renderableComponent->mActiveAnimationNameId = StringId("default");
-        renderableComponent->mTextureResourceId =
-            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_grass_layer.png");
-
-        mWorld.AddComponent<LevelGeometryTagComponent>(levelGrassLayer, std::make_unique<LevelGeometryTagComponent>());
-        mWorld.AddComponent<TransformComponent>(levelGrassLayer, std::move(transformComponent));
-        mWorld.AddComponent<RenderableComponent>(levelGrassLayer, std::move(renderableComponent));
-    }
 
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);

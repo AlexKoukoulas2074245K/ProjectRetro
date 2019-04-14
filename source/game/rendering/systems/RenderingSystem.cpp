@@ -88,7 +88,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             }
             else
             {
-                RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent);
+                RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent, windowComponent);
             }            
         }
     }
@@ -107,7 +107,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     for (const auto& entityId : semiTransparentTexturedEntities)
     {
         const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-        RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent);
+        RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent, windowComponent);
     }
 
     // Swap window buffers
@@ -123,7 +123,8 @@ void RenderingSystem::RenderEntityInternal
     const ecs::EntityId entityId,
     const RenderableComponent& renderableComponent,
     const CameraComponent& globalCameraComponent, 
-    const ShaderStoreComponent& globalShaderStoreComponent
+    const ShaderStoreComponent& globalShaderStoreComponent,
+    const WindowComponent& globalWindowComponent
 ) const
 {    
     const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
@@ -141,8 +142,16 @@ void RenderingSystem::RenderEntityInternal
     world = glm::rotate(world, transformComponent.mRotation.x, math::X_AXIS);
     world = glm::rotate(world, transformComponent.mRotation.y, math::Y_AXIS);
     world = glm::rotate(world, transformComponent.mRotation.z, math::Z_AXIS);
-    world = glm::scale(world, transformComponent.mScale);
-
+    
+    // Correct scale of hud and billboard entities
+    glm::vec3 scale = transformComponent.mScale;
+    if (!renderableComponent.mAffectedByPerspective)
+    {
+        scale.x /= globalWindowComponent.mAspectRatio;
+    }
+    
+    world = glm::scale(world, scale);
+    
     // Set rendering uniforms
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&globalCameraComponent.mViewMatrix));
@@ -221,7 +230,8 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
 
     windowComponent->mRenderableWidth  = static_cast<float>(renderableWidth);
     windowComponent->mRenderableHeight = static_cast<float>(renderableHeight);
-
+    windowComponent->mAspectRatio      = windowComponent->mRenderableWidth/windowComponent->mRenderableHeight;
+    
     // Log GL driver info
     Log(LogType::INFO, "Vendor     : %s", GL_NO_CHECK(glGetString(GL_VENDOR)));
     Log(LogType::INFO, "Renderer   : %s", GL_NO_CHECK(glGetString(GL_RENDERER)));

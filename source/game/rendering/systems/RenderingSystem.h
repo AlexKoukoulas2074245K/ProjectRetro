@@ -30,6 +30,7 @@
 class CameraComponent;
 class ShaderStoreComponent;
 class RenderableComponent;
+class WindowComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +49,8 @@ private:
         const ecs::EntityId entityId,
         const RenderableComponent& entityRenderableComponent,
         const CameraComponent& globalCameraComponent, 
-        const ShaderStoreComponent& globalShaderStoreComponent
+        const ShaderStoreComponent& globalShaderStoreComponent,
+        const WindowComponent& globalWindowComponent
     ) const;
     void InitializeRenderingWindowAndContext() const;
     void InitializeCamera() const;
