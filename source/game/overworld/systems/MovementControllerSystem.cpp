@@ -10,10 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MovementControllerSystem.h"
-#include "../components/ActiveLevelComponent.h"
-#include "../components/LevelTilemapComponent.h"
+#include "../components/ActiveLevelSingletonComponent.h"
+#include "../components/LevelContextComponent.h"
 #include "../components/MovementStateComponent.h"
-#include "../components/WarpConnectionsComponent.h"
+#include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/MovementUtils.h"
 #include "../../common/GameConstants.h"
@@ -39,8 +39,8 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
 
 void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
-    auto& activeLevelComponent  = mWorld.GetSingletonComponent<ActiveLevelComponent>();
-    auto& levelTilemapComponent = mWorld.GetComponent<LevelTilemapComponent>(activeLevelComponent.mActiveLevelEntityId);
+    auto& activeLevelComponent  = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& levelContextComponent = mWorld.GetComponent<LevelContextComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
@@ -56,7 +56,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }            
 
             const auto& currentTileCoords = movementStateComponent.mCurrentCoords;
-            auto& currentTile = levelTilemapComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
+            auto& currentTile = levelContextComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
 
             const auto targetTileCoords = GetNeighborTileCoords(currentTileCoords, directionComponent.mDirection);
             
@@ -65,8 +65,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             (   
                 targetTileCoords.mCol < 0 ||
                 targetTileCoords.mRow < 0 ||
-                targetTileCoords.mCol >= levelTilemapComponent.mCols ||
-                targetTileCoords.mRow >= levelTilemapComponent.mRows
+                targetTileCoords.mCol >= levelContextComponent.mCols ||
+                targetTileCoords.mRow >= levelContextComponent.mRows
             )
             {
                 movementStateComponent.mMoving = false;
@@ -74,7 +74,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }
 
             // Safe to now get the actual target tile            
-            auto& targetTile  = GetTile(targetTileCoords, levelTilemapComponent.mLevelTilemap);
+            auto& targetTile  = GetTile(targetTileCoords, levelContextComponent.mLevelTilemap);
 
             // Occupier checks
             if (targetTile.mTileTrait == TileTrait::SOLID)
@@ -123,7 +123,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
                 if (targetTile.mTileTrait == TileTrait::WARP && hasPlayerTag)
                 {
-                    mWorld.GetSingletonComponent<WarpConnectionsComponent>().mHasPendingWarpConnection = true;                    
+                    mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>().mHasPendingWarpConnection = true;                    
                 }
             }
         }

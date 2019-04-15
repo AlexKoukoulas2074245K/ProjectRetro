@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../components/LevelTilemapComponent.h"
+#include "../components/LevelContextComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/GameConstants.h"
@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline LevelTilemap InitializeLevelTilemapOfDimensions(const int cols, const int rows)
+inline LevelTilemap InitializeTilemapWithDimensions(const int cols, const int rows)
 {
     LevelTilemap result(rows);
 
@@ -83,6 +83,23 @@ inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Directio
     }
 
     return TileCoords();
+}
+
+inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if 
+        (
+            world.HasComponent<LevelContextComponent>(entityId) &&
+            world.GetComponent<LevelContextComponent>(entityId).mLevelName == levelNameId)
+        {
+            return entityId;
+        }
+    }
+    
+    return ecs::NULL_ENTITY_ID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

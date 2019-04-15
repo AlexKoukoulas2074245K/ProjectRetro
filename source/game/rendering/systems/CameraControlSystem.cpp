@@ -10,8 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "CameraControlSystem.h"
-#include "../components/CameraComponent.h"
-#include "../components/WindowComponent.h"
+#include "../components/CameraSingletonComponent.h"
+#include "../components/WindowSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/utils/MathUtils.h"
@@ -35,7 +35,7 @@ CameraControlSystem::CameraControlSystem(ecs::World& world)
 
 void CameraControlSystem::VUpdateAssociatedComponents(const float) const
 {
-    auto& cameraComponent           = mWorld.GetSingletonComponent<CameraComponent>();
+    auto& cameraComponent           = mWorld.GetSingletonComponent<CameraSingletonComponent>();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
     {

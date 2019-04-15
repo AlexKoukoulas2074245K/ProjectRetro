@@ -10,11 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "RenderingSystem.h"
-#include "../components/CameraComponent.h"
+#include "../components/CameraSingletonComponent.h"
 #include "../components/RenderableComponent.h"
-#include "../components/RenderingContextComponent.h"
-#include "../components/ShaderStoreComponent.h"
-#include "../components/WindowComponent.h"
+#include "../components/RenderingContextSingletonComponent.h"
+#include "../components/ShaderStoreSingletonComponent.h"
+#include "../components/WindowSingletonComponent.h"
 #include "../opengl/Context.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
@@ -24,7 +24,6 @@
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
-#include "../../overworld/components/LevelGeometryTagComponent.h"
 
 #include <algorithm> // sort
 #include <cstdlib>   // exit
@@ -57,9 +56,9 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
-    auto& cameraComponent = mWorld.GetSingletonComponent<CameraComponent>();
-    const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
-    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreComponent>();
+    auto& cameraComponent            = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    const auto& windowComponent      = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
 
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
@@ -78,11 +77,11 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
             const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
 
-            // If entity is solid-textured (has no semi transparent pixels)
-            // then it is rendered in this pass here. Otherwise the entity is added
-            // to a vector of semi-transparent entities that need to be sorted 
-            // prior to rendering
-            if (currentTexture.HasTransparentPixels() && mWorld.HasComponent<LevelGeometryTagComponent>(entityId) == false)
+            // If entity is solid-textured (has no semi transparent pixels) or it is
+            // part of the level geometry textures then it is rendered in this pass here. 
+            // Otherwise the entity is added to a vector of semi-transparent entities that 
+            // need to be sorted prior to rendering.
+            if (currentTexture.HasTransparentPixels() && renderableComponent.mRenderableLayer != RenderableLayer::LEVEL_FLOOR_LEVEL)
             {
                 semiTransparentTexturedEntities.push_back(entityId);
             }
@@ -122,9 +121,9 @@ void RenderingSystem::RenderEntityInternal
 (
     const ecs::EntityId entityId,
     const RenderableComponent& renderableComponent,
-    const CameraComponent& globalCameraComponent, 
-    const ShaderStoreComponent& globalShaderStoreComponent,
-    const WindowComponent& globalWindowComponent
+    const CameraSingletonComponent& globalCameraComponent, 
+    const ShaderStoreSingletonComponent& globalShaderStoreComponent,
+    const WindowSingletonComponent& globalWindowComponent
 ) const
 {    
     const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
@@ -191,7 +190,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     const auto desiredWindowHeight = static_cast<int>(displayMode.h * 0.66f);
 
     // Create SDL window
-    auto windowComponent           = std::make_unique<WindowComponent>();   
+    auto windowComponent           = std::make_unique<WindowSingletonComponent>();   
     windowComponent->mWindowTitle  = "ProjectRetro";
     windowComponent->mWindowHandle = SDL_CreateWindow(windowComponent->mWindowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, desiredWindowWidth, desiredWindowHeight, SDL_WINDOW_OPENGL);
    
@@ -206,7 +205,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     SDL_ShowWindow(windowComponent->mWindowHandle);
 
     // Create SDL GL context
-    auto renderingContextComponent = std::make_unique<RenderingContextComponent>();
+    auto renderingContextComponent = std::make_unique<RenderingContextSingletonComponent>();
     renderingContextComponent->mGLContext = SDL_GL_CreateContext(windowComponent->mWindowHandle);
     if (renderingContextComponent->mGLContext == nullptr)
     {
@@ -251,8 +250,8 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     renderingContextComponent->mDepthTest = true;
     
     // Transfer ownership of singleton components to world
-    mWorld.SetSingletonComponent<WindowComponent>(std::move(windowComponent));
-    mWorld.SetSingletonComponent<RenderingContextComponent>(std::move(renderingContextComponent));
+    mWorld.SetSingletonComponent<WindowSingletonComponent>(std::move(windowComponent));
+    mWorld.SetSingletonComponent<RenderingContextSingletonComponent>(std::move(renderingContextComponent));
 
     // Now that the GL context has been initialized, the ResourceLoadingService
     // can be properly initialized (given that many of them call SDL services)
@@ -261,8 +260,8 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
 
 void RenderingSystem::InitializeCamera() const
 {
-    const auto& windowComponent = mWorld.GetSingletonComponent<WindowComponent>();
-    auto cameraComponent = std::make_unique<CameraComponent>();            
+    const auto& windowComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    auto cameraComponent = std::make_unique<CameraSingletonComponent>();            
     cameraComponent->mProjectionMatrix = glm::perspectiveFovLH
     (
         cameraComponent->mFieldOfView,
@@ -272,19 +271,19 @@ void RenderingSystem::InitializeCamera() const
         cameraComponent->mZFar
      );
     
-    mWorld.SetSingletonComponent<CameraComponent>(std::move(cameraComponent));
+    mWorld.SetSingletonComponent<CameraSingletonComponent>(std::move(cameraComponent));
 }
 
 void RenderingSystem::CompileAndLoadShaders() const
 {
-    auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextComponent>();
+    auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
     
     // Bind default VAO for correct shader compilation
     GL_CHECK(glGenVertexArrays(1, &renderingContextComponent.mDefaultVertexArrayObject));
     GL_CHECK(glBindVertexArray(renderingContextComponent.mDefaultVertexArrayObject));
     
     const auto shaderNames    = GetAndFilterShaderNames();
-    auto shaderStoreComponent = std::make_unique<ShaderStoreComponent>();
+    auto shaderStoreComponent = std::make_unique<ShaderStoreSingletonComponent>();
     
     for (const auto& shaderName: shaderNames)
     {
@@ -303,7 +302,7 @@ void RenderingSystem::CompileAndLoadShaders() const
     // Unbind any VAO currently bound
     GL_CHECK(glBindVertexArray(0));
     
-    mWorld.SetSingletonComponent<ShaderStoreComponent>(std::move(shaderStoreComponent));
+    mWorld.SetSingletonComponent<ShaderStoreSingletonComponent>(std::move(shaderStoreComponent));
 }
 
 std::set<std::string> RenderingSystem::GetAndFilterShaderNames() const

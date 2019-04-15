@@ -27,10 +27,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class CameraComponent;
-class ShaderStoreComponent;
+class CameraSingletonComponent;
+class ShaderStoreSingletonComponent;
 class RenderableComponent;
-class WindowComponent;
+class WindowSingletonComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ private:
     (
         const ecs::EntityId entityId,
         const RenderableComponent& entityRenderableComponent,
-        const CameraComponent& globalCameraComponent, 
-        const ShaderStoreComponent& globalShaderStoreComponent,
-        const WindowComponent& globalWindowComponent
+        const CameraSingletonComponent& globalCameraComponent,
+        const ShaderStoreSingletonComponent& globalShaderStoreComponent,
+        const WindowSingletonComponent& globalWindowComponent
     ) const;
     void InitializeRenderingWindowAndContext() const;
     void InitializeCamera() const;

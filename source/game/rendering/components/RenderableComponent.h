@@ -32,16 +32,26 @@ using ResourceId = unsigned int;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+enum class RenderableLayer
+{
+    LEVEL_FLOOR_LEVEL, DEFAULT
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 class RenderableComponent final: public ecs::IComponent
 {
 public:
     // This should be a map of vectors (animation name to meshes)
     std::unordered_map<StringId, std::vector<ResourceId>, StringIdHasher> mAnimationsToMeshes;
-    StringId mShaderNameId          = StringId();    
-    StringId mActiveAnimationNameId = StringId();
-    size_t mActiveMeshIndex         = 0;
-    ResourceId mTextureResourceId   = 0;
-    bool mAffectedByPerspective     = true;
+    StringId mShaderNameId           = StringId();    
+    StringId mActiveAnimationNameId  = StringId();
+    size_t mActiveMeshIndex          = 0;
+    ResourceId mTextureResourceId    = 0;
+    RenderableLayer mRenderableLayer = RenderableLayer::DEFAULT;
+    bool mAffectedByPerspective      = true;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

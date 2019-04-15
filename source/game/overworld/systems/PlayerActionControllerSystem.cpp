@@ -12,7 +12,7 @@
 #include "PlayerActionControllerSystem.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
-#include "../../input/components/InputStateComponent.h"
+#include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../overworld/components/MovementStateComponent.h"
@@ -45,7 +45,7 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateComponent>();
+    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
