@@ -16,6 +16,7 @@
 #include "../components/ShaderStoreSingletonComponent.h"
 #include "../components/WindowSingletonComponent.h"
 #include "../opengl/Context.h"
+#include "../utils/RenderingUtils.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/Logging.h"
@@ -126,11 +127,25 @@ void RenderingSystem::RenderEntityInternal
     const WindowSingletonComponent& globalWindowComponent
 ) const
 {    
-    const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
-    const auto& currentShader = globalShaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
-    const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+    const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
     const auto& currentMeshes = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
     const auto& currentMesh = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
+
+    // Frustum culling early check    
+    if (!IsMeshInsideCameraFrustum
+    (
+        transformComponent.mPosition,
+        transformComponent.mScale,
+        currentMesh.GetDimensions(),
+        globalCameraComponent.mViewMatrix,
+        globalCameraComponent.mProjectionMatrix
+    ))
+    {
+        return;
+    }
+
+    const auto& currentShader = globalShaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
+    const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
 
     // Use shader
     GL_CHECK(glUseProgram(currentShader.GetProgramId()));

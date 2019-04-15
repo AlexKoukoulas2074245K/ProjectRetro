@@ -52,6 +52,7 @@ private:
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
         const WindowSingletonComponent& globalWindowComponent
     ) const;
+        
     void InitializeRenderingWindowAndContext() const;
     void InitializeCamera() const;
     void CompileAndLoadShaders() const;

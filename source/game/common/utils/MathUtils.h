@@ -24,6 +24,7 @@
 #include <glm/vec3.hpp>                 // vec3
 #include <glm/mat4x4.hpp>               // mat4
 #include <glm/gtc/matrix_transform.hpp> // mat helpers
+#include <glm/gtc/matrix_access.hpp>    // mat helpers
 #include <random>                       // srand, rand
 
 ////////////////////////////////////////////////////////////////////////////////////

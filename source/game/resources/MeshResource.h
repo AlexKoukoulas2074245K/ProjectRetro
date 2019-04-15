@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "IResource.h"
+#include "../common/utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,14 +36,15 @@ class MeshResource final: public IResource
 public:
     GLuint GetVertexArrayObject() const;
     GLuint GetElementCount() const;
-    
+    const glm::vec3& GetDimensions() const;
+
 private:
-    MeshResource(const GLuint vertexArrayObject, const GLuint elementCount);
+    MeshResource(const GLuint vertexArrayObject, const GLuint elementCount, const glm::vec3& meshDimensions);
     
 private:
     const GLuint mVertexArrayObject;
     const GLuint mElementCount;
-
+    const glm::vec3 mDimensions;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

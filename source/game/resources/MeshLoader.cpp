@@ -54,6 +54,8 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
     
     std::vector<unsigned short> final_indices;
     
+    float minX = 0.0f, maxX = 0.0f, minY = 0.0f, maxY = 0.0f, minZ = 0.0f, maxZ = 0.0f;
+
     FILE * file = std::fopen(trimmedPath.c_str(), "r");
     assert(file != nullptr && "Model file not found");
     
@@ -70,6 +72,13 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
             glm::vec3 vertex;
             fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
             temp_vertices.push_back(vertex);
+
+            if (vertex.x < minX) minX = vertex.x;
+            if (vertex.x > maxX) maxX = vertex.x;
+            if (vertex.y < minY) minY = vertex.y;
+            if (vertex.y > maxY) maxY = vertex.y;
+            if (vertex.z < minZ) minZ = vertex.z;
+            if (vertex.z > maxZ) maxZ = vertex.z;
         }
         else if (strcmp(lineHeader, "vt") == 0)
         {
@@ -184,7 +193,9 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
     
     GL_CHECK(glBindVertexArray(0));
     
-    return std::unique_ptr<MeshResource>(new MeshResource(vertexArrayObject, final_indices.size()));
+    // Calculate dimensinos
+    glm::vec3 meshDimensions(math::Abs(minX - maxX), math::Abs(minY - maxY), math::Abs(minZ - maxZ));
+    return std::unique_ptr<MeshResource>(new MeshResource(vertexArrayObject, final_indices.size(), meshDimensions));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
