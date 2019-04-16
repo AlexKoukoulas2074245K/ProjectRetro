@@ -285,14 +285,13 @@ void App::DummyInitialization()
     }
 
     {
-        /*
         const auto levelGroundLayer = mWorld.CreateEntity();
         auto transformComponent = std::make_unique<TransformComponent>();
         transformComponent->mScale.x = 32.0f;
         transformComponent->mScale.z = 32.0f;
-        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f - OVERWORLD_TILE_SIZE/2;
         transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
-        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f - OVERWORLD_TILE_SIZE/2;
 
         auto renderableComponent = std::make_unique<RenderableComponent>();
         renderableComponent->mShaderNameId = StringId("basic");
@@ -305,12 +304,13 @@ void App::DummyInitialization()
 
         auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
         levelResidentComponent->mLevelNameId = levelContextComponent->mLevelName;
-        
+
         mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
         mWorld.AddComponent<LevelResidentComponent>(levelGroundLayer, std::move(levelResidentComponent));
         mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
-        */
+    
 
+        /*
         bool flippedTexture = false;
         for (int x = 0; x < 32; ++x)
         {
@@ -341,6 +341,7 @@ void App::DummyInitialization()
                 flippedTexture = !flippedTexture;
             }
         }
+        */
 
         for (int y = 8; y < 26; ++y)
         {

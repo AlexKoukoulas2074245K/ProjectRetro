@@ -172,6 +172,7 @@ void RenderingSystem::RenderEntityInternal
         currentShader = previousRenderingStateComponent.previousShader;
     }
 
+    // Get currently active mesh for this entity
     const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
     const auto& currentMeshes      = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
 
@@ -190,7 +191,7 @@ void RenderingSystem::RenderEntityInternal
         currentMesh = previousRenderingStateComponent.previousMesh;
     }
         
-    // Frustum culling early check    
+    // Frustum culling
     if (!IsMeshInsideCameraFrustum
     (
         transformComponent.mPosition,
@@ -215,11 +216,10 @@ void RenderingSystem::RenderEntityInternal
     if (!renderableComponent.mAffectedByPerspective)
     {
         scale.x /= windowComponent.mAspectRatio;
-    }
-    
+    }    
     world = glm::scale(world, scale);
     
-    // Set rendering uniforms
+    // Set matrix uniforms
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
@@ -239,6 +239,7 @@ void RenderingSystem::RenderEntityInternal
         currentTexture = previousRenderingStateComponent.previousTexture;
     }    
 
+    // Perform draw call
     GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh->GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
 }
 
