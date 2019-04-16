@@ -11,6 +11,7 @@
 
 #include "RenderingSystem.h"
 #include "../components/CameraSingletonComponent.h"
+#include "../components/PreviousRenderingStateSingletonComponent.h"
 #include "../components/RenderableComponent.h"
 #include "../components/RenderingContextSingletonComponent.h"
 #include "../components/ShaderStoreSingletonComponent.h"
@@ -58,11 +59,12 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
-    auto& cameraComponent            = mWorld.GetSingletonComponent<CameraSingletonComponent>();
-    auto& renderingContextComponent  = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-    const auto& windowComponent      = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
-
+    auto& cameraComponent                 = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& renderingContextComponent       = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    auto& previousRenderingStateComponent = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
+    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& shaderStoreComponent      = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
+    
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
     
@@ -75,7 +77,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
     std::vector<ecs::EntityId> semiTransparentTexturedEntities;
-
+    
     // Clear buffers
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -103,7 +105,8 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     cameraComponent, 
                     shaderStoreComponent, 
                     windowComponent, 
-                    renderingContextComponent
+                    renderingContextComponent,
+                    previousRenderingStateComponent
                 );
             }            
         }
@@ -130,7 +133,8 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             cameraComponent, 
             shaderStoreComponent, 
             windowComponent, 
-            renderingContextComponent
+            renderingContextComponent,
+            previousRenderingStateComponent
         );
     }
 
@@ -146,35 +150,59 @@ void RenderingSystem::RenderEntityInternal
 (
     const ecs::EntityId entityId,
     const RenderableComponent& renderableComponent,
-    const CameraSingletonComponent& globalCameraComponent, 
-    const ShaderStoreSingletonComponent& globalShaderStoreComponent,
-    const WindowSingletonComponent& globalWindowComponent,
-    RenderingContextSingletonComponent& globalRenderingContextComponent
+    const CameraSingletonComponent& cameraComponent, 
+    const ShaderStoreSingletonComponent& shaderStoreComponent,
+    const WindowSingletonComponent& windowComponent,
+    RenderingContextSingletonComponent& renderingContextComponent,
+    PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {    
-    const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
-    const auto& currentMeshes = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
-    const auto& currentMesh = ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
+    // Update Shader is necessary
+    const ShaderResource* currentShader = nullptr;
+    if (renderableComponent.mShaderNameId != previousRenderingStateComponent.previousShaderNameId)
+    {
+        currentShader = &shaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
+        GL_CHECK(glUseProgram(currentShader->GetProgramId()));
 
+        previousRenderingStateComponent.previousShaderNameId = renderableComponent.mShaderNameId;
+        previousRenderingStateComponent.previousShader       = currentShader;        
+    }
+    else
+    {
+        currentShader = previousRenderingStateComponent.previousShader;
+    }
+
+    const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
+    const auto& currentMeshes      = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
+
+    // Update current mesh if necessary
+    const MeshResource* currentMesh = nullptr;
+    if (currentMeshes[renderableComponent.mActiveMeshIndex] != previousRenderingStateComponent.previousMeshResourceId)
+    {
+        currentMesh = &ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
+        GL_CHECK(glBindVertexArray(currentMesh->GetVertexArrayObject()));
+
+        previousRenderingStateComponent.previousMesh           = currentMesh;
+        previousRenderingStateComponent.previousMeshResourceId = currentMeshes[renderableComponent.mActiveMeshIndex];                        
+    }
+    else
+    {
+        currentMesh = previousRenderingStateComponent.previousMesh;
+    }
+        
     // Frustum culling early check    
     if (!IsMeshInsideCameraFrustum
     (
         transformComponent.mPosition,
         transformComponent.mScale,
-        currentMesh.GetDimensions(),
-        globalCameraComponent.mFrustum
+        currentMesh->GetDimensions(),
+        cameraComponent.mFrustum
     ))
     {
-        globalRenderingContextComponent.mFrustumCulledEntities++;
+        renderingContextComponent.mFrustumCulledEntities++;
         return;
     }
-
-    const auto& currentShader = globalShaderStoreComponent.mShaders.at(renderableComponent.mShaderNameId);
-    const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
-
-    // Use shader
-    GL_CHECK(glUseProgram(currentShader.GetProgramId()));
-
+    
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
     world = glm::translate(world, transformComponent.mPosition);
@@ -186,20 +214,32 @@ void RenderingSystem::RenderEntityInternal
     glm::vec3 scale = transformComponent.mScale;
     if (!renderableComponent.mAffectedByPerspective)
     {
-        scale.x /= globalWindowComponent.mAspectRatio;
+        scale.x /= windowComponent.mAspectRatio;
     }
     
     world = glm::scale(world, scale);
     
     // Set rendering uniforms
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&globalCameraComponent.mViewMatrix));
-    GL_CHECK(glUniformMatrix4fv(currentShader.GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&globalCameraComponent.mProjectionMatrix));
-    GL_CHECK(glBindTexture(GL_TEXTURE_2D, currentTexture.GetGLTextureId()));
+    GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
+    GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));
+    GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
 
-    // Perform indexed draw
-    GL_CHECK(glBindVertexArray(currentMesh.GetVertexArrayObject()));
-    GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh.GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
+    // Update texture if necessary
+    const TextureResource* currentTexture = nullptr;
+    if (renderableComponent.mTextureResourceId != previousRenderingStateComponent.previousTextureResourceId)
+    {
+        currentTexture = &ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+        GL_CHECK(glBindTexture(GL_TEXTURE_2D, currentTexture->GetGLTextureId()));
+
+        previousRenderingStateComponent.previousTexture = currentTexture;
+        previousRenderingStateComponent.previousTextureResourceId = renderableComponent.mTextureResourceId;        
+    }
+    else
+    {
+        currentTexture = previousRenderingStateComponent.previousTexture;
+    }    
+
+    GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh->GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
 }
 
 void RenderingSystem::InitializeRenderingWindowAndContext() const
@@ -292,6 +332,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     // Transfer ownership of singleton components to world
     mWorld.SetSingletonComponent<WindowSingletonComponent>(std::move(windowComponent));
     mWorld.SetSingletonComponent<RenderingContextSingletonComponent>(std::move(renderingContextComponent));
+    mWorld.SetSingletonComponent<PreviousRenderingStateSingletonComponent>(std::make_unique<PreviousRenderingStateSingletonComponent>());
 
     // Now that the GL context has been initialized, the ResourceLoadingService
     // can be properly initialized (given that many of them call SDL services)

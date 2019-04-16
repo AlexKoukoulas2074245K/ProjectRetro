@@ -195,8 +195,9 @@ void App::GameLoop()
             dtAccumulator = 0.0f;
         }
 
-        // Simulate world. Limit DT passed in to 6 frames a second
-        mWorld.Update(math::Min(dt, 0.1666f));
+        // Simulate world. Limit dt passed in to be at most 
+        // equivalent to running the game at 1 frame a second
+        mWorld.Update(math::Min(dt, 1.0f));
     }
 }
 
@@ -230,10 +231,7 @@ void App::DummyInitialization()
     levelContextComponent->mCols = 32;
     levelContextComponent->mRows = 32;
     levelContextComponent->mLevelTilemap = InitializeTilemapWithDimensions(levelContextComponent->mCols, levelContextComponent->mRows);
-    for (int y = 0; y < levelContextComponent->mRows - 1; ++y)
-    {
-        GetTile(0, y, levelContextComponent->mLevelTilemap).mTileTrait = TileTrait::SOLID;
-    }
+
     GetTile(10, 13, levelContextComponent->mLevelTilemap).mTileTrait = TileTrait::WARP;
     
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
@@ -287,6 +285,7 @@ void App::DummyInitialization()
     }
 
     {
+        /*
         const auto levelGroundLayer = mWorld.CreateEntity();
         auto transformComponent = std::make_unique<TransformComponent>();
         transformComponent->mScale.x = 32.0f;
@@ -310,15 +309,81 @@ void App::DummyInitialization()
         mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
         mWorld.AddComponent<LevelResidentComponent>(levelGroundLayer, std::move(levelResidentComponent));
         mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
+        */
+
+        bool flippedTexture = false;
+        for (int x = 0; x < 32; ++x)
+        {
+            for (int y = 0; y < 32; ++y)
+            {
+                const auto tile = mWorld.CreateEntity();
+                auto tiletransformComponent = std::make_unique<TransformComponent>();
+                tiletransformComponent->mPosition.x = x * OVERWORLD_TILE_SIZE;
+                tiletransformComponent->mPosition.y = -OVERWORLD_TILE_SIZE / 2.0f;
+                tiletransformComponent->mPosition.z = y * OVERWORLD_TILE_SIZE;
+
+                auto tilerenderableComponent = std::make_unique<RenderableComponent>();
+                tilerenderableComponent->mShaderNameId = StringId("basic");
+                tilerenderableComponent->mAnimationsToMeshes[StringId("default")].
+                    push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
+                tilerenderableComponent->mActiveAnimationNameId = StringId("default");
+                tilerenderableComponent->mTextureResourceId =
+                    ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/" + (flippedTexture ? "2d_out_bot_left_floor.png" : "2d_out_empty_floor.png"));
+                tilerenderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+
+                auto tilelevelResidentComponent = std::make_unique<LevelResidentComponent>();
+                tilelevelResidentComponent->mLevelNameId = levelContextComponent->mLevelName;
+
+                mWorld.AddComponent<TransformComponent>(tile, std::move(tiletransformComponent));
+                mWorld.AddComponent<LevelResidentComponent>(tile, std::move(tilelevelResidentComponent));
+                mWorld.AddComponent<RenderableComponent>(tile, std::move(tilerenderableComponent));
+
+                flippedTexture = !flippedTexture;
+            }
+        }
+
+        for (int y = 8; y < 26; ++y)
+        {
+            const int x = 4;
+
+            const auto column = mWorld.CreateEntity();
+            auto columntransformComponent = std::make_unique<TransformComponent>();
+            columntransformComponent->mPosition.x = x * OVERWORLD_TILE_SIZE;
+            columntransformComponent->mPosition.y = 0.0f;
+            columntransformComponent->mPosition.z = y * OVERWORLD_TILE_SIZE;
+
+            auto columnrenderableComponent = std::make_unique<RenderableComponent>();
+            columnrenderableComponent->mShaderNameId = StringId("basic");
+            columnrenderableComponent->mAnimationsToMeshes[StringId("default")].
+                push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "out_col.obj"));
+            columnrenderableComponent->mActiveAnimationNameId = StringId("default");
+            columnrenderableComponent->mTextureResourceId =
+                ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/out_col.png");
+            columnrenderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+
+            auto columnlevelResidentComponent = std::make_unique<LevelResidentComponent>();
+            columnlevelResidentComponent->mLevelNameId = levelContextComponent->mLevelName;
+
+            mWorld.AddComponent<TransformComponent>(column, std::move(columntransformComponent));
+            mWorld.AddComponent<LevelResidentComponent>(column, std::move(columnlevelResidentComponent));
+            mWorld.AddComponent<RenderableComponent>(column, std::move(columnrenderableComponent));
+        }
+        // 4,8 - 4,25
+        // 4,8 - 17,8
+        // 17,8 - 27,8
+        // 27,8 - 27,25
+        // 4,25 - 7,25
+        // 12,25 - 27,25
+        // 12,24 - 27,24
     }
 
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
     
-    playerTransformComponent.mPosition = TileCoordsToPosition(15, 14);
-    playerMovementStateComponent.mCurrentCoords = TileCoords(15, 14);
-    GetTile(15, 14, levelContextComponent->mLevelTilemap).mTileOccupierEntityId = playerEntity;
-    GetTile(15, 14, levelContextComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    playerTransformComponent.mPosition = TileCoordsToPosition(0, 0);
+    playerMovementStateComponent.mCurrentCoords = TileCoords(0, 0);
+    GetTile(0, 0, levelContextComponent->mLevelTilemap).mTileOccupierEntityId = playerEntity;
+    GetTile(0, 0, levelContextComponent->mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
     auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);
     dummyTransformComponent.mPosition = TileCoordsToPosition(20, 16);
