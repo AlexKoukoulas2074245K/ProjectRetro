@@ -19,6 +19,7 @@
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationTimerComponent.h"
 #include "rendering/components/RenderableComponent.h"
+#include "rendering/components/RenderingContextSingletonComponent.h"
 #include "rendering/components/WindowSingletonComponent.h"
 #include "rendering/systems/AnimationSystem.h"
 #include "rendering/systems/CameraControlSystem.h"
@@ -170,7 +171,8 @@ void App::GameLoop()
     
     DummyInitialization();
 
-    const auto& windowComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
 
     while (!AppShouldQuit())
     {
@@ -186,7 +188,8 @@ void App::GameLoop()
         if (dtAccumulator > 1.0f)
         {
             const auto fpsString = " - FPS: " + std::to_string(framesAccumulator);
-            SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString).c_str());
+            const auto frustumCulledString = " - FCed: " + std::to_string(renderingContextComponent.mFrustumCulledEntities);
+            SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString + frustumCulledString).c_str());
 
             framesAccumulator = 0;
             dtAccumulator = 0.0f;

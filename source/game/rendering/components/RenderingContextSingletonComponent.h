@@ -32,10 +32,11 @@ using GLuint        = unsigned int;
 class RenderingContextSingletonComponent final : public ecs::IComponent
 {
 public:
-    SDL_GLContext mGLContext         = nullptr;
-    GLuint mDefaultVertexArrayObject = 0;
-    bool mBlending                   = false;
-    bool mDepthTest                  = false;
+    SDL_GLContext mGLContext            = nullptr;
+    GLuint mDefaultVertexArrayObject    = 0;
+    bool mBlending                      = false;
+    bool mDepthTest                     = false;
+    unsigned int mFrustumCulledEntities = 0;
 };
 
 #endif /* RenderingContextSingletonComponent_h */

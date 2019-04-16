@@ -30,6 +30,7 @@
 class CameraSingletonComponent;
 class ShaderStoreSingletonComponent;
 class RenderableComponent;
+class RenderingContextSingletonComponent;
 class WindowSingletonComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,8 @@ private:
         const RenderableComponent& entityRenderableComponent,
         const CameraSingletonComponent& globalCameraComponent,
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
-        const WindowSingletonComponent& globalWindowComponent
+        const WindowSingletonComponent& globalWindowComponent,
+        RenderingContextSingletonComponent& globalRenderingContextComponent
     ) const;
         
     void InitializeRenderingWindowAndContext() const;

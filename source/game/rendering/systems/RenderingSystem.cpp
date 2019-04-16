@@ -16,6 +16,7 @@
 #include "../components/ShaderStoreSingletonComponent.h"
 #include "../components/WindowSingletonComponent.h"
 #include "../opengl/Context.h"
+#include "../utils/CameraUtils.h"
 #include "../utils/RenderingUtils.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
@@ -58,12 +59,19 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
     auto& cameraComponent            = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& renderingContextComponent  = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
     const auto& windowComponent      = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& shaderStoreComponent = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
 
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
     
+    // Calculate the camera frustum for this frame
+    cameraComponent.mFrustum = CalculateCameraFrustum(cameraComponent.mViewMatrix, cameraComponent.mProjectionMatrix);
+        
+    // Debug statistics
+    renderingContextComponent.mFrustumCulledEntities = 0;
+
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
     std::vector<ecs::EntityId> semiTransparentTexturedEntities;
@@ -88,7 +96,15 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             }
             else
             {
-                RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent, windowComponent);
+                RenderEntityInternal
+                (
+                    entityId, 
+                    renderableComponent, 
+                    cameraComponent, 
+                    shaderStoreComponent, 
+                    windowComponent, 
+                    renderingContextComponent
+                );
             }            
         }
     }
@@ -107,7 +123,15 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     for (const auto& entityId : semiTransparentTexturedEntities)
     {
         const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-        RenderEntityInternal(entityId, renderableComponent, cameraComponent, shaderStoreComponent, windowComponent);
+        RenderEntityInternal
+        (
+            entityId, 
+            renderableComponent, 
+            cameraComponent, 
+            shaderStoreComponent, 
+            windowComponent, 
+            renderingContextComponent
+        );
     }
 
     // Swap window buffers
@@ -124,7 +148,8 @@ void RenderingSystem::RenderEntityInternal
     const RenderableComponent& renderableComponent,
     const CameraSingletonComponent& globalCameraComponent, 
     const ShaderStoreSingletonComponent& globalShaderStoreComponent,
-    const WindowSingletonComponent& globalWindowComponent
+    const WindowSingletonComponent& globalWindowComponent,
+    RenderingContextSingletonComponent& globalRenderingContextComponent
 ) const
 {    
     const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
@@ -137,10 +162,10 @@ void RenderingSystem::RenderEntityInternal
         transformComponent.mPosition,
         transformComponent.mScale,
         currentMesh.GetDimensions(),
-        globalCameraComponent.mViewMatrix,
-        globalCameraComponent.mProjectionMatrix
+        globalCameraComponent.mFrustum
     ))
     {
+        globalRenderingContextComponent.mFrustumCulledEntities++;
         return;
     }
 
