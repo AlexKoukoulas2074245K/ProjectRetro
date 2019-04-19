@@ -109,7 +109,7 @@ std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const Sp
 {    
     auto renderableComponent = std::make_unique<RenderableComponent>();    
 
-    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource("textures/materials/overworld.png");
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "characters.png");
     renderableComponent->mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
     renderableComponent->mShaderNameId          = StringId("basic");
     renderableComponent->mAffectedByPerspective = false;
@@ -299,7 +299,7 @@ void App::DummyInitialization()
             push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
         renderableComponent->mActiveAnimationNameId = StringId("default");
         renderableComponent->mTextureResourceId =
-            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_ground_layer.png");
+            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "pallet_ground_layer.png");
         renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
 
         auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
@@ -359,7 +359,7 @@ void App::DummyInitialization()
                 push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "out_col.obj"));
             columnrenderableComponent->mActiveAnimationNameId = StringId("default");
             columnrenderableComponent->mTextureResourceId =
-                ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/out_col.png");
+                ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "out_col.png");
             columnrenderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
 
             auto columnlevelResidentComponent = std::make_unique<LevelResidentComponent>();
