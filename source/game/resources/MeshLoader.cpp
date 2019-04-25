@@ -54,7 +54,7 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
     
     std::vector<unsigned short> final_indices;
     
-    float minX = 0.0f, maxX = 0.0f, minY = 0.0f, maxY = 0.0f, minZ = 0.0f, maxZ = 0.0f;
+    float minX = 100.0f, maxX = -100.0f, minY = 100.0f, maxY = -100.0f, minZ = 100.0f, maxZ = -100.0f;
 
     FILE * file = std::fopen(trimmedPath.c_str(), "r");
     assert(file != nullptr && "Model file not found");

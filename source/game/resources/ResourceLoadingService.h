@@ -53,6 +53,7 @@ class ResourceLoadingService final
     friend class App;
 public:
     static const std::string RES_ROOT;
+    static const std::string RES_DATA_ROOT;
     static const std::string RES_SHADERS_ROOT;
     static const std::string RES_MODELS_ROOT;
     static const std::string RES_TEXTURES_ROOT;
@@ -70,7 +71,7 @@ public:
     // Should be called after the SDL/GL context has been initialized
     void InitializeResourceLoaders();
     
-    // Loads a single or number of resouces base on the relative path(s) supplied
+    // Loads a single or number of resources based on the relative path(s) supplied
     // respectively. Both full paths, relative paths including the Resource Root, and relative
     // paths not including the Resource Root are supported
     ResourceId LoadResource(const std::string& resourcePath);
@@ -105,8 +106,7 @@ private:
     ResourceLoadingService() = default;
 
     IResource& GetResource(const std::string& resourceRelativePath);
-    IResource& GetResource(const ResourceId resourceId);
-    void MapResourceExtensionsToLoaders();
+    IResource& GetResource(const ResourceId resourceId);    
     void LoadResourceInternal(const std::string& resourceRelativePath, const ResourceId resourceId);
    
     // Strips the leading RES_ROOT from the resourcePath given, if present
