@@ -53,11 +53,13 @@ class ResourceLoadingService final
     friend class App;
 public:
     static const std::string RES_ROOT;
-    static const std::string RES_DATA_ROOT;
-    static const std::string RES_SHADERS_ROOT;
-    static const std::string RES_MODELS_ROOT;
-    static const std::string RES_TEXTURES_ROOT;
     static const std::string RES_ATLASES_ROOT;
+    static const std::string RES_DATA_ROOT;
+    static const std::string RES_LEVELS_ROOT;
+    static const std::string RES_MODELS_ROOT;
+    static const std::string RES_SHADERS_ROOT;
+    static const std::string RES_TEXTURES_ROOT;
+    
     
     static ResourceLoadingService& GetInstance();
 

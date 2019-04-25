@@ -21,12 +21,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ecs::EntityId LoadAndCreateLevelByName(ecs::World& world, const StringId levelName)
+ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& world)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
     
     // Get level data file resource
-    const auto levelFilePath = ResourceLoadingService::RES_DATA_ROOT + levelName.GetString() + ".json";
+    const auto levelFilePath = ResourceLoadingService::RES_LEVELS_ROOT + levelName.GetString() + ".json";
     if (resourceLoadingService.HasLoadedResource(levelFilePath) == false)
     {
         resourceLoadingService.LoadResource(levelFilePath);
@@ -37,7 +37,6 @@ ecs::EntityId LoadAndCreateLevelByName(ecs::World& world, const StringId levelNa
     const auto levelJson = nlohmann::json::parse(levelFileResource.GetContents());
 
     // Extract level header properties
-    const auto levelName        = levelJson["level_header"]["name"].get<std::string>();
     const auto levelTilemapCols = levelJson["level_header"]["dimensions"]["cols"].get<int>();
     const auto levelTilemapRows = levelJson["level_header"]["dimensions"]["rows"].get<int>();
 
@@ -46,6 +45,8 @@ ecs::EntityId LoadAndCreateLevelByName(ecs::World& world, const StringId levelNa
     auto levelContextComponent           = std::make_unique<LevelContextComponent>();
     levelContextComponent->mLevelName    = StringId(levelName);
     levelContextComponent->mLevelTilemap = InitializeTilemapWithDimensions(levelTilemapCols, levelTilemapRows);
+    levelContextComponent->mCols         = levelTilemapCols;
+    levelContextComponent->mRows         = levelTilemapRows;
 
     world.AddComponent<LevelContextComponent>(levelEntityId, std::move(levelContextComponent));
     return levelEntityId;

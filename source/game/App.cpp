@@ -35,6 +35,7 @@
 #include "overworld/systems/PlayerActionControllerSystem.h"
 #include "overworld/systems/WarpConnectionsSystem.h"
 #include "overworld/utils/LevelUtils.h"
+#include "overworld/utils/LevelLoadingUtils.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  
@@ -225,7 +226,7 @@ void App::DummyInitialization()
     const auto dummyEntity = mWorld.CreateEntity();
     const auto playerEntity = mWorld.CreateEntity();
 
-
+    LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
     auto levelContextComponent = std::make_unique<LevelContextComponent>();
     levelContextComponent->mLevelName = StringId("testLevelA");
     levelContextComponent->mCols = 32;
@@ -285,31 +286,7 @@ void App::DummyInitialization()
     }
 
     {
-        const auto levelGroundLayer = mWorld.CreateEntity();
-        auto transformComponent = std::make_unique<TransformComponent>();
-        transformComponent->mScale.x = 32.0f;
-        transformComponent->mScale.z = 32.0f;
-        transformComponent->mPosition.x += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f - OVERWORLD_TILE_SIZE/2;
-        transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
-        transformComponent->mPosition.z += (32.0f * OVERWORLD_TILE_SIZE) / 2.0f - OVERWORLD_TILE_SIZE/2;
-
-        auto renderableComponent = std::make_unique<RenderableComponent>();
-        renderableComponent->mShaderNameId = StringId("basic");
-        renderableComponent->mAnimationsToMeshes[StringId("default")].
-            push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
-        renderableComponent->mActiveAnimationNameId = StringId("default");
-        renderableComponent->mTextureResourceId =
-            ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "pallet_ground_layer.png");
-        renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
-
-        auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-        levelResidentComponent->mLevelNameId = levelContextComponent->mLevelName;
-
-        mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
-        mWorld.AddComponent<LevelResidentComponent>(levelGroundLayer, std::move(levelResidentComponent));
-        mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
-    
-
+        
         /*
         bool flippedTexture = false;
         for (int x = 0; x < 32; ++x)
