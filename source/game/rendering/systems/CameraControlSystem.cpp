@@ -45,7 +45,7 @@ void CameraControlSystem::VUpdateAssociatedComponents(const float) const
             
             cameraComponent.mFocusPosition = focusedTransformComponent.mPosition;
             cameraComponent.mPosition.x    = focusedTransformComponent.mPosition.x;
-            cameraComponent.mPosition.z    = focusedTransformComponent.mPosition.z + CAMERA_Z_DISTANCE_FROM_PLAYER;
+            cameraComponent.mPosition.z    = focusedTransformComponent.mPosition.z - CAMERA_Z_DISTANCE_FROM_PLAYER;
         }
     }
 }
