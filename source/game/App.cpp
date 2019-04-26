@@ -266,10 +266,10 @@ void App::DummyInitialization()
     auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
     auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
     
-    playerTransformComponent.mPosition = TileCoordsToPosition(0, 0);
-    playerMovementStateComponent.mCurrentCoords = TileCoords(0, 0);
-    GetTile(0, 0, levelContextComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
-    GetTile(0, 0, levelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    playerTransformComponent.mPosition = TileCoordsToPosition(16, 16);
+    playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
+    GetTile(16, 16, levelContextComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
+    GetTile(16, 16, levelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
     auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);
     dummyTransformComponent.mPosition = TileCoordsToPosition(20, 16);
