@@ -71,7 +71,7 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
         {
             glm::vec3 vertex;
             fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
-            vertex.z = -vertex.z;
+            //vertex.z = -vertex.z;
             temp_vertices.push_back(vertex);
 
             if (vertex.x < minX) minX = vertex.x;
