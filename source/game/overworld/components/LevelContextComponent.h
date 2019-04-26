@@ -57,6 +57,7 @@ class LevelContextComponent final: public ecs::IComponent
 public:    
      StringId mLevelName;
      LevelTilemap mLevelTilemap;
+     ecs::EntityId mGroundLayerEntity;
      int mCols;
      int mRows;
 };

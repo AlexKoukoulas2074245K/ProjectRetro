@@ -83,8 +83,7 @@ std::unique_ptr<IResource> MeshLoader::VCreateAndLoadResource(const std::string&
         else if (strcmp(lineHeader, "vt") == 0)
         {
             glm::vec2 uv;
-            fscanf(file, "%f %f\n", &uv.x, &uv.y );
-            uv.y = -uv.y;
+            fscanf(file, "%f %f\n", &uv.x, &uv.y );            
             temp_uvs.push_back(uv);
         }
         else if (strcmp(lineHeader, "vn") == 0)
