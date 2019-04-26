@@ -219,9 +219,6 @@ bool App::AppShouldQuit()
 
 void App::DummyInitialization()
 {
-    const auto testLevelAEntityId = mWorld.CreateEntity();
-    const auto testLevelBEntityId = mWorld.CreateEntity();
-
     const auto otherDummyEntity = mWorld.CreateEntity();
     const auto dummyEntity = mWorld.CreateEntity();
     const auto playerEntity = mWorld.CreateEntity();

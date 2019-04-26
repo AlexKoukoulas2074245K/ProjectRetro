@@ -184,7 +184,7 @@ void CreateLevelModelEntry
     (
         ResourceLoadingService::RES_TEXTURES_ROOT + modelName + ".png"
     );
-    renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+    //renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
 
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
