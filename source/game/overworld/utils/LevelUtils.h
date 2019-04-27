@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../components/LevelContextComponent.h"
+#include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/GameConstants.h"
@@ -92,8 +92,8 @@ inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs
     {
         if 
         (
-            world.HasComponent<LevelContextComponent>(entityId) &&
-            world.GetComponent<LevelContextComponent>(entityId).mLevelName == levelNameId)
+            world.HasComponent<LevelModelComponent>(entityId) &&
+            world.GetComponent<LevelModelComponent>(entityId).mLevelName == levelNameId)
         {
             return entityId;
         }

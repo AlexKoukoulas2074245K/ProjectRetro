@@ -85,7 +85,6 @@ ResourceId ResourceLoadingService::LoadResource(const std::string& resourcePath)
     
     if (mResourceMap.count(resourceId))
     {
-        Log(LogType::WARNING, "Resource %s already loaded", adjustedPath.c_str());
         return resourceId;
     }
     else

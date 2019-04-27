@@ -28,7 +28,7 @@
 #include "resources/TextureUtils.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
-#include "overworld/components/LevelContextComponent.h"
+#include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
 #include "overworld/components/WarpConnectionsSingletonComponent.h"
 #include "overworld/systems/MovementControllerSystem.h"
@@ -224,17 +224,17 @@ void App::DummyInitialization()
     const auto playerEntity = mWorld.CreateEntity();
 
     const auto levelEntityId =LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
-    auto& levelContextComponent = mWorld.GetComponent<LevelContextComponent>(levelEntityId);
+    auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
     //GetTile(10, 13, levelContextComponent.mLevelTilemap).mTileTrait = TileTrait::WARP;
     
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
-    activeLevelComponent->mActiveLevelNameId = levelContextComponent.mLevelName;
+    activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
     {
         auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-        levelResidentComponent->mLevelNameId = levelContextComponent.mLevelName;
+        levelResidentComponent->mLevelNameId = levelModelComponent.mLevelName;
 
         mWorld.AddComponent<TransformComponent>(dummyEntity, std::make_unique<TransformComponent>()); 
         mWorld.AddComponent<LevelResidentComponent>(dummyEntity, std::move(levelResidentComponent));
@@ -243,7 +243,7 @@ void App::DummyInitialization()
 
     {
         auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-        levelResidentComponent->mLevelNameId = levelContextComponent.mLevelName;
+        levelResidentComponent->mLevelNameId = levelModelComponent.mLevelName;
 
         mWorld.AddComponent<TransformComponent>(otherDummyEntity, std::make_unique<TransformComponent>());
         mWorld.AddComponent<LevelResidentComponent>(otherDummyEntity, std::move(levelResidentComponent));
@@ -268,18 +268,18 @@ void App::DummyInitialization()
     
     playerTransformComponent.mPosition = TileCoordsToPosition(16, 16);
     playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
-    GetTile(16, 16, levelContextComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
-    GetTile(16, 16, levelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
+    GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
     auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);
     dummyTransformComponent.mPosition = TileCoordsToPosition(20, 16);
-    GetTile(20, 16, levelContextComponent.mLevelTilemap).mTileOccupierEntityId = dummyEntity;
-    GetTile(20, 16, levelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+    GetTile(20, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = dummyEntity;
+    GetTile(20, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
 
     auto& otherDummyTransformComponent = mWorld.GetComponent<TransformComponent>(otherDummyEntity);
     otherDummyTransformComponent.mPosition = TileCoordsToPosition(10, 12);
-    GetTile(10, 12, levelContextComponent.mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
-    GetTile(10, 12, levelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+    GetTile(10, 12, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
+    GetTile(10, 12, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
 
 }
 

@@ -20,6 +20,7 @@
 #include "../../resources/ResourceLoadingService.h"
 
 #include <json.hpp>
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,12 @@ static void CreateLevelModelEntry
     ecs::World& world
 );
 
+static void SetTileTrait
+(
+    const nlohmann::basic_json<>& tileTraitEntryJsonObject,
+    LevelTilemap& levelTilemap
+);
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +81,14 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     const auto levelTilemapRows = levelJson["level_header"]["dimensions"]["rows"].get<int>();
 
     // Initialize result level entity and context component
-    const auto levelEntityId                  = world.CreateEntity();
-    auto levelContextComponent                = std::make_unique<LevelContextComponent>();
+    const auto levelEntityId = world.CreateEntity();
+    auto levelModelComponent = std::make_unique<LevelModelComponent>();
 
-    levelContextComponent->mLevelName         = StringId(levelName);
-    levelContextComponent->mLevelTilemap      = InitializeTilemapWithDimensions(levelTilemapCols, levelTilemapRows);
-    levelContextComponent->mCols              = levelTilemapCols;
-    levelContextComponent->mRows              = levelTilemapRows;
-    levelContextComponent->mGroundLayerEntity = world.CreateEntity();
+    levelModelComponent->mLevelName         = StringId(levelName);
+    levelModelComponent->mLevelTilemap      = InitializeTilemapWithDimensions(levelTilemapCols, levelTilemapRows);
+    levelModelComponent->mCols              = levelTilemapCols;
+    levelModelComponent->mRows              = levelTilemapRows;
+    levelModelComponent->mGroundLayerEntity = world.CreateEntity();
 
     // Create optimized ground layer texture for level
     const auto groundLayerTextureName = levelJson["level_ground_layer_game"][0]["texture_name"];
@@ -90,12 +97,12 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
 
     CreateLevelGroundLayer
     (
-        levelContextComponent->mLevelName,
+        levelModelComponent->mLevelName,
         levelTilemapCols,
         levelTilemapRows,
         groundLayerPositionX,
         groundLayerPositionZ,
-        levelContextComponent->mGroundLayerEntity, 
+        levelModelComponent->mGroundLayerEntity,
         world
     );
     
@@ -104,10 +111,16 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     // Load model list
     for (const auto& modelEntry: levelJson["level_model_list"])
     {
-        CreateLevelModelEntry(modelEntry, levelContextComponent->mLevelName, world);
+        CreateLevelModelEntry(modelEntry, levelModelComponent->mLevelName, world);
     }
 
-    world.AddComponent<LevelContextComponent>(levelEntityId, std::move(levelContextComponent));
+    // Load tile traits
+    for (const auto& tileTraitEntry: levelJson["level_tile_traits"])
+    {
+        SetTileTrait(tileTraitEntry, levelModelComponent->mLevelTilemap);
+    }
+    
+    world.AddComponent<LevelModelComponent>(levelEntityId, std::move(levelModelComponent));
     return levelEntityId;
 }
 
@@ -194,6 +207,26 @@ void CreateLevelModelEntry
     world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));
 }
 
+void SetTileTrait
+(
+    const nlohmann::basic_json<>& tileTraitEntryJsonObject,
+    LevelTilemap& levelTilemap
+)
+{
+    static const std::unordered_map<StringId, TileTrait, StringIdHasher> traitNamesToTraitEnums =
+    {
+        { StringId("ENCOUNTER"), TileTrait::ENCOUNTER },
+        { StringId("SOLID"), TileTrait::SOLID },
+        { StringId("WARP"), TileTrait::WARP }
+    };
+    
+    const auto gameCol   = tileTraitEntryJsonObject["game_col"].get<int>();
+    const auto gameRow   = tileTraitEntryJsonObject["game_row"].get<int>();
+    const auto traitName = tileTraitEntryJsonObject["tile_traits"].get<std::string>();
+    
+    GetTile(gameCol, gameRow, levelTilemap).mTileTrait = traitNamesToTraitEnums.at(traitName);
+}
+        
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

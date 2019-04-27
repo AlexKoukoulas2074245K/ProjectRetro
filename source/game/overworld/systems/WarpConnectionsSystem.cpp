@@ -48,7 +48,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         mWorld.RemoveEntity(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
 
         activeLevelSingletonComponent.mActiveLevelNameId = StringId("testLevelB");
-        auto& newLevelContextComponent = mWorld.GetComponent<LevelContextComponent>(GetLevelIdFromNameId(StringId("testLevelB"), mWorld));
+        auto& newLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(StringId("testLevelB"), mWorld));
         auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(5);
         auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(5);
 
@@ -71,7 +71,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
             renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
 
             auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-            levelResidentComponent->mLevelNameId = newLevelContextComponent.mLevelName;
+            levelResidentComponent->mLevelNameId = newLevelModelComponent.mLevelName;
 
             mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
             mWorld.AddComponent<LevelResidentComponent>(levelGroundLayer, std::move(levelResidentComponent));
@@ -80,8 +80,8 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
         playerTransformComponent.mPosition = TileCoordsToPosition(2, 2);
         playerMovementStateComponent.mCurrentCoords = TileCoords(2, 2);
-        GetTile(2, 2, newLevelContextComponent.mLevelTilemap).mTileOccupierEntityId = 5;
-        GetTile(2, 2, newLevelContextComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+        GetTile(2, 2, newLevelModelComponent.mLevelTilemap).mTileOccupierEntityId = 5;
+        GetTile(2, 2, newLevelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
         warpConnectionsComponent.mHasPendingWarpConnection = false;
     }

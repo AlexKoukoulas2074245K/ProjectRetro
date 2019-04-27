@@ -11,7 +11,7 @@
 
 #include "MovementControllerSystem.h"
 #include "../components/ActiveLevelSingletonComponent.h"
-#include "../components/LevelContextComponent.h"
+#include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
@@ -39,8 +39,8 @@ MovementControllerSystem::MovementControllerSystem(ecs::World& world)
 
 void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
-    auto& activeLevelComponent  = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    auto& levelContextComponent = mWorld.GetComponent<LevelContextComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
@@ -56,7 +56,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }            
 
             const auto& currentTileCoords = movementStateComponent.mCurrentCoords;
-            auto& currentTile = levelContextComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
+            
+            auto& currentTile = levelModelComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
 
             const auto targetTileCoords = GetNeighborTileCoords(currentTileCoords, directionComponent.mDirection);
             
@@ -65,8 +66,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             (   
                 targetTileCoords.mCol < 0 ||
                 targetTileCoords.mRow < 0 ||
-                targetTileCoords.mCol >= levelContextComponent.mCols ||
-                targetTileCoords.mRow >= levelContextComponent.mRows
+                targetTileCoords.mCol >= levelModelComponent.mCols ||
+                targetTileCoords.mRow >= levelModelComponent.mRows
             )
             {
                 movementStateComponent.mMoving = false;
@@ -74,7 +75,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }
 
             // Safe to now get the actual target tile            
-            auto& targetTile  = GetTile(targetTileCoords, levelContextComponent.mLevelTilemap);
+            auto& targetTile  = GetTile(targetTileCoords, levelModelComponent.mLevelTilemap);
 
             // Occupier checks
             if (targetTile.mTileTrait == TileTrait::SOLID)
