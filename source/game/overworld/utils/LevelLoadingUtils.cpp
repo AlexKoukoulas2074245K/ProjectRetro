@@ -12,9 +12,8 @@
 
 #include "LevelLoadingUtils.h"
 #include "LevelUtils.h"
+#include "OverworldCharacterLoadingUtils.h"
 #include "../components/LevelResidentComponent.h"
-#include "../../common/components/TransformComponent.h"
-#include "../../common/utils/StringUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -41,6 +40,14 @@ static void CreateLevelGroundLayer
     const float groundLayerX, 
     const float groundLayerZ, 
     const ecs::EntityId groundLayerEntityId,
+    ecs::World& world
+);
+
+static void CreateNpc
+(
+    const nlohmann::basic_json<>& npcEntryJsonObject,
+    const StringId levelNameId,
+    LevelTilemap& levelTilemap,
     ecs::World& world
 );
 
@@ -106,7 +113,11 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
         world
     );
     
-    // Todo: Load NPC list
+    // Load NPC list
+    for (const auto& npcJsonEntry: levelJson["level_npc_list"])
+    {
+        CreateNpc(npcJsonEntry, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
+    }
 
     // Load model list
     for (const auto& modelEntry: levelJson["level_model_list"])
@@ -168,6 +179,35 @@ void CreateLevelGroundLayer
     world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
 }
 
+static void CreateNpc
+(
+    const nlohmann::basic_json<>& npcEntryJsonObject,
+    const StringId levelNameId,
+    LevelTilemap& levelTilemap,
+    ecs::World& world
+)
+{
+    const auto gameCol  = npcEntryJsonObject["game_col"].get<int>();
+    const auto gameRow  = npcEntryJsonObject["game_row"].get<int>();
+    const auto atlasCol = npcEntryJsonObject["atlas_col"].get<int>();
+    const auto atlasRow = npcEntryJsonObject["atlas_row"].get<int>();
+    
+    const auto npcEntityId = world.CreateEntity();
+    
+    auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
+    levelResidentComponent->mLevelNameId = levelNameId;
+    
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = TileCoordsToPosition(gameCol, gameRow);
+    
+    GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
+    GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+    
+    world.AddComponent<TransformComponent>(npcEntityId, std::move(transformComponent));
+    world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
+    world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, atlasCol, atlasRow)));
+}
+
 void CreateLevelModelEntry
 (
     const nlohmann::basic_json<>& modelEntryJsonObject, 
@@ -226,7 +266,7 @@ void SetTileTrait
     
     GetTile(gameCol, gameRow, levelTilemap).mTileTrait = traitNamesToTraitEnums.at(traitName);
 }
-        
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

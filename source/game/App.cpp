@@ -36,6 +36,7 @@
 #include "overworld/systems/WarpConnectionsSystem.h"
 #include "overworld/utils/LevelUtils.h"
 #include "overworld/utils/LevelLoadingUtils.h"
+#include "overworld/utils/OverworldCharacterLoadingUtils.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>  
@@ -45,99 +46,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 //TEMP move to levelloading flow when implemented 
 //
-static const StringId NORTH_ANIMATION_NAME_ID = StringId("north");
-static const StringId SOUTH_ANIMATION_NAME_ID = StringId("south");
-static const StringId WEST_ANIMATION_NAME_ID = StringId("west");
-static const StringId EAST_ANIMATION_NAME_ID = StringId("east");
 
-enum class SpriteType
-{
-    DYNAMIC, STATIONARY, STATIC
-};
 
-class SpriteData
-{
-public:
-    SpriteData(const SpriteType spriteType, const int atlasColOffset, const int atlasRowOffset)
-        : mSpriteType(spriteType)
-        , mAtlasColOffset(atlasColOffset)
-        , mAtlasRowOffset(atlasRowOffset)
-    {
-    }
 
-    const SpriteType mSpriteType;
-    const int mAtlasColOffset;
-    const int mAtlasRowOffset;
-};
 
-std::string CreateTexCoordInjectedModelPath(const std::string& modelName, const std::vector<glm::vec2>& texCoords)
-{
-    std::string path = ResourceLoadingService::RES_MODELS_ROOT + modelName + "[";
-    
-    path += std::to_string(texCoords[0].x) + "," + std::to_string(texCoords[0].y);
 
-    for (auto i = 1U; i < texCoords.size(); ++i)
-    {
-        path += "-" + std::to_string(texCoords[i].x) + "," + std::to_string(texCoords[i].y);        
-    }
-    
-    path += "].obj";
-
-    return path;
-}
-
-void LoadMeshFromTexCoordsAndAddToRenderableComponent(const int meshAtlasCol, const int meshAtlasRow, const bool horFlipped, const StringId& animationNameId, RenderableComponent& renderableComponent)
-{
-    const auto atlasCols = 8;
-    const auto atlasRows = 64;
-
-    auto correctedMeshCol = meshAtlasCol;
-    auto correctedMeshRow = meshAtlasRow;
-
-    if (correctedMeshCol >= atlasCols)
-    {
-        correctedMeshCol %= atlasCols;
-        correctedMeshRow++;
-    }
-
-    const auto texCoords = CalculateTextureCoordsFromColumnAndRow(correctedMeshCol, correctedMeshRow, atlasCols, atlasRows, horFlipped);
-    const auto meshPath  = CreateTexCoordInjectedModelPath("camera_facing_quad", texCoords);
-
-    renderableComponent.mAnimationsToMeshes[animationNameId].push_back(ResourceLoadingService::GetInstance().LoadResource(meshPath));
-}
-
-std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const SpriteData& spriteData)
-{    
-    auto renderableComponent = std::make_unique<RenderableComponent>();    
-
-    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "characters.png");
-    renderableComponent->mActiveAnimationNameId = NORTH_ANIMATION_NAME_ID;
-    renderableComponent->mShaderNameId          = StringId("basic");
-    renderableComponent->mAffectedByPerspective = false;
-    
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
-
-    if (spriteData.mSpriteType == SpriteType::STATIC) return renderableComponent;
-
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 1, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
-
-    if (spriteData.mSpriteType == SpriteType::STATIONARY) return renderableComponent;
-
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, true, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
-    renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
-
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, true, NORTH_ANIMATION_NAME_ID, *renderableComponent);
-    renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID][0]);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
-
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
-
-    return renderableComponent;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -219,36 +132,14 @@ bool App::AppShouldQuit()
 
 void App::DummyInitialization()
 {
-    const auto otherDummyEntity = mWorld.CreateEntity();
-    const auto dummyEntity = mWorld.CreateEntity();
     const auto playerEntity = mWorld.CreateEntity();
 
-    const auto levelEntityId =LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
+    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
-    //GetTile(10, 13, levelContextComponent.mLevelTilemap).mTileTrait = TileTrait::WARP;
-    
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
-
-    {
-        auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-        levelResidentComponent->mLevelNameId = levelModelComponent.mLevelName;
-
-        mWorld.AddComponent<TransformComponent>(dummyEntity, std::make_unique<TransformComponent>()); 
-        mWorld.AddComponent<LevelResidentComponent>(dummyEntity, std::move(levelResidentComponent));
-        mWorld.AddComponent<RenderableComponent>(dummyEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
-    }
-
-    {
-        auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-        levelResidentComponent->mLevelNameId = levelModelComponent.mLevelName;
-
-        mWorld.AddComponent<TransformComponent>(otherDummyEntity, std::make_unique<TransformComponent>());
-        mWorld.AddComponent<LevelResidentComponent>(otherDummyEntity, std::move(levelResidentComponent));
-        mWorld.AddComponent<RenderableComponent>(otherDummyEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 0, 0)));
-    }
 
     {
         auto animationComponent = std::make_unique<AnimationTimerComponent>();
@@ -259,7 +150,7 @@ void App::DummyInitialization()
         mWorld.AddComponent<DirectionComponent>(playerEntity, std::make_unique<DirectionComponent>());
         mWorld.AddComponent<MovementStateComponent>(playerEntity, std::make_unique<MovementStateComponent>());
         mWorld.AddComponent<PlayerTagComponent>(playerEntity, std::make_unique<PlayerTagComponent>());
-        mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(SpriteData(SpriteType::DYNAMIC, 6, 14)));
+        mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, 6, 14)));
         mWorld.AddComponent<TransformComponent>(playerEntity, std::make_unique<TransformComponent>());
     }
 
@@ -270,17 +161,6 @@ void App::DummyInitialization()
     playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
-
-    auto& dummyTransformComponent = mWorld.GetComponent<TransformComponent>(dummyEntity);
-    dummyTransformComponent.mPosition = TileCoordsToPosition(20, 16);
-    GetTile(20, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = dummyEntity;
-    GetTile(20, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
-
-    auto& otherDummyTransformComponent = mWorld.GetComponent<TransformComponent>(otherDummyEntity);
-    otherDummyTransformComponent.mPosition = TileCoordsToPosition(10, 12);
-    GetTile(10, 12, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = otherDummyEntity;
-    GetTile(10, 12, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
