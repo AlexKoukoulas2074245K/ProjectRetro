@@ -86,7 +86,23 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
         if (ShouldProcessEntity(entityId))
         {
             const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-            const auto& currentTexture = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+            const auto& transformComponent  = mWorld.GetComponent<TransformComponent>(entityId);
+            const auto& currentTexture      = ResourceLoadingService::GetInstance().GetResource<TextureResource>(renderableComponent.mTextureResourceId);
+            const auto& activeMeshes        = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);            
+            const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
+
+            // Frustum culling
+            if (!IsMeshInsideCameraFrustum
+            (
+                transformComponent.mPosition,
+                transformComponent.mScale,
+                currentMesh.GetDimensions(),
+                cameraComponent.mFrustum
+            ))
+            {
+                renderingContextComponent.mFrustumCulledEntities++;
+                continue;
+            }
 
             // If entity is solid-textured (has no semi transparent pixels) or it is
             // part of the level geometry textures then it is rendered in this pass here. 
@@ -104,8 +120,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     renderableComponent, 
                     cameraComponent, 
                     shaderStoreComponent, 
-                    windowComponent, 
-                    renderingContextComponent,
+                    windowComponent,
                     previousRenderingStateComponent
                 );
             }            
@@ -132,8 +147,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             renderableComponent, 
             cameraComponent, 
             shaderStoreComponent, 
-            windowComponent, 
-            renderingContextComponent,
+            windowComponent,             
             previousRenderingStateComponent
         );
     }
@@ -152,8 +166,7 @@ void RenderingSystem::RenderEntityInternal
     const RenderableComponent& renderableComponent,
     const CameraSingletonComponent& cameraComponent, 
     const ShaderStoreSingletonComponent& shaderStoreComponent,
-    const WindowSingletonComponent& windowComponent,
-    RenderingContextSingletonComponent& renderingContextComponent,
+    const WindowSingletonComponent& windowComponent,    
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {    
@@ -174,34 +187,21 @@ void RenderingSystem::RenderEntityInternal
 
     // Get currently active mesh for this entity
     const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);    
-    const auto& currentMeshes      = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
+    const auto& activeMeshes       = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
 
     // Update current mesh if necessary
     const MeshResource* currentMesh = nullptr;
-    if (currentMeshes[renderableComponent.mActiveMeshIndex] != previousRenderingStateComponent.previousMeshResourceId)
+    if (activeMeshes[renderableComponent.mActiveMeshIndex] != previousRenderingStateComponent.previousMeshResourceId)
     {
-        currentMesh = &ResourceLoadingService::GetInstance().GetResource<MeshResource>(currentMeshes[renderableComponent.mActiveMeshIndex]);
+        currentMesh = &ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
         GL_CHECK(glBindVertexArray(currentMesh->GetVertexArrayObject()));
 
         previousRenderingStateComponent.previousMesh           = currentMesh;
-        previousRenderingStateComponent.previousMeshResourceId = currentMeshes[renderableComponent.mActiveMeshIndex];                        
+        previousRenderingStateComponent.previousMeshResourceId = activeMeshes[renderableComponent.mActiveMeshIndex];
     }
     else
     {
         currentMesh = previousRenderingStateComponent.previousMesh;
-    }
-        
-    // Frustum culling
-    if (!IsMeshInsideCameraFrustum
-    (
-        transformComponent.mPosition,
-        transformComponent.mScale,
-        currentMesh->GetDimensions(),
-        cameraComponent.mFrustum
-    ))
-    {
-        renderingContextComponent.mFrustumCulledEntities++;
-        return;
     }
     
     // Calculate world matrix for entity

@@ -52,8 +52,7 @@ private:
         const RenderableComponent& entityRenderableComponent,
         const CameraSingletonComponent& globalCameraComponent,
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
-        const WindowSingletonComponent& globalWindowComponent,
-        RenderingContextSingletonComponent& globalRenderingContextComponent, 
+        const WindowSingletonComponent& globalWindowComponent,        
         PreviousRenderingStateSingletonComponent& globalPreviousRenderingStateComponent
     ) const;
         
