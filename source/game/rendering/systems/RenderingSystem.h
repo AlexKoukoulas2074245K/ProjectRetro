@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class ActiveLevelSingletonComponent;
 class CameraSingletonComponent;
 class PreviousRenderingStateSingletonComponent;
 class RenderableComponent;
@@ -53,7 +52,6 @@ private:
         const CameraSingletonComponent& globalCameraComponent,
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
         const WindowSingletonComponent& globalWindowComponent,
-        const ActiveLevelSingletonComponent& globalActiveLevelComponent,
         PreviousRenderingStateSingletonComponent& globalPreviousRenderingStateComponent
     ) const;
         

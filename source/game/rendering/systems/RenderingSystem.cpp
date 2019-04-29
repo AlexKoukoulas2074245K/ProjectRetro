@@ -94,6 +94,13 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& activeMeshes        = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);            
             const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
 
+            // Check level residency and reject if applicable
+            if (mWorld.HasComponent<LevelResidentComponent>(entityId) &&
+                mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId != activeLevelSingletonComponent.mActiveLevelNameId)
+            {
+                continue;
+            }
+            
             // Frustum culling
             if (!IsMeshInsideCameraFrustum
             (
@@ -124,7 +131,6 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     cameraComponent, 
                     shaderStoreComponent, 
                     windowComponent,
-                    activeLevelSingletonComponent,
                     previousRenderingStateComponent
                 );
             }            
@@ -152,7 +158,6 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             cameraComponent, 
             shaderStoreComponent, 
             windowComponent,
-            activeLevelSingletonComponent,
             previousRenderingStateComponent
         );
     }
@@ -172,17 +177,9 @@ void RenderingSystem::RenderEntityInternal
     const CameraSingletonComponent& cameraComponent, 
     const ShaderStoreSingletonComponent& shaderStoreComponent,
     const WindowSingletonComponent& windowComponent,
-    const ActiveLevelSingletonComponent& activeLevelComponent,
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {
-    // Check level residency and reject if applicable
-    if (mWorld.HasComponent<LevelResidentComponent>(entityId) &&
-        mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId != activeLevelComponent.mActiveLevelNameId)
-    {
-        return;
-    }
-    
     // Update Shader is necessary
     const ShaderResource* currentShader = nullptr;
     if (renderableComponent.mShaderNameId != previousRenderingStateComponent.previousShaderNameId)
