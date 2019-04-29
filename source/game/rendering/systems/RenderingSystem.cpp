@@ -24,6 +24,8 @@
 #include "../../common/utils/Logging.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/MessageBox.h"
+#include "../../overworld/components/LevelResidentComponent.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
@@ -59,11 +61,12 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
-    auto& cameraComponent                 = mWorld.GetSingletonComponent<CameraSingletonComponent>();
-    auto& renderingContextComponent       = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-    auto& previousRenderingStateComponent = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
-    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    const auto& shaderStoreComponent      = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
+    const auto& windowComponent               = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& shaderStoreComponent          = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
+    const auto& activeLevelSingletonComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& cameraComponent                     = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& renderingContextComponent           = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    auto& previousRenderingStateComponent     = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
     
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
@@ -121,6 +124,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     cameraComponent, 
                     shaderStoreComponent, 
                     windowComponent,
+                    activeLevelSingletonComponent,
                     previousRenderingStateComponent
                 );
             }            
@@ -147,7 +151,8 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             renderableComponent, 
             cameraComponent, 
             shaderStoreComponent, 
-            windowComponent,             
+            windowComponent,
+            activeLevelSingletonComponent,
             previousRenderingStateComponent
         );
     }
@@ -166,10 +171,18 @@ void RenderingSystem::RenderEntityInternal
     const RenderableComponent& renderableComponent,
     const CameraSingletonComponent& cameraComponent, 
     const ShaderStoreSingletonComponent& shaderStoreComponent,
-    const WindowSingletonComponent& windowComponent,    
+    const WindowSingletonComponent& windowComponent,
+    const ActiveLevelSingletonComponent& activeLevelComponent,
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
-{    
+{
+    // Check level residency and reject if applicable
+    if (mWorld.HasComponent<LevelResidentComponent>(entityId) &&
+        mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId != activeLevelComponent.mActiveLevelNameId)
+    {
+        return;
+    }
+    
     // Update Shader is necessary
     const ShaderResource* currentShader = nullptr;
     if (renderableComponent.mShaderNameId != previousRenderingStateComponent.previousShaderNameId)

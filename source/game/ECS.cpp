@@ -72,8 +72,9 @@ void ecs::World::RemoveMarkedSystems()
     {
         auto systemsIter = mSystems.begin();
         while (systemsIter != mSystems.end())
-        {            
-            if (GetStringHash(typeid(*(*systemsIter)).name()) == systemHash)
+        {
+            auto& system = *(*systemsIter);
+            if (GetStringHash(typeid(system).name()) == systemHash)
             {
                 systemsIter = mSystems.erase(systemsIter);
             }

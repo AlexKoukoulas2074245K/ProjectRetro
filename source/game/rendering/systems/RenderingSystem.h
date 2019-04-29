@@ -27,12 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+class ActiveLevelSingletonComponent;
 class CameraSingletonComponent;
-class ShaderStoreSingletonComponent;
-class RenderableComponent;
-class RenderingContextSingletonComponent;
-class WindowSingletonComponent;
 class PreviousRenderingStateSingletonComponent;
+class RenderableComponent;
+class ShaderStoreSingletonComponent;
+class WindowSingletonComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,8 @@ private:
         const RenderableComponent& entityRenderableComponent,
         const CameraSingletonComponent& globalCameraComponent,
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
-        const WindowSingletonComponent& globalWindowComponent,        
+        const WindowSingletonComponent& globalWindowComponent,
+        const ActiveLevelSingletonComponent& globalActiveLevelComponent,
         PreviousRenderingStateSingletonComponent& globalPreviousRenderingStateComponent
     ) const;
         

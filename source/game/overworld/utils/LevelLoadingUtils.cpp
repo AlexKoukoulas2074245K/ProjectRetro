@@ -187,10 +187,18 @@ static void CreateNpc
     ecs::World& world
 )
 {
-    const auto gameCol  = npcEntryJsonObject["game_col"].get<int>();
-    const auto gameRow  = npcEntryJsonObject["game_row"].get<int>();
-    const auto atlasCol = npcEntryJsonObject["atlas_col"].get<int>();
-    const auto atlasRow = npcEntryJsonObject["atlas_row"].get<int>();
+    static const std::unordered_map<StringId, CharacterMovementType, StringIdHasher> characterMovementTypesNamesToEnums =
+    {
+        { StringId("STATIC"), CharacterMovementType::STATIC },
+        { StringId("STATIONARY"), CharacterMovementType::STATIONARY },
+        { StringId("DYNAMIC"), CharacterMovementType::DYNAMIC }
+    };
+    
+    const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcEntryJsonObject["movement_type"]));
+    const auto gameCol      = npcEntryJsonObject["game_col"].get<int>();
+    const auto gameRow      = npcEntryJsonObject["game_row"].get<int>();
+    const auto atlasCol     = npcEntryJsonObject["atlas_col"].get<int>();
+    const auto atlasRow     = npcEntryJsonObject["atlas_row"].get<int>();
     
     const auto npcEntityId = world.CreateEntity();
     
@@ -205,7 +213,7 @@ static void CreateNpc
     
     world.AddComponent<TransformComponent>(npcEntityId, std::move(transformComponent));
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
-    world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, atlasCol, atlasRow)));
+    world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow)));
 }
 
 void CreateLevelModelEntry
@@ -237,7 +245,6 @@ void CreateLevelModelEntry
     (
         ResourceLoadingService::RES_TEXTURES_ROOT + modelName + ".png"
     );
-    //renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
 
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;

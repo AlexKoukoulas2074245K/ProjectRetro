@@ -49,7 +49,6 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         mWorld.RemoveEntity(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
 
         activeLevelSingletonComponent.mActiveLevelNameId = StringId("in_players_home_top");
-        const auto otherLevelId = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
 
         auto& newLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(StringId("in_players_home_top"), mWorld));
 
