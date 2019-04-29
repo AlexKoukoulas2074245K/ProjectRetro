@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PlayerActionControllerSystem.h"
+#include "MovementControllerSystem.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -106,7 +107,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
                 ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
-            {
+            {                
                 directionComponent.mDirection = Direction::SOUTH;
                 movementStateComponent.mMoving = true;
                 ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);

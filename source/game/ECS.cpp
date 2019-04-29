@@ -28,6 +28,7 @@ const std::vector<ecs::EntityId>& ecs::World::GetActiveEntities() const
 
 void ecs::World::Update(const float dt)
 {
+    RemoveMarkedSystems();
     RemoveEntitiesWithoutAnyComponents();
     CongregateActiveEntitiesInCurrentFrame();
 
@@ -63,6 +64,25 @@ ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const Entity
     }
 
     return componentUsageMask;
+}
+
+void ecs::World::RemoveMarkedSystems()
+{
+    for (const auto& systemHash: mSystemHashesToRemove)
+    {
+        auto systemsIter = mSystems.begin();
+        while (systemsIter != mSystems.end())
+        {            
+            if (GetStringHash(typeid(*(*systemsIter)).name()) == systemHash)
+            {
+                systemsIter = mSystems.erase(systemsIter);
+            }
+            else
+            {
+                systemsIter++;
+            }
+        }
+    }
 }
 
 void ecs::World::RemoveEntitiesWithoutAnyComponents()

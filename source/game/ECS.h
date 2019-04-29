@@ -245,6 +245,15 @@ public:
         mSystems.push_back(std::move(system));
     }            
 
+    template<class SystemType>
+    inline void RemoveSystem()
+    {
+        static_assert(std::is_base_of<BaseSystem, SystemType>::value,
+            "Attempted to remove and object that does not derive from BaseSystem");
+
+        mSystemHashesToRemove.push_back(GetStringHash(typeid(SystemType).name()));
+    }
+
     // Calculates the bit mask of the given template argument (FirstUtilizedComponentType).
     // Registers the given component type if not already registered in the world
     template<class FirstUtilizedComponentType>
@@ -281,6 +290,9 @@ public:
     }
 
 private:    
+    // Removes all systems that have been marked to be removed
+    void RemoveMarkedSystems();
+
     // Removes all entities with no components currently attached to them
     void RemoveEntitiesWithoutAnyComponents();
 
@@ -312,6 +324,7 @@ private:
     ComponentMap            mSingletonComponents;
                   
     std::vector<std::unique_ptr<BaseSystem>> mSystems;
+    std::vector<std::size_t> mSystemHashesToRemove;
     std::vector<EntityId> mActiveEntitiesInFrame;
 
     EntityId mEntityCounter = 1LL;
