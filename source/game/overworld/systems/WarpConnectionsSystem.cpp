@@ -14,6 +14,7 @@
 #include "../components/LevelResidentComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
+#include "../utils/LevelLoadingUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -47,41 +48,18 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
         mWorld.RemoveEntity(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
 
-        activeLevelSingletonComponent.mActiveLevelNameId = StringId("testLevelB");
-        auto& newLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(StringId("testLevelB"), mWorld));
-        auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(5);
-        auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(5);
+        activeLevelSingletonComponent.mActiveLevelNameId = StringId("in_players_home_top");
+        const auto otherLevelId = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
 
-        {
-            const auto levelGroundLayer = mWorld.CreateEntity();
-            auto transformComponent = std::make_unique<TransformComponent>();
-            transformComponent->mScale.x = 5.0f;
-            transformComponent->mScale.z = 5.0f;
-            transformComponent->mPosition.x += (5.0f * OVERWORLD_TILE_SIZE) / 2.0f;
-            transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
-            transformComponent->mPosition.z += (5.0f * OVERWORLD_TILE_SIZE) / 2.0f;
+        auto& newLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(StringId("in_players_home_top"), mWorld));
 
-            auto renderableComponent = std::make_unique<RenderableComponent>();
-            renderableComponent->mShaderNameId = StringId("basic");
-            renderableComponent->mAnimationsToMeshes[StringId("default")].
-                push_back(ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "2d_out_empty_floor.obj"));
-            renderableComponent->mActiveAnimationNameId = StringId("default");
-            renderableComponent->mTextureResourceId =
-                ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_TEXTURES_ROOT + "materials/pallet_ground_layer.png");
-            renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+        auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(1);
+        auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(1);
 
-            auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
-            levelResidentComponent->mLevelNameId = newLevelModelComponent.mLevelName;
-
-            mWorld.AddComponent<TransformComponent>(levelGroundLayer, std::move(transformComponent));
-            mWorld.AddComponent<LevelResidentComponent>(levelGroundLayer, std::move(levelResidentComponent));
-            mWorld.AddComponent<RenderableComponent>(levelGroundLayer, std::move(renderableComponent));
-        }
-
-        playerTransformComponent.mPosition = TileCoordsToPosition(2, 2);
-        playerMovementStateComponent.mCurrentCoords = TileCoords(2, 2);
-        GetTile(2, 2, newLevelModelComponent.mLevelTilemap).mTileOccupierEntityId = 5;
-        GetTile(2, 2, newLevelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+        playerTransformComponent.mPosition = TileCoordsToPosition(8, 10);
+        playerMovementStateComponent.mCurrentCoords = TileCoords(8, 10);
+        GetTile(8, 10, newLevelModelComponent.mLevelTilemap).mTileOccupierEntityId = 5;
+        GetTile(8, 10, newLevelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
 
         warpConnectionsComponent.mHasPendingWarpConnection = false;
     }
