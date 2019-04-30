@@ -11,6 +11,7 @@
 
 #include "PlayerActionControllerSystem.h"
 #include "MovementControllerSystem.h"
+#include "../components/WarpConnectionsSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -46,8 +47,9 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    
+    const auto& inputStateComponent      = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
         if (ShouldProcessEntity(entityId))
@@ -56,7 +58,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             auto& movementStateComponent        = mWorld.GetComponent<MovementStateComponent>(entityId);
             auto& renderableComponent           = mWorld.GetComponent<RenderableComponent>(entityId);
             
-            if (movementStateComponent.mMoving)
+            if (movementStateComponent.mMoving || warpConnectionsComponent.mHasPendingWarpConnection)
             {
                 continue;
             }
