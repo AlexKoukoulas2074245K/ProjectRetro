@@ -18,6 +18,7 @@
 
 #include "../../ECS.h"
 #include "../../common/utils/StringUtils.h"
+#include "../../rendering/utils/Colors.h"
 
 #include <vector>
 
@@ -55,11 +56,12 @@ using LevelTilemap = std::vector<std::vector<Tile>>;
 class LevelModelComponent final: public ecs::IComponent
 {
 public:    
-     StringId mLevelName;
      LevelTilemap mLevelTilemap;
-     ecs::EntityId mGroundLayerEntity;
-     int mCols;
-     int mRows;
+     StringId mLevelName              = StringId();
+     glm::vec4 mLevelColor            = colors::PALLET_COLOR;
+     ecs::EntityId mGroundLayerEntity = ecs::NULL_ENTITY_ID;
+     int mCols                        = 0;
+     int mRows                        = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

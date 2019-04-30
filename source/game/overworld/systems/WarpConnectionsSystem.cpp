@@ -12,6 +12,7 @@
 #include "WarpConnectionsSystem.h"
 #include "../components/ActiveLevelSingletonComponent.h"
 #include "../components/LevelResidentComponent.h"
+#include "../components/TransitionAnimationStateSingletonComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/LevelLoadingUtils.h"
@@ -30,10 +31,11 @@ WarpConnectionsSystem::WarpConnectionsSystem(ecs::World& world)
 
 void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 {
-    auto& activeLevelSingletonComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    auto& warpConnectionsComponent      = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+    const auto& transitionAnimationStateSingletonComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    auto& activeLevelSingletonComponent                    = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& warpConnectionsComponent                         = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
 
-    if (warpConnectionsComponent.mHasPendingWarpConnection)
+    if (warpConnectionsComponent.mHasPendingWarpConnection && transitionAnimationStateSingletonComponent.mIsPlayingTransitionAnimation == false)
     {
         for (const auto& entityId : mWorld.GetActiveEntities())
         {

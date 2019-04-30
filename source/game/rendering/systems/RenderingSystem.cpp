@@ -17,6 +17,7 @@
 #include "../components/ShaderStoreSingletonComponent.h"
 #include "../components/WindowSingletonComponent.h"
 #include "../opengl/Context.h"
+#include "../utils/Colors.h"
 #include "../utils/CameraUtils.h"
 #include "../utils/RenderingUtils.h"
 #include "../../common/components/TransformComponent.h"
@@ -24,8 +25,11 @@
 #include "../../common/utils/Logging.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/MessageBox.h"
-#include "../../overworld/components/LevelResidentComponent.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelResidentComponent.h"
+#include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
+#include "../../overworld/utils/TransitionAnimationUtils.h"
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
@@ -40,10 +44,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME      = StringId("world");
-const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME       = StringId("view");
-const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME = StringId("proj");
-const glm::vec4 RenderingSystem::CLEAR_COLOR                  = glm::vec4(0.7215f, 0.5333f, 0.9725f, 1.0f);
+const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME               = StringId("world");
+const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME                = StringId("view");
+const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME          = StringId("proj");
+const StringId RenderingSystem::TRANSITION_ANIMATION_STEP_UNIFORM_NAME = StringId("transition_progression_step");
+const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME       = StringId("current_level_color");
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -61,12 +66,13 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
-    const auto& windowComponent               = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    const auto& shaderStoreComponent          = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
-    const auto& activeLevelSingletonComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    auto& cameraComponent                     = mWorld.GetSingletonComponent<CameraSingletonComponent>();
-    auto& renderingContextComponent           = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-    auto& previousRenderingStateComponent     = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
+    const auto& windowComponent                       = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& shaderStoreComponent                  = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
+    const auto& activeLevelSingletonComponent         = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& transitionAnimationComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    auto& cameraComponent                             = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& renderingContextComponent                   = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    auto& previousRenderingStateComponent             = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
     
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
@@ -80,6 +86,11 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
     std::vector<ecs::EntityId> semiTransparentTexturedEntities;
+    
+    // Set background color
+    const auto& currentLevel    = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
+    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, transitionAnimationComponent.mAnimationProgressionStep);
+    GL_CHECK(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
     
     // Clear buffers
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -128,9 +139,11 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                 (
                     entityId, 
                     renderableComponent, 
+                    currentLevel.mLevelColor,
                     cameraComponent, 
                     shaderStoreComponent, 
                     windowComponent,
+                    transitionAnimationComponent,
                     previousRenderingStateComponent
                 );
             }            
@@ -155,9 +168,11 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
         (
             entityId, 
             renderableComponent, 
+            currentLevel.mLevelColor,
             cameraComponent, 
             shaderStoreComponent, 
             windowComponent,
+            transitionAnimationComponent,
             previousRenderingStateComponent
         );
     }
@@ -174,9 +189,11 @@ void RenderingSystem::RenderEntityInternal
 (
     const ecs::EntityId entityId,
     const RenderableComponent& renderableComponent,
+    const glm::vec4& currentLevelColor,
     const CameraSingletonComponent& cameraComponent, 
     const ShaderStoreSingletonComponent& shaderStoreComponent,
     const WindowSingletonComponent& windowComponent,
+    const TransitionAnimationStateSingletonComponent& transitionAnimationComponent,
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {
@@ -230,6 +247,8 @@ void RenderingSystem::RenderEntityInternal
     world = glm::scale(world, scale);
     
     // Set matrix uniforms
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mAnimationProgressionStep));
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(CURRENT_LEVEL_COLOR_UNIFORM_NAME), currentLevelColor.x, currentLevelColor.y, currentLevelColor.z, currentLevelColor.w));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
@@ -325,10 +344,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     // Log GL driver info
     Log(LogType::INFO, "Vendor     : %s", GL_NO_CHECK(glGetString(GL_VENDOR)));
     Log(LogType::INFO, "Renderer   : %s", GL_NO_CHECK(glGetString(GL_RENDERER)));
-    Log(LogType::INFO, "Version    : %s", GL_NO_CHECK(glGetString(GL_VERSION)));
-
-    // Set Clear Color
-    GL_CHECK(glClearColor(CLEAR_COLOR.x, CLEAR_COLOR.y, CLEAR_COLOR.z, CLEAR_COLOR.w));
+    Log(LogType::INFO, "Version    : %s", GL_NO_CHECK(glGetString(GL_VERSION)));   
 
     // Configure Blending
     GL_CHECK(glEnable(GL_BLEND));

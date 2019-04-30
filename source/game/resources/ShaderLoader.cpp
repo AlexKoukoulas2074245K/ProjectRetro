@@ -192,7 +192,7 @@ std::unordered_map<StringId, GLuint, StringIdHasher> ShaderLoader::GetUniformNam
             
             // Uniform names will always be the third components in the line
             // e.g. uniform bool foo
-            const auto uniformName = uniformLineSplitBySpace[2];
+            const auto uniformName = uniformLineSplitBySpace[2].substr(0, uniformLineSplitBySpace[2].size() - 1);
             const auto uniformLocation = GL_NO_CHECK(glGetUniformLocation(programId, uniformName.c_str()));
             
             uniformNamesToLocationsMap[StringId(uniformName)] = uniformLocation;

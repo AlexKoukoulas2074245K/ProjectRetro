@@ -31,6 +31,7 @@ class CameraSingletonComponent;
 class PreviousRenderingStateSingletonComponent;
 class RenderableComponent;
 class ShaderStoreSingletonComponent;
+class TransitionAnimationStateSingletonComponent;
 class WindowSingletonComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -49,9 +50,11 @@ private:
     (
         const ecs::EntityId entityId,
         const RenderableComponent& entityRenderableComponent,
+        const glm::vec4& currentLevelColor,
         const CameraSingletonComponent& globalCameraComponent,
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
         const WindowSingletonComponent& globalWindowComponent,
+        const TransitionAnimationStateSingletonComponent& transitionAnimationComponent,
         PreviousRenderingStateSingletonComponent& globalPreviousRenderingStateComponent
     ) const;
         
@@ -62,10 +65,11 @@ private:
     std::set<std::string> GetAndFilterShaderNames() const;
 
 private:
-    static const StringId  WORLD_MARIX_UNIFORM_NAME;
-    static const StringId  VIEW_MARIX_UNIFORM_NAME;
-    static const StringId  PROJECTION_MARIX_UNIFORM_NAME;
-    static const glm::vec4 CLEAR_COLOR;
+    static const StringId WORLD_MARIX_UNIFORM_NAME;
+    static const StringId VIEW_MARIX_UNIFORM_NAME;
+    static const StringId PROJECTION_MARIX_UNIFORM_NAME;
+    static const StringId TRANSITION_ANIMATION_STEP_UNIFORM_NAME;
+    static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;        
 
 };
 

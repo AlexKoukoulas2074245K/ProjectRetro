@@ -14,7 +14,9 @@
 #include "LevelUtils.h"
 #include "OverworldCharacterLoadingUtils.h"
 #include "../components/LevelResidentComponent.h"
+#include "../../common/utils/MessageBox.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../rendering/utils/Colors.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -85,7 +87,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
 
     // Extract level header properties
     const auto levelTilemapCols = levelJson["level_header"]["dimensions"]["cols"].get<int>();
-    const auto levelTilemapRows = levelJson["level_header"]["dimensions"]["rows"].get<int>();
+    const auto levelTilemapRows = levelJson["level_header"]["dimensions"]["rows"].get<int>(); 
 
     // Initialize result level entity and context component
     const auto levelEntityId = world.CreateEntity();
@@ -96,6 +98,34 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     levelModelComponent->mCols              = levelTilemapCols;
     levelModelComponent->mRows              = levelTilemapRows;
     levelModelComponent->mGroundLayerEntity = world.CreateEntity();
+
+    // Extract level palette color
+    const auto hasPaletteEntry = levelJson["level_header"].count("color") != 0;
+
+    if (hasPaletteEntry)
+    {
+        static const std::unordered_map<StringId, glm::vec4, StringIdHasher> levelColorNamesToValues =
+        {
+            { StringId("PALLET"),    colors::PALLET_COLOR },
+            { StringId("VIRIDIAN"),  colors::VIRIDIAN_COLOR },
+            { StringId("PEWTER"),    colors::PEWTER_COLOR },
+            { StringId("CAVE"),      colors::CAVE_COLOR },
+            { StringId("CERULEAN"),  colors::CERULEAN_COLOR },
+            { StringId("VERMILION"), colors::VERMILION_COLOR },
+            { StringId("LAVENDER"),  colors::LAVENDER_COLOR }
+        };
+
+        levelModelComponent->mLevelColor = levelColorNamesToValues.at(StringId(levelJson["level_header"]["color"].get<std::string>()));
+    }
+    else
+    {
+        ShowMessageBox
+        (
+            MessageBoxType::WARNING,
+            "Palette Info Missing",
+            "No palette info was found in level: " + levelName.GetString()
+        );
+    }
 
     // Create optimized ground layer texture for level
     const auto groundLayerTextureName = levelJson["level_ground_layer_game"][0]["texture_name"];
@@ -173,10 +203,11 @@ void CreateLevelGroundLayer
 
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
-
-    world.AddComponent<TransformComponent>(groundLayerEntityId, std::move(transformComponent));
-    world.AddComponent<LevelResidentComponent>(groundLayerEntityId, std::move(levelResidentComponent));
-    world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
+    (void)world;
+    (void)groundLayerEntityId;
+    //world.AddComponent<TransformComponent>(groundLayerEntityId, std::move(transformComponent));
+    //world.AddComponent<LevelResidentComponent>(groundLayerEntityId, std::move(levelResidentComponent));
+    //world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
 }
 
 static void CreateNpc
@@ -189,9 +220,9 @@ static void CreateNpc
 {
     static const std::unordered_map<StringId, CharacterMovementType, StringIdHasher> characterMovementTypesNamesToEnums =
     {
-        { StringId("STATIC"), CharacterMovementType::STATIC },
+        { StringId("STATIC"),     CharacterMovementType::STATIC },
         { StringId("STATIONARY"), CharacterMovementType::STATIONARY },
-        { StringId("DYNAMIC"), CharacterMovementType::DYNAMIC }
+        { StringId("DYNAMIC"),    CharacterMovementType::DYNAMIC }
     };
     
     const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcEntryJsonObject["movement_type"]));
@@ -263,8 +294,8 @@ void SetTileTrait
     static const std::unordered_map<StringId, TileTrait, StringIdHasher> traitNamesToTraitEnums =
     {
         { StringId("ENCOUNTER"), TileTrait::ENCOUNTER },
-        { StringId("SOLID"), TileTrait::SOLID },
-        { StringId("WARP"), TileTrait::WARP }
+        { StringId("SOLID"),     TileTrait::SOLID },
+        { StringId("WARP"),      TileTrait::WARP }
     };
     
     const auto gameCol   = tileTraitEntryJsonObject["game_col"].get<int>();

@@ -2,7 +2,8 @@
     "level_header":
     {
         "name": "pallet_new",
-        "dimensions" : { "cols": 32, "rows": 32}
+        "dimensions" : { "cols": 32, "rows": 32},
+		"color": "PALLET"
     },
     "level_ground_layer_editor":
     [
