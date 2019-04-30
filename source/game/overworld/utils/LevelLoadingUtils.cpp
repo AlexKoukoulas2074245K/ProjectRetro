@@ -203,11 +203,10 @@ void CreateLevelGroundLayer
 
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
-    (void)world;
-    (void)groundLayerEntityId;
-    //world.AddComponent<TransformComponent>(groundLayerEntityId, std::move(transformComponent));
-    //world.AddComponent<LevelResidentComponent>(groundLayerEntityId, std::move(levelResidentComponent));
-    //world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
+
+    world.AddComponent<TransformComponent>(groundLayerEntityId, std::move(transformComponent));
+    world.AddComponent<LevelResidentComponent>(groundLayerEntityId, std::move(levelResidentComponent));
+    world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
 }
 
 static void CreateNpc

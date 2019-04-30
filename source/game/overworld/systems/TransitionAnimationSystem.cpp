@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float TransitionAnimationSystem::TRANSITION_STEP_DURATION = 1.0;
+const float TransitionAnimationSystem::TRANSITION_STEP_DURATION = 0.2f;
 const int TransitionAnimationSystem::TRANSITION_STEPS_COUNT = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,8 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
             transitionAnimationStateComponent.mAnimationTimer->Reset();
             if (++transitionAnimationStateComponent.mAnimationProgressionStep > TRANSITION_STEPS_COUNT)
             {
-                transitionAnimationStateComponent.mAnimationProgressionStep = TRANSITION_STEPS_COUNT;
+    
+                transitionAnimationStateComponent.mAnimationProgressionStep = 0;
                 transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
             }            
         }
