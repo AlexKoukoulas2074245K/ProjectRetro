@@ -36,12 +36,12 @@ vec4 getTransitionAnimationColor()
 	float smallestDistance = min(whiteColorDistance, min(currentLevelColorDistance, min(blueColorDistance, blackColorDistance)));
 	
 	int currentColorIndex = 0;
-	if (abs(smallestDistance - whiteColorDistance) < 0.001)             currentColorIndex = 0;
-	else if (abs(smallestDistance - currentLevelColorDistance) < 0.001) currentColorIndex = 1;
-	else if (abs(smallestDistance - blueColorDistance) < 0.001)         currentColorIndex = 2;
-	else                                                                currentColorIndex = 3;	
+	if (abs(smallestDistance - whiteColorDistance) < 0.01)             currentColorIndex = 0;
+	else if (abs(smallestDistance - currentLevelColorDistance) < 0.01) currentColorIndex = 1;
+	else if (abs(smallestDistance - blueColorDistance) < 0.01)         currentColorIndex = 2;
+	else                                                               currentColorIndex = 3;
 	
-	return colorPool[max((currentColorIndex + transition_progression_step), 3)];
+	return colorPool[min((currentColorIndex + transition_progression_step), 3)];
 }
 
 void main()
@@ -54,7 +54,7 @@ void main()
 
     frag_color = texture(tex, vec2(final_uv_x, final_uv_y));
 	
-	if (transition_progression_step > 0)
+	if (transition_progression_step > 0 && frag_color.w > 0.5)
 	{
 		frag_color = getTransitionAnimationColor();
 	}	
