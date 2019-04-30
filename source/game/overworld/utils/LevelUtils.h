@@ -85,6 +85,20 @@ inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Directio
     return TileCoords();
 }
 
+inline StringId GetLevelNameFromId(const ecs::EntityId levelId, const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (entityId == levelId)
+        {
+            return world.GetComponent<LevelModelComponent>(levelId).mLevelName;
+        }
+    }
+
+    return StringId();
+}
+
 inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs::World& world)
 {
     const auto& activeEntities = world.GetActiveEntities();
@@ -93,7 +107,8 @@ inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs
         if 
         (
             world.HasComponent<LevelModelComponent>(entityId) &&
-            world.GetComponent<LevelModelComponent>(entityId).mLevelName == levelNameId)
+            world.GetComponent<LevelModelComponent>(entityId).mLevelName == levelNameId
+        )
         {
             return entityId;
         }

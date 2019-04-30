@@ -89,7 +89,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     
     // Set background color
     const auto& currentLevel    = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
-    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, transitionAnimationComponent.mAnimationProgressionStep);
+    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, currentLevel.mLevelName, transitionAnimationComponent.mAnimationProgressionStep);
     GL_CHECK(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
     
     // Clear buffers

@@ -19,6 +19,7 @@
 
 #include "../../ECS.h"
 #include "../../rendering/utils/Colors.h"
+#include "../../common/utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -27,9 +28,15 @@
 inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
 (    
     const glm::vec4& currentLevelColor,
+    const StringId currentLevelNameId,
     const int transitionAnimationStep
 )
 {
+    if (StringStartsWith(currentLevelNameId.GetString(), "in_"))
+    {
+        return colors::GLOBAL_BLACK_COLOR;
+    }
+
     switch (transitionAnimationStep)
     {
         case 0: return currentLevelColor; 
