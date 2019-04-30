@@ -122,7 +122,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mCurrentCoords = targetTileCoords;
 
                 // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
-                if (targetTile.mTileTrait == TileTrait::WARP && hasPlayerTag)
+                if ((targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && hasPlayerTag)
                 {
                     mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>().mHasPendingWarpConnection = true;                    
                 }

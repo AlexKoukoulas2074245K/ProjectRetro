@@ -33,7 +33,7 @@ enum class TileOccupierType
 
 enum class TileTrait
 {
-    NONE, SOLID, WARP, ENCOUNTER
+    NONE, SOLID, WARP, NO_ANIM_WARP, PRESS_WARP, ENCOUNTER
 };
 
 struct Tile
