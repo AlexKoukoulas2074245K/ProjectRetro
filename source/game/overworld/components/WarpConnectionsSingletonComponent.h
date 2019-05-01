@@ -21,7 +21,8 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../common/utils/TypeTraits.h"
 
-#include <unordered_map>
+#include <vector>
+#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ class WarpConnectionsSingletonComponent final: public ecs::IComponent
 {
 public:
     bool mHasPendingWarpConnection = false;
-    std::unordered_map<WarpInfo, WarpInfo, WarpInfoHasher> mWarpConnections;
+    std::vector<std::pair<WarpInfo, WarpInfo>> mWarpConnections;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

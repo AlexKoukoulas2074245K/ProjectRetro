@@ -26,7 +26,7 @@
 WarpConnectionsSystem::WarpConnectionsSystem(ecs::World& world)
     : BaseSystem(world)
 {
-    mWorld.SetSingletonComponent<WarpConnectionsSingletonComponent>(std::make_unique<WarpConnectionsSingletonComponent>());
+    
 }
 
 void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
@@ -37,18 +37,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
     if (warpConnectionsComponent.mHasPendingWarpConnection && transitionAnimationStateSingletonComponent.mIsPlayingTransitionAnimation == false)
     {
-        for (const auto& entityId : mWorld.GetActiveEntities())
-        {
-            if (mWorld.HasComponent<LevelResidentComponent>(entityId))
-            {
-                if (mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId == activeLevelSingletonComponent.mActiveLevelNameId)
-                {
-                    mWorld.RemoveEntity(entityId);
-                }
-            }
-        }
-
-        mWorld.RemoveEntity(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
+        DestroyCurrentLevel(activeLevelSingletonComponent.mActiveLevelNameId);
 
         activeLevelSingletonComponent.mActiveLevelNameId = StringId("in_players_home_top");
 
@@ -64,6 +53,27 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
         warpConnectionsComponent.mHasPendingWarpConnection = false;
     }
+}
+
+void WarpConnectionsSystem::PopulateWarpConnections() const
+{
+    ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_DATA_ROOT + "")
+}
+
+void WarpConnectionsSystem::DestroyCurrentLevel(const StringId levelNameId) const
+{    
+    for (const auto& entityId : mWorld.GetActiveEntities())
+    {
+        if (mWorld.HasComponent<LevelResidentComponent>(entityId))
+        {
+            if (mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId == levelNameId)
+            {
+                mWorld.RemoveEntity(entityId);
+            }
+        }
+    }
+    
+    mWorld.RemoveEntity(GetLevelIdFromNameId(levelNameId, mWorld));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
