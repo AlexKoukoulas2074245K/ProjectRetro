@@ -17,6 +17,7 @@
 #include "../utils/LevelUtils.h"
 #include "../utils/LevelLoadingUtils.h"
 #include "../../common/components/PlayerTagComponent.h"
+#include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/DataFileResource.h"
@@ -51,9 +52,10 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
     {        
         DestroyCurrentLevel(activeLevelSingletonComponent.mActiveLevelNameId);
         
-        const auto playerEntityId          = GetOverworldPlayerEntityId(mWorld);
-        auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
-        auto& playerTransformComponent     = mWorld.GetComponent<TransformComponent>(playerEntityId);
+        const auto playerEntityId           = GetOverworldPlayerEntityId(mWorld);
+        auto& playerMovementStateComponent  = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
+        auto& playerTransformComponent      = mWorld.GetComponent<TransformComponent>(playerEntityId);
+        auto& playerAnimationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(playerEntityId);
 
         WarpInfo currentWarp
         (
@@ -70,10 +72,23 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
 
         playerTransformComponent.mPosition          = TileCoordsToPosition(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mRow);
-        playerMovementStateComponent.mCurrentCoords = targetWarp.mTileCoords;        
+        playerMovementStateComponent.mCurrentCoords = targetWarp.mTileCoords;    
 
-        GetTile(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mCol, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntityId;
-        GetTile(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::PLAYER;
+        if (IsLevelIndoors(targetWarp.mLevelName) == false)
+        {
+            playerMovementStateComponent.mMoving = true;
+            playerAnimationTimerComponent.mAnimationTimer->Resume();
+        }
+
+        auto& newTile = GetTile
+        (
+            targetWarp.mTileCoords.mCol,
+            targetWarp.mTileCoords.mCol,
+            levelModelComponent.mLevelTilemap
+        );
+
+        newTile.mTileOccupierEntityId = playerEntityId;
+        newTile.mTileOccupierType     = TileOccupierType::PLAYER;
 
         activeLevelSingletonComponent.mActiveLevelNameId   = targetWarp.mLevelName;
         warpConnectionsComponent.mHasPendingWarpConnection = false;       

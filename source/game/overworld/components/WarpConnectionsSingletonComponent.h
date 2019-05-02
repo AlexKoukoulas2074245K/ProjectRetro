@@ -74,7 +74,8 @@ struct WarpInfoHasher
 class WarpConnectionsSingletonComponent final: public ecs::IComponent
 {
 public:
-    bool mHasPendingWarpConnection = false;
+    bool mHasPendingWarpConnection      = false;
+    bool mShouldAutoMoveAfterTransition = false;
     std::unordered_map<WarpInfo, WarpInfo, WarpInfoHasher> mWarpConnections;
 };
 

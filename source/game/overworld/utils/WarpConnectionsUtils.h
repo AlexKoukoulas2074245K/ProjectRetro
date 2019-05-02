@@ -26,11 +26,11 @@
 
 inline Direction CalculateMovementDirectionToActivateInteractionWarp
 (
-    const TileCoords& warpTileCoords, 
-    const LevelTilemap& levelTilemap
+    const TileCoords&, // warpTileCoords, 
+    const LevelTilemap& //levelTilemap
 )
 {
-
+    return Direction::SOUTH;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

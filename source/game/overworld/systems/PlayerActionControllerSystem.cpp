@@ -58,8 +58,15 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             auto& movementStateComponent        = mWorld.GetComponent<MovementStateComponent>(entityId);
             auto& renderableComponent           = mWorld.GetComponent<RenderableComponent>(entityId);
             
-            if (movementStateComponent.mMoving || warpConnectionsComponent.mHasPendingWarpConnection)
+            if (movementStateComponent.mMoving)
             {
+                continue;
+            }
+
+            if (warpConnectionsComponent.mHasPendingWarpConnection)
+            {                
+                renderableComponent.mActiveMeshIndex = 0;
+                animationTimerComponent.mAnimationTimer->Pause();
                 continue;
             }
 

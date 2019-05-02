@@ -16,6 +16,7 @@
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/MovementUtils.h"
+#include "../utils/WarpConnectionsUtils.h"
 #include "../../common/GameConstants.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
@@ -75,7 +76,18 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             // Interaction Warp (Doors where a direction has to be pressed to warp) check
             if (currentTile.mTileTrait == TileTrait::PRESS_WARP)
             {
+                const auto directionNeededForWarp = CalculateMovementDirectionToActivateInteractionWarp
+                (
+                    currentTileCoords, 
+                    levelModelComponent.mLevelTilemap
+                );
 
+                if (directionComponent.mDirection == directionNeededForWarp)
+                {                       
+                    movementStateComponent.mMoving = false;                    
+                    mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>().mHasPendingWarpConnection = true;
+                    continue;
+                }
             }
 
             // Safe to now get the actual target tile            
