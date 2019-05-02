@@ -30,7 +30,6 @@
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
-#include "overworld/components/WarpConnectionsSingletonComponent.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
 #include "overworld/systems/WarpConnectionsSystem.h"
@@ -69,6 +68,8 @@ void App::Run()
 
 void App::InitializeSystems()
 {
+    auto renderingSystem = std::make_unique<RenderingSystem>(mWorld);
+
     mWorld.AddSystem(std::make_unique<RawInputHandlingSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<PlayerActionControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
@@ -76,7 +77,7 @@ void App::InitializeSystems()
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
-    mWorld.AddSystem(std::make_unique<RenderingSystem>(mWorld));
+    mWorld.AddSystem(std::move(renderingSystem));
 }
 
 void App::GameLoop()

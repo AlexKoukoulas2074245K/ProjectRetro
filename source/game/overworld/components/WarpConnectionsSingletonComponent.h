@@ -21,8 +21,7 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../common/utils/TypeTraits.h"
 
-#include <vector>
-#include <utility>
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,9 +29,30 @@
 
 struct WarpInfo
 {
+public:
+    WarpInfo()
+        : mLevelName()
+        , mTileCoords(0, 0)
+    {
+    }
+
+    WarpInfo(const StringId levelNameId, const TileCoords& tileCoords)
+        : mLevelName(levelNameId)
+        , mTileCoords(tileCoords)
+    {
+
+    }
+
     StringId mLevelName = StringId();
     TileCoords mTileCoords;
 };
+
+inline bool operator == (const WarpInfo& lhs, const WarpInfo& rhs)
+{
+    return lhs.mLevelName == rhs.mLevelName &&
+        lhs.mTileCoords.mCol == rhs.mTileCoords.mCol &&
+        lhs.mTileCoords.mRow == rhs.mTileCoords.mRow;
+}
 
 struct WarpInfoHasher
 {
@@ -55,7 +75,7 @@ class WarpConnectionsSingletonComponent final: public ecs::IComponent
 {
 public:
     bool mHasPendingWarpConnection = false;
-    std::vector<std::pair<WarpInfo, WarpInfo>> mWarpConnections;
+    std::unordered_map<WarpInfo, WarpInfo, WarpInfoHasher> mWarpConnections;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

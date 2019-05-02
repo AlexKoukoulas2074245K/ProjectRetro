@@ -75,7 +75,7 @@ public:
     
     // Loads a single or number of resources based on the relative path(s) supplied
     // respectively. Both full paths, relative paths including the Resource Root, and relative
-    // paths not including the Resource Root are supported
+    // paths excluding the Resource Root are supported
     ResourceId LoadResource(const std::string& resourcePath);
     void LoadResources(const std::vector<std::string>& resourcePaths);
     

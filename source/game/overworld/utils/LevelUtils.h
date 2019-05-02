@@ -19,9 +19,11 @@
 
 #include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
+#include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/GameConstants.h"
 #include "../../common/utils/MathUtils.h"
+#include "../../common/utils/StringUtils.h"
 #include "../../ECS.h"
 
 #include <cstddef>
@@ -29,6 +31,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string INDOOR_LEVEL_NAME_PREFIX = "in_";
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+inline bool IsLevelIndoors(const StringId levelNameId)
+{    
+    return StringStartsWith(levelNameId.GetString(), INDOOR_LEVEL_NAME_PREFIX);
+}
 
 inline LevelTilemap InitializeTilemapWithDimensions(const int cols, const int rows)
 {
@@ -97,6 +110,20 @@ inline StringId GetLevelNameFromId(const ecs::EntityId levelId, const ecs::World
     }
 
     return StringId();
+}
+
+inline ecs::EntityId GetOverworldPlayerEntityId(const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (world.HasComponent<PlayerTagComponent>(entityId))
+        {
+            return entityId;
+        }
+    }
+
+    return ecs::NULL_ENTITY_ID;
 }
 
 inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs::World& world)
