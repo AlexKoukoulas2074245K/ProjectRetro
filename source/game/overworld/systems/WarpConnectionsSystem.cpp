@@ -51,8 +51,9 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
     {        
         DestroyCurrentLevel(activeLevelSingletonComponent.mActiveLevelNameId);
         
-        const auto playerEntityId = GetOverworldPlayerEntityId(mWorld);
-        const auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
+        const auto playerEntityId          = GetOverworldPlayerEntityId(mWorld);
+        auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
+        auto& playerTransformComponent     = mWorld.GetComponent<TransformComponent>(playerEntityId);
 
         WarpInfo currentWarp
         (
@@ -63,23 +64,19 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         assert(warpConnectionsComponent.mWarpConnections.count(currentWarp) != 0 &&
             "Warp for current tile not found");
 
-        auto& targetWarp = warpConnectionsComponent.mWarpConnections.at(currentWarp);
-        targetWarp.mLevelName = StringId();
-        /*
-        activeLevelSingletonComponent.mActiveLevelNameId = StringId("in_players_home_top");
+        auto& targetWarp = warpConnectionsComponent.mWarpConnections.at(currentWarp);                
 
-        auto& newLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(StringId("in_players_home_top"), mWorld));
+        const auto newLevelEntityId = LoadAndCreateLevelByName(targetWarp.mLevelName, mWorld);
+        auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
 
-        auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(1);
-        auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(1);
+        playerTransformComponent.mPosition          = TileCoordsToPosition(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mRow);
+        playerMovementStateComponent.mCurrentCoords = targetWarp.mTileCoords;        
 
-        playerTransformComponent.mPosition = TileCoordsToPosition(8, 10);
-        playerMovementStateComponent.mCurrentCoords = TileCoords(8, 10);
-        GetTile(8, 10, newLevelModelComponent.mLevelTilemap).mTileOccupierEntityId = 5;
-        GetTile(8, 10, newLevelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+        GetTile(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mCol, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntityId;
+        GetTile(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::PLAYER;
 
-        warpConnectionsComponent.mHasPendingWarpConnection = false;
-        */
+        activeLevelSingletonComponent.mActiveLevelNameId   = targetWarp.mLevelName;
+        warpConnectionsComponent.mHasPendingWarpConnection = false;       
     }
 }
 

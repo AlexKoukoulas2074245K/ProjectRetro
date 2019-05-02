@@ -125,6 +125,7 @@ public:
     inline EntityId CreateEntity()
     {
         mEntityComponentStore.operator[](mEntityCounter);
+        mAddedEntitiesBySystemsUpdate.push_back(mEntityCounter);
         return mEntityCounter++;
     }
     
@@ -299,6 +300,9 @@ private:
     // Collects all active entities (with at least one component) for processing by systems for this frame
     void CongregateActiveEntitiesInCurrentFrame();
 
+    // Handles entities that are added mid system update, so that the rest of the system updates will pick it up
+    void InsertNewEntitiesIntoActiveCollection();
+
     // Registers the given component type (ComponentType) to the world
     // and computes its mask. All components that are used as data containers 
     // for entities, must be registered here first before used
@@ -326,6 +330,7 @@ private:
     std::vector<std::unique_ptr<BaseSystem>> mSystems;
     std::vector<std::size_t> mSystemHashesToRemove;
     std::vector<EntityId> mActiveEntitiesInFrame;
+    std::vector<EntityId> mAddedEntitiesBySystemsUpdate;
 
     EntityId mEntityCounter = 1LL;
 };

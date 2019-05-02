@@ -35,6 +35,7 @@ void ecs::World::Update(const float dt)
     for(const auto& system: mSystems)
     {        
         system->VUpdateAssociatedComponents(dt);
+        InsertNewEntitiesIntoActiveCollection();
     }
 }
 
@@ -110,6 +111,16 @@ void ecs::World::CongregateActiveEntitiesInCurrentFrame()
     for (const auto& entityEntry : mEntityComponentStore)
     {
         mActiveEntitiesInFrame.push_back(entityEntry.first);
+    }
+}
+
+void ecs::World::InsertNewEntitiesIntoActiveCollection()
+{
+
+    if (mAddedEntitiesBySystemsUpdate.size() > 0)
+    {
+        mActiveEntitiesInFrame.insert(mActiveEntitiesInFrame.end(), mAddedEntitiesBySystemsUpdate.begin(), mAddedEntitiesBySystemsUpdate.end());
+        mAddedEntitiesBySystemsUpdate.clear();
     }
 }
 

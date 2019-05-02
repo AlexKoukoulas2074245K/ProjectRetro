@@ -2,7 +2,8 @@
     "level_header":
     {
         "name": "in_players_home_bot",
-        "dimensions" : { "cols": 16, "rows": 16}
+        "dimensions" : { "cols": 16, "rows": 16},
+		"color": "PALLET"
     },
     "level_ground_layer_editor":
     [

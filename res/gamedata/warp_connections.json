@@ -12,6 +12,14 @@
 		{ 
 			"from": { "level_name": "in_players_home_bot", "level_col": 7, "level_row": 4 },
 			"to": { "level_name": "pallet_new", "level_col": 11, "level_row": 18 } 
+		},
+		{ 
+			"from": { "level_name": "in_players_home_bot", "level_col": 11, "level_row": 10 },
+			"to": { "level_name": "in_players_home_top", "level_col": 11, "level_row": 10 } 
+		},
+		{ 
+			"from": { "level_name": "in_players_home_top", "level_col": 11, "level_row": 10 },
+			"to": { "level_name": "in_players_home_bot", "level_col": 11, "level_row": 10 } 
 		}
 	]
 }

@@ -55,11 +55,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 continue;
             }            
 
-            const auto& currentTileCoords = movementStateComponent.mCurrentCoords;
-            
-            auto& currentTile = levelModelComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
-
+            const auto& currentTileCoords = movementStateComponent.mCurrentCoords;            
             const auto targetTileCoords = GetNeighborTileCoords(currentTileCoords, directionComponent.mDirection);
+            auto& currentTile = levelModelComponent.mLevelTilemap.at(currentTileCoords.mRow).at(currentTileCoords.mCol);
             
             // Bounds check
             if 
@@ -72,6 +70,12 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             {
                 movementStateComponent.mMoving = false;
                 continue;
+            }
+
+            // Interaction Warp (Doors where a direction has to be pressed to warp) check
+            if (currentTile.mTileTrait == TileTrait::PRESS_WARP)
+            {
+
             }
 
             // Safe to now get the actual target tile            
