@@ -3,7 +3,7 @@
     {
         "name": "in_players_home_top",
         "dimensions" : { "cols": 16, "rows": 16},
-		"color": "PALLET"		
+		"color": "PALLET"
     },
     "level_ground_layer_editor":
     [
@@ -142,7 +142,6 @@
         { "editor_col": 4, "editor_row": 8, "game_position_x": 6.4, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 8, "game_position_x": 8.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 6, "editor_row": 8, "game_position_x": 9.6, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
-        { "editor_col": 7, "editor_row": 8, "game_position_x": 11.2, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 23 },
         { "editor_col": 8, "editor_row": 8, "game_position_x": 12.8, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 8, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 10, "editor_row": 8, "game_position_x": 16.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
@@ -273,6 +272,7 @@
     ],
     "level_model_list":
     [
+        { "model_name": "in_tv_1_shortmedium (1,1)", "editor_col": 7, "editor_row": 8, "game_col": 7, "game_row": 7, "game_position_x": 11.2, "game_position_z": 11.2 }
     ],
     "level_tile_traits":
     [
