@@ -10,10 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "App.h"
-#include "common/GameConstants.h"
 #include "common/components/DirectionComponent.h"
 #include "common/components/TransformComponent.h"
-#include "common/utils/MathUtils.h"
 #include "common/components/PlayerTagComponent.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
@@ -24,13 +22,13 @@
 #include "rendering/systems/AnimationSystem.h"
 #include "rendering/systems/CameraControlSystem.h"
 #include "rendering/systems/RenderingSystem.h"
-#include "resources/ResourceLoadingService.h"
 #include "resources/TextureUtils.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
 #include "overworld/systems/MovementControllerSystem.h"
+#include "overworld/systems/NpcAiSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
 #include "overworld/systems/WarpConnectionsSystem.h"
 #include "overworld/systems/TransitionAnimationSystem.h"
@@ -39,18 +37,7 @@
 #include "overworld/utils/OverworldCharacterLoadingUtils.h"
 
 #include <SDL_events.h> 
-#include <SDL_timer.h>  
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-//TEMP move to levelloading flow when implemented 
-//
-
-
-
-
-
+#include <SDL_timer.h>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +59,7 @@ void App::InitializeSystems()
 
     mWorld.AddSystem(std::make_unique<RawInputHandlingSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<PlayerActionControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<NpcAiSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<MovementControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));

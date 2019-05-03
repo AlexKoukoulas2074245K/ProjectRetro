@@ -6,4 +6,4 @@ CMakeLists.txt.user
 /extern/
 *.pyc
 *.log
-*.hle
+*.rle

@@ -14,6 +14,7 @@
 #include "LevelUtils.h"
 #include "OverworldCharacterLoadingUtils.h"
 #include "../components/LevelResidentComponent.h"
+#include "../components/NpcAiComponent.h"
 #include "../../common/utils/MessageBox.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/Colors.h"
@@ -232,6 +233,9 @@ static void CreateNpc
     
     const auto npcEntityId = world.CreateEntity();
     
+    auto npcAiComponent = std::make_unique<NpcAiComponent>();
+    npcAiComponent->mMovementType = movementType;
+    
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
     
@@ -243,7 +247,9 @@ static void CreateNpc
     
     world.AddComponent<TransformComponent>(npcEntityId, std::move(transformComponent));
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
+    world.AddComponent<NpcAiComponent>(npcEntityId, std::move(npcAiComponent));
     world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow)));
+    
 }
 
 void CreateLevelModelEntry
