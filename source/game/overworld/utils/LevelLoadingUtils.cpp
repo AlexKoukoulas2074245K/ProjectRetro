@@ -15,7 +15,10 @@
 #include "OverworldCharacterLoadingUtils.h"
 #include "../components/LevelResidentComponent.h"
 #include "../components/NpcAiComponent.h"
+#include "../components/MovementStateComponent.h"
+#include "../../common/components/DirectionComponent.h"
 #include "../../common/utils/MessageBox.h"
+#include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/Colors.h"
 #include "../../resources/DataFileResource.h"
@@ -233,8 +236,12 @@ static void CreateNpc
     
     const auto npcEntityId = world.CreateEntity();
     
-    auto npcAiComponent = std::make_unique<NpcAiComponent>();
-    npcAiComponent->mMovementType = movementType;
+    auto animationTimerComponent = std::make_unique<AnimationTimerComponent>();
+    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    animationTimerComponent->mAnimationTimer->Pause();
+    
+    auto aiComponent = std::make_unique<NpcAiComponent>();
+    aiComponent->mMovementType = movementType;
     
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
@@ -242,14 +249,19 @@ static void CreateNpc
     auto transformComponent = std::make_unique<TransformComponent>();
     transformComponent->mPosition = TileCoordsToPosition(gameCol, gameRow);
     
+    auto movementStateComponent = std::make_unique<MovementStateComponent>();
+    movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
+    
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
     
+    world.AddComponent<AnimationTimerComponent>(npcEntityId, std::move(animationTimerComponent));
     world.AddComponent<TransformComponent>(npcEntityId, std::move(transformComponent));
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
-    world.AddComponent<NpcAiComponent>(npcEntityId, std::move(npcAiComponent));
+    world.AddComponent<NpcAiComponent>(npcEntityId, std::move(aiComponent));
+    world.AddComponent<MovementStateComponent>(npcEntityId, std::move(movementStateComponent));
+    world.AddComponent<DirectionComponent>(npcEntityId, std::make_unique<DirectionComponent>());
     world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow)));
-    
 }
 
 void CreateLevelModelEntry

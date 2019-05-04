@@ -17,12 +17,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
-#include "../../common/utils/StringUtils.h"
+#include "../../common/GameConstants.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+class DirectionComponent;
 class RenderableComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,16 +36,9 @@ public:
     PlayerActionControllerSystem(ecs::World&);
     
     void VUpdateAssociatedComponents(const float dt) const override;
-    
-private:
-    static const StringId NORTH_ANIMATION_NAME_ID;
-    static const StringId SOUTH_ANIMATION_NAME_ID;
-    static const StringId WEST_ANIMATION_NAME_ID;
-    static const StringId EAST_ANIMATION_NAME_ID;
 
 private:
-    void ChangeAnimationIfCurrentPlayingIsDifferent(const StringId animationNameId, RenderableComponent&) const;
-
+    void ChangePlayerDirectionAndAnimation(const Direction, RenderableComponent&, DirectionComponent&) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

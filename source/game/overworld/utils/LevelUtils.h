@@ -98,6 +98,12 @@ inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Directio
     return TileCoords();
 }
 
+inline const Tile& GetNeighborTile(const TileCoords& coords, const Direction direction, const LevelTilemap& grid)
+{
+    const auto& tileCoords = GetNeighborTileCoords(coords, direction);
+    return GetTile(tileCoords, grid);
+}
+
 inline StringId GetLevelNameFromId(const ecs::EntityId levelId, const ecs::World& world)
 {
     const auto& activeEntities = world.GetActiveEntities();

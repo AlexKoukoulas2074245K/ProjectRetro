@@ -16,17 +16,11 @@
 #include "../../common/components/DirectionComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
+#include "../../rendering/utils/AnimationUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../overworld/OverworldConstants.h"
 #include "../../overworld/components/MovementStateComponent.h"
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-const StringId PlayerActionControllerSystem::NORTH_ANIMATION_NAME_ID = StringId("north");
-const StringId PlayerActionControllerSystem::SOUTH_ANIMATION_NAME_ID = StringId("south");
-const StringId PlayerActionControllerSystem::WEST_ANIMATION_NAME_ID  = StringId("west");
-const StringId PlayerActionControllerSystem::EAST_ANIMATION_NAME_ID  = StringId("east");
+#include "../../overworld/utils/OverworldUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +48,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
     {
         if (ShouldProcessEntity(entityId))
         {
-            const auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+            auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
             auto& movementStateComponent        = mWorld.GetComponent<MovementStateComponent>(entityId);
             auto& renderableComponent           = mWorld.GetComponent<RenderableComponent>(entityId);
             
@@ -65,8 +59,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 
             if (warpConnectionsComponent.mHasPendingWarpConnection)
             {                
-                renderableComponent.mActiveMeshIndex = 0;
-                animationTimerComponent.mAnimationTimer->Pause();
+                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 continue;
             }
 
@@ -76,57 +69,48 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             
             if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection = Direction::WEST;
-                ChangeAnimationIfCurrentPlayingIsDifferent(WEST_ANIMATION_NAME_ID, renderableComponent);                
+                ChangePlayerDirectionAndAnimation(Direction::WEST, renderableComponent, directionComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection  = Direction::WEST;
                 movementStateComponent.mMoving = true;
-                ChangeAnimationIfCurrentPlayingIsDifferent(WEST_ANIMATION_NAME_ID, renderableComponent);
-                animationTimerComponent.mAnimationTimer->Resume();
+                ChangePlayerDirectionAndAnimation(Direction::WEST, renderableComponent, directionComponent);
+                ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection = Direction::EAST;
-                ChangeAnimationIfCurrentPlayingIsDifferent(EAST_ANIMATION_NAME_ID, renderableComponent);
+                ChangePlayerDirectionAndAnimation(Direction::EAST, renderableComponent, directionComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection  = Direction::EAST;
                 movementStateComponent.mMoving = true;
-                ChangeAnimationIfCurrentPlayingIsDifferent(EAST_ANIMATION_NAME_ID, renderableComponent);
-                animationTimerComponent.mAnimationTimer->Resume();
+                ChangePlayerDirectionAndAnimation(Direction::EAST, renderableComponent, directionComponent);
+                ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection = Direction::NORTH;
-                ChangeAnimationIfCurrentPlayingIsDifferent(NORTH_ANIMATION_NAME_ID, renderableComponent);
+                ChangePlayerDirectionAndAnimation(Direction::NORTH, renderableComponent, directionComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::PRESSED)
             {
-                directionComponent.mDirection  = Direction::NORTH;
                 movementStateComponent.mMoving = true;
-                ChangeAnimationIfCurrentPlayingIsDifferent(NORTH_ANIMATION_NAME_ID, renderableComponent);
-                animationTimerComponent.mAnimationTimer->Resume();
+                ChangePlayerDirectionAndAnimation(Direction::NORTH, renderableComponent, directionComponent);
+                ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::TAPPED)
             {
-                directionComponent.mDirection = Direction::SOUTH;
-                ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);
+                ChangePlayerDirectionAndAnimation(Direction::SOUTH, renderableComponent, directionComponent);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
-            {                
-                directionComponent.mDirection = Direction::SOUTH;
+            {
                 movementStateComponent.mMoving = true;
-                ChangeAnimationIfCurrentPlayingIsDifferent(SOUTH_ANIMATION_NAME_ID, renderableComponent);
-                animationTimerComponent.mAnimationTimer->Resume();
+                ChangePlayerDirectionAndAnimation(Direction::SOUTH, renderableComponent, directionComponent);
+                ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
             // All movement keys released and is currently not moving to another tile
             else
             {
-                renderableComponent.mActiveMeshIndex = 0;
-                animationTimerComponent.mAnimationTimer->Pause();
+                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
             }
         }
     }
@@ -136,19 +120,13 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void PlayerActionControllerSystem::ChangeAnimationIfCurrentPlayingIsDifferent
+void PlayerActionControllerSystem::ChangePlayerDirectionAndAnimation
 (
-    const StringId animationNameId, 
-    RenderableComponent& renderableComponent
+    const Direction direction,
+    RenderableComponent& playerRenderableComponent,
+    DirectionComponent& playerDirectionComponent
 ) const
 {
-    if (renderableComponent.mActiveAnimationNameId != animationNameId)
-    {
-        renderableComponent.mActiveAnimationNameId = animationNameId;
-        renderableComponent.mActiveMeshIndex = 0;
-    }
+    playerDirectionComponent.mDirection = direction;
+    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), playerRenderableComponent);
 }
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////

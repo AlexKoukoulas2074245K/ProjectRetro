@@ -1,5 +1,5 @@
 //
-//  NpcAiSystem.h
+//  AnimationUtils.h
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 03/05/2019.
@@ -9,36 +9,51 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NpcAiSystemSystem_h
-#define NpcAiSystemSystem_h
+#ifndef AnimationUtils_h
+#define AnimationUtils_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../ECS.h"
+#include "../../rendering/components/RenderableComponent.h"
+#include "../../rendering/components/AnimationTimerComponent.h"
+#include "../../common/utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class NpcAiSystem final: public ecs::BaseSystem
+inline void ChangeAnimationIfCurrentPlayingIsDifferent
+(
+    const StringId animationNameId,
+    RenderableComponent& renderableComponent
+)
 {
-public:
-    NpcAiSystem(ecs::World&);
-    
-    void VUpdateAssociatedComponents(const float dt) const override;
-    
-private:
-    static const float DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME;
-    static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME;
-    static const float STATIONARY_NPC_RESET_TIME;
-    
-    
-};
+    if (renderableComponent.mActiveAnimationNameId != animationNameId)
+    {
+        renderableComponent.mActiveAnimationNameId = animationNameId;
+        renderableComponent.mActiveMeshIndex       = 0;
+    }
+}
+
+inline void PauseAndResetCurrentlyPlayingAnimation
+(
+    AnimationTimerComponent& animationTimerComponent,
+    RenderableComponent& renderableComponent
+)
+{
+    renderableComponent.mActiveMeshIndex = 0;
+    animationTimerComponent.mAnimationTimer->Pause();
+}
+
+inline void ResumeCurrentlyPlayingAnimation(AnimationTimerComponent& animationTimerComponent)
+{
+    animationTimerComponent.mAnimationTimer->Resume();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* NpcAiSystemSystem_h */
+#endif /* AnimationUtils_h */

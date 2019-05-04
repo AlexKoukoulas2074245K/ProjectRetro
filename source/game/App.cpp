@@ -135,7 +135,7 @@ void App::DummyInitialization()
 
     {
         auto animationComponent = std::make_unique<AnimationTimerComponent>();
-        animationComponent->mAnimationTimer = std::make_unique<Timer>(0.125f);
+        animationComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
         animationComponent->mAnimationTimer->Pause();
         
         mWorld.AddComponent<AnimationTimerComponent>(playerEntity, std::move(animationComponent));

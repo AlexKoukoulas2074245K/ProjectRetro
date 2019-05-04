@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../rendering/utils/AnimationUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/DataFileResource.h"
 
@@ -77,7 +78,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         if (IsLevelIndoors(targetWarp.mLevelName) == false)
         {
             playerMovementStateComponent.mMoving = true;
-            playerAnimationTimerComponent.mAnimationTimer->Resume();
+            ResumeCurrentlyPlayingAnimation(playerAnimationTimerComponent);
         }
 
         auto& newTile = GetTile
