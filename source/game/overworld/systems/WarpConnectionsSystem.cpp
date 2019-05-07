@@ -17,6 +17,7 @@
 #include "../utils/LevelUtils.h"
 #include "../utils/LevelLoadingUtils.h"
 #include "../../common/components/PlayerTagComponent.h"
+#include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
@@ -53,7 +54,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
     {        
         DestroyCurrentLevel(activeLevelSingletonComponent.mActiveLevelNameId);
         
-        const auto playerEntityId           = GetOverworldPlayerEntityId(mWorld);
+        const auto playerEntityId           = GetPlayerEntityId(mWorld);
         auto& playerMovementStateComponent  = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
         auto& playerTransformComponent      = mWorld.GetComponent<TransformComponent>(playerEntityId);
         auto& playerAnimationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(playerEntityId);

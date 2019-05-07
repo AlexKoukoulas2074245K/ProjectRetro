@@ -45,7 +45,7 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
     const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     
-    const auto& activeEntities      = mWorld.GetActiveEntities();
+    const auto& activeEntities = mWorld.GetActiveEntities();
     
     for (const auto& entityId: activeEntities)
     {
@@ -80,7 +80,6 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
                 }
                 else
                 {
-                    
                     // Update npc timer
                     npcAiComponent.mAiTimer->Update(dt);
                     

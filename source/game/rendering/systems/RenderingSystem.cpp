@@ -369,7 +369,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
 void RenderingSystem::InitializeCamera() const
 {
     const auto& windowComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    auto cameraComponent = std::make_unique<CameraSingletonComponent>();            
+    auto cameraComponent = std::make_unique<CameraSingletonComponent>();
     cameraComponent->mProjectionMatrix = glm::perspectiveFovLH
     (
         cameraComponent->mFieldOfView,
@@ -377,7 +377,7 @@ void RenderingSystem::InitializeCamera() const
         windowComponent.mRenderableHeight,
         cameraComponent->mZNear,
         cameraComponent->mZFar
-     );
+    );
     
     mWorld.SetSingletonComponent<CameraSingletonComponent>(std::move(cameraComponent));
 }

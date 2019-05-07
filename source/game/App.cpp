@@ -13,6 +13,7 @@
 #include "common/components/DirectionComponent.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
+#include "common/utils/TextboxUtils.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationTimerComponent.h"
@@ -153,6 +154,12 @@ void App::DummyInitialization()
     playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    
+    auto textboxComponent = std::make_unique<TextboxComponent>();
+    textboxComponent->mTextContent = CreateTextboxContentWithDimensions(20, 6);
+    WriteWordAtTextboxCoords("This is a test but this will not work", 0, 0, textboxComponent->mTextContent);
+    const auto c = 'b';
+    (void)c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

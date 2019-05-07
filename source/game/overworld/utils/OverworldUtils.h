@@ -13,7 +13,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../OverworldConstants.h"
+#include "../../common/components/PlayerTagComponent.h"
 #include "../../common/GameConstants.h"
+#include "../../ECS.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,20 @@ inline StringId GetDirectionAnimationName(const Direction direction)
     }
     
     return StringId();
+}
+
+inline ecs::EntityId GetPlayerEntityId(const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (world.HasComponent<PlayerTagComponent>(entityId))
+        {
+            return entityId;
+        }
+    }
+    
+    return ecs::NULL_ENTITY_ID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

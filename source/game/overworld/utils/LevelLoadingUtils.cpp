@@ -98,7 +98,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     auto levelModelComponent = std::make_unique<LevelModelComponent>();
 
     levelModelComponent->mLevelName         = StringId(levelName);
-    levelModelComponent->mLevelTilemap      = InitializeTilemapWithDimensions(levelTilemapCols, levelTilemapRows);
+    levelModelComponent->mLevelTilemap      = CreateTilemapWithDimensions(levelTilemapCols, levelTilemapRows);
     levelModelComponent->mCols              = levelTilemapCols;
     levelModelComponent->mRows              = levelTilemapRows;
     levelModelComponent->mGroundLayerEntity = world.CreateEntity();

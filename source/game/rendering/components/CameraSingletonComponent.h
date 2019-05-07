@@ -25,7 +25,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const unsigned int CAMERA_FRUSTUM_SIDES = 6;
+const unsigned int CAMERA_FRUSTUM_SIDES = 6;
+const float CAMERA_FIELD_OF_VIEW        = math::PI/7.0f;
+const float CAMERA_Z_NEAR               = 18.0f;
+const float CAMERA_Z_FAR                = 40.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +49,9 @@ public:
     glm::vec3 mPosition         = glm::vec3(0.0f, 18.4f, 0.0f);
     glm::vec3 mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 mUpVector         = glm::vec3(0.0f, 1.0f, 0.0f);
-    float mFieldOfView          = math::PI/6.0f;
-    float mZNear                = 0.01f;
-    float mZFar                 = 100.0f;
+    float mFieldOfView          = CAMERA_FIELD_OF_VIEW;
+    float mZNear                = CAMERA_Z_NEAR;
+    float mZFar                 = CAMERA_Z_FAR;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

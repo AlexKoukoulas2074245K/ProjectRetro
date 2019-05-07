@@ -1,0 +1,67 @@
+//
+//  TextboxUtils.h
+//  ProjectRetro
+//
+//  Created by Alex Koukoulas on 05/05/2019.
+//
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef TextboxUtils_h
+#define TextboxUtils_h
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#include "../components/TextboxComponent.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+inline std::vector<std::vector<char>> CreateTextboxContentWithDimensions
+(
+    const int textboxTileCols,
+    const int textboxTileRows
+)
+{
+    assert(textboxTileCols >= TEXTBOX_MIN_TILE_COLS && "Invalid textbox tile cols were supplied");
+    assert(textboxTileRows >= TEXTBOX_MIN_TILE_ROWS && "Invalid textbox tile rows were supplied");
+    
+    std::vector<std::vector<char>> result(textboxTileRows);
+    
+    for (auto& row : result)
+    {
+        row.resize(textboxTileCols);
+    }
+    
+    return result;
+}
+
+inline void WriteWordAtTextboxCoords
+(
+    const std::string& word,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    std::vector<std::vector<char>>& textboxContent
+)
+{
+    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
+    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
+    assert((textboxCol + word.size() < textboxContent[textboxRow].size() - 1) && "Word cannot fit in specified textbox coords");
+    
+    auto wordIter = word.begin();
+    for (auto x = textboxCol; x < textboxCol + word.size(); ++x)
+    {
+        textboxContent[textboxRow][x] = *wordIter++;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#endif /* TextboxUtils_h */

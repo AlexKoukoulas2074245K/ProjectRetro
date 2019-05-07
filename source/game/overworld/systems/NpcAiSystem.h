@@ -34,7 +34,6 @@ private:
     static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME;
     static const float STATIONARY_NPC_RESET_TIME;
     
-    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

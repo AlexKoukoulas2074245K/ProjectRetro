@@ -34,7 +34,7 @@ namespace ecs
 {
 
 // Max component type count allowed
-static constexpr int MAX_COMPONENTS = 16;
+static constexpr int MAX_COMPONENTS = 32;
 
 // Initial guess for the average entities handled
 // so that multiple resizes won't be needed

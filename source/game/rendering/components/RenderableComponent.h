@@ -51,7 +51,7 @@ public:
     size_t mActiveMeshIndex          = 0;
     ResourceId mTextureResourceId    = 0;
     RenderableLayer mRenderableLayer = RenderableLayer::DEFAULT;
-    bool mAffectedByPerspective      = true;    
+    bool mAffectedByPerspective      = true;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
