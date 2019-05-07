@@ -15,32 +15,8 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
-#include "../../resources/TextureUtils.h"
+#include "../../resources/MeshUtils.h"
 #include "../../overworld/OverworldConstants.h"
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-static std::string CreateTexCoordInjectedModelPath
-(
-    const std::string& modelName,
-    const std::vector<glm::vec2>& texCoords
-);
-
-static void LoadMeshFromTexCoordsAndAddToRenderableComponent
-(
-    const int meshAtlasCol,
-    const int meshAtlasRow,
-    const bool horFlipped,
-    const StringId& animationNameId,
-    RenderableComponent& renderableComponent
-);
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -55,64 +31,32 @@ std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const Ch
     renderableComponent->mShaderNameId          = StringId("basic");
     renderableComponent->mAffectedByPerspective = false;
     
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+    const std::string modelName = "camera_facing_quad";
+    const auto atlasCols        = 8;
+    const auto atlasRows        = 64;
+
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
     
     if (spriteData.mCharacterMovementType == CharacterMovementType::STATIC) return renderableComponent;
     
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 1, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 1, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, WEST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, atlasCols, atlasRows, true, modelName, EAST_ANIMATION_NAME_ID, *renderableComponent);
     
     if (spriteData.mCharacterMovementType == CharacterMovementType::STATIONARY) return renderableComponent;
     
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, true, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, atlasCols, atlasRows, true, modelName, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
     renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, false, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
     
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, true, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, atlasCols, atlasRows, true, modelName, NORTH_ANIMATION_NAME_ID, *renderableComponent);
     renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[NORTH_ANIMATION_NAME_ID][0]);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, false, NORTH_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 4, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, NORTH_ANIMATION_NAME_ID, *renderableComponent);
     
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, false, WEST_ANIMATION_NAME_ID, *renderableComponent);
-    LoadMeshFromTexCoordsAndAddToRenderableComponent(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, true, EAST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, atlasCols, atlasRows, false, modelName, WEST_ANIMATION_NAME_ID, *renderableComponent);
+    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 5, spriteData.mAtlasRowOffset, atlasCols, atlasRows, true, modelName, EAST_ANIMATION_NAME_ID, *renderableComponent);
     
     return renderableComponent;
-}
-
-std::string CreateTexCoordInjectedModelPath(const std::string& modelName, const std::vector<glm::vec2>& texCoords)
-{
-    std::string path = ResourceLoadingService::RES_MODELS_ROOT + modelName + "[";
-    
-    path += std::to_string(texCoords[0].x) + "," + std::to_string(texCoords[0].y);
-    
-    for (auto i = 1U; i < texCoords.size(); ++i)
-    {
-        path += "-" + std::to_string(texCoords[i].x) + "," + std::to_string(texCoords[i].y);
-    }
-    
-    path += "].obj";
-    
-    return path;
-}
-
-void LoadMeshFromTexCoordsAndAddToRenderableComponent(const int meshAtlasCol, const int meshAtlasRow, const bool horFlipped, const StringId& animationNameId, RenderableComponent& renderableComponent)
-{
-    const auto atlasCols = 8;
-    const auto atlasRows = 64;
-    
-    auto correctedMeshCol = meshAtlasCol;
-    auto correctedMeshRow = meshAtlasRow;
-    
-    if (correctedMeshCol >= atlasCols)
-    {
-        correctedMeshCol %= atlasCols;
-        correctedMeshRow++;
-    }
-    
-    const auto texCoords = CalculateTextureCoordsFromColumnAndRow(correctedMeshCol, correctedMeshRow, atlasCols, atlasRows, horFlipped);
-    const auto meshPath  = CreateTexCoordInjectedModelPath("camera_facing_quad", texCoords);
-    
-    renderableComponent.mAnimationsToMeshes[animationNameId].push_back(ResourceLoadingService::GetInstance().LoadResource(meshPath));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

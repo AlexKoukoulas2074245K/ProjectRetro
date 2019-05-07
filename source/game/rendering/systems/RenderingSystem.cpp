@@ -49,6 +49,7 @@ const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME                = StringI
 const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME          = StringId("proj");
 const StringId RenderingSystem::TRANSITION_ANIMATION_STEP_UNIFORM_NAME = StringId("transition_progression_step");
 const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME       = StringId("current_level_color");
+const StringId RenderingSystem::GUI_SHADER_NAME                        = StringId("gui");
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -66,13 +67,13 @@ RenderingSystem::RenderingSystem(ecs::World& world)
 void RenderingSystem::VUpdateAssociatedComponents(const float) const
 {
     // Get common rendering singleton components
-    const auto& windowComponent                       = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    const auto& shaderStoreComponent                  = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
-    const auto& activeLevelSingletonComponent         = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    const auto& transitionAnimationComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    auto& cameraComponent                             = mWorld.GetSingletonComponent<CameraSingletonComponent>();
-    auto& renderingContextComponent                   = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-    auto& previousRenderingStateComponent             = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
+    const auto& windowComponent               = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& shaderStoreComponent          = mWorld.GetSingletonComponent<ShaderStoreSingletonComponent>();
+    const auto& activeLevelSingletonComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& transitionAnimationComponent  = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    auto& cameraComponent                     = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& renderingContextComponent           = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    auto& previousRenderingStateComponent     = mWorld.GetSingletonComponent<PreviousRenderingStateSingletonComponent>();
     
     // Calculate render-constant camera view matrix
     cameraComponent.mViewMatrix = glm::lookAtLH(cameraComponent.mPosition, cameraComponent.mFocusPosition, cameraComponent.mUpVector);
@@ -113,13 +114,17 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             }
             
             // Frustum culling
-            if (!IsMeshInsideCameraFrustum
+            if 
             (
-                transformComponent.mPosition,
-                transformComponent.mScale,
-                currentMesh.GetDimensions(),
-                cameraComponent.mFrustum
-            ))
+                renderableComponent.mShaderNameId != GUI_SHADER_NAME &&
+                !IsMeshInsideCameraFrustum
+                (
+                    transformComponent.mPosition,
+                    transformComponent.mScale,
+                    currentMesh.GetDimensions(),
+                    cameraComponent.mFrustum
+                )
+            )
             {
                 renderingContextComponent.mFrustumCulledEntities++;
                 continue;

@@ -41,16 +41,16 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
-    const auto& inputStateComponent      = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+    auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
         if (ShouldProcessEntity(entityId))
         {
             auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
-            auto& movementStateComponent        = mWorld.GetComponent<MovementStateComponent>(entityId);
-            auto& renderableComponent           = mWorld.GetComponent<RenderableComponent>(entityId);
+            auto& movementStateComponent  = mWorld.GetComponent<MovementStateComponent>(entityId);
+            auto& renderableComponent     = mWorld.GetComponent<RenderableComponent>(entityId);
             
             if (movementStateComponent.mMoving)
             {
@@ -60,6 +60,11 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             if (warpConnectionsComponent.mHasPendingWarpConnection)
             {                
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+                continue;
+            }
+
+            if (inputStateComponent.mHasBeenConsumed)
+            {
                 continue;
             }
 
@@ -112,6 +117,8 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             {
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
             }
+
+            inputStateComponent.mHasBeenConsumed = true;
         }
     }
 }

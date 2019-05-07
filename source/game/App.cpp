@@ -11,8 +11,10 @@
 
 #include "App.h"
 #include "common/components/DirectionComponent.h"
+#include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
+#include "common/systems/GuiManagementSystem.h"
 #include "common/utils/TextboxUtils.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
@@ -23,7 +25,7 @@
 #include "rendering/systems/AnimationSystem.h"
 #include "rendering/systems/CameraControlSystem.h"
 #include "rendering/systems/RenderingSystem.h"
-#include "resources/TextureUtils.h"
+#include "resources/MeshUtils.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
@@ -59,6 +61,7 @@ void App::InitializeSystems()
     auto renderingSystem = std::make_unique<RenderingSystem>(mWorld);
 
     mWorld.AddSystem(std::make_unique<RawInputHandlingSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<GuiManagementSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<PlayerActionControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<NpcAiSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
@@ -154,12 +157,10 @@ void App::DummyInitialization()
     playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
-    
-    auto textboxComponent = std::make_unique<TextboxComponent>();
-    textboxComponent->mTextContent = CreateTextboxContentWithDimensions(20, 6);
-    WriteWordAtTextboxCoords("This is a test but this will not work", 0, 0, textboxComponent->mTextContent);
-    const auto c = 'b';
-    (void)c;
+        
+    const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.5f, mWorld);
+    auto textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+    WriteTextAtTextboxCoords("This is a test", 1, 1, textboxComponent.mTextContent);        
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

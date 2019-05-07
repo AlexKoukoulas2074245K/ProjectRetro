@@ -53,6 +53,7 @@ void RawInputHandlingSystem::VUpdateAssociatedComponents(const float) const
         }
     }
 
+    inputStateComponent.mHasBeenConsumed = false;
     inputStateComponent.mPreviousRawKeyboardState.assign(currentKeyboardState, currentKeyboardState + keyboardStateLength);
 }
 

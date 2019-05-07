@@ -187,9 +187,9 @@ void CreateLevelGroundLayer
     auto transformComponent          = std::make_unique<TransformComponent>();
     transformComponent->mScale.x     = static_cast<float>(levelCols);
     transformComponent->mScale.z     = static_cast<float>(levelRows);
-    transformComponent->mPosition.x += groundLayerX - OVERWORLD_TILE_SIZE / 2.0f;
-    transformComponent->mPosition.y -= OVERWORLD_TILE_SIZE / 2.0f;
-    transformComponent->mPosition.z += groundLayerZ - OVERWORLD_TILE_SIZE / 2.0f;
+    transformComponent->mPosition.x += groundLayerX - GAME_TILE_SIZE / 2.0f;
+    transformComponent->mPosition.y -= GAME_TILE_SIZE / 2.0f;
+    transformComponent->mPosition.z += groundLayerZ - GAME_TILE_SIZE / 2.0f;
 
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mShaderNameId = StringId("basic");

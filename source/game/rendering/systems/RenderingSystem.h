@@ -69,7 +69,9 @@ private:
     static const StringId VIEW_MARIX_UNIFORM_NAME;
     static const StringId PROJECTION_MARIX_UNIFORM_NAME;
     static const StringId TRANSITION_ANIMATION_STEP_UNIFORM_NAME;
-    static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;        
+    static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;      
+    static const StringId GUI_SHADER_NAME;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

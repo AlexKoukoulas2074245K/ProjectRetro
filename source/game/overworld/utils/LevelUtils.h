@@ -57,12 +57,12 @@ inline LevelTilemap CreateTilemapWithDimensions(const int cols, const int rows)
 
 inline glm::vec3 TileCoordsToPosition(const TileCoords& coords)
 {
-    return glm::vec3(coords.mCol * OVERWORLD_TILE_SIZE, 0.0f, coords.mRow * OVERWORLD_TILE_SIZE);
+    return glm::vec3(coords.mCol * GAME_TILE_SIZE, 0.0f, coords.mRow * GAME_TILE_SIZE);
 }
 
 inline glm::vec3 TileCoordsToPosition(const int col, const int row)
 {
-    return glm::vec3(col * OVERWORLD_TILE_SIZE, 0.0f, row * OVERWORLD_TILE_SIZE);
+    return glm::vec3(col * GAME_TILE_SIZE, 0.0f, row * GAME_TILE_SIZE);
 }
 
 inline const Tile& GetTile(const int col, const int row, const LevelTilemap& grid)
