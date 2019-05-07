@@ -160,8 +160,7 @@ ecs::EntityId CreateTextboxComponentFromAtlasCoords
     auto renderableComponent                    = std::make_unique<RenderableComponent>();
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
     renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mShaderNameId          = StringId("gui");
-    renderableComponent->mAffectedByPerspective = false;    
+    renderableComponent->mShaderNameId          = StringId("gui");    
 
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations
     (

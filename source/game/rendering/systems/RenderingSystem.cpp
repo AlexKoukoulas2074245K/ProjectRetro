@@ -86,6 +86,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
 
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
+    std::vector<ecs::EntityId> guiEntities;
     std::vector<ecs::EntityId> semiTransparentTexturedEntities;
     
     // Set background color
@@ -95,6 +96,9 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     
     // Clear buffers
     GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+    // Enable depth
+    GL_CHECK(glEnable(GL_DEPTH_TEST));
 
     for (const auto& entityId: activeEntities)
     {
@@ -106,18 +110,23 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& activeMeshes        = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);            
             const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
 
+            // Separate GUI entities to render them last
+            if (renderableComponent.mShaderNameId == GUI_SHADER_NAME)
+            {
+                guiEntities.push_back(entityId);
+                continue;
+            }
+
             // Check level residency and reject if applicable
             if (mWorld.HasComponent<LevelResidentComponent>(entityId) &&
                 mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId != activeLevelSingletonComponent.mActiveLevelNameId)
             {
                 continue;
-            }
-            
+            }            
+
             // Frustum culling
             if 
-            (
-                renderableComponent.mShaderNameId != GUI_SHADER_NAME &&
-                !IsMeshInsideCameraFrustum
+            (!IsMeshInsideCameraFrustum
                 (
                     transformComponent.mPosition,
                     transformComponent.mScale,
@@ -176,6 +185,24 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             currentLevel.mLevelColor,
             cameraComponent, 
             shaderStoreComponent, 
+            windowComponent,
+            transitionAnimationComponent,
+            previousRenderingStateComponent
+        );
+    }        
+
+    // Execute GUI render pass
+    GL_CHECK(glDisable(GL_DEPTH_TEST));
+    for (const auto& entityId : guiEntities)
+    {
+        const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        RenderEntityInternal
+        (
+            entityId,
+            renderableComponent,
+            currentLevel.mLevelColor,
+            cameraComponent,
+            shaderStoreComponent,
             windowComponent,
             transitionAnimationComponent,
             previousRenderingStateComponent

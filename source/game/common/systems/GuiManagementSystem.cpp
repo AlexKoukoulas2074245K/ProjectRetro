@@ -48,7 +48,7 @@ void GuiManagementSystem::InitializeGuiState() const
     auto windowSingletonComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
 
     auto guiStateSingletonComponent            = std::make_unique<GuiStateSingletonComponent>();
-    guiStateSingletonComponent->mGuiTileWidth  = (GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE);
+    guiStateSingletonComponent->mGuiTileWidth  = (GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE)/windowSingletonComponent.mAspectRatio;
     guiStateSingletonComponent->mGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
 
     mWorld.SetSingletonComponent<GuiStateSingletonComponent>(std::move(guiStateSingletonComponent));
