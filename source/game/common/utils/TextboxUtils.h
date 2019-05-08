@@ -29,8 +29,8 @@ ecs::EntityId CreateTextboxWithDimensions
 (
     const int textboxTileCols,
     const int textboxTileRows,
-    const float,// textboxOriginX,
-    const float,// textboxOriginY,
+    const float textboxOriginX,
+    const float textboxOriginY,
     ecs::World& world
 );
 

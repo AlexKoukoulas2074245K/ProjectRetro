@@ -12,6 +12,7 @@
 
 #include "LevelLoadingUtils.h"
 #include "LevelUtils.h"
+#include "OverworldUtils.h"
 #include "OverworldCharacterLoadingUtils.h"
 #include "../components/LevelResidentComponent.h"
 #include "../components/NpcAiComponent.h"
@@ -21,6 +22,7 @@
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/Colors.h"
+#include "../../rendering/utils/AnimationUtils.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -229,6 +231,8 @@ static void CreateNpc
     };
     
     const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcEntryJsonObject["movement_type"]));
+    const auto dialog       = npcEntryJsonObject["dialog"].get<std::string>();
+    const auto direction    = static_cast<Direction>(npcEntryJsonObject["direction"].get<int>());
     const auto gameCol      = npcEntryJsonObject["game_col"].get<int>();
     const auto gameRow      = npcEntryJsonObject["game_row"].get<int>();
     const auto atlasCol     = npcEntryJsonObject["atlas_col"].get<int>();
@@ -236,21 +240,28 @@ static void CreateNpc
     
     const auto npcEntityId = world.CreateEntity();
     
-    auto animationTimerComponent = std::make_unique<AnimationTimerComponent>();
+    auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
     animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
     animationTimerComponent->mAnimationTimer->Pause();
     
-    auto aiComponent = std::make_unique<NpcAiComponent>();
-    aiComponent->mMovementType = movementType;
+    auto directionComponent        = std::make_unique<DirectionComponent>();
+    directionComponent->mDirection = direction;
     
-    auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
+    auto aiComponent           = std::make_unique<NpcAiComponent>();
+    aiComponent->mMovementType = movementType;
+    aiComponent->mDialog       = dialog;
+    
+    auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
     
-    auto transformComponent = std::make_unique<TransformComponent>();
+    auto transformComponent       = std::make_unique<TransformComponent>();
     transformComponent->mPosition = TileCoordsToPosition(gameCol, gameRow);
     
-    auto movementStateComponent = std::make_unique<MovementStateComponent>();
+    auto movementStateComponent            = std::make_unique<MovementStateComponent>();
     movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
+    
+    auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow));
+    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), *renderableComponent);
     
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
@@ -260,8 +271,8 @@ static void CreateNpc
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
     world.AddComponent<NpcAiComponent>(npcEntityId, std::move(aiComponent));
     world.AddComponent<MovementStateComponent>(npcEntityId, std::move(movementStateComponent));
-    world.AddComponent<DirectionComponent>(npcEntityId, std::make_unique<DirectionComponent>());
-    world.AddComponent<RenderableComponent>(npcEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow)));
+    world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));
+    world.AddComponent<RenderableComponent>(npcEntityId, std::move(renderableComponent));
 }
 
 void CreateLevelModelEntry

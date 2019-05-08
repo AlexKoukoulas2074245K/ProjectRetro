@@ -34,6 +34,11 @@ inline StringId GetDirectionAnimationName(const Direction direction)
     return StringId();
 }
 
+inline Direction GetDirectionFacingDirection(const Direction direction)
+{
+    return static_cast<Direction>((static_cast<int>(direction) + 2) % 4);
+}
+
 inline ecs::EntityId GetPlayerEntityId(const ecs::World& world)
 {
     const auto& activeEntities = world.GetActiveEntities();

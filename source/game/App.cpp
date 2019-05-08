@@ -15,7 +15,6 @@
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/systems/GuiManagementSystem.h"
-#include "common/utils/TextboxUtils.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationTimerComponent.h"
@@ -157,10 +156,6 @@ void App::DummyInitialization()
     playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
-        
-    const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
-    auto textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
-    WriteTextAtTextboxCoords("This is a test", 1, 1, textboxComponent.mTextContent);        
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -91,6 +91,9 @@ ecs::EntityId CreateTextboxWithDimensions
         world
     );
 
+    auto& guiStateComponent               = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    guiStateComponent.mActiveGuiComponent = textboxEntityId;
+    
     return textboxEntityId;
 }
 
@@ -129,8 +132,8 @@ void CreateTextboxComponents
 {
     const auto& guiStateSingletonComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
 
-    const auto guiTileWidth  = guiStateSingletonComponent.mGuiTileWidth;
-    const auto guiTileHeight = guiStateSingletonComponent.mGuiTileHeight;
+    const auto guiTileWidth  = guiStateSingletonComponent.mGlobalGuiTileWidth;
+    const auto guiTileHeight = guiStateSingletonComponent.mGlobalGuiTileHeight;
 
     // Calculate textbox corners in screen coords
     const auto textboxTopLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);

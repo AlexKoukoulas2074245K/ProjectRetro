@@ -24,6 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 class DirectionComponent;
+class MovementStateComponent;
 class RenderableComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,18 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
-    void ChangePlayerDirectionAndAnimation(const Direction, RenderableComponent&, DirectionComponent&) const;
+    void CheckForNpcInteraction
+    (
+        const Direction,
+        const MovementStateComponent&
+    ) const;
+    
+    void ChangePlayerDirectionAndAnimation
+    (
+        const Direction,
+        RenderableComponent&,
+        DirectionComponent&
+    ) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

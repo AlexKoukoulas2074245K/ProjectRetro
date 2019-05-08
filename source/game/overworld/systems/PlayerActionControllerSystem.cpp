@@ -12,15 +12,22 @@
 #include "PlayerActionControllerSystem.h"
 #include "MovementControllerSystem.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
-#include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
+#include "../../common/components/GuiStateSingletonComponent.h"
+#include "../../common/components/PlayerTagComponent.h"
+#include "../../common/utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../overworld/OverworldConstants.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
 #include "../../overworld/components/MovementStateComponent.h"
+#include "../../overworld/components/NpcAiComponent.h"
+#include "../../overworld/components/LevelModelComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -42,15 +49,16 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
         if (ShouldProcessEntity(entityId))
         {
-            auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
-            auto& movementStateComponent  = mWorld.GetComponent<MovementStateComponent>(entityId);
-            auto& renderableComponent     = mWorld.GetComponent<RenderableComponent>(entityId);
+            auto& animationTimerComponent  = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+            auto& movementStateComponent   = mWorld.GetComponent<MovementStateComponent>(entityId);
+            auto& renderableComponent      = mWorld.GetComponent<RenderableComponent>(entityId);
             
             if (movementStateComponent.mMoving)
             {
@@ -58,7 +66,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             }
 
             if (warpConnectionsComponent.mHasPendingWarpConnection)
-            {                
+            {
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 continue;
             }
@@ -72,7 +80,15 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             // in this system's udpate, and do the checks (and possibly revert the intent) in MovementControllerSystem
             auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
             
-            if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
+            if (inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED)
+            {
+                CheckForNpcInteraction(directionComponent.mDirection, movementStateComponent);
+                if (guiStateComponent.mActiveGuiComponent != ecs::NULL_ENTITY_ID)
+                {
+                    PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+                }
+            }
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
             {
                 ChangePlayerDirectionAndAnimation(Direction::WEST, renderableComponent, directionComponent);
             }
@@ -127,6 +143,36 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void PlayerActionControllerSystem::CheckForNpcInteraction
+(
+    const Direction direction,
+    const MovementStateComponent& movementStateComponent
+) const
+{
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    const auto& tile = GetNeighborTile(movementStateComponent.mCurrentCoords, direction, levelModelComponent.mLevelTilemap);
+    
+    if (tile.mTileOccupierType == TileOccupierType::NPC)
+    {
+        const auto& npcMovementState = mWorld.GetComponent<MovementStateComponent>(tile.mTileOccupierEntityId);
+        
+        // Disallow talking to moving npc
+        if (npcMovementState.mMoving == false)
+        {
+            //const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
+            auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);
+            auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
+            
+            const auto newNpcDirection       = GetDirectionFacingDirection(direction);
+            npcDirectionComponent.mDirection = newNpcDirection;
+            ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
+            
+            CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
+        }
+    }
+}
+
 void PlayerActionControllerSystem::ChangePlayerDirectionAndAnimation
 (
     const Direction direction,
@@ -137,3 +183,7 @@ void PlayerActionControllerSystem::ChangePlayerDirectionAndAnimation
     playerDirectionComponent.mDirection = direction;
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), playerRenderableComponent);
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////

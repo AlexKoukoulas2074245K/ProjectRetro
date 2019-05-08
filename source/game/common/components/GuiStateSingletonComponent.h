@@ -25,9 +25,9 @@
 class GuiStateSingletonComponent final: public ecs::IComponent
 {
 public:
-    float mGuiTileWidth  = 0.0f;
-    float mGuiTileHeight = 0.0f;
-    
+    float mGlobalGuiTileWidth         = 0.0f;
+    float mGlobalGuiTileHeight        = 0.0f;
+    ecs::EntityId mActiveGuiComponent = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

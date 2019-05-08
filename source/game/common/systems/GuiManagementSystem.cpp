@@ -13,6 +13,7 @@
 #include "../GameConstants.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxComponent.h"
+#include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -29,12 +30,21 @@ float GuiManagementSystem::GUI_TILE_DEFAULT_SIZE = 0.11f;
 GuiManagementSystem::GuiManagementSystem(ecs::World& world)
     : BaseSystem(world)
 {
+    CalculateAndSetComponentUsageMask<TextboxComponent>();
     InitializeGuiState();
 }
 
 void GuiManagementSystem::VUpdateAssociatedComponents(const float) const
 {
-    
+    auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& activeEntities = mWorld.GetActiveEntities();
+    for (const auto& entityId: activeEntities)
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            inputStateComponent.mHasBeenConsumed = true;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -47,9 +57,9 @@ void GuiManagementSystem::InitializeGuiState() const
 
     auto windowSingletonComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
 
-    auto guiStateSingletonComponent            = std::make_unique<GuiStateSingletonComponent>();
-    guiStateSingletonComponent->mGuiTileWidth  = (GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE)/windowSingletonComponent.mAspectRatio;
-    guiStateSingletonComponent->mGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
+    auto guiStateSingletonComponent                  = std::make_unique<GuiStateSingletonComponent>();
+    guiStateSingletonComponent->mGlobalGuiTileWidth  = (GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE)/windowSingletonComponent.mAspectRatio;
+    guiStateSingletonComponent->mGlobalGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
 
     mWorld.SetSingletonComponent<GuiStateSingletonComponent>(std::move(guiStateSingletonComponent));
 }

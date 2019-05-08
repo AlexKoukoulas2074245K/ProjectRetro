@@ -16,6 +16,7 @@
 #include "../utils/LevelUtils.h"
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/DirectionComponent.h"
+#include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -42,6 +43,7 @@ NpcAiSystem::NpcAiSystem(ecs::World& world)
 
 void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
 {
+    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
     const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     
@@ -49,7 +51,7 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
     
     for (const auto& entityId: activeEntities)
     {
-        if (ShouldProcessEntity(entityId))
+        if (ShouldProcessEntity(entityId) && guiStateComponent.mActiveGuiComponent == ecs::NULL_ENTITY_ID)
         {
             auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(entityId);
             
