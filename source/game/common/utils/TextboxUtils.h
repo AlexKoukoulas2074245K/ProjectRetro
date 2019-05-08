@@ -35,12 +35,22 @@ ecs::EntityId CreateTextboxWithDimensions
     ecs::World& world
 );
 
+void WriteCharAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const char character,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
 void WriteTextAtTextboxCoords
 (
+    const ecs::EntityId textboxEntityId,
     const std::string& text,
     const size_t textboxCol,
     const size_t textboxRow,
-    TextboxContent& textboxContent
+    ecs::World& world
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

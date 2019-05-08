@@ -82,20 +82,93 @@ ecs::EntityId CreateTextboxWithDimensions
         world
     );
 
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
+    world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
+    
     auto& guiStateComponent               = world.GetSingletonComponent<GuiStateSingletonComponent>();
     guiStateComponent.mActiveGuiComponent = textboxEntityId;
     
     return textboxEntityId;
 }
 
-void WriteTextAtTextboxCoords
+void WriteCharAtTextboxCoords
 (
-    const std::string& text,
-    const size_t textboxCol,
-    const size_t textboxRow,
-    TextboxContent& textboxContent
+     const ecs::EntityId textboxEntityId,
+     const char character,
+     const size_t textboxCol,
+     const size_t textboxRow,
+     ecs::World& world
 )
 {
+    // Skip whitespace
+    if (character == ' ')
+    {
+        return;
+    }
+    
+    const auto& guiStateComponent         = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& textboxTransformComponent = world.GetComponent<TransformComponent>(textboxEntityId);
+    
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& textboxContent   = textboxComponent.mTextContent;
+    
+    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
+    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
+    
+    if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
+    {
+        world.RemoveEntity(textboxContent[textboxRow][textboxCol].mEntityId);
+    }
+    
+    const auto characterEntityId = world.CreateEntity();
+    
+    auto renderableComponent                    = std::make_unique<RenderableComponent>();
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAnimationsToMeshes[renderableComponent->mActiveAnimationNameId].push_back(guiStateComponent.mFontEntities.at(character));
+    
+    
+    const auto textboxTopLeftPoint = glm::vec3
+    (
+        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * guiStateComponent.mGlobalGuiTileWidth) * 0.5f,
+        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * guiStateComponent.mGlobalGuiTileHeight) * 0.5f,
+        0.0f
+     );
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mScale    = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
+    transformComponent->mPosition = glm::vec3
+    (
+        textboxTopLeftPoint.x + guiStateComponent.mGlobalGuiTileWidth * textboxCol,
+        textboxTopLeftPoint.y - guiStateComponent.mGlobalGuiTileHeight * textboxRow,
+        0.0f
+     );
+    
+    auto textboxResidentComponent                    = std::make_unique<TextboxResidentComponent>();
+    textboxResidentComponent->mTextboxParentEntityId = textboxEntityId;
+    
+    world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));
+    world.AddComponent<TextboxResidentComponent>(characterEntityId, std::move(textboxResidentComponent));
+    world.AddComponent<TransformComponent>(characterEntityId, std::move(transformComponent));
+    
+    textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = character;
+    textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId  = characterEntityId;
+}
+
+void WriteTextAtTextboxCoords
+(
+     const ecs::EntityId textboxEntityId,
+     const std::string& text,
+     const size_t textboxCol,
+     const size_t textboxRow,
+     ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& textboxContent   = textboxComponent.mTextContent;
+    
     assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
     assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
@@ -103,7 +176,14 @@ void WriteTextAtTextboxCoords
     auto wordIter = text.begin();
     for (auto x = textboxCol; x < textboxCol + text.size(); ++x)
     {
-        textboxContent[textboxRow][x].mCharacter = *wordIter++;
+        WriteCharAtTextboxCoords
+        (
+             textboxEntityId,
+             *wordIter++,
+             x,
+             textboxRow,
+             world
+        );
     }
 }
 

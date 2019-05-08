@@ -168,7 +168,8 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             npcDirectionComponent.mDirection = newNpcDirection;
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             
-            CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
+            const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
+            WriteTextAtTextboxCoords(textboxEntityId, "Sample NPC text", 1, 2, mWorld);
         }
     }
 }
