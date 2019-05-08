@@ -15,6 +15,7 @@
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../utils/MathUtils.h"
 
@@ -127,16 +128,17 @@ void WriteCharAtTextboxCoords
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
     renderableComponent->mActiveAnimationNameId = StringId("default");
     renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mRenderableLayer       = RenderableLayer::TOP;
+    renderableComponent->mAffectedByPerspective = false;
     renderableComponent->mAnimationsToMeshes[renderableComponent->mActiveAnimationNameId].push_back(guiStateComponent.mFontEntities.at(character));
-    
     
     const auto textboxTopLeftPoint = glm::vec3
     (
-        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * guiStateComponent.mGlobalGuiTileWidth) * 0.5f,
-        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * guiStateComponent.mGlobalGuiTileHeight) * 0.5f,
+        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * guiStateComponent.mGlobalGuiTileWidth) * 0.5f + guiStateComponent.mGlobalGuiTileWidth * 0.5f,
+        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * guiStateComponent.mGlobalGuiTileHeight) * 0.5f - guiStateComponent.mGlobalGuiTileHeight * 0.5f,
         0.0f
-     );
-    
+    );
+
     auto transformComponent       = std::make_unique<TransformComponent>();
     transformComponent->mScale    = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
     transformComponent->mPosition = glm::vec3
@@ -202,25 +204,27 @@ void CreateTextboxComponents
 )
 {
     const auto& guiStateSingletonComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
-
+    const auto& windowSingletonComponent   = world.GetSingletonComponent<WindowSingletonComponent>();
+    
     const auto guiTileWidth  = guiStateSingletonComponent.mGlobalGuiTileWidth;
     const auto guiTileHeight = guiStateSingletonComponent.mGlobalGuiTileHeight;
+    const auto guiTileHeightAccountingForAspect = guiTileHeight * windowSingletonComponent.mAspectRatio;
 
     // Calculate textbox corners in screen coords
-    const auto textboxTopLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
-    const auto textboxTopRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
-    const auto textboxBotLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
-    const auto textboxBotRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
+    const auto textboxTopLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, 0.0f);
+    const auto textboxTopRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, 0.0f);
+    const auto textboxBotLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, 0.0f);
+    const auto textboxBotRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, 0.0f);
     
     // Calculate filler components' dimensions
-    const auto textboxHorizontalFillerWidth = guiTileWidth  * (textboxTileCols/2 + 1.5f);
-    const auto textboxVerticalFillerHeight  = guiTileHeight * (textboxTileRows/2 + 1.5f);
+    const auto textboxHorizontalFillerWidth = guiTileWidth  * (textboxTileCols - 2);
+    const auto textboxVerticalFillerHeight  = guiTileHeightAccountingForAspect * (textboxTileRows - 2);
     
     // Calculate filler components' screen coords
-    const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxOriginY + (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
-    const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
-    const auto textboxLeftFillerCoords       = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY, 0.0f);
-    const auto textboxRightFillerCoords      = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY, 0.0f);
+    const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxTopLeftPoint.y, 0.0f);
+    const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxBotLeftPoint.y, 0.0f);
+    const auto textboxLeftFillerCoords       = glm::vec3(textboxTopLeftPoint.x, textboxOriginY, 0.0f);
+    const auto textboxRightFillerCoords      = glm::vec3(textboxTopRightPoint.x, textboxOriginY, 0.0f);
     const auto textboxBackgroundFillerCoords = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
     
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 2, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopLeftPoint, world);
@@ -249,7 +253,8 @@ ecs::EntityId CreateTextboxComponentFromAtlasCoords
     auto renderableComponent                    = std::make_unique<RenderableComponent>();
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
     renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mShaderNameId          = StringId("gui");    
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
 
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations
     (

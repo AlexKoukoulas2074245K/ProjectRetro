@@ -168,8 +168,9 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             npcDirectionComponent.mDirection = newNpcDirection;
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             
-            const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
-            WriteTextAtTextboxCoords(textboxEntityId, "Sample NPC text", 1, 2, mWorld);
+            const auto textboxEntityId = CreateTextboxWithDimensions(3, 3, 0.0f, -0.74f, mWorld);
+            WriteTextAtTextboxCoords(textboxEntityId, "A", 1, 1, mWorld);
+            //WriteTextAtTextboxCoords(textboxEntityId, "used THUNDERSHOCK!", 1, 4, mWorld);
         }
     }
 }

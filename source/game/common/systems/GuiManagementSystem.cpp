@@ -16,7 +16,6 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
-#include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/MeshUtils.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -59,10 +58,8 @@ void GuiManagementSystem::InitializeGuiState() const
 {
     ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
 
-    auto windowSingletonComponent = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-
     auto guiStateSingletonComponent                  = std::make_unique<GuiStateSingletonComponent>();
-    guiStateSingletonComponent->mGlobalGuiTileWidth  = (GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE)/windowSingletonComponent.mAspectRatio;
+    guiStateSingletonComponent->mGlobalGuiTileWidth  = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
     guiStateSingletonComponent->mGlobalGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
     
     PopulateFontEntities(*guiStateSingletonComponent);

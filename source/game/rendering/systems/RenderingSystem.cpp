@@ -87,6 +87,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
     std::vector<ecs::EntityId> guiEntities;
+    std::vector<ecs::EntityId> topRenderedEntities;
     std::vector<ecs::EntityId> semiTransparentTexturedEntities;
     
     // Set background color
@@ -110,13 +111,21 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& activeMeshes        = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);            
             const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
 
+            
+            // Extract font entities from textbox components
+            if (renderableComponent.mRenderableLayer == RenderableLayer::TOP)
+            {
+                topRenderedEntities.push_back(entityId);
+                continue;
+            }
+                
             // Separate GUI entities to render them last
             if (renderableComponent.mShaderNameId == GUI_SHADER_NAME)
             {
                 guiEntities.push_back(entityId);
                 continue;
             }
-
+            
             // Check level residency and reject if applicable
             if (mWorld.HasComponent<LevelResidentComponent>(entityId) &&
                 mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId != activeLevelSingletonComponent.mActiveLevelNameId)
@@ -206,6 +215,23 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             windowComponent,
             transitionAnimationComponent,
             previousRenderingStateComponent
+        );
+    }
+    
+    // Execute Font render pass
+    for (const auto& entityId: topRenderedEntities)
+    {
+        const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        RenderEntityInternal
+        (
+             entityId,
+             renderableComponent,
+             currentLevel.mLevelColor,
+             cameraComponent,
+             shaderStoreComponent,
+             windowComponent,
+             transitionAnimationComponent,
+             previousRenderingStateComponent
         );
     }
 
