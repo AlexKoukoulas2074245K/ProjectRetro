@@ -2,8 +2,8 @@
     "level_header":
     {
         "name": "in_players_home_bot",
-        "dimensions" : { "cols": 16, "rows": 16},
-		"color": "PALLET"
+        "dimensions": { "cols": 16, "rows": 16},
+        "color": "PALLET"
     },
     "level_ground_layer_editor":
     [
@@ -270,7 +270,7 @@
     ],
     "level_npc_list":
     [
-        { "movement_type": "STATIONARY", "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 7, "atlas_row": 36 }
+        { "movement_type": "STATIONARY", "dialog": "MOM: Right.#All boys leave#home some day.#It said so on TV.#@PROF. OAK, next#door, is looking#for you.", "direction": 3, "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 7, "atlas_row": 36 }
     ],
     "level_model_list":
     [

@@ -158,9 +158,9 @@ void App::DummyInitialization()
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
     GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
         
-    const auto textboxEntityId = CreateTextboxWithDimensions(3, 3, 0.0f, -0.74f, mWorld);
+    const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.74f, mWorld);
     auto textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
-    WriteTextAtTextboxCoords("T", 20, 6, textboxComponent.mTextContent);        
+    WriteTextAtTextboxCoords("This is a test", 1, 1, textboxComponent.mTextContent);        
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

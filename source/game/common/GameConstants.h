@@ -31,7 +31,7 @@ const float CHARACTER_ANIMATION_FRAME_TIME = 0.125f;
 
 enum class Direction
 {
-    NORTH = 0, SOUTH, WEST, EAST
+    NORTH = 0, EAST, SOUTH, WEST
 };
 
 enum class CharacterMovementType
