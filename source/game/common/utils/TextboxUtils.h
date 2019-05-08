@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../components/TextboxComponent.h"
 
 #include <string>
 #include <vector>
@@ -36,10 +37,10 @@ ecs::EntityId CreateTextboxWithDimensions
 
 void WriteTextAtTextboxCoords
 (
-    const std::string& Text,
+    const std::string& text,
     const size_t textboxCol,
     const size_t textboxRow,
-    std::vector<std::vector<char>>& textboxContent
+    TextboxContent& textboxContent
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -12,20 +12,11 @@
 #include "TextboxUtils.h"
 #include "../../ECS.h"
 #include "../components/GuiStateSingletonComponent.h"
-#include "../components/TextboxComponent.h"
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../utils/MathUtils.h"
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-static const std::string TEXTBOX_COMPONENTS_MODEL_NAME = "camera_facing_quad";
-static const int GUI_ATLAS_COLS = 16;
-static const int GUI_ATLAS_ROWS = 16;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +60,7 @@ ecs::EntityId CreateTextboxWithDimensions
     
     const auto textboxEntityId = world.CreateEntity();
 
-    std::vector<std::vector<char>> textContent(textboxTileRows);    
+    TextboxContent textContent(textboxTileRows);
     for (auto& row : textContent)
     {
         row.resize(textboxTileCols);
@@ -102,7 +93,7 @@ void WriteTextAtTextboxCoords
     const std::string& text,
     const size_t textboxCol,
     const size_t textboxRow,
-    std::vector<std::vector<char>>& textboxContent
+    TextboxContent& textboxContent
 )
 {
     assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
@@ -112,7 +103,7 @@ void WriteTextAtTextboxCoords
     auto wordIter = text.begin();
     for (auto x = textboxCol; x < textboxCol + text.size(); ++x)
     {
-        textboxContent[textboxRow][x] = *wordIter++;
+        textboxContent[textboxRow][x].mCharacter = *wordIter++;
     }
 }
 
@@ -187,7 +178,7 @@ ecs::EntityId CreateTextboxComponentFromAtlasCoords
         GUI_ATLAS_COLS,
         GUI_ATLAS_ROWS,
         false, 
-        TEXTBOX_COMPONENTS_MODEL_NAME, 
+        GUI_COMPONENTS_MODEL_NAME, 
         renderableComponent->mActiveAnimationNameId,
         *renderableComponent
     );

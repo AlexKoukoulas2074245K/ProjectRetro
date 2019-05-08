@@ -68,6 +68,7 @@ void ResourceLoadingService::InitializeResourceLoaders()
     // Map resource extensions to loaders
     mResourceExtensionsToLoadersMap[StringId("png")]  = mResourceLoaders[0].get();
     mResourceExtensionsToLoadersMap[StringId("json")] = mResourceLoaders[1].get();
+    mResourceExtensionsToLoadersMap[StringId("dat")]  = mResourceLoaders[1].get();
     mResourceExtensionsToLoadersMap[StringId("vs")]   = mResourceLoaders[2].get();
     mResourceExtensionsToLoadersMap[StringId("fs")]   = mResourceLoaders[2].get();
     mResourceExtensionsToLoadersMap[StringId("obj")]  = mResourceLoaders[3].get();
