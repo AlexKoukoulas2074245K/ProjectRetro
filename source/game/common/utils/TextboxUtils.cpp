@@ -108,6 +108,7 @@ void WriteCharAtTextboxCoords
         return;
     }
     
+    const auto& windowComponent           = world.GetSingletonComponent<WindowSingletonComponent>();
     const auto& guiStateComponent         = world.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& textboxTransformComponent = world.GetComponent<TransformComponent>(textboxEntityId);
     
@@ -132,10 +133,17 @@ void WriteCharAtTextboxCoords
     renderableComponent->mAffectedByPerspective = false;
     renderableComponent->mAnimationsToMeshes[renderableComponent->mActiveAnimationNameId].push_back(guiStateComponent.mFontEntities.at(character));
     
+    const auto tileWidth  = guiStateComponent.mGlobalGuiTileWidth;
+    const auto tileHeight = guiStateComponent.mGlobalGuiTileHeight;
+
+    // This is used for positional calculations only, otherwise the rendered dimensions
+    // of the textbox itself will be wrong
+    const auto tileHeightAccountingForAspect = tileHeight * windowComponent.mAspectRatio;
+
     const auto textboxTopLeftPoint = glm::vec3
     (
-        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * guiStateComponent.mGlobalGuiTileWidth) * 0.5f + guiStateComponent.mGlobalGuiTileWidth * 0.5f,
-        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * guiStateComponent.mGlobalGuiTileHeight) * 0.5f - guiStateComponent.mGlobalGuiTileHeight * 0.5f,
+        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * tileWidth) * 0.5f + tileWidth * 0.5f,
+        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * tileHeightAccountingForAspect) * 0.5f - tileHeightAccountingForAspect * 0.5f,
         0.0f
     );
 
@@ -143,8 +151,8 @@ void WriteCharAtTextboxCoords
     transformComponent->mScale    = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
     transformComponent->mPosition = glm::vec3
     (
-        textboxTopLeftPoint.x + guiStateComponent.mGlobalGuiTileWidth * textboxCol,
-        textboxTopLeftPoint.y - guiStateComponent.mGlobalGuiTileHeight * textboxRow,
+        textboxTopLeftPoint.x + tileWidth * textboxCol,
+        textboxTopLeftPoint.y - tileHeightAccountingForAspect * textboxRow,
         0.0f
      );
     
@@ -208,6 +216,9 @@ void CreateTextboxComponents
     
     const auto guiTileWidth  = guiStateSingletonComponent.mGlobalGuiTileWidth;
     const auto guiTileHeight = guiStateSingletonComponent.mGlobalGuiTileHeight;
+    
+    // This is used for positional calculations only, otherwise the rendered dimensions
+    // of the textbox itself will be wrong
     const auto guiTileHeightAccountingForAspect = guiTileHeight * windowSingletonComponent.mAspectRatio;
 
     // Calculate textbox corners in screen coords
@@ -218,7 +229,7 @@ void CreateTextboxComponents
     
     // Calculate filler components' dimensions
     const auto textboxHorizontalFillerWidth = guiTileWidth  * (textboxTileCols - 2);
-    const auto textboxVerticalFillerHeight  = guiTileHeightAccountingForAspect * (textboxTileRows - 2);
+    const auto textboxVerticalFillerHeight  = guiTileHeight * (textboxTileRows - 2);
     
     // Calculate filler components' screen coords
     const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxTopLeftPoint.y, 0.0f);
