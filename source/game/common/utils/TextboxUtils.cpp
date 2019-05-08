@@ -104,7 +104,7 @@ void WriteTextAtTextboxCoords
 {
     assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
     assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
-    assert((textboxCol + text.size() < textboxContent[textboxRow].size() - 1) && "Word cannot fit in specified textbox coords");
+    assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
     
     auto wordIter = text.begin();
     for (auto x = textboxCol; x < textboxCol + text.size(); ++x)
@@ -138,11 +138,26 @@ void CreateTextboxComponents
     const auto textboxBotLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
     const auto textboxBotRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
     
+    // Calculate filler components' dimensions
+    const auto textboxHorizontalFillerWidth = guiTileWidth  * (textboxTileCols/2 + 1.5f);
+    const auto textboxVerticalFillerHeight  = guiTileHeight * (textboxTileRows/2 + 1.5f);
+    
+    // Calculate filler components' screen coords
+    const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxOriginY + (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
+    const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxOriginY - (textboxTileRows * guiTileHeight) * 0.5f, 0.0f);
+    const auto textboxLeftFillerCoords       = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY, 0.0f);
+    const auto textboxRightFillerCoords      = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f, textboxOriginY, 0.0f);
+    const auto textboxBackgroundFillerCoords = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
+    
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 2, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopLeftPoint, world);
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 4, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopRightPoint, world);
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 8, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxBotLeftPoint, world);
-    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 9, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxBotRightPoint, world);
-
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 10, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxBotRightPoint, world);
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 3, 6, glm::vec3(textboxHorizontalFillerWidth, guiTileHeight, 1.0f), textboxTopFillerCoords, world);
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 3, 6, glm::vec3(textboxHorizontalFillerWidth, guiTileHeight, 1.0f), textboxBotFillerCoords, world);
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 5, 6, glm::vec3(guiTileWidth, textboxVerticalFillerHeight, 1.0f), textboxLeftFillerCoords, world);
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 7, 6, glm::vec3(guiTileWidth, textboxVerticalFillerHeight, 1.0f), textboxRightFillerCoords, world);
+    CreateTextboxComponentFromAtlasCoords(textboxEntityId, 6, 6, glm::vec3(textboxHorizontalFillerWidth, textboxVerticalFillerHeight, 1.0f), textboxBackgroundFillerCoords, world);
 }
 
 ecs::EntityId CreateTextboxComponentFromAtlasCoords
