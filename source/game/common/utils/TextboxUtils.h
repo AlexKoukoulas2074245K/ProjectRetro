@@ -26,12 +26,22 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+ecs::EntityId GetActiveTextboxEntityId
+(
+    const ecs::World& world
+);
+
 ecs::EntityId CreateTextboxWithDimensions
 (
     const int textboxTileCols,
     const int textboxTileRows,
     const float textboxOriginX,
     const float textboxOriginY,
+    ecs::World& world
+);
+
+void DestroyActiveTextbox
+(
     ecs::World& world
 );
 
@@ -49,6 +59,21 @@ void WriteTextAtTextboxCoords
     const ecs::EntityId textboxEntityId,
     const std::string& text,
     const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
+void DeleteCharAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
+void DeleteTextAtTextboxRow
+(
+    const ecs::EntityId textboxEntityId,
     const size_t textboxRow,
     ecs::World& world
 );

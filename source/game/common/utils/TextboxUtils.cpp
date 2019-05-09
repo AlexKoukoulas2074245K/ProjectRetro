@@ -47,6 +47,20 @@ static ecs::EntityId CreateTextboxComponentFromAtlasCoords
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+ecs::EntityId GetActiveTextboxEntityId
+(
+    const ecs::World& world
+)
+{
+    const auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    if (guiStateComponent.mSpawnedTextboxes.size() == 0)
+    {
+        return ecs::NULL_ENTITY_ID;
+    }
+    
+    return guiStateComponent.mSpawnedTextboxes.top();
+}
+
 ecs::EntityId CreateTextboxWithDimensions
 (
     const int textboxTileCols,
@@ -87,10 +101,37 @@ ecs::EntityId CreateTextboxWithDimensions
     transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
-    auto& guiStateComponent               = world.GetSingletonComponent<GuiStateSingletonComponent>();
-    guiStateComponent.mActiveGuiComponent = textboxEntityId;
+    auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    guiStateComponent.mSpawnedTextboxes.push(textboxEntityId);
     
     return textboxEntityId;
+}
+
+void DestroyActiveTextbox
+(
+    ecs::World& world
+)
+{
+    const auto textboxEntityId = GetActiveTextboxEntityId(world);
+    assert(textboxEntityId != ecs::NULL_ENTITY_ID && "No active component available to destroy");
+    
+    auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    guiStateComponent.mSpawnedTextboxes.pop();
+    
+    const auto& entityIds = world.GetActiveEntities();
+    for (const auto& entityId: entityIds)
+    {
+        if
+        (
+            world.HasComponent<TextboxResidentComponent>(entityId) &&
+            world.GetComponent<TextboxResidentComponent>(entityId).mTextboxParentEntityId == textboxEntityId
+        )
+        {
+            world.RemoveEntity(entityId);
+        }
+    }
+    
+    world.RemoveEntity(textboxEntityId);
 }
 
 void WriteCharAtTextboxCoords
@@ -115,7 +156,7 @@ void WriteCharAtTextboxCoords
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
     
-    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
+    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
     assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     
     if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
@@ -179,7 +220,7 @@ void WriteTextAtTextboxCoords
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
     
-    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds bounds");
+    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
     assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
     
@@ -194,6 +235,46 @@ void WriteTextAtTextboxCoords
              textboxRow,
              world
         );
+    }
+}
+
+void DeleteCharAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
+    assert((textboxCol > 0 && textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1) && "Textbox col out of deletion bounds");
+    
+    const auto characterEntityId = textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId;
+    assert(characterEntityId != ecs::NULL_ENTITY_ID &&
+        "Attempted to delete non-existent textbox character");
+    
+    textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = 0;
+    textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId = ecs::NULL_ENTITY_ID;
+    
+    world.RemoveEntity(characterEntityId);
+}
+
+void DeleteTextAtTextboxRow
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
+    
+    for (size_t textboxCol = 1U; textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1; ++textboxCol)
+    {
+        DeleteCharAtTextboxCoords(textboxEntityId, textboxCol, textboxRow, world);
     }
 }
 

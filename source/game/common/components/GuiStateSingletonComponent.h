@@ -27,6 +27,7 @@ const int GUI_ATLAS_ROWS = 16;
 
 #include "../../ECS.h"
 
+#include <stack>
 #include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +37,9 @@ const int GUI_ATLAS_ROWS = 16;
 class GuiStateSingletonComponent final: public ecs::IComponent
 {
 public:
-    float mGlobalGuiTileWidth         = 0.0f;
-    float mGlobalGuiTileHeight        = 0.0f;
-    ecs::EntityId mActiveGuiComponent = ecs::NULL_ENTITY_ID;
+    float mGlobalGuiTileWidth  = 0.0f;
+    float mGlobalGuiTileHeight = 0.0f;
+    std::stack<ecs::EntityId> mSpawnedTextboxes;
     std::unordered_map<char, ecs::EntityId> mFontEntities;
 };
 

@@ -201,7 +201,7 @@ public:
     }
     
     template<class ComponentType>
-    inline ComponentType& GetSingletonComponent()
+    inline ComponentType& GetSingletonComponent() const
     {
         static_assert(std::is_base_of<IComponent, ComponentType>::value,
             "ComponentType does not derive from IComponent");

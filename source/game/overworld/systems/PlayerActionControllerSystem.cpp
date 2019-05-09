@@ -49,7 +49,6 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
@@ -83,7 +82,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             if (inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED)
             {
                 CheckForNpcInteraction(directionComponent.mDirection, movementStateComponent);
-                if (guiStateComponent.mActiveGuiComponent != ecs::NULL_ENTITY_ID)
+                if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
                 {
                     PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 }
