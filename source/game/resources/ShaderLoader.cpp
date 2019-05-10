@@ -11,7 +11,7 @@
 
 #include "ShaderLoader.h"
 #include "../common/utils/Logging.h"
-#include "../common/utils/MessageBox.h"
+#include "../common/utils/OSMessageBox.h"
 #include "../common/utils/StringUtils.h"
 #include "../resources/ShaderResource.h"
 #include "../rendering/opengl/Context.h"

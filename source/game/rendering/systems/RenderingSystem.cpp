@@ -24,7 +24,7 @@
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/Logging.h"
 #include "../../common/utils/MathUtils.h"
-#include "../../common/utils/MessageBox.h"
+#include "../../common/utils/OSMessageBox.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
 #include "../../overworld/components/LevelResidentComponent.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"

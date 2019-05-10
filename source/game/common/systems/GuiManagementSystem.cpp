@@ -13,6 +13,7 @@
 #include "../GameConstants.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxComponent.h"
+#include "../utils/TextboxUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -24,7 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-float GuiManagementSystem::GUI_TILE_DEFAULT_SIZE = 0.11f;
+float GuiManagementSystem::GUI_TILE_DEFAULT_SIZE            = 0.11f;
+float GuiManagementSystem::CHATBOX_BLINKING_CURSOR_COOLDOWN = 0.7f;
+float GuiManagementSystem::CHATBOX_SCROLL_ANIM_COOLDOWN     = 0.1f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -37,14 +40,42 @@ GuiManagementSystem::GuiManagementSystem(ecs::World& world)
     InitializeGuiState();
 }
 
-void GuiManagementSystem::VUpdateAssociatedComponents(const float) const
+void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
 {
+    auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& activeEntities = mWorld.GetActiveEntities();
     for (const auto& entityId: activeEntities)
     {
-        if (ShouldProcessEntity(entityId))
+        if (ShouldProcessEntity(entityId) && GetActiveTextboxEntityId(mWorld) == entityId)
         {
+            auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(entityId);
+            
+            if (textboxComponent.mQueuedDialog.size() > 0)
+            {
+                switch (guiStateComponent.mActiveChatboxDisplayState)
+                {
+                    case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(entityId, dt); break;
+                    case ChatboxDisplayState::FILLED: UpdateChatboxFilled(entityId, dt); break;
+                    case ChatboxDisplayState::SCROLL_ANIM_PHASE_1: UpdateChatboxScrollAnim1(entityId, dt); break;
+                    case ChatboxDisplayState::SCROLL_ANIM_PHASE_2: UpdateChatboxScrollAnim2(entityId, dt); break;
+                    case ChatboxDisplayState::PARAGRAPH_END_DELAY: UpdateChatboxParagraphEndDelay(dt); break;
+                }
+            }
+            else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
+            {
+                if
+                (
+                    inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
+                    inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
+                )
+                {
+                    DestroyActiveTextbox(mWorld);
+                    guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+                    guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+                }
+            }
+            
             inputStateComponent.mHasBeenConsumed = true;
         }
     }
@@ -61,6 +92,7 @@ void GuiManagementSystem::InitializeGuiState() const
     auto guiStateSingletonComponent                  = std::make_unique<GuiStateSingletonComponent>();
     guiStateSingletonComponent->mGlobalGuiTileWidth  = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
     guiStateSingletonComponent->mGlobalGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
+    guiStateSingletonComponent->mActiveChatboxTimer  = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
     
     PopulateFontEntities(*guiStateSingletonComponent);
     
@@ -93,6 +125,228 @@ void GuiManagementSystem::PopulateFontEntities(GuiStateSingletonComponent& guiSt
     }
     
     ResourceLoadingService::GetInstance().UnloadResource(fontCoordsResourceId);
+}
+
+void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if (guiStateComponent.mActiveChatboxTimer->HasTicked())
+    {
+        auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+        
+        const auto& queuedParagraph = textboxComponent.mQueuedDialog.front();
+        const auto& queuedLine      = queuedParagraph.front();
+        const auto& queuedCharacter = queuedLine.front();
+        
+        //  Skip timer for space characters
+        if (queuedCharacter != ' ')
+        {
+            guiStateComponent.mActiveChatboxTimer->Reset();
+        }
+        
+        // Find first empty spot in the chat box to insert new character (beginning from top row,
+        // folloed by bottom
+        auto emptyColQuery = GetFirstEmptyColumnInTextboxRow(textboxEntityId, 2, mWorld);
+        if (emptyColQuery == 0)
+        {
+            emptyColQuery = GetFirstEmptyColumnInTextboxRow(textboxEntityId, 4, mWorld);
+            if (emptyColQuery == 0)
+            {
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::FILLED;
+                guiStateComponent.mActiveChatboxTimer        = std::make_unique<Timer>(CHATBOX_BLINKING_CURSOR_COOLDOWN);
+                
+                if (guiStateComponent.mActiveChatboxContentState != ChatboxContentEndState::DIALOG_END)
+                {
+                    WriteCharAtTextboxCoords(textboxEntityId, '|', textboxComponent.mTextboxTileCols - 2, textboxComponent.mTextboxTileRows - 2, mWorld);
+                }
+            }
+            else
+            {
+                WriteCharAtTextboxCoords(textboxEntityId, queuedCharacter, emptyColQuery, 4, mWorld);
+                OnTextboxQueuedCharacterRemoval(textboxEntityId);
+            }
+            
+        }
+        else
+        {
+            WriteCharAtTextboxCoords(textboxEntityId, queuedCharacter, emptyColQuery, 2, mWorld);
+            OnTextboxQueuedCharacterRemoval(textboxEntityId);
+        }
+        
+    }
+}
+
+void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const
+{
+    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& guiStateComponent         = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    if
+    (
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
+    )
+    {
+        guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(CHATBOX_SCROLL_ANIM_COOLDOWN);
+        
+        switch (guiStateComponent.mActiveChatboxContentState)
+        {
+            case ChatboxContentEndState::NORMAL:
+            {
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;
+            } break;
+                
+            case ChatboxContentEndState::PARAGRAPH_END:
+            {
+                DeleteTextAtTextboxRow(textboxEntityId, 2, mWorld);
+                DeleteTextAtTextboxRow(textboxEntityId, 4, mWorld);
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::PARAGRAPH_END_DELAY;
+            } break;
+            
+            case ChatboxContentEndState::DIALOG_END: break;
+        }
+    }
+    
+    if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
+    {
+        return;
+    }
+    
+    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if (guiStateComponent.mActiveChatboxTimer->HasTicked())
+    {
+        guiStateComponent.mActiveChatboxTimer->Reset();
+        auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+        if
+        (
+            GetCharacterAtTextboxCoords
+            (
+                textboxEntityId,
+                textboxComponent.mTextboxTileCols - 2,
+                textboxComponent.mTextboxTileRows - 2,
+                mWorld
+            ) == '|'
+        )
+        {
+            DeleteCharAtTextboxCoords
+            (
+                textboxEntityId,
+                textboxComponent.mTextboxTileCols - 2,
+                textboxComponent.mTextboxTileRows - 2,
+                mWorld
+            );
+        }
+        else
+        {
+            WriteCharAtTextboxCoords
+            (
+                textboxEntityId,
+                '|',
+                textboxComponent.mTextboxTileCols - 2,
+                textboxComponent.mTextboxTileRows - 2,
+                mWorld
+            );
+        }
+    }
+}
+
+void GuiManagementSystem::UpdateChatboxScrollAnim1(const ecs::EntityId textboxEntityId, const float dt) const
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if (guiStateComponent.mActiveChatboxTimer->HasTicked())
+    {
+        guiStateComponent.mActiveChatboxTimer->Reset();
+        
+        auto& textboxComponent  = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+        auto& textboxContent    = textboxComponent.mTextContent;
+        
+        const auto row2 = GetTextboxRowContent(textboxEntityId, 2, mWorld);
+        const auto row4 = GetTextboxRowContent(textboxEntityId, 4, mWorld);
+        
+        for (auto textboxCol = 1U; textboxCol < textboxContent[0].size() - 1; ++textboxCol)
+        {
+            WriteCharAtTextboxCoords(textboxEntityId, row2[textboxCol].mCharacter, textboxCol, 1U, mWorld);
+        }
+        
+        for (auto textboxCol = 1U; textboxCol < textboxContent[0].size() - 2; ++textboxCol)
+        {
+            WriteCharAtTextboxCoords(textboxEntityId, row4[textboxCol].mCharacter, textboxCol, 3U, mWorld);
+        }
+        
+        WriteCharAtTextboxCoords(textboxEntityId, ' ', textboxContent[0].size() - 2, 3U, mWorld);
+        
+        DeleteTextAtTextboxRow(textboxEntityId, 2, mWorld);
+        DeleteTextAtTextboxRow(textboxEntityId, 4, mWorld);
+
+        guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_2;
+    }
+}
+
+void GuiManagementSystem::UpdateChatboxScrollAnim2(const ecs::EntityId textboxEntityId, const float dt) const
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if (guiStateComponent.mActiveChatboxTimer->HasTicked())
+    {
+        guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
+        
+        auto& textboxComponent  = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+        auto& textboxContent    = textboxComponent.mTextContent;
+        
+        const auto row3 = GetTextboxRowContent(textboxEntityId, 3, mWorld);
+        
+        for (auto textboxCol = 1U; textboxCol < textboxContent[0].size() - 1; ++textboxCol)
+        {
+            WriteCharAtTextboxCoords(textboxEntityId, row3[textboxCol].mCharacter, textboxCol, 2U, mWorld);
+        }
+        
+        DeleteTextAtTextboxRow(textboxEntityId, 1, mWorld);
+        DeleteTextAtTextboxRow(textboxEntityId, 3, mWorld);
+        
+        guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+    }
+}
+
+void GuiManagementSystem::UpdateChatboxParagraphEndDelay(const float dt) const
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if (guiStateComponent.mActiveChatboxTimer->HasTicked())
+    {
+        guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
+        
+        guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+        guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+    }
+}
+
+void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& textboxComponent  = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& queuedParagraph   = textboxComponent.mQueuedDialog.front();
+    auto& queuedLine        = queuedParagraph.front();
+    
+    queuedLine.pop();
+    if (queuedLine.size() == 0)
+    {
+        queuedParagraph.pop();
+        if (queuedParagraph.size() == 0)
+        {
+            guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::PARAGRAPH_END;
+            textboxComponent.mQueuedDialog.pop();
+            if (textboxComponent.mQueuedDialog.size() == 0)
+            {
+                guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::DIALOG_END;
+            }
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,28 @@ ecs::EntityId GetActiveTextboxEntityId
     const ecs::World& world
 );
 
+size_t GetFirstEmptyColumnInTextboxRow
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    const ecs::World& world
+);
+
+const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
+char GetCharacterAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
 ecs::EntityId CreateTextboxWithDimensions
 (
     const int textboxTileCols,
@@ -60,6 +82,13 @@ void WriteTextAtTextboxCoords
     const std::string& text,
     const size_t textboxCol,
     const size_t textboxRow,
+    ecs::World& world
+);
+
+void QueueDialogForTextbox
+(
+    const ecs::EntityId textboxEntityId,
+    const std::string& rawDialogText,
     ecs::World& world
 );
 

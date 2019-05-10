@@ -18,7 +18,7 @@
 #include "../components/NpcAiComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../../common/components/DirectionComponent.h"
-#include "../../common/utils/MessageBox.h"
+#include "../../common/utils/OSMessageBox.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/Colors.h"

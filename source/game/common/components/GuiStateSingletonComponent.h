@@ -16,19 +16,37 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../utils/Timer.h"
+#include "../../ECS.h"
+
+#include <memory>
+#include <stack>
+#include <unordered_map>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 static const std::string GUI_COMPONENTS_MODEL_NAME = "camera_facing_quad";
 
 const int GUI_ATLAS_COLS = 16;
 const int GUI_ATLAS_ROWS = 16;
 
+const float DEFAULT_CHATBOX_CHAR_COOLDOWN = 0.05f;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../ECS.h"
+enum class ChatboxDisplayState
+{
+    NORMAL, FILLED, SCROLL_ANIM_PHASE_1, SCROLL_ANIM_PHASE_2, PARAGRAPH_END_DELAY
+};
 
-#include <stack>
-#include <unordered_map>
+enum class ChatboxContentEndState
+{
+    NORMAL, PARAGRAPH_END, DIALOG_END
+};
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -37,9 +55,13 @@ const int GUI_ATLAS_ROWS = 16;
 class GuiStateSingletonComponent final: public ecs::IComponent
 {
 public:
-    float mGlobalGuiTileWidth  = 0.0f;
-    float mGlobalGuiTileHeight = 0.0f;
-    std::stack<ecs::EntityId> mSpawnedTextboxes;
+    float mGlobalGuiTileWidth                         = 0.0f;
+    float mGlobalGuiTileHeight                        = 0.0f;
+    float mChatboxCharCooldown                        = DEFAULT_CHATBOX_CHAR_COOLDOWN;
+    std::unique_ptr<Timer> mActiveChatboxTimer        = nullptr;
+    ChatboxDisplayState mActiveChatboxDisplayState    = ChatboxDisplayState::NORMAL;
+    ChatboxContentEndState mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+    std::stack<ecs::EntityId> mActiveTextboxesStack;
     std::unordered_map<char, ecs::EntityId> mFontEntities;
 };
 

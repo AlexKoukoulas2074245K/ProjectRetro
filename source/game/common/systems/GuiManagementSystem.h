@@ -37,9 +37,18 @@ public:
     
 private:
     static float GUI_TILE_DEFAULT_SIZE;
-
+    static float CHATBOX_BLINKING_CURSOR_COOLDOWN;
+    static float CHATBOX_SCROLL_ANIM_COOLDOWN;
+    
     void InitializeGuiState() const;
     void PopulateFontEntities(GuiStateSingletonComponent&) const;
+    void UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const;
+    void UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const;
+    void UpdateChatboxScrollAnim1(const ecs::EntityId textboxEntityId, const float dt) const;
+    void UpdateChatboxScrollAnim2(const ecs::EntityId textboxEntityId, const float dt) const;
+    void UpdateChatboxParagraphEndDelay(const float dt) const;
+    void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

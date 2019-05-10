@@ -18,7 +18,7 @@
 #include "TextureLoader.h"
 #include "../common/utils/FileUtils.h"
 #include "../common/utils/Logging.h"
-#include "../common/utils/MessageBox.h"
+#include "../common/utils/OSMessageBox.h"
 #include "../common/utils/StringUtils.h"
 #include "../common/utils/TypeTraits.h"
 

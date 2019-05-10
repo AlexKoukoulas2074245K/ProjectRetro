@@ -13,7 +13,7 @@
 #include "TextureLoader.h"
 #include "TextureResource.h"
 #include "../common/utils/Logging.h"
-#include "../common/utils/MessageBox.h"
+#include "../common/utils/OSMessageBox.h"
 #include "../rendering/opengl/Context.h"
 
 #include <fstream>     // ifstream

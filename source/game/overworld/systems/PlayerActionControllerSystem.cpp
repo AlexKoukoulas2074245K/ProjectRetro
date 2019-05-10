@@ -159,7 +159,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
         // Disallow talking to moving npc
         if (npcMovementState.mMoving == false)
         {
-            //const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
+            const auto& npcAiComponent   = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
             auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);
             auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
             
@@ -168,9 +168,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             
             const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.6701f, mWorld);
-            WriteTextAtTextboxCoords(textboxEntityId, "TEST", 1, 1, mWorld);
-            WriteTextAtTextboxCoords(textboxEntityId, "PIKACHU", 1, 2, mWorld);
-            WriteTextAtTextboxCoords(textboxEntityId, "used THUNDERSHOCK!", 1, 4, mWorld);
+            QueueDialogForTextbox(textboxEntityId, npcAiComponent.mDialog, mWorld);
         }
     }
 }

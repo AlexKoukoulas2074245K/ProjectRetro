@@ -18,6 +18,7 @@
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../utils/MathUtils.h"
+#include "../utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -53,12 +54,66 @@ ecs::EntityId GetActiveTextboxEntityId
 )
 {
     const auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
-    if (guiStateComponent.mSpawnedTextboxes.size() == 0)
+    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
     {
         return ecs::NULL_ENTITY_ID;
     }
     
-    return guiStateComponent.mSpawnedTextboxes.top();
+    return guiStateComponent.mActiveTextboxesStack.top();
+}
+
+size_t GetFirstEmptyColumnInTextboxRow
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    const ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of bounds");
+    
+    for (size_t textboxCol = 1U; textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1; ++textboxCol)
+    {
+        const auto& characterEntry = textboxComponent.mTextContent[textboxRow][textboxCol];
+        if (characterEntry.mCharacter == 0 && characterEntry.mEntityId == ecs::NULL_ENTITY_ID)
+        {
+            return textboxCol;
+        }
+    }
+    
+    return 0;
+}
+
+const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
+    
+    return textboxComponent.mTextContent[textboxRow];
+}
+
+char GetCharacterAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& textboxContent   = textboxComponent.mTextContent;
+    
+    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
+    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
+    
+    return textboxContent[textboxRow][textboxCol].mCharacter;
 }
 
 ecs::EntityId CreateTextboxWithDimensions
@@ -84,7 +139,8 @@ ecs::EntityId CreateTextboxWithDimensions
     auto textboxComponent              = std::make_unique<TextboxComponent>();
     textboxComponent->mTextboxTileCols = textboxTileCols;
     textboxComponent->mTextboxTileRows = textboxTileRows;
-    textboxComponent->mTextContent     = textContent;        
+    textboxComponent->mTextContent     = textContent;
+    
     world.AddComponent<TextboxComponent>(textboxEntityId, std::move(textboxComponent));
 
     CreateTextboxComponents
@@ -102,7 +158,7 @@ ecs::EntityId CreateTextboxWithDimensions
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
     auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
-    guiStateComponent.mSpawnedTextboxes.push(textboxEntityId);
+    guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);
     
     return textboxEntityId;
 }
@@ -116,7 +172,7 @@ void DestroyActiveTextbox
     assert(textboxEntityId != ecs::NULL_ENTITY_ID && "No active component available to destroy");
     
     auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
-    guiStateComponent.mSpawnedTextboxes.pop();
+    guiStateComponent.mActiveTextboxesStack.pop();
     
     const auto& entityIds = world.GetActiveEntities();
     for (const auto& entityId: entityIds)
@@ -143,12 +199,6 @@ void WriteCharAtTextboxCoords
      ecs::World& world
 )
 {
-    // Skip whitespace
-    if (character == ' ')
-    {
-        return;
-    }
-    
     const auto& windowComponent           = world.GetSingletonComponent<WindowSingletonComponent>();
     const auto& guiStateComponent         = world.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& textboxTransformComponent = world.GetComponent<TransformComponent>(textboxEntityId);
@@ -165,6 +215,20 @@ void WriteCharAtTextboxCoords
     }
     
     const auto characterEntityId = world.CreateEntity();
+    
+    textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = character;
+    textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId  = characterEntityId;
+    
+    auto textboxResidentComponent                    = std::make_unique<TextboxResidentComponent>();
+    textboxResidentComponent->mTextboxParentEntityId = textboxEntityId;
+    
+    world.AddComponent<TextboxResidentComponent>(characterEntityId, std::move(textboxResidentComponent));
+    
+    // Don't add transform or model components for whitespace character
+    if (character == ' ')
+    {
+        return;
+    }
     
     auto renderableComponent                    = std::make_unique<RenderableComponent>();
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
@@ -197,15 +261,8 @@ void WriteCharAtTextboxCoords
         0.0f
      );
     
-    auto textboxResidentComponent                    = std::make_unique<TextboxResidentComponent>();
-    textboxResidentComponent->mTextboxParentEntityId = textboxEntityId;
-    
     world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));
-    world.AddComponent<TextboxResidentComponent>(characterEntityId, std::move(textboxResidentComponent));
     world.AddComponent<TransformComponent>(characterEntityId, std::move(transformComponent));
-    
-    textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = character;
-    textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId  = characterEntityId;
 }
 
 void WriteTextAtTextboxCoords
@@ -238,6 +295,49 @@ void WriteTextAtTextboxCoords
     }
 }
 
+void QueueDialogForTextbox
+(
+    const ecs::EntityId textboxEntityId,
+    const std::string& rawDialogText,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    const auto dialogSplitByParagraph = StringSplit(rawDialogText, '@');
+    for (const auto& paragraph: dialogSplitByParagraph)
+    {
+        TextboxQueuedLines queuedParagraph;
+        const auto paragraphSplitToSentences = StringSplit(paragraph, '#');
+        
+        for (const auto& sentence: paragraphSplitToSentences)
+        {
+            if (sentence.size() == 0)
+            {
+                continue;
+            }
+            
+            TextboxQueuedTextLine queuedLineCharacters;
+            auto paddedSentence = sentence;
+            while (paddedSentence.size() < textboxComponent.mTextContent[0].size() - 2)
+            {
+                paddedSentence += ' ';
+            }
+            
+            for (const auto& character: paddedSentence)
+            {
+                queuedLineCharacters.push(character);
+            }
+            
+            queuedParagraph.push(queuedLineCharacters);
+        }
+        
+        textboxComponent.mQueuedDialog.push(queuedParagraph);
+    }
+    
+    return;
+}
+
 void DeleteCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
@@ -252,8 +352,11 @@ void DeleteCharAtTextboxCoords
     assert((textboxCol > 0 && textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1) && "Textbox col out of deletion bounds");
     
     const auto characterEntityId = textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId;
-    assert(characterEntityId != ecs::NULL_ENTITY_ID &&
-        "Attempted to delete non-existent textbox character");
+    
+    if (characterEntityId == ecs::NULL_ENTITY_ID)
+    {
+        return;
+    }
     
     textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = 0;
     textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId = ecs::NULL_ENTITY_ID;

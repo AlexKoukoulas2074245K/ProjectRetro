@@ -12,7 +12,7 @@
 
 #include "DataFileLoader.h"
 #include "DataFileResource.h"
-#include "../common/utils/MessageBox.h"
+#include "../common/utils/OSMessageBox.h"
 #include "../common/utils/StringUtils.h"
 
 #include <fstream>   // ifstream
