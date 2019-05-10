@@ -77,12 +77,6 @@
         { "editor_col": 3, "editor_row": 4, "game_position_x": 4.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 4, "editor_row": 4, "game_position_x": 6.4, "game_position_z": 17.6, "atlas_col": 5, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 4, "game_position_x": 8.0, "game_position_z": 17.6, "atlas_col": 5, "atlas_row": 15 },
-        { "editor_col": 6, "editor_row": 4, "game_position_x": 9.6, "game_position_z": 17.6, "atlas_col": 2, "atlas_row": 16 },
-        { "editor_col": 7, "editor_row": 4, "game_position_x": 11.2, "game_position_z": 17.6, "atlas_col": 1, "atlas_row": 17 },
-        { "editor_col": 8, "editor_row": 4, "game_position_x": 12.8, "game_position_z": 17.6, "atlas_col": 2, "atlas_row": 16 },
-        { "editor_col": 9, "editor_row": 4, "game_position_x": 14.4, "game_position_z": 17.6, "atlas_col": 1, "atlas_row": 17 },
-        { "editor_col": 10, "editor_row": 4, "game_position_x": 16.0, "game_position_z": 17.6, "atlas_col": 2, "atlas_row": 16 },
-        { "editor_col": 11, "editor_row": 4, "game_position_x": 17.6, "game_position_z": 17.6, "atlas_col": 1, "atlas_row": 17 },
         { "editor_col": 12, "editor_row": 4, "game_position_x": 19.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 4, "game_position_x": 20.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 14, "editor_row": 4, "game_position_x": 22.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
@@ -274,6 +268,12 @@
     ],
     "level_model_list":
     [
+        { "model_name": "in_wall_empty (1,1)", "editor_col": 6, "editor_row": 4, "game_col": 6, "game_row": 11, "game_position_x": 9.6, "game_position_z": 17.6 },
+        { "model_name": "in_wall_empty (1,1)", "editor_col": 8, "editor_row": 4, "game_col": 8, "game_row": 11, "game_position_x": 12.8, "game_position_z": 17.6 },
+        { "model_name": "in_wall_empty (1,1)", "editor_col": 10, "editor_row": 4, "game_col": 10, "game_row": 11, "game_position_x": 16.0, "game_position_z": 17.6 },
+        { "model_name": "in_wall_window (1,1)", "editor_col": 7, "editor_row": 4, "game_col": 7, "game_row": 11, "game_position_x": 11.2, "game_position_z": 17.6 },
+        { "model_name": "in_wall_window (1,1)", "editor_col": 9, "editor_row": 4, "game_col": 9, "game_row": 11, "game_position_x": 14.4, "game_position_z": 17.6 },
+        { "model_name": "in_wall_window (1,1)", "editor_col": 11, "editor_row": 4, "game_col": 11, "game_row": 11, "game_position_x": 17.6, "game_position_z": 17.6 }
     ],
     "level_tile_traits":
     [
