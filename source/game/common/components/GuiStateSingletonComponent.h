@@ -18,6 +18,7 @@
 
 #include "../utils/Timer.h"
 #include "../../ECS.h"
+#include "../../rendering/components/RenderableComponent.h"
 
 #include <memory>
 #include <stack>
@@ -62,7 +63,7 @@ public:
     ChatboxDisplayState mActiveChatboxDisplayState    = ChatboxDisplayState::NORMAL;
     ChatboxContentEndState mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
     std::stack<ecs::EntityId> mActiveTextboxesStack;
-    std::unordered_map<char, ecs::EntityId> mFontEntities;
+    std::unordered_map<char, ResourceId> mFontEntities;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
