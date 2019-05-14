@@ -233,7 +233,8 @@ static void CreateNpc
     
     const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcEntryJsonObject["movement_type"]));
     const auto dialog       = npcEntryJsonObject["dialog"].get<std::string>();
-    const auto direction    = static_cast<Direction>(npcEntryJsonObject["direction"].get<int>());
+    const auto hasSprite    = npcEntryJsonObject["direction"].get<int>() != -1;
+    const auto direction    = static_cast<Direction>(math::Max(0, npcEntryJsonObject["direction"].get<int>()));
     const auto gameCol      = npcEntryJsonObject["game_col"].get<int>();
     const auto gameRow      = npcEntryJsonObject["game_row"].get<int>();
     const auto atlasCol     = npcEntryJsonObject["atlas_col"].get<int>();
@@ -262,8 +263,13 @@ static void CreateNpc
     auto movementStateComponent            = std::make_unique<MovementStateComponent>();
     movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
     
-    auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow));
-    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), *renderableComponent);
+    if (hasSprite)
+    {
+        auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow));
+        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), *renderableComponent);
+
+        world.AddComponent<RenderableComponent>(npcEntityId, std::move(renderableComponent));
+    }    
     
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
@@ -273,8 +279,7 @@ static void CreateNpc
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
     world.AddComponent<NpcAiComponent>(npcEntityId, std::move(aiComponent));
     world.AddComponent<MovementStateComponent>(npcEntityId, std::move(movementStateComponent));
-    world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));
-    world.AddComponent<RenderableComponent>(npcEntityId, std::move(renderableComponent));
+    world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));    
 }
 
 void CreateLevelModelEntry

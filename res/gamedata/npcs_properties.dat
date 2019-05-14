@@ -1,4 +1,12 @@
+in_players_home_top 7,6 -1 false {PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!}
 in_players_home_bot 9,7 3 false {MOM: Right.#All boys leave#home some day.#It said so on TV.#@PROF. OAK, next#door, is looking#for you.}
+in_players_home_bot 4,10 -1 false {Crammed full of#POKEMON books!}
+in_players_home_bot 5,10 -1 false {Crammed full of#POKEMON books!}
+in_players_home_bot 8,10 -1 false {There's a movie#on TV. Four boys#are walking on#railroad tracks#@I better go too.}
+pallet_new 9,18 -1 false {PLAYERNAME's house}
+pallet_new 17,18 -1 false {RIVALNAME's house}
+pallet_new 19,10 -1 false {OAK POKEMON#RESEARCH LAB}
+pallet_new 13,14 -1 false {PALLET TOWN#Shades of your#journey await!}
 pallet_new 8,15 2 false {I'm raising#POKEMON too!#@When they get#strong, they can#protect me!}
 pallet_new 18,9 2 false {Technology is#incredible!#@You can now store#and recall items#and POKEMON as#data via PC!}
 ---------------------

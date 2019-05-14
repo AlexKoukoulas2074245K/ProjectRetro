@@ -253,7 +253,10 @@
     ],
     "level_npc_list":
     [
-        { "movement_type": "STATIONARY", "dialog": "MOM: Right.#All boys leave#home some day.#It said so on TV.#@PROF. OAK, next#door, is looking#for you.", "direction": 3, "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 7, "atlas_row": 36 }
+        { "movement_type": "STATIONARY", "dialog": "MOM: Right.#All boys leave#home some day.#It said so on TV.#@PROF. OAK, next#door, is looking#for you.", "direction": 3, "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 7, "atlas_row": 36 },
+        { "movement_type": "STATIC", "dialog": "Crammed full of#POKEMON books!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "Crammed full of#POKEMON books!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "There's a movie#on TV. Four boys#are walking on#railroad tracks#@I better go too.", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 8, "game_row": 10, "game_position_x": 12.8, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 }
     ],
     "level_model_list":
     [

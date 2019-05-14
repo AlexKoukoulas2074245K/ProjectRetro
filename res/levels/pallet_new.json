@@ -435,7 +435,11 @@
     "level_npc_list":
     [
         { "movement_type": "DYNAMIC", "dialog": "I'm raising#POKEMON too!#@When they get#strong, they can#protect me!", "direction": 2, "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 23 },
-        { "movement_type": "DYNAMIC", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POKEMON as#data via PC!", "direction": 2, "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 }
+        { "movement_type": "DYNAMIC", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POKEMON as#data via PC!", "direction": 2, "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 },
+        { "movement_type": "STATIC", "dialog": "PLAYERNAME's house", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 9, "game_row": 18, "game_position_x": 14.4, "game_position_z": 28.8, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "OAK POKEMON#RESEARCH LAB", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 19, "game_row": 10, "game_position_x": 30.4, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "PALLET TOWN#Shades of your#journey await!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 13, "game_row": 14, "game_position_x": 20.8, "game_position_z": 22.4, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "RIVALNAME's house", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 17, "game_row": 18, "game_position_x": 27.2, "game_position_z": 28.8, "atlas_col": -1, "atlas_row": -1 }
     ],
     "level_model_list":
     [

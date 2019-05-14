@@ -161,13 +161,17 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
         {
             const auto& npcAiComponent   = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
             auto& npcTimerComponent      = mWorld.GetComponent<AnimationTimerComponent>(tile.mTileOccupierEntityId);
-            auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);
-            auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
+            auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);            
             
             const auto newNpcDirection       = GetDirectionFacingDirection(direction);
-            npcDirectionComponent.mDirection = newNpcDirection;
-            ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
+            npcDirectionComponent.mDirection = newNpcDirection;            
             
+            if (mWorld.HasComponent<RenderableComponent>(tile.mTileOccupierEntityId))
+            {
+                auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
+                ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
+            }
+
             const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.6701f, mWorld);
             QueueDialogForTextbox(textboxEntityId, npcAiComponent.mDialog, mWorld);
            

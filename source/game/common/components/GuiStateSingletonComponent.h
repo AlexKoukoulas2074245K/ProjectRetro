@@ -33,7 +33,7 @@ static const std::string GUI_COMPONENTS_MODEL_NAME = "camera_facing_quad";
 const int GUI_ATLAS_COLS = 16;
 const int GUI_ATLAS_ROWS = 16;
 
-const float DEFAULT_CHATBOX_CHAR_COOLDOWN = 0.05f;
+const float DEFAULT_CHATBOX_CHAR_COOLDOWN = 0.08f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

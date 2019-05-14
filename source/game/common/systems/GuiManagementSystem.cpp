@@ -129,9 +129,22 @@ void GuiManagementSystem::PopulateFontEntities(GuiStateSingletonComponent& guiSt
 
 void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const
 {
-    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
     
-    guiStateComponent.mActiveChatboxTimer->Update(dt);
+    if
+    (
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::PRESSED ||
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::PRESSED
+    )
+    {
+        guiStateComponent.mActiveChatboxTimer->Update(2.0f * dt);
+    }
+    else
+    {
+        guiStateComponent.mActiveChatboxTimer->Update(dt);
+    }
+    
     if (guiStateComponent.mActiveChatboxTimer->HasTicked())
     {
         auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);

@@ -50,8 +50,17 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
     
     for (const auto& entityId: activeEntities)
     {
-        if (ShouldProcessEntity(entityId) && GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+        if (ShouldProcessEntity(entityId))
         {
+            if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
+            {
+                auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+
+                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+                continue;
+            }
+
             auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(entityId);
             
             if (npcAiComponent.mMovementType == CharacterMovementType::STATIONARY)

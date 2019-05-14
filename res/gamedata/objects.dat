@@ -1,11 +1,4 @@
-pallet playerHouse1 4,6 -1,-1 false true false PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!
-pallet playerHouse2 1,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet playerHouse2 2,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet playerHouse2 4,2 -1,-1 false true false There's a movie#on TV. Four boys#are walking on#railroad tracks#@I better go too.
-pallet default 7,12 -1,-1 false true false PLAYERNAME's house
-pallet default 15,12 -1,-1 false true false RIVALNAME's house
-pallet default 17,20 -1,-1 false true false OAK POKEMON#RESEARCH LAB
-pallet default 11,16 -1,-1 false true false PALLET TOWN#Shades of your#journey await!
+---------------------------------
 pallet rivalHouse 4,4 -1,-1 false true false It's a big map!#This is useful!
 pallet rivalHouse 1,2 -1,-1 false true false Crammed full of#POKEMON books!
 pallet rivalHouse 2,2 -1,-1 false true false Crammed full of#POKEMON books!

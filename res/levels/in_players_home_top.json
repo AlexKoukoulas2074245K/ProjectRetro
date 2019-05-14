@@ -259,6 +259,7 @@
     ],
     "level_npc_list":
     [
+        { "movement_type": "STATIC", "dialog": "PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": -1, "atlas_row": -1 }
     ],
     "level_model_list":
     [
