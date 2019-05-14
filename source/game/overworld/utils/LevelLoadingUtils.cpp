@@ -28,6 +28,7 @@
 
 #include <json.hpp>
 #include <unordered_map>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -282,6 +283,11 @@ void CreateLevelModelEntry
     ecs::World& world
 )
 {
+    static const std::vector<StringId> undergroundModels =
+    {
+        StringId("in_staircase_down")
+    };
+
     const auto modelEntityId = world.CreateEntity();
 
     auto transformComponent         = std::make_unique<TransformComponent>();
@@ -292,20 +298,27 @@ void CreateLevelModelEntry
     // Extract model name from the: 'model_name (col_dim, row_dim)' format
     const auto modelName = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
 
-    auto renderableComponent = std::make_unique<RenderableComponent>();
+    auto renderableComponent           = std::make_unique<RenderableComponent>();
     renderableComponent->mShaderNameId = StringId("basic");
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
     (
         ResourceLoadingService::GetInstance().
         LoadResource(ResourceLoadingService::RES_MODELS_ROOT + modelName + ".obj"
     ));
+    renderableComponent->mRenderableLayer = std::find
+    (
+        undergroundModels.begin(),
+        undergroundModels.end(),
+        StringId(modelName)
+    ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::DEFAULT;
+
     renderableComponent->mActiveAnimationNameId = StringId("default");
     renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
     (
         ResourceLoadingService::RES_TEXTURES_ROOT + modelName + ".png"
     );
 
-    auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
+    auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
 
     world.AddComponent<TransformComponent>(modelEntityId, std::move(transformComponent));

@@ -100,6 +100,29 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
 
     // Enable depth
     GL_CHECK(glEnable(GL_DEPTH_TEST));
+    
+    // First check and render any underground entities (staircases down, etc)
+    for (const auto& entityId : activeEntities)
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+            if (renderableComponent.mRenderableLayer == RenderableLayer::UNDERGROUND)
+            {
+                RenderEntityInternal
+                (
+                    entityId,
+                    renderableComponent,
+                    currentLevel.mLevelColor,
+                    cameraComponent,
+                    shaderStoreComponent,
+                    windowComponent,
+                    transitionAnimationComponent,
+                    previousRenderingStateComponent
+                );
+            }            
+        }
+    }
 
     for (const auto& entityId: activeEntities)
     {
@@ -134,15 +157,13 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             }            
 
             // Frustum culling
-            if 
-            (!IsMeshInsideCameraFrustum
-                (
+            if (!IsMeshInsideCameraFrustum
+            (
                     transformComponent.mPosition,
                     transformComponent.mScale,
                     currentMesh.GetDimensions(),
-                    cameraComponent.mFrustum
-                )
-            )
+                    cameraComponent.mFrustum                
+            ))
             {
                 renderingContextComponent.mFrustumCulledEntities++;
                 continue;
@@ -198,7 +219,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             transitionAnimationComponent,
             previousRenderingStateComponent
         );
-    }        
+    }            
 
     // Execute GUI render pass
     GL_CHECK(glDisable(GL_DEPTH_TEST));

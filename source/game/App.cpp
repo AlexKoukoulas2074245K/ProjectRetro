@@ -128,8 +128,7 @@ bool App::AppShouldQuit()
 void App::DummyInitialization()
 {
     const auto playerEntity = mWorld.CreateEntity();
-
-    LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
+    
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 

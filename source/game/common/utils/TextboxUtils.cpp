@@ -274,12 +274,14 @@ void WriteTextAtTextboxCoords
      ecs::World& world
 )
 {
+#ifndef NDEBUG
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
-    
+
     assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
     assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
+#endif    
     
     auto wordIter = text.begin();
     for (auto x = textboxCol; x < textboxCol + text.size(); ++x)
