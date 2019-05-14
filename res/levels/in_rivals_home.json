@@ -251,7 +251,11 @@
     ],
     "level_npc_list":
     [
-        { "movement_type": "STATIONARY", "dialog": "Hi PLAYERNAME!#RIVALNAME#is out at#Grandpa's lab.", "direction": 1, "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26 }
+        { "movement_type": "STATIONARY", "dialog": "Hi PLAYERNAME!#RIVALNAME#is out at#Grandpa's lab.", "direction": 1, "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26 },
+        { "movement_type": "STATIC", "dialog": "Crammed full of#POKEMON books!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "Crammed full of#POKEMON books!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 11, "game_row": 10, "game_position_x": 17.6, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "It's a big map!#This is useful!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 7, "game_row": 11, "game_position_x": 11.2, "game_position_z": 17.6, "atlas_col": -1, "atlas_row": -1 },
+        { "movement_type": "STATIC", "dialog": "Crammed full of#POKEMON books!", "direction": -1, "editor_col": 0, "editor_row": 0, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 }
     ],
     "level_model_list":
     [

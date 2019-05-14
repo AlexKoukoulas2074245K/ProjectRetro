@@ -166,7 +166,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             const auto newNpcDirection       = GetDirectionFacingDirection(direction);
             npcDirectionComponent.mDirection = newNpcDirection;            
             
-            if (mWorld.HasComponent<RenderableComponent>(tile.mTileOccupierEntityId))
+            if (mWorld.HasComponent<RenderableComponent>(tile.mTileOccupierEntityId) && npcAiComponent.mMovementType != CharacterMovementType::STATIC)
             {
                 auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);

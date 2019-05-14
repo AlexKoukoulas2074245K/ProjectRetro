@@ -1,25 +1,4 @@
 ---------------------------------
-pallet rivalHouse 4,4 -1,-1 false true false It's a big map!#This is useful!
-pallet rivalHouse 1,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet rivalHouse 2,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet rivalHouse 8,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 7,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 8,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 9,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 10,2 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 1,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 2,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 3,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 4,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 7,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 8,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 9,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 10,8 -1,-1 false true false Crammed full of#POKEMON books!
-pallet oaksLab 5,1 -1,-1 false true false Press START to#open the MENU!
-pallet oaksLab 6,1 -1,-1 false true false The SAVE option is#on the MENU#screen.
-pallet oaksLab 3,2 2,9 false true false It's encyclopedia-#like but the#pages are blank!
-pallet oaksLab 3,2 2,9 false true false It's encyclopedia-#like but the#pages are blank!
-pallet oaksLab 4,2 2,9 false true false It's encyclopedia-#like but the#pages are blank!
 route1 default 10,33 -1,-1 false true false ROUTE 1#PALLET TOWN -#VIRIDIAN CITY
 viridian default 26,33 -1,-1 false true false TRAINER TIPS#@The battle moves#of POKEMON are#limited by their#POWER POINTS, PP.#@To replenish PP,#rest your tired#POKEMON at a#POKEMON CENTER!
 viridian default 22,21 -1,-1 false true false VIRIDIAN CITY#The Eternally#Green Paradise
