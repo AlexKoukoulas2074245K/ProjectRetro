@@ -160,6 +160,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
         if (npcMovementState.mMoving == false)
         {
             const auto& npcAiComponent   = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
+            auto& npcTimerComponent      = mWorld.GetComponent<AnimationTimerComponent>(tile.mTileOccupierEntityId);
             auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);
             auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
             
@@ -169,6 +170,8 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             
             const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.6701f, mWorld);
             QueueDialogForTextbox(textboxEntityId, npcAiComponent.mDialog, mWorld);
+           
+            npcTimerComponent.mAnimationTimer->Reset();
         }
     }
 }

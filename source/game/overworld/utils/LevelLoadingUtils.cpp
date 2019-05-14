@@ -242,15 +242,16 @@ static void CreateNpc
     const auto npcEntityId = world.CreateEntity();
     
     auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
-    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
     animationTimerComponent->mAnimationTimer->Pause();
     
     auto directionComponent        = std::make_unique<DirectionComponent>();
     directionComponent->mDirection = direction;
     
-    auto aiComponent           = std::make_unique<NpcAiComponent>();
-    aiComponent->mMovementType = movementType;
-    aiComponent->mDialog       = dialog;
+    auto aiComponent            = std::make_unique<NpcAiComponent>();
+    aiComponent->mMovementType  = movementType;
+    aiComponent->mDialog        = dialog;
+    aiComponent->mInitDirection = direction;
     
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;

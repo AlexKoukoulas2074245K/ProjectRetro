@@ -26,9 +26,11 @@
 class NpcAiComponent final: public ecs::IComponent
 {
 public:
-    CharacterMovementType mMovementType = CharacterMovementType::DYNAMIC;
-    std::unique_ptr<Timer> mAiTimer     = nullptr;
     std::string mDialog                 = "";
+    std::unique_ptr<Timer> mAiTimer     = nullptr;
+    CharacterMovementType mMovementType = CharacterMovementType::DYNAMIC;            
+    Direction mInitDirection            = Direction::SOUTH;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

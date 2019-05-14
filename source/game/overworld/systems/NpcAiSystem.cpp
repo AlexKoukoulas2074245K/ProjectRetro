@@ -30,7 +30,6 @@
 
 const float NpcAiSystem::DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME = 0.5f;
 const float NpcAiSystem::DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME = 3.0f;
-const float NpcAiSystem::STATIONARY_NPC_RESET_TIME                = 1.5f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +54,21 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
         {
             auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(entityId);
             
-            if (npcAiComponent.mMovementType == CharacterMovementType::DYNAMIC)
+            if (npcAiComponent.mMovementType == CharacterMovementType::STATIONARY)
+            {
+                auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+                animationTimerComponent.mAnimationTimer->Resume();
+                animationTimerComponent.mAnimationTimer->Update(dt);
+                if (animationTimerComponent.mAnimationTimer->HasTicked())
+                {
+                    auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+                    auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(entityId);
+
+                    directionComponent.mDirection = npcAiComponent.mInitDirection;
+                    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(npcAiComponent.mInitDirection), renderableComponent);
+                }
+            }
+            else if (npcAiComponent.mMovementType == CharacterMovementType::DYNAMIC)
             {
                 auto& movementStateComponent = mWorld.GetComponent<MovementStateComponent>(entityId);
                 
