@@ -32,8 +32,9 @@
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
-#include "overworld/systems/WarpConnectionsSystem.h"
+#include "overworld/systems/SeaTilesAnimationSystem.h"
 #include "overworld/systems/TransitionAnimationSystem.h"
+#include "overworld/systems/WarpConnectionsSystem.h"
 #include "overworld/utils/LevelUtils.h"
 #include "overworld/utils/LevelLoadingUtils.h"
 #include "overworld/utils/OverworldCharacterLoadingUtils.h"
@@ -65,6 +66,7 @@ void App::InitializeSystems()
     mWorld.AddSystem(std::make_unique<NpcAiSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<MovementControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<SeaTilesAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));

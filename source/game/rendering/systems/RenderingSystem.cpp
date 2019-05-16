@@ -109,6 +109,23 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
             if (renderableComponent.mRenderableLayer == RenderableLayer::UNDERGROUND)
             {
+                const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
+                const auto& activeMeshes       = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
+                const auto& currentMesh        = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
+
+                // Frustum culling
+                if (!IsMeshInsideCameraFrustum
+                (
+                    transformComponent.mPosition,
+                    transformComponent.mScale,
+                    currentMesh.GetDimensions(),
+                    cameraComponent.mFrustum
+                ))
+                {
+                    renderingContextComponent.mFrustumCulledEntities++;
+                    continue;
+                }
+
                 RenderEntityInternal
                 (
                     entityId,
@@ -134,7 +151,12 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             const auto& activeMeshes        = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);            
             const auto& currentMesh         = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
 
-            
+            // Ignore underground layered entities now
+            if (renderableComponent.mRenderableLayer == RenderableLayer::UNDERGROUND)
+            {                
+                continue;
+            }
+
             // Extract font entities from textbox components
             if (renderableComponent.mRenderableLayer == RenderableLayer::TOP)
             {

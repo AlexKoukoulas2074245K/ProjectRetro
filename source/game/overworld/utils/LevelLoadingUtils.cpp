@@ -17,6 +17,7 @@
 #include "../components/LevelResidentComponent.h"
 #include "../components/NpcAiComponent.h"
 #include "../components/MovementStateComponent.h"
+#include "../components/SeaTileTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
@@ -36,6 +37,7 @@
 
 static const std::string LEVEL_GROUND_LAYER_MODEL_FILE_NAME    = "2d_out_empty_floor.obj";
 static const std::string LEVEL_GROUND_LAYER_TEXTURE_NAME_TRAIL = "_groundLayer.png";
+static const std::string LEVEL_SEA_TILE_MODEL_NAME             = "sea_tile";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -64,13 +66,25 @@ static void CreateLevelModelEntry
 (
     const nlohmann::basic_json<>& modelEntryJsonObject, 
     const StringId levelNameId, 
-    ecs::World& world
+    ecs::World& world,
+    TileCoords& minSeaTileCoords,
+    TileCoords& maxSeaTileCoords
 );
 
 static void SetTileTrait
 (
     const nlohmann::basic_json<>& tileTraitEntryJsonObject,
     LevelTilemap& levelTilemap
+);
+
+static void PadExtraSeaTiles
+(
+    const StringId levelNameId,
+    const int levelTilemapCols,
+    const int levelTilemapRows,
+    const TileCoords& minSeaTileCoords,
+    const TileCoords& maxSeaTileCoords,
+    ecs::World& world
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -157,9 +171,22 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     }
 
     // Load model list
+    TileCoords minSeaTileCoords(levelTilemapCols, levelTilemapRows);
+    TileCoords maxSeaTileCoords(0, 0);
     for (const auto& modelEntry: levelJson["level_model_list"])
     {
-        CreateLevelModelEntry(modelEntry, levelModelComponent->mLevelName, world);
+        CreateLevelModelEntry(modelEntry, levelModelComponent->mLevelName, world, minSeaTileCoords, maxSeaTileCoords);
+    }
+
+    if 
+    (
+        minSeaTileCoords.mCol != levelTilemapCols ||
+        minSeaTileCoords.mRow != levelTilemapRows ||
+        maxSeaTileCoords.mCol != 0 ||
+        maxSeaTileCoords.mRow != 0
+    )
+    {
+        PadExtraSeaTiles(levelModelComponent->mLevelName, levelTilemapCols, levelTilemapRows, minSeaTileCoords, maxSeaTileCoords, world);
     }
 
     // Load tile traits
@@ -286,13 +313,33 @@ void CreateLevelModelEntry
 (
     const nlohmann::basic_json<>& modelEntryJsonObject, 
     const StringId levelNameId, 
-    ecs::World& world
+    ecs::World& world,
+    TileCoords& minSeaTileCoords,
+    TileCoords& maxSeaTileCoords
 )
-{
+{    
     static const std::vector<StringId> undergroundModels =
     {
         StringId("in_staircase_down")
     };
+    
+
+    // Extract model name from the: 'model_name (col_dim, row_dim)' format
+    const auto modelName = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
+
+    // In the case of sea tiles dont create any entities, since they will be populated at a future step
+    if (StringStartsWith(modelName, LEVEL_SEA_TILE_MODEL_NAME))
+    {        
+        const auto modelGameCol = modelEntryJsonObject["game_col"].get<int>();
+        const auto modelGameRow = modelEntryJsonObject["game_row"].get<int>();
+
+        if (modelGameCol < minSeaTileCoords.mCol) minSeaTileCoords.mCol = modelGameCol;
+        if (modelGameRow < minSeaTileCoords.mRow) minSeaTileCoords.mRow = modelGameRow;
+        if (modelGameCol > maxSeaTileCoords.mCol) maxSeaTileCoords.mCol = modelGameCol;
+        if (modelGameRow > maxSeaTileCoords.mRow) maxSeaTileCoords.mRow = modelGameRow;
+
+        return;
+    }
 
     const auto modelEntityId = world.CreateEntity();
 
@@ -301,10 +348,7 @@ void CreateLevelModelEntry
     transformComponent->mPosition.y = 0.0f;
     transformComponent->mPosition.z = modelEntryJsonObject["game_position_z"].get<float>();
 
-    // Extract model name from the: 'model_name (col_dim, row_dim)' format
-    const auto modelName = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
-
-    auto renderableComponent           = std::make_unique<RenderableComponent>();
+    auto renderableComponent           = std::make_unique<RenderableComponent>();    
     renderableComponent->mShaderNameId = StringId("basic");
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
     (
@@ -326,7 +370,7 @@ void CreateLevelModelEntry
 
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
-
+    
     world.AddComponent<TransformComponent>(modelEntityId, std::move(transformComponent));
     world.AddComponent<LevelResidentComponent>(modelEntityId, std::move(levelResidentComponent));
     world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));
@@ -352,6 +396,53 @@ void SetTileTrait
     const auto traitName = tileTraitEntryJsonObject["tile_traits"].get<std::string>();
     
     GetTile(gameCol, gameRow, levelTilemap).mTileTrait = traitNamesToTraitEnums.at(traitName);
+}
+
+static void PadExtraSeaTiles
+(
+    const StringId levelNameId,
+    const int levelTilemapCols,
+    const int levelTilemapRows,
+    const TileCoords& minSeaTileCoords,
+    const TileCoords& maxSeaTileCoords,
+    ecs::World& world
+)
+{
+    for (auto row = math::Max(0, minSeaTileCoords.mRow - 1); row <= math::Min(levelTilemapRows - 1, maxSeaTileCoords.mRow + 1); ++row)
+    {
+        for (auto col = math::Max(0, minSeaTileCoords.mCol - 1); col <= math::Min(levelTilemapCols - 1, maxSeaTileCoords.mCol + 1); ++col)
+        {
+            const auto modelEntityId = world.CreateEntity();
+
+            auto transformComponent = std::make_unique<TransformComponent>();
+            transformComponent->mPosition.x = col * GAME_TILE_SIZE;
+            transformComponent->mPosition.y = -0.05f;
+            transformComponent->mPosition.z = row * GAME_TILE_SIZE;
+
+            auto renderableComponent = std::make_unique<RenderableComponent>();
+            renderableComponent->mShaderNameId = StringId("basic");
+            renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
+            (
+                ResourceLoadingService::GetInstance().
+                LoadResource(ResourceLoadingService::RES_MODELS_ROOT + LEVEL_SEA_TILE_MODEL_NAME + ".obj"
+            ));            
+
+            renderableComponent->mRenderableLayer = RenderableLayer::UNDERGROUND;
+            renderableComponent->mActiveAnimationNameId = StringId("default");
+            renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
+            (
+                ResourceLoadingService::RES_TEXTURES_ROOT + LEVEL_SEA_TILE_MODEL_NAME + ".png"
+            );
+
+            auto levelResidentComponent = std::make_unique<LevelResidentComponent>();
+            levelResidentComponent->mLevelNameId = levelNameId;
+
+            world.AddComponent<SeaTileTagComponent>(modelEntityId, std::make_unique<SeaTileTagComponent>());
+            world.AddComponent<TransformComponent>(modelEntityId, std::move(transformComponent));
+            world.AddComponent<LevelResidentComponent>(modelEntityId, std::move(levelResidentComponent));
+            world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));
+        }
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
