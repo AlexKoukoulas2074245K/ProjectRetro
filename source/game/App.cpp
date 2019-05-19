@@ -29,6 +29,7 @@
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
+#include "overworld/systems/AnimatedFlowersAnimationSystem.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
@@ -66,6 +67,7 @@ void App::InitializeSystems()
     mWorld.AddSystem(std::make_unique<NpcAiSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<AnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<MovementControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<AnimatedFlowersAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<SeaTilesAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));

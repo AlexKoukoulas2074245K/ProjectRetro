@@ -267,7 +267,7 @@
         { "model_name": "in_stool (1,1)", "editor_col": 9, "editor_row": 7, "game_col": 9, "game_row": 8, "game_position_x": 14.4, "game_position_z": 12.8 },
         { "model_name": "in_stool (1,1)", "editor_col": 6, "editor_row": 8, "game_col": 6, "game_row": 7, "game_position_x": 9.6, "game_position_z": 11.2 },
         { "model_name": "in_stool (1,1)", "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2 },
-        { "model_name": "in_table_vase (2,2)", "editor_col": 7, "editor_row": 7, "game_col": 7, "game_row": 8, "game_position_x": 11.2, "game_position_z": 12.8 },
+        { "model_name": "in_table_2x2 (2,2)", "editor_col": 7, "editor_row": 7, "game_col": 7, "game_row": 8, "game_position_x": 11.2, "game_position_z": 12.8 },
         { "model_name": "in_wall_empty (1,1)", "editor_col": 4, "editor_row": 4, "game_col": 4, "game_row": 11, "game_position_x": 6.4, "game_position_z": 17.6 },
         { "model_name": "in_wall_empty (1,1)", "editor_col": 5, "editor_row": 4, "game_col": 5, "game_row": 11, "game_position_x": 8.0, "game_position_z": 17.6 },
         { "model_name": "in_wall_empty (1,1)", "editor_col": 6, "editor_row": 4, "game_col": 6, "game_row": 11, "game_position_x": 9.6, "game_position_z": 17.6 },

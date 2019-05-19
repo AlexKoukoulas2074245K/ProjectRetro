@@ -14,6 +14,7 @@
 #include "LevelUtils.h"
 #include "OverworldUtils.h"
 #include "OverworldCharacterLoadingUtils.h"
+#include "../components/AnimatedFlowerTagComponent.h"
 #include "../components/LevelResidentComponent.h"
 #include "../components/NpcAiComponent.h"
 #include "../components/MovementStateComponent.h"
@@ -38,6 +39,8 @@
 static const std::string LEVEL_GROUND_LAYER_MODEL_FILE_NAME    = "2d_out_empty_floor.obj";
 static const std::string LEVEL_GROUND_LAYER_TEXTURE_NAME_TRAIL = "_groundLayer.png";
 static const std::string LEVEL_SEA_TILE_MODEL_NAME             = "sea_tile";
+
+static const float ANIMATED_FLOWER_SCALE = 0.7f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -323,12 +326,19 @@ void CreateLevelModelEntry
         StringId("in_staircase_down")
     };
     
-
+    static const std::vector<StringId> flowerModels =
+    {
+        StringId("out_flower_bottom_right"),
+        StringId("out_flower_top_left"),
+    };
+    
     // Extract model name from the: 'model_name (col_dim, row_dim)' format
-    const auto modelName = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
+    const auto modelName             = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
+    const auto isSeaTileModel        = StringStartsWith(modelName, LEVEL_SEA_TILE_MODEL_NAME);
+    const auto isAnimatedFlowerModel = std::find(flowerModels.begin(), flowerModels.end(), modelName) != flowerModels.end();
     
     // In the case of sea tiles dont create any entities, since they will be populated at a future step
-    if (StringStartsWith(modelName, LEVEL_SEA_TILE_MODEL_NAME))
+    if (isSeaTileModel)
     {        
         const auto modelGameCol = modelEntryJsonObject["game_col"].get<int>();
         const auto modelGameRow = modelEntryJsonObject["game_row"].get<int>();
@@ -340,7 +350,7 @@ void CreateLevelModelEntry
 
         return;
     }
-
+    
     const auto modelEntityId = world.CreateEntity();
 
     auto transformComponent         = std::make_unique<TransformComponent>();
@@ -348,26 +358,54 @@ void CreateLevelModelEntry
     transformComponent->mPosition.y = 0.0f;
     transformComponent->mPosition.z = modelEntryJsonObject["game_position_z"].get<float>();
 
-    auto renderableComponent           = std::make_unique<RenderableComponent>();    
-    renderableComponent->mShaderNameId = StringId("basic");
-    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
-    (
-        ResourceLoadingService::GetInstance().
-        LoadResource(ResourceLoadingService::RES_MODELS_ROOT + modelName + ".obj"
-    ));
-    renderableComponent->mRenderableLayer = std::find
-    (
-        undergroundModels.begin(),
-        undergroundModels.end(),
-        StringId(modelName)
-    ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::DEFAULT;
-
-    renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
-    (
-        ResourceLoadingService::RES_TEXTURES_ROOT + modelName + ".png"
-    );
-
+    std::unique_ptr<RenderableComponent> renderableComponent = nullptr;
+    
+    if (isAnimatedFlowerModel)
+    {
+        renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::STATIONARY, 0, 44));
+        renderableComponent->mActiveAnimationNameId = SOUTH_ANIMATION_NAME_ID;
+        
+        if (StringEndsWith(modelName, "bottom_right"))
+        {
+            transformComponent->mPosition.x += GAME_TILE_SIZE/4;
+            transformComponent->mPosition.z -= GAME_TILE_SIZE/4;
+        }
+        else
+        {
+            transformComponent->mPosition.x -= GAME_TILE_SIZE/4;
+            transformComponent->mPosition.z += GAME_TILE_SIZE/4;
+        }
+        
+        transformComponent->mPosition.y -= GAME_TILE_SIZE/4;
+        transformComponent->mScale = glm::vec3(ANIMATED_FLOWER_SCALE, ANIMATED_FLOWER_SCALE, ANIMATED_FLOWER_SCALE);
+        
+        world.AddComponent<AnimatedFlowerTagComponent>(modelEntityId, std::make_unique<AnimatedFlowerTagComponent>());
+    }
+    else
+    {
+        renderableComponent = std::make_unique<RenderableComponent>();
+        renderableComponent->mShaderNameId = StringId("basic");
+        
+        renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
+        (
+            ResourceLoadingService::GetInstance().
+            LoadResource(ResourceLoadingService::RES_MODELS_ROOT + modelName + ".obj"
+        ));
+        
+        renderableComponent->mRenderableLayer = std::find
+        (
+            undergroundModels.begin(),
+            undergroundModels.end(),
+            StringId(modelName)
+        ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::DEFAULT;
+        
+        renderableComponent->mActiveAnimationNameId = StringId("default");
+        renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
+        (
+            ResourceLoadingService::RES_TEXTURES_ROOT + modelName + ".png"
+        );
+    }
+   
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
     
