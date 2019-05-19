@@ -4,7 +4,7 @@ in_players_home_bot 4,10 -1 false {Crammed full of#POKEMON books!}
 in_players_home_bot 5,10 -1 false {Crammed full of#POKEMON books!}
 in_players_home_bot 8,10 -1 false {There's a movie#on TV. Four boys#are walking on#railroad tracks#@I better go too.}
 in_rivals_home 6,8 1 false {Hi PLAYERNAME!#RIVALNAME#is out at#Grandpa's lab.}
-in_rivals_home 7,11 -1 false {It's a big map!#This is useful!}
+in_rivals_home 7,8 -1 false {It's a big map!#This is useful!}
 in_rivals_home 4,10 -1 false {Crammed full of#POKEMON books!}
 in_rivals_home 5,10 -1 false {Crammed full of#POKEMON books!}
 in_rivals_home 11,10 -1 false {Crammed full of#POKEMON books!}
@@ -24,11 +24,12 @@ in_oaks_lab 7,13 -1 false {Press START to#open the MENU!}
 in_oaks_lab 8,13 -1 false {The SAVE option is#on the MENU#screen.}
 in_oaks_lab 3,12 -1 false {There's an e-mail#message here!#@...#@Calling all#POKEMON trainers!#@The elite trainers#of POKEMON LEAGUE#are ready to take#on all comers!#@Bring your best#POKEMON and see#how you rate as a#trainer!#@POKEMON LEAGUE HQ#INDIGO PLATEAU#@PS: PROF.OAK,#please visit us!#...}
 in_oaks_lab 4,12 -1 false {There's an e-mail#message here!#@...#@Calling all#POKEMON trainers!#@The elite trainers#of POKEMON LEAGUE#are ready to take#on all comers!#@Bring your best#POKEMON and see#how you rate as a#trainer!#@POKEMON LEAGUE HQ#INDIGO PLATEAU#@PS: PROF.OAK,#please visit us!#...}
-in_oaks_lab 5,12 2 false {It's encyclopedia-#like but the#pages are blank!}
-in_oaks_lab 6,12 2 false {It's encyclopedia-#like but the#pages are blank!}
+in_oaks_lab 5,12 -1 false {It's encyclopedia-#like but the#pages are blank!}
+in_oaks_lab 6,12 -1 false {It's encyclopedia-#like but the#pages are blank!}
 in_oaks_lab 4,4 2 false {PROF. OAK is the#authority on#POKEMON!#@Many POKEMON#trainers hold him#in high regard!}
 in_oaks_lab 6,3 2 false {I study POKEMON as#PROF. OAK's AIDE.}
 in_oaks_lab 11,4 2 false {I study POKEMON as#PROF. OAK's AIDE.}
+in_oaks_lab 8,11 2 false {OAK: Go ahead,#scrub.}
 pallet_new 9,18 -1 false {PLAYERNAME's house}
 pallet_new 17,18 -1 false {RIVALNAME's house}
 pallet_new 19,10 -1 false {OAK POKEMON#RESEARCH LAB}

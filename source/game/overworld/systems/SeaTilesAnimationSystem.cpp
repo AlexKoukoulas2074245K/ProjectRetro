@@ -10,10 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "SeaTilesAnimationSystem.h"
-#include "..\components\SeaStateSingletonComponent.h"
-#include "..\components\SeaTileTagComponent.h"
-#include "..\..\common\components\TransformComponent.h"
-#include "..\..\rendering\components\RenderableComponent.h"
+#include "../components/SeaStateSingletonComponent.h"
+#include "../components/SeaTileTagComponent.h"
+#include "../../common/components/TransformComponent.h"
+#include "../../rendering/components/RenderableComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

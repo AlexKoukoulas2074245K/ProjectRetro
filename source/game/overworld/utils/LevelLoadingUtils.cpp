@@ -326,7 +326,7 @@ void CreateLevelModelEntry
 
     // Extract model name from the: 'model_name (col_dim, row_dim)' format
     const auto modelName = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
-
+    
     // In the case of sea tiles dont create any entities, since they will be populated at a future step
     if (StringStartsWith(modelName, LEVEL_SEA_TILE_MODEL_NAME))
     {        
