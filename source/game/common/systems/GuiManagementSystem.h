@@ -42,6 +42,7 @@ private:
     
     void InitializeGuiState() const;
     void PopulateFontEntities(GuiStateSingletonComponent&) const;
+    void UpdateChatbox(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxScrollAnim1(const ecs::EntityId textboxEntityId, const float dt) const;

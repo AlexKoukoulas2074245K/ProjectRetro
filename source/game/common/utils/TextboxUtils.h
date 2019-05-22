@@ -55,6 +55,7 @@ char GetCharacterAtTextboxCoords
 
 ecs::EntityId CreateTextboxWithDimensions
 (
+    const TextboxType textboxType,
     const int textboxTileCols,
     const int textboxTileRows,
     const float textboxOriginX,
