@@ -67,6 +67,11 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
     const auto hasTransparentPixels = HasTransparentPixels(sdlSurface);
     SDL_UnlockSurface(sdlSurface);
 
+    if (hasTransparentPixels)
+    {
+        Log(LogType::INFO, "%s: transparent texture", resourcePath.c_str());
+    }
+
     GLuint glTextureId;
     GL_CHECK(glGenTextures(1, &glTextureId));
     GL_CHECK(glBindTexture(GL_TEXTURE_2D, glTextureId));

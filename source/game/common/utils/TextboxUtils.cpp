@@ -118,6 +118,7 @@ char GetCharacterAtTextboxCoords
 
 ecs::EntityId CreateTextboxWithDimensions
 (
+    const TextboxType textboxType,
     const int textboxTileCols,
     const int textboxTileRows,
     const float textboxOriginX,
@@ -140,6 +141,7 @@ ecs::EntityId CreateTextboxWithDimensions
     textboxComponent->mTextboxTileCols = textboxTileCols;
     textboxComponent->mTextboxTileRows = textboxTileRows;
     textboxComponent->mTextContent     = textContent;
+    textboxComponent->mTextboxType     = textboxType;
     
     world.AddComponent<TextboxComponent>(textboxEntityId, std::move(textboxComponent));
 

@@ -172,7 +172,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             }
 
-            const auto textboxEntityId = CreateTextboxWithDimensions(20, 6, 0.0f, -0.6701f, mWorld);
+            const auto textboxEntityId = CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, mWorld);
             QueueDialogForTextbox(textboxEntityId, npcAiComponent.mDialog, mWorld);
            
             npcTimerComponent.mAnimationTimer->Reset();

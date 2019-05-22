@@ -41,8 +41,7 @@ GuiManagementSystem::GuiManagementSystem(ecs::World& world)
 }
 
 void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
-{
-    auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+{    
     auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& activeEntities = mWorld.GetActiveEntities();
     for (const auto& entityId: activeEntities)
@@ -51,29 +50,10 @@ void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
         {
             auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(entityId);
             
-            if (textboxComponent.mQueuedDialog.size() > 0)
+            switch (textboxComponent.mTextboxType)
             {
-                switch (guiStateComponent.mActiveChatboxDisplayState)
-                {
-                    case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(entityId, dt); break;
-                    case ChatboxDisplayState::FILLED: UpdateChatboxFilled(entityId, dt); break;
-                    case ChatboxDisplayState::SCROLL_ANIM_PHASE_1: UpdateChatboxScrollAnim1(entityId, dt); break;
-                    case ChatboxDisplayState::SCROLL_ANIM_PHASE_2: UpdateChatboxScrollAnim2(entityId, dt); break;
-                    case ChatboxDisplayState::PARAGRAPH_END_DELAY: UpdateChatboxParagraphEndDelay(dt); break;
-                }
-            }
-            else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
-            {
-                if
-                (
-                    inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
-                    inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
-                )
-                {
-                    DestroyActiveTextbox(mWorld);
-                    guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
-                    guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-                }
+                case TextboxType::CHATBOX: UpdateChatbox(entityId, dt); break;
+                case TextboxType::GENERIC_TEXTBOX: break;
             }
             
             inputStateComponent.mHasBeenConsumed = true;
@@ -125,6 +105,39 @@ void GuiManagementSystem::PopulateFontEntities(GuiStateSingletonComponent& guiSt
     }
     
     ResourceLoadingService::GetInstance().UnloadResource(fontCoordsResourceId);
+}
+
+
+void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, const float dt) const
+{
+    auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& textboxComponent    = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+
+    if (textboxComponent.mQueuedDialog.size() > 0)
+    {
+        switch (guiStateComponent.mActiveChatboxDisplayState)
+        {
+        case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(textboxEntityId, dt); break;
+        case ChatboxDisplayState::FILLED: UpdateChatboxFilled(textboxEntityId, dt); break;
+        case ChatboxDisplayState::SCROLL_ANIM_PHASE_1: UpdateChatboxScrollAnim1(textboxEntityId, dt); break;
+        case ChatboxDisplayState::SCROLL_ANIM_PHASE_2: UpdateChatboxScrollAnim2(textboxEntityId, dt); break;
+        case ChatboxDisplayState::PARAGRAPH_END_DELAY: UpdateChatboxParagraphEndDelay(dt); break;
+        }
+    }
+    else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
+    {
+        if
+            (
+                inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
+                inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
+                )
+        {
+            DestroyActiveTextbox(mWorld);
+            guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+            guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+        }
+    }
 }
 
 void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const
