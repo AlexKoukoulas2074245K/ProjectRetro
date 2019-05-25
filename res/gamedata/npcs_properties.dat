@@ -30,12 +30,12 @@ in_oaks_lab 4,4 2 false {PROF. OAK is the#authority on#POKEMON!#@Many POKEMON#tr
 in_oaks_lab 6,3 2 false {I study POKEMON as#PROF. OAK's AIDE.}
 in_oaks_lab 11,4 2 false {I study POKEMON as#PROF. OAK's AIDE.}
 in_oaks_lab 8,11 2 false {OAK: Go ahead,#scrub.}
-pallet_new 9,18 -1 false {PLAYERNAME's house}
-pallet_new 17,18 -1 false {RIVALNAME's house}
-pallet_new 19,10 -1 false {OAK POKEMON#RESEARCH LAB}
-pallet_new 13,14 -1 false {PALLET TOWN#Shades of your#journey await!}
-pallet_new 8,15 2 false {I'm raising#POKEMON too!#@When they get#strong, they can#protect me!}
-pallet_new 18,9 2 false {Technology is#incredible!#@You can now store#and recall items#and POKEMON as#data via PC!}
+pallet 9,18 -1 false {PLAYERNAME's house}
+pallet 17,18 -1 false {RIVALNAME's house}
+pallet 19,10 -1 false {OAK POKEMON#RESEARCH LAB}
+pallet 13,14 -1 false {PALLET TOWN#Shades of your#journey await!}
+pallet 8,15 2 false {I'm raising#POKEMON too!#@When they get#strong, they can#protect me!}
+pallet 18,9 2 false {Technology is#incredible!#@You can now store#and recall items#and POKEMON as#data via PC!}
 ---------------------
 
 route1 default 6,28 0,17 true 1 false Hi! I work at a#POKEMON MART.#@It's a convenient#shop, so please#visit us in#VIRIDIAN CITY.#@I know, I'll give#you a sample!#Here you go!#@PLAYERNAME got#POTION!&We also carry#POKE BALLS for#catching POKEMON!
