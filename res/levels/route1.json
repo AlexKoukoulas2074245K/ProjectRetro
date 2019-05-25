@@ -1,0 +1,24 @@
+{
+    "level_header":
+    {
+        "name": "route1",
+        "dimensions": { "cols": 32, "rows": 64},
+        "color": "VIRIDIAN"
+    },
+    "level_ground_layer_editor":
+    [
+    ],
+    "level_ground_layer_game":
+    [
+        { "texture_name": "route1_groundLayer.png", "game_position_x": 51.2, "game_position_z": 51.2 }
+    ],
+    "level_npc_list":
+    [
+    ],
+    "level_model_list":
+    [
+    ],
+    "level_tile_traits":
+    [
+    ]
+}
