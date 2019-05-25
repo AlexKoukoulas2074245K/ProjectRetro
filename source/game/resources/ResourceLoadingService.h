@@ -55,6 +55,7 @@ public:
     static const std::string RES_ROOT;
     static const std::string RES_ATLASES_ROOT;
     static const std::string RES_DATA_ROOT;
+    static const std::string ENCOUNTER_DATA_ROOT;
     static const std::string RES_LEVELS_ROOT;
     static const std::string RES_MODELS_ROOT;
     static const std::string RES_SHADERS_ROOT;
@@ -79,10 +80,13 @@ public:
     ResourceId LoadResource(const std::string& resourcePath);
     void LoadResources(const std::vector<std::string>& resourcePaths);
     
+    // Checks whether the resource with the given path exists
+    bool DoesResourceExist(const std::string& resourcePath) const;
+    
     // Checks whether the given resource has been loaded.
     // Both full paths, relative paths including the Resource Root, and relative
     // paths not including the Resource Root are supported
-    bool HasLoadedResource(const std::string& resourcePath);
+    bool HasLoadedResource(const std::string& resourcePath) const;
     
     // Unloads the specified resource. Any subsequent calls to get that 
     // resource will need to be preceeded by another Load to get the resource 

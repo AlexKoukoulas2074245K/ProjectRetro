@@ -133,7 +133,7 @@ void App::DummyInitialization()
 {
     const auto playerEntity = mWorld.CreateEntity();
     
-    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("pallet_new"), mWorld);
+    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("pallet"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();

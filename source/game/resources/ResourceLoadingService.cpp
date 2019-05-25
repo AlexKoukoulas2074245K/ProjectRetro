@@ -22,6 +22,7 @@
 #include "../common/utils/StringUtils.h"
 #include "../common/utils/TypeTraits.h"
 
+#include <fstream>
 #include <cassert>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -34,12 +35,13 @@ const std::string ResourceLoadingService::RES_ROOT = "../res/";
 const std::string ResourceLoadingService::RES_ROOT = "../../res/";
 #endif
 
-const std::string ResourceLoadingService::RES_ATLASES_ROOT  = RES_ROOT + "atlases/";
-const std::string ResourceLoadingService::RES_DATA_ROOT     = RES_ROOT + "gamedata/";
-const std::string ResourceLoadingService::RES_LEVELS_ROOT   = RES_ROOT + "levels/";
-const std::string ResourceLoadingService::RES_MODELS_ROOT   = RES_ROOT + "models/";
-const std::string ResourceLoadingService::RES_SHADERS_ROOT  = RES_ROOT + "shaders/";
-const std::string ResourceLoadingService::RES_TEXTURES_ROOT = RES_ROOT + "textures/";
+const std::string ResourceLoadingService::RES_ATLASES_ROOT    = RES_ROOT + "atlases/";
+const std::string ResourceLoadingService::RES_DATA_ROOT       = RES_ROOT + "gamedata/";
+const std::string ResourceLoadingService::ENCOUNTER_DATA_ROOT = RES_DATA_ROOT + "encounter_rates/";
+const std::string ResourceLoadingService::RES_LEVELS_ROOT     = RES_ROOT + "levels/";
+const std::string ResourceLoadingService::RES_MODELS_ROOT     = RES_ROOT + "models/";
+const std::string ResourceLoadingService::RES_SHADERS_ROOT    = RES_ROOT + "shaders/";
+const std::string ResourceLoadingService::RES_TEXTURES_ROOT   = RES_ROOT + "textures/";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +104,14 @@ void ResourceLoadingService::LoadResources(const std::vector<std::string>& resou
     }
 }
 
-bool ResourceLoadingService::HasLoadedResource(const std::string& resourcePath)
+bool ResourceLoadingService::DoesResourceExist(const std::string& resourcePath) const
+{
+    const auto adjustedPath = AdjustResourcePath(resourcePath);
+    std::fstream resourceFileCheck(resourcePath);
+    return resourceFileCheck.operator bool();
+}
+
+bool ResourceLoadingService::HasLoadedResource(const std::string& resourcePath) const
 {
     const auto adjustedPath = AdjustResourcePath(resourcePath);
     const auto resourceId = GetStringHash(adjustedPath);

@@ -90,6 +90,11 @@ static void PadExtraSeaTiles
     ecs::World& world
 );
 
+static void CheckAndLoadEncounterInfo
+(
+    LevelModelComponent& levelModelComponent
+);
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -100,10 +105,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     
     // Get level data file resource
     const auto levelFilePath = ResourceLoadingService::RES_LEVELS_ROOT + levelName.GetString() + ".json";
-    if (resourceLoadingService.HasLoadedResource(levelFilePath) == false)
-    {
-        resourceLoadingService.LoadResource(levelFilePath);
-    }
+    resourceLoadingService.LoadResource(levelFilePath);
     const auto& levelFileResource = resourceLoadingService.GetResource<DataFileResource>(levelFilePath);    
 
     // Parse level json
@@ -122,7 +124,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     levelModelComponent->mCols              = levelTilemapCols;
     levelModelComponent->mRows              = levelTilemapRows;
     levelModelComponent->mGroundLayerEntity = world.CreateEntity();
-
+    
     // Extract level palette color
     const auto hasPaletteEntry = levelJson["level_header"].count("color") != 0;
 
@@ -198,7 +200,15 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
         SetTileTrait(tileTraitEntry, levelModelComponent->mLevelTilemap);
     }
     
+    // Load encounter info if any
+    CheckAndLoadEncounterInfo(*levelModelComponent);
+    
+    // Associate level component with entity
     world.AddComponent<LevelModelComponent>(levelEntityId, std::move(levelModelComponent));
+    
+    // Unload level file resource
+    resourceLoadingService.UnloadResource(levelFilePath);
+    
     return levelEntityId;
 }
 
@@ -481,6 +491,49 @@ static void PadExtraSeaTiles
             world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));
         }
     }    
+}
+
+void CheckAndLoadEncounterInfo
+(
+    LevelModelComponent& levelModelComponent
+)
+{
+    const auto encounterDataFilePath = ResourceLoadingService::ENCOUNTER_DATA_ROOT + levelModelComponent.mLevelName.GetString() + ".json";
+    auto& resourceLoadingService     = ResourceLoadingService::GetInstance();
+    
+    // Check whether this level has encounter data associated with it
+    if (resourceLoadingService.DoesResourceExist(encounterDataFilePath) == false)
+    {
+        return;
+    }
+    
+    // Check in case the resource has already been loaded
+    if (resourceLoadingService.HasLoadedResource(encounterDataFilePath) == false)
+    {
+        resourceLoadingService.LoadResource(encounterDataFilePath);
+    }
+    
+    // Get the data file handle
+    const auto& encounterDataFileResource = resourceLoadingService.GetResource<DataFileResource>(encounterDataFilePath);
+    
+    // Create encounter json object
+    const auto encounterJson = nlohmann::json::parse(encounterDataFileResource.GetContents());
+    
+    // Extract encounter density
+    levelModelComponent.mEncounterDensity = encounterJson["density"].get<int>();
+    
+    // Extract encounters
+    for (const auto& encounterInfoJsonObject: encounterJson["encounters"])
+    {
+        EncounterInfo encounterInfo;
+        encounterInfo.mRate               = encounterInfoJsonObject["rate"].get<int>();
+        encounterInfo.mPokemonInfo.mName  = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
+        encounterInfo.mPokemonInfo.mLevel = encounterInfoJsonObject["level"].get<int>();
+        
+        levelModelComponent.mEncounters.push_back(encounterInfo);
+    }
+    
+    resourceLoadingService.UnloadResource(encounterDataFilePath);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/GameConstants.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../rendering/utils/Colors.h"
 
@@ -36,11 +37,21 @@ enum class TileTrait
     NONE, SOLID, WARP, NO_ANIM_WARP, PRESS_WARP, ENCOUNTER
 };
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 struct Tile
 {
     TileTrait mTileTrait                = TileTrait::NONE;
     TileOccupierType mTileOccupierType  = TileOccupierType::NONE;
     ecs::EntityId mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
+};
+
+struct EncounterInfo
+{
+    PokemonInfo mPokemonInfo;
+    int mRate = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -57,9 +68,11 @@ class LevelModelComponent final: public ecs::IComponent
 {
 public:    
      LevelTilemap mLevelTilemap;
+     std::vector<EncounterInfo> mEncounters;
      StringId mLevelName              = StringId();
      glm::vec4 mLevelColor            = colors::PALLET_COLOR;
      ecs::EntityId mGroundLayerEntity = ecs::NULL_ENTITY_ID;
+     int mEncounterDensity            = 0;
      int mCols                        = 0;
      int mRows                        = 0;
 };
