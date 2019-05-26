@@ -22,7 +22,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-struct SDL_Surface;
 using GLuint = unsigned int;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -42,10 +41,11 @@ public:
     bool HasTransparentPixels() const;
     
 private:
-    TextureResource(SDL_Surface*, GLuint, bool hasTransparentPixels);
+    TextureResource(const int width, const int height, GLuint, bool hasTransparentPixels);
     
 private:
-    SDL_Surface* const mSdlSurface;
+    const int mWidth;
+    const int mHeight;
     const GLuint mGLTextureId;
     const bool mHasTransparentPixels;
 

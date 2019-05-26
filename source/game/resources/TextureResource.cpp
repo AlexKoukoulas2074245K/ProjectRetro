@@ -14,7 +14,6 @@
 #include "../rendering/opengl/Context.h"
 
 #include <cassert>
-#include <SDL_surface.h>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +21,6 @@
 
 TextureResource::~TextureResource()
 {
-    SDL_FreeSurface(mSdlSurface);
     GL_CHECK(glDeleteTextures(1, &mGLTextureId));
 }
 
@@ -33,12 +31,12 @@ GLuint TextureResource::GetGLTextureId() const
 
 int TextureResource::GetWidth() const
 {
-    return mSdlSurface->w;
+    return mWidth;
 }
 
 int TextureResource::GetHeight() const
 {
-    return mSdlSurface->h;
+    return mHeight;
 }
 
 bool TextureResource::HasTransparentPixels() const
@@ -50,8 +48,9 @@ bool TextureResource::HasTransparentPixels() const
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-TextureResource::TextureResource(SDL_Surface* sdlSurface, GLuint glTextureId, bool hasTransparentPixels)
-    : mSdlSurface(sdlSurface)
+TextureResource::TextureResource(const int width, const int height, GLuint glTextureId, bool hasTransparentPixels)
+    : mWidth(width)
+    , mHeight(height)
     , mGLTextureId(glTextureId)
     , mHasTransparentPixels(hasTransparentPixels)
 {
