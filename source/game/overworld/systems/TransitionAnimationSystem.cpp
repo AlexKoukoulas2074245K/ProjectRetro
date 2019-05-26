@@ -51,7 +51,7 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
     }
     else if (warpConnectionsComponent.mHasPendingWarpConnection)
     {
-        transitionAnimationStateComponent.mIsPlayingTransitionAnimation = true;
+        transitionAnimationStateComponent.mIsPlayingTransitionAnimation = warpConnectionsComponent.mShouldPlayTransitionAnimation;
         transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
         transitionAnimationStateComponent.mAnimationTimer               = std::make_unique<Timer>(TRANSITION_STEP_DURATION);
     }

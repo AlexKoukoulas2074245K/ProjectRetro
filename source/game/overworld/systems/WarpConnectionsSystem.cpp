@@ -76,7 +76,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         playerTransformComponent.mPosition          = TileCoordsToPosition(targetWarp.mTileCoords.mCol, targetWarp.mTileCoords.mRow);
         playerMovementStateComponent.mCurrentCoords = targetWarp.mTileCoords;    
 
-        if (IsLevelIndoors(targetWarp.mLevelName) == false)
+        if (IsLevelIndoors(targetWarp.mLevelName) == false && IsLevelIndoors(activeLevelSingletonComponent.mActiveLevelNameId))
         {
             playerMovementStateComponent.mMoving = true;
             ResumeCurrentlyPlayingAnimation(playerAnimationTimerComponent);

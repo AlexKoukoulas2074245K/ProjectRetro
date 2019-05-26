@@ -44,6 +44,22 @@
 		{ 
 			"from": { "level_name": "in_oaks_lab", "level_col": 8, "level_row": 2 },
 			"to": { "level_name": "pallet", "level_col": 18, "level_row": 12 } 
+		},
+		{ 
+			"from": { "level_name": "route1", "level_col": 15, "level_row": 13 },
+			"to": { "level_name": "pallet", "level_col": 16, "level_row": 23 } 
+		},
+		{ 
+			"from": { "level_name": "route1", "level_col": 16, "level_row": 13 },
+			"to": { "level_name": "pallet", "level_col": 17, "level_row": 23 } 
+		},
+		{ 
+			"from": { "level_name": "pallet", "level_col": 16, "level_row": 24 },
+			"to": { "level_name": "route1", "level_col": 15, "level_row": 14 } 
+		},
+		{ 
+			"from": { "level_name": "pallet", "level_col": 17, "level_row": 24 },
+			"to": { "level_name": "route1", "level_col": 16, "level_row": 14 } 
 		}
 	]
 }

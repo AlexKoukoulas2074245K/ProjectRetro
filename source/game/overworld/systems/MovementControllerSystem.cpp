@@ -84,8 +84,11 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
 
                 if (directionComponent.mDirection == directionNeededForWarp)
                 {                       
-                    movementStateComponent.mMoving = false;                    
-                    mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>().mHasPendingWarpConnection = true;
+                    movementStateComponent.mMoving = false;
+                    
+                    auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+                    warpConnectionsComponent.mHasPendingWarpConnection = true;
+                    warpConnectionsComponent.mShouldPlayTransitionAnimation = true;
                     continue;
                 }
             }
@@ -140,7 +143,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
                 if ((targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && hasPlayerTag)
                 {
-                    mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>().mHasPendingWarpConnection = true;                    
+                    auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+                    warpConnectionsComponent.mHasPendingWarpConnection = true;
+                    warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
                 }
             }
         }

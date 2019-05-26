@@ -75,6 +75,7 @@ class WarpConnectionsSingletonComponent final: public ecs::IComponent
 {
 public:
     bool mHasPendingWarpConnection      = false;
+    bool mShouldPlayTransitionAnimation = true;
     bool mShouldAutoMoveAfterTransition = false;
     std::unordered_map<WarpInfo, WarpInfo, WarpInfoHasher> mWarpConnections;
 };
