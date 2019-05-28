@@ -46,7 +46,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
         if (ShouldProcessEntity(entityId))
-        {            
+        {
+            const auto hasPlayerTag        = mWorld.HasComponent<PlayerTagComponent>(entityId);
             const auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
             auto& transformComponent       = mWorld.GetComponent<TransformComponent>(entityId);
             auto& movementStateComponent   = mWorld.GetComponent<MovementStateComponent>(entityId);
@@ -96,13 +97,25 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             // Safe to now get the actual target tile            
             auto& targetTile  = GetTile(targetTileCoords, levelModelComponent.mLevelTilemap);
 
-            // Occupier checks
+            // Solidity check
             if (targetTile.mTileTrait == TileTrait::SOLID)
             {
                 movementStateComponent.mMoving = false;
                 continue;
             }
             
+            // Jumping ledge check
+            if
+            (
+                (targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_BOT && directionComponent.mDirection != Direction::SOUTH) ||
+                (!hasPlayerTag)
+            )
+            {
+                movementStateComponent.mMoving = false;
+                continue;
+            }
+            
+            // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::NPC && targetTile.mTileOccupierEntityId != entityId)
             {
                 movementStateComponent.mMoving = false;
@@ -120,7 +133,6 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             currentTile.mTileOccupierType     = TileOccupierType::NONE;
 
             // Set occupier status on the target tile
-            const auto hasPlayerTag = mWorld.HasComponent<PlayerTagComponent>(entityId);
             targetTile.mTileOccupierEntityId = entityId;
             targetTile.mTileOccupierType     = hasPlayerTag ? TileOccupierType::PLAYER : TileOccupierType::NPC;
 
