@@ -34,7 +34,15 @@ enum class TileOccupierType
 
 enum class TileTrait
 {
-    NONE, SOLID, WARP, NO_ANIM_WARP, PRESS_WARP, ENCOUNTER
+    NONE,
+    SOLID,
+    WARP,
+    NO_ANIM_WARP,
+    PRESS_WARP,
+    ENCOUNTER,
+    JUMPING_LEDGE_BOT,
+    JUMPING_LEDGE_LEFT,
+    JUMPING_LEDGE_RIGHT
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

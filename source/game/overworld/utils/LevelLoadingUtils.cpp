@@ -432,11 +432,14 @@ void SetTileTrait
 {
     static const std::unordered_map<StringId, TileTrait, StringIdHasher> traitNamesToTraitEnums =
     {
-        { StringId("ENCOUNTER"),    TileTrait::ENCOUNTER },
-        { StringId("SOLID"),        TileTrait::SOLID },
-        { StringId("WARP"),         TileTrait::WARP },
-        { StringId("NO_ANIM_WARP"), TileTrait::NO_ANIM_WARP },
-        { StringId("PRESS_WARP"),   TileTrait::PRESS_WARP },
+        { StringId("ENCOUNTER"),           TileTrait::ENCOUNTER },
+        { StringId("SOLID"),               TileTrait::SOLID },
+        { StringId("WARP"),                TileTrait::WARP },
+        { StringId("NO_ANIM_WARP"),        TileTrait::NO_ANIM_WARP },
+        { StringId("PRESS_WARP"),          TileTrait::PRESS_WARP },
+        { StringId("JUMPING_LEDGE_BOT"),   TileTrait::JUMPING_LEDGE_BOT },
+        { StringId("JUMPING_LEDGE_LEFT"),  TileTrait::JUMPING_LEDGE_LEFT },
+        { StringId("JUMPING_LEDGE_RIGHT"), TileTrait::JUMPING_LEDGE_RIGHT },
     };
     
     const auto gameCol   = tileTraitEntryJsonObject["game_col"].get<int>();
