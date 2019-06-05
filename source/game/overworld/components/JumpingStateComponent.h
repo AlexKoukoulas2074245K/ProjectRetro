@@ -27,6 +27,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const float JUMP_DURATION_IN_SECONDS = 0.5f;
+const float JUMP_INIT_VELOCITY       = 9.6f;
+const float JUMP_GRAVITY             = -38.4f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +37,11 @@ const float JUMP_DURATION_IN_SECONDS = 0.5f;
 class JumpingStateComponent final: public ecs::IComponent
 {
 public:    
-    std::unique_ptr<Timer> mJumpingTimer = nullptr;
+    std::unique_ptr<Timer> mJumpingTimer    = nullptr;
+    ecs::EntityId mJumpShadowSpriteEntityid = ecs::NULL_ENTITY_ID;
+    float mJumpYVelocity                    = 0.0f;
+    float mJumpYDisplacement                = 0.0f;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

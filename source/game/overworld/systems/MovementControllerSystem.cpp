@@ -22,12 +22,14 @@
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
+#include "../../resources/ResourceLoadingService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * GAME_TILE_SIZE;
+const std::string MovementControllerSystem::JUMP_SHADOW_SPRITE_NAME = "jump_shadow";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -126,12 +128,35 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     movementStateComponent.mMoving = false;
                     continue;
                 }
-                else
+                else if (mWorld.HasComponent<JumpingStateComponent>(entityId) == false)
                 {
-                    auto jumpingStateComponent = std::make_unique<JumpingStateComponent>();
-                    jumpingStateComponent->mJumpingTimer = std::make_unique<Timer>(JUMP_DURATION_IN_SECONDS);
+                    StartJump(entityId);
                 }
-            }            
+            } 
+            else if (targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_LEFT)
+            {
+                if ((directionComponent.mDirection != Direction::WEST) || !hasPlayerTag)
+                {
+                    movementStateComponent.mMoving = false;
+                    continue;
+                }
+                else if (mWorld.HasComponent<JumpingStateComponent>(entityId) == false)
+                {
+                    StartJump(entityId);
+                }
+            }
+            else if (targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_RIGHT)
+            {
+                if ((directionComponent.mDirection != Direction::EAST) || !hasPlayerTag)
+                {
+                    movementStateComponent.mMoving = false;
+                    continue;
+                }
+                else if (mWorld.HasComponent<JumpingStateComponent>(entityId) == false)
+                {
+                    StartJump(entityId);
+                }
+            }
 
             // Clear occupier status of the current tile
             currentTile.mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
@@ -156,30 +181,117 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
                 jumpingStateComponent.mJumpingTimer->Update(dt);
 
-                // Delete component at the end of the jump
-                if (jumpingStateComponent.mJumpingTimer->HasTicked())
-                {
-                    mWorld.RemoveComponent<JumpingStateComponent>(entityId);
-                }
+                // Simulate jump
+                SimulateJumpDisplacement(dt, jumpingStateComponent, transformComponent);                
             }
 
             // Target position reached in this frame
             if (moveOutcome == MoveOutcome::COMPLETED)
             {
+                const auto newPosition = TileCoordsToPosition(targetTileCoords);
+                
+                transformComponent.mPosition.x = newPosition.x;                
+                transformComponent.mPosition.z = newPosition.z;
+
                 movementStateComponent.mMoving        = false;
-                transformComponent.mPosition          = TileCoordsToPosition(targetTileCoords);
                 movementStateComponent.mCurrentCoords = targetTileCoords;
 
                 // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
-                if ((targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && hasPlayerTag)
+                if 
+                (
+                    (targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && 
+                    hasPlayerTag
+                )
                 {
                     auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
                     warpConnectionsComponent.mHasPendingWarpConnection = true;
                     warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
                 }
+
+                if 
+                (
+                    targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_BOT ||
+                    targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_LEFT ||
+                    targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_RIGHT
+                )
+                {
+                    // Midway during a ledge jump, continue moving to the next tile
+                    movementStateComponent.mMoving = true;
+                }
+                else
+                {
+                    // After ledge jump correct any floating precision errors on y and reset to ground level
+                    transformComponent.mPosition.y = newPosition.y;
+
+                    // Delete component at the end of the jump
+                    if (mWorld.HasComponent<JumpingStateComponent>(entityId))
+                    {
+                        auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
+                        mWorld.RemoveEntity(jumpingStateComponent.mJumpShadowSpriteEntityid);
+                        mWorld.RemoveComponent<JumpingStateComponent>(entityId);
+                    }
+                }
             }
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void MovementControllerSystem::StartJump(const ecs::EntityId playerEntityId) const
+{
+    auto jumpingStateComponent = std::make_unique<JumpingStateComponent>();
+
+    jumpingStateComponent->mJumpingTimer  = std::make_unique<Timer>(JUMP_DURATION_IN_SECONDS);
+    jumpingStateComponent->mJumpYVelocity = JUMP_INIT_VELOCITY;    
+
+    // Create jump shadow sprite
+    const auto jumpShadowEntityId = mWorld.CreateEntity();
+    const auto& playerTransform = mWorld.GetComponent<TransformComponent>(playerEntityId);
+
+    auto jumpShadowTransformComponent = std::make_unique<TransformComponent>();
+    
+    jumpShadowTransformComponent->mPosition.x += playerTransform.mPosition.x;
+    jumpShadowTransformComponent->mPosition.y -= GAME_TILE_SIZE / 2.0f - 0.01f;
+    jumpShadowTransformComponent->mPosition.z += playerTransform.mPosition.z;
+
+    auto jumpShadowRenderableComponent = std::make_unique<RenderableComponent>();
+    jumpShadowRenderableComponent->mShaderNameId = StringId("basic");
+    jumpShadowRenderableComponent->mAnimationsToMeshes[StringId("default")].
+        push_back(ResourceLoadingService::GetInstance().
+            LoadResource(ResourceLoadingService::RES_MODELS_ROOT +
+                JUMP_SHADOW_SPRITE_NAME + ".obj"));
+    jumpShadowRenderableComponent->mActiveAnimationNameId = StringId("default");
+    jumpShadowRenderableComponent->mTextureResourceId =
+        ResourceLoadingService::GetInstance().LoadResource(
+            ResourceLoadingService::RES_TEXTURES_ROOT +
+            JUMP_SHADOW_SPRITE_NAME + ".png");
+    jumpShadowRenderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+
+    mWorld.AddComponent<TransformComponent>(jumpShadowEntityId, std::move(jumpShadowTransformComponent));
+    mWorld.AddComponent<RenderableComponent>(jumpShadowEntityId, std::move(jumpShadowRenderableComponent));
+
+    jumpingStateComponent->mJumpShadowSpriteEntityid = jumpShadowEntityId;
+
+    mWorld.AddComponent<JumpingStateComponent>(playerEntityId, std::move(jumpingStateComponent));
+}
+
+void MovementControllerSystem::SimulateJumpDisplacement(const float dt, JumpingStateComponent& jumpStateComponent, TransformComponent& transformComponent) const
+{
+    const auto previousJumpDisplacement = jumpStateComponent.mJumpYDisplacement;
+
+    jumpStateComponent.mJumpYVelocity     += JUMP_GRAVITY * dt;
+    jumpStateComponent.mJumpYDisplacement += jumpStateComponent.mJumpYVelocity * dt;
+
+    // Add delta jump displacement to y position
+    transformComponent.mPosition.y += jumpStateComponent.mJumpYDisplacement - previousJumpDisplacement;
+
+    // Update position of jump shadow sprite
+    auto& jumpShadowTransform = mWorld.GetComponent<TransformComponent>(jumpStateComponent.mJumpShadowSpriteEntityid);
+    jumpShadowTransform.mPosition.x = transformComponent.mPosition.x;
+    jumpShadowTransform.mPosition.z = transformComponent.mPosition.z;    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -43,7 +43,9 @@ void CameraControlSystem::VUpdateAssociatedComponents(const float) const
         {
             const auto& focusedTransformComponent = mWorld.GetComponent<TransformComponent>(entityId);
             
-            cameraComponent.mFocusPosition = focusedTransformComponent.mPosition;
+            cameraComponent.mFocusPosition.x = focusedTransformComponent.mPosition.x;
+            cameraComponent.mFocusPosition.z = focusedTransformComponent.mPosition.z;
+
             cameraComponent.mPosition.x    = focusedTransformComponent.mPosition.x;
             cameraComponent.mPosition.z    = focusedTransformComponent.mPosition.z - CAMERA_Z_DISTANCE_FROM_PLAYER;
         }

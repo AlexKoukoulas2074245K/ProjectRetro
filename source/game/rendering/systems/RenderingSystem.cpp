@@ -331,7 +331,7 @@ void RenderingSystem::RenderEntityInternal
     {
         currentMesh = previousRenderingStateComponent.previousMesh;
     }
-    
+        
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
     world = glm::translate(world, transformComponent.mPosition);

@@ -407,7 +407,7 @@ void CreateLevelModelEntry
             undergroundModels.begin(),
             undergroundModels.end(),
             StringId(modelName)
-        ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::DEFAULT;
+        ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::LEVEL_FLOOR_LEVEL;
         
         renderableComponent->mActiveAnimationNameId = StringId("default");
         renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
