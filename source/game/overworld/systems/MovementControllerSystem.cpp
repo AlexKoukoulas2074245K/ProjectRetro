@@ -11,6 +11,7 @@
 
 #include "MovementControllerSystem.h"
 #include "../components/ActiveLevelSingletonComponent.h"
+#include "../components/JumpingStateComponent.h"
 #include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
@@ -102,18 +103,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             {
                 movementStateComponent.mMoving = false;
                 continue;
-            }
-            
-            // Jumping ledge check
-            if
-            (
-                (targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_BOT && directionComponent.mDirection != Direction::SOUTH) ||
-                (!hasPlayerTag)
-            )
-            {
-                movementStateComponent.mMoving = false;
-                continue;
-            }
+            }                        
             
             // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::NPC && targetTile.mTileOccupierEntityId != entityId)
@@ -127,6 +117,21 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mMoving = false;
                 continue;
             }
+
+            // Jumping ledge check
+            if (targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_BOT)
+            {
+                if ((directionComponent.mDirection != Direction::SOUTH) || !hasPlayerTag)
+                {
+                    movementStateComponent.mMoving = false;
+                    continue;
+                }
+                else
+                {
+                    auto jumpingStateComponent = std::make_unique<JumpingStateComponent>();
+                    jumpingStateComponent->mJumpingTimer = std::make_unique<Timer>(JUMP_DURATION_IN_SECONDS);
+                }
+            }            
 
             // Clear occupier status of the current tile
             currentTile.mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
@@ -144,6 +149,19 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 dt, 
                 transformComponent.mPosition
             );
+
+            // Update jumping displacement 
+            if (hasPlayerTag && mWorld.HasComponent<JumpingStateComponent>(entityId))
+            {
+                auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
+                jumpingStateComponent.mJumpingTimer->Update(dt);
+
+                // Delete component at the end of the jump
+                if (jumpingStateComponent.mJumpingTimer->HasTicked())
+                {
+                    mWorld.RemoveComponent<JumpingStateComponent>(entityId);
+                }
+            }
 
             // Target position reached in this frame
             if (moveOutcome == MoveOutcome::COMPLETED)

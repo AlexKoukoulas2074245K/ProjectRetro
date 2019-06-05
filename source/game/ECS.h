@@ -38,7 +38,7 @@ static constexpr int MAX_COMPONENTS = 32;
 
 // Initial guess for the average entities handled
 // so that multiple resizes won't be needed
-static constexpr int ANTICIPATED_ENTITY_COUNT = 100;
+static constexpr int ANTICIPATED_ENTITY_COUNT = 1000;
 
 // Empty component mask constant
 static constexpr int EMPTY_COMPONENT_MASK = 0;
