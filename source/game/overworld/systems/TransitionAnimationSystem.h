@@ -32,6 +32,9 @@ public:
 private:
     static const float TRANSITION_STEP_DURATION;
     static const int TRANSITION_STEPS_COUNT;
+
+    void UpdateWarpTransitionAnimation(const float dt) const;
+    void UpdateBattleTransitionAnimation(const float dt) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

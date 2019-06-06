@@ -37,24 +37,45 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
 
     if (transitionAnimationStateComponent.mIsPlayingTransitionAnimation)
     {
-        transitionAnimationStateComponent.mAnimationTimer->Update(dt);
-        if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
+        switch (transitionAnimationStateComponent.mTransitionAnimationType)
         {
-            transitionAnimationStateComponent.mAnimationTimer->Reset();
-            if (++transitionAnimationStateComponent.mAnimationProgressionStep > TRANSITION_STEPS_COUNT)
-            {
-    
-                transitionAnimationStateComponent.mAnimationProgressionStep = 0;
-                transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
-            }            
-        }
+            case TransitionAnimationType::WARP: UpdateWarpTransitionAnimation(dt); break;
+            case TransitionAnimationType::BATTLE: UpdateBattleTransitionAnimation(dt); break;
+        }        
     }
     else if (warpConnectionsComponent.mHasPendingWarpConnection)
     {
+        transitionAnimationStateComponent.mTransitionAnimationType      = TransitionAnimationType::WARP;
         transitionAnimationStateComponent.mIsPlayingTransitionAnimation = warpConnectionsComponent.mShouldPlayTransitionAnimation;
-        transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
+        transitionAnimationStateComponent.mWarpAnimationProgressionStep = 0;
         transitionAnimationStateComponent.mAnimationTimer               = std::make_unique<Timer>(TRANSITION_STEP_DURATION);
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void TransitionAnimationSystem::UpdateWarpTransitionAnimation(const float dt) const
+{
+    auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+
+    transitionAnimationStateComponent.mAnimationTimer->Update(dt);
+    if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
+    {
+        transitionAnimationStateComponent.mAnimationTimer->Reset();
+        if (++transitionAnimationStateComponent.mWarpAnimationProgressionStep > TRANSITION_STEPS_COUNT)
+        {
+
+            transitionAnimationStateComponent.mWarpAnimationProgressionStep = 0;
+            transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
+        }
+    }
+}
+
+void TransitionAnimationSystem::UpdateBattleTransitionAnimation(const float) const
+{
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
