@@ -131,7 +131,7 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
             (
                 inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
                 inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
-                )
+            )
         {
             DestroyActiveTextbox(mWorld);
             guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;

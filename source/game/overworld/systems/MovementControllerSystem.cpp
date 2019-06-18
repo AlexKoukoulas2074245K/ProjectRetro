@@ -15,6 +15,7 @@
 #include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
+#include "../utils/EncounterUtils.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/MovementUtils.h"
 #include "../utils/WarpConnectionsUtils.h"
@@ -196,7 +197,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mMoving        = false;
                 movementStateComponent.mCurrentCoords = targetTileCoords;
 
-                // If the player steps on a door or other warp, mark the event in the global WarpConnectionsComponent
+                // Warp tile flow
                 if 
                 (
                     (targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && 
@@ -208,6 +209,20 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
                 }
 
+                // Encounter tile flow
+                if 
+                (
+                    targetTile.mTileTrait == TileTrait::ENCOUNTER &&
+                    DoesLevelHaveWildEncounters(levelModelComponent) &&
+                    WildEncounterRNGTriggered(levelModelComponent) &&
+                    hasPlayerTag
+                )
+                {
+                    const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
+                    (void)encounterInfo;
+                }
+
+                // Jumping ledge tile flow
                 if 
                 (
                     targetTile.mTileTrait == TileTrait::JUMPING_LEDGE_BOT ||

@@ -529,9 +529,12 @@ void CheckAndLoadEncounterInfo
     for (const auto& encounterInfoJsonObject: encounterJson["encounters"])
     {
         EncounterInfo encounterInfo;
-        encounterInfo.mRate               = encounterInfoJsonObject["rate"].get<int>();
-        encounterInfo.mPokemonInfo.mName  = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
-        encounterInfo.mPokemonInfo.mLevel = encounterInfoJsonObject["level"].get<int>();
+        encounterInfo.mRate                   = encounterInfoJsonObject["rate"].get<int>();
+        encounterInfo.mPokemonInfo.mName      = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
+        encounterInfo.mPokemonInfo.mLevel     = encounterInfoJsonObject["level"].get<int>();
+
+        //TODO: fix
+        encounterInfo.mPokemonInfo.mPokedexId = 1;
         
         levelModelComponent.mEncounters.push_back(encounterInfo);
     }
