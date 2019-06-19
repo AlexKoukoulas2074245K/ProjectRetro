@@ -33,11 +33,11 @@ struct SDL_Window;
 class WindowSingletonComponent final: public ecs::IComponent
 {
 public:
-    SDL_Window* mWindowHandle = nullptr;
-    std::string mWindowTitle  = "";
-    float mRenderableWidth    = 0.0f;
-    float mRenderableHeight   = 0.0f;
-    float mAspectRatio        = 0.0f;
+    SDL_Window* mWindowHandle  = nullptr;
+    std::string mWindowTitle   = "";
+    float mRenderableWidth     = 0.0f;
+    float mRenderableHeight    = 0.0f;
+    float mAspectRatio         = 0.0f;
 };
 
 #endif /* WindowSingletonComponent_h */

@@ -99,10 +99,11 @@ void App::GameLoop()
 
         if (dtAccumulator > 1.0f)
         {
-            const auto fpsString           = " - FPS: " + std::to_string(framesAccumulator);
-            const auto frustumCulledString = " - FCed: " + std::to_string(renderingContextComponent.mFrustumCulledEntities);
-            const auto entityCountString   = " - Entities: " + std::to_string(mWorld.GetActiveEntities().size());
-            SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString + frustumCulledString + entityCountString).c_str());
+            const auto fpsString            = " - FPS: " + std::to_string(framesAccumulator);
+            const auto frustumCulledString  = " - FCed: " + std::to_string(renderingContextComponent.mFrustumCulledEntities);
+            const auto entityCountString    = " - Entities: " + std::to_string(mWorld.GetActiveEntities().size());
+            const auto renderingCallsString = " - Render Calls: " + std::to_string(renderingContextComponent.mRenderedEntities);
+            SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString + frustumCulledString + entityCountString + renderingCallsString).c_str());
 
             framesAccumulator = 0;
             dtAccumulator = 0.0f;

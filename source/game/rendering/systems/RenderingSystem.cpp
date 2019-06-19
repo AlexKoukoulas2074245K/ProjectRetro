@@ -82,8 +82,9 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     cameraComponent.mFrustum = CalculateCameraFrustum(cameraComponent.mViewMatrix, cameraComponent.mProjectionMatrix);
         
     // Debug statistics
-    renderingContextComponent.mFrustumCulledEntities = 0;
-
+    renderingContextComponent.mFrustumCulledEntities = 0U;
+    renderingContextComponent.mRenderedEntities      = 0U;
+    
     // Collect all entities that need to be processed
     const auto& activeEntities = mWorld.GetActiveEntities();
     std::vector<ecs::EntityId> guiEntities;
@@ -135,12 +136,27 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     shaderStoreComponent,
                     windowComponent,
                     transitionAnimationComponent,
+                    renderingContextComponent,
                     previousRenderingStateComponent
                 );
             }            
         }
     }
 
+    // Then, render the level ground floor
+    RenderEntityInternal
+    (
+        currentLevel.mGroundLayerEntity,
+        mWorld.GetComponent<RenderableComponent>(currentLevel.mGroundLayerEntity),
+        currentLevel.mLevelColor,
+        cameraComponent,
+        shaderStoreComponent,
+        windowComponent,
+        transitionAnimationComponent,
+        renderingContextComponent,
+        previousRenderingStateComponent
+    );
+    
     for (const auto& entityId: activeEntities)
     {
         if (ShouldProcessEntity(entityId))
@@ -157,6 +173,11 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                 continue;
             }
 
+            if (entityId == currentLevel.mGroundLayerEntity)
+            {
+                continue;
+            }
+            
             // Extract font entities from textbox components
             if (renderableComponent.mRenderableLayer == RenderableLayer::TOP)
             {
@@ -210,6 +231,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
                     shaderStoreComponent, 
                     windowComponent,
                     transitionAnimationComponent,
+                    renderingContextComponent,
                     previousRenderingStateComponent
                 );
             }            
@@ -239,6 +261,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             shaderStoreComponent, 
             windowComponent,
             transitionAnimationComponent,
+            renderingContextComponent,
             previousRenderingStateComponent
         );
     }            
@@ -257,6 +280,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             shaderStoreComponent,
             windowComponent,
             transitionAnimationComponent,
+            renderingContextComponent,
             previousRenderingStateComponent
         );
     }
@@ -274,6 +298,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
              shaderStoreComponent,
              windowComponent,
              transitionAnimationComponent,
+             renderingContextComponent,
              previousRenderingStateComponent
         );
     }
@@ -295,6 +320,7 @@ void RenderingSystem::RenderEntityInternal
     const ShaderStoreSingletonComponent& shaderStoreComponent,
     const WindowSingletonComponent& windowComponent,
     const TransitionAnimationStateSingletonComponent& transitionAnimationComponent,
+    RenderingContextSingletonComponent& renderingContextComponent,
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {
@@ -369,6 +395,8 @@ void RenderingSystem::RenderEntityInternal
         currentTexture = previousRenderingStateComponent.previousTexture;
     }    
 
+    renderingContextComponent.mRenderedEntities++;
+    
     // Perform draw call
     GL_CHECK(glDrawElements(GL_TRIANGLES, currentMesh->GetElementCount(), GL_UNSIGNED_SHORT, (void*)0));
 }

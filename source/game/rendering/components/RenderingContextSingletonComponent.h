@@ -38,6 +38,7 @@ public:
     SDL_GLContext mGLContext            = nullptr;
     GLuint mDefaultVertexArrayObject    = 0;    
     unsigned int mFrustumCulledEntities = 0;
+    unsigned int mRenderedEntities      = 0;
     bool mBlending                      = false;
     bool mDepthTest                     = false;
 };

@@ -30,6 +30,7 @@
 class CameraSingletonComponent;
 class PreviousRenderingStateSingletonComponent;
 class RenderableComponent;
+class RenderingContextSingletonComponent;
 class ShaderStoreSingletonComponent;
 class TransitionAnimationStateSingletonComponent;
 class WindowSingletonComponent;
@@ -55,6 +56,7 @@ private:
         const ShaderStoreSingletonComponent& globalShaderStoreComponent,
         const WindowSingletonComponent& globalWindowComponent,
         const TransitionAnimationStateSingletonComponent& transitionAnimationComponent,
+        RenderingContextSingletonComponent& renderingContextComponent,
         PreviousRenderingStateSingletonComponent& globalPreviousRenderingStateComponent
     ) const;
         
