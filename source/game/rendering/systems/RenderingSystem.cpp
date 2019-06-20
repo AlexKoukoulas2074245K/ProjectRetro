@@ -216,7 +216,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             // part of the level geometry textures then it is rendered in this pass here. 
             // Otherwise the entity is added to a vector of semi-transparent entities that 
             // need to be sorted prior to rendering.
-            if (currentTexture.HasTransparentPixels() && renderableComponent.mRenderableLayer != RenderableLayer::LEVEL_FLOOR_LEVEL)
+            if (currentTexture.HasTransparentPixels())
             {
                 semiTransparentTexturedEntities.push_back(entityId);
             }
