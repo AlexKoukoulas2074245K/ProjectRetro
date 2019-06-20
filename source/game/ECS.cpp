@@ -11,6 +11,7 @@
 
 #include "ECS.h"
 
+#include <typeinfo>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,11 @@ void ecs::World::RemoveEntity(const EntityId entityId)
     assert(mEntityComponentStore.count(entityId) != 0 &&
         "Entity does not exist in the world");
 
-    mEntityComponentStore.at(entityId).clear();
+    for (int i = 0; i < MAX_COMPONENTS; ++i)
+    {
+        mEntityComponentStore.at(entityId)[i] = nullptr;
+    }
+    
 }
 
 ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const EntityId entityId) const
@@ -60,7 +65,11 @@ ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const Entity
     auto componentIter = componentMap.begin();
     while (componentIter != componentMap.end())
     {
-        componentUsageMask |= mComponentMasks.at(componentIter->first);
+        if ((*componentIter) != nullptr)
+        {
+            componentUsageMask |= (*componentIter)->mComponentMask;
+        }
+        
         componentIter++;
     }
 
@@ -92,7 +101,17 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
     {
-        if (entityIter->second.size() == 0)
+        bool hasAtLeastOneComponent = false;
+        for (int i = 0; i < MAX_COMPONENTS; ++i)
+        {
+            if (entityIter->second[i] != nullptr)
+            {
+                hasAtLeastOneComponent = true;
+                break;
+            }
+        }
+        
+        if (hasAtLeastOneComponent == false)
         {
             entityIter = mEntityComponentStore.erase(entityIter);
         }
