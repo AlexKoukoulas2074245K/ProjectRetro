@@ -93,14 +93,10 @@ struct SystemTypeIdHasher
 ////////////////////////////////////////////////////////////////////////////////////
 
 class IComponent
-{
-    friend class World;
-    
+{     
 public:
     virtual ~IComponent() = default;
-    
-private:
-    ComponentMask mComponentMask;
+   
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -145,10 +141,12 @@ public:
             "Entity does not exist in the world");
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
-        assert(mEntityComponentStore.at(entityId)[componentTypeId] != nullptr &&
+        const auto& entityEntry = mEntityComponentStore.at(entityId);
+
+        assert(entityEntry.mComponentMap.count(componentTypeId) != 0 &&
             "Component is not present in this entity's component store");
         
-        return static_cast<ComponentType&>(*mEntityComponentStore.at(entityId).at(componentTypeId)); 
+        return static_cast<ComponentType&>(*entityEntry.mComponentMap.at(componentTypeId));
     }
 
     // Checks whether the given entity (entityId) has a component of type ComponentType
@@ -162,7 +160,7 @@ public:
             "Entity does not exist in the world");
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
-        return mEntityComponentStore.at(entityId)[componentTypeId] != nullptr;
+        return mEntityComponentStore.at(entityId).mComponentMap.count(componentTypeId) != 0;
     }
 
     // Adds the given component (component) to the component map of the given entity (entityId)
@@ -177,17 +175,17 @@ public:
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
 
-        assert(mEntityComponentStore.at(entityId)[componentTypeId] == nullptr &&
+        auto& entityEntry = mEntityComponentStore.at(entityId);
+        assert(entityEntry.mComponentMap.count(componentTypeId) == 0 &&
             "Component is already present in this entity's component store");
 
         if (mComponentMasks.count(componentTypeId) == 0)
         {
             RegisterComponentType<ComponentType>();
-        }
-
-        component->mComponentMask = mComponentMasks.at(componentTypeId);
+        }        
         
-        mEntityComponentStore.at(entityId)[componentTypeId] = std::move(component);
+        entityEntry.mComponentMap[componentTypeId] = std::move(component);
+        entityEntry.mComponentMask |= mComponentMasks.at(componentTypeId);
     }
 
     // Removes the component of type ComponentType from the component map of the given entity (entityid)
@@ -201,10 +199,13 @@ public:
             "Entity does not exist in the world");
 
         const auto componentTypeId = GetTypeHash<ComponentType>();
-        assert(mEntityComponentStore.at(entityId)[componentTypeId] != nullptr &&
+        auto& entityEntry = mEntityComponentStore.at(entityId);
+
+        assert(entityEntry.mComponentMap.count(componentTypeId) != 0 &&
             "Component is not present in this entity's component store");
         
-        mEntityComponentStore.at(entityId)[componentTypeId] = nullptr;
+        entityEntry.mComponentMap.erase(componentTypeId);
+        entityEntry.mComponentMask ^= mComponentMasks.at(componentTypeId);
     }
     
     template<class ComponentType>
@@ -325,9 +326,16 @@ private:
         mComponentMasks[componentTypeId] = 1LL << mComponentMasks.size();
     }  
     
-private:        
-    using ComponentMap            = std::unordered_map<ComponentTypeId, std::unique_ptr<IComponent>, ComponentTypeIdHasher>;
-    using EntityComponentStoreMap = std::unordered_map<EntityId, std::array<std::unique_ptr<IComponent>, MAX_COMPONENTS>, EntityIdHasher>;
+private:                
+    using ComponentMap = std::unordered_map<ComponentTypeId, std::unique_ptr<IComponent>, ComponentTypeIdHasher>;
+    
+    struct EntityComponentsAndMask
+    {
+        ComponentMap mComponentMap;
+        ComponentMask mComponentMask;
+    };
+
+    using EntityComponentStoreMap = std::unordered_map<EntityId, EntityComponentsAndMask, EntityIdHasher>;
     using ComponentMaskMap        = std::unordered_map<ComponentTypeId, ComponentMask, ComponentTypeIdHasher>;
 
     EntityComponentStoreMap mEntityComponentStore;

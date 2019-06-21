@@ -48,11 +48,9 @@ void ecs::World::RemoveEntity(const EntityId entityId)
     assert(mEntityComponentStore.count(entityId) != 0 &&
         "Entity does not exist in the world");
 
-    for (int i = 0; i < MAX_COMPONENTS; ++i)
-    {
-        mEntityComponentStore.at(entityId)[i] = nullptr;
-    }
-    
+    auto& entityEntry = mEntityComponentStore.at(entityId);
+    entityEntry.mComponentMap.clear();   
+    entityEntry.mComponentMask.reset();
 }
 
 ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const EntityId entityId) const
@@ -60,20 +58,7 @@ ecs::ComponentMask ecs::World::CalculateComponentUsageMaskForEntity(const Entity
     assert(entityId != NULL_ENTITY_ID &&
         "Mask calculation requested for NULL_ENTITY_ID");
 
-    ComponentMask componentUsageMask;
-    const auto& componentMap = mEntityComponentStore.at(entityId);
-    auto componentIter = componentMap.begin();
-    while (componentIter != componentMap.end())
-    {
-        if ((*componentIter) != nullptr)
-        {
-            componentUsageMask |= (*componentIter)->mComponentMask;
-        }
-        
-        componentIter++;
-    }
-
-    return componentUsageMask;
+    return mEntityComponentStore.at(entityId).mComponentMask;
 }
 
 void ecs::World::RemoveMarkedSystems()
@@ -100,18 +85,8 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
 {
     auto entityIter = mEntityComponentStore.begin();
     while (entityIter != mEntityComponentStore.end())
-    {
-        bool hasAtLeastOneComponent = false;
-        for (int i = 0; i < MAX_COMPONENTS; ++i)
-        {
-            if (entityIter->second[i] != nullptr)
-            {
-                hasAtLeastOneComponent = true;
-                break;
-            }
-        }
-        
-        if (hasAtLeastOneComponent == false)
+    {                
+        if (entityIter->second.mComponentMap.size() == 0)
         {
             entityIter = mEntityComponentStore.erase(entityIter);
         }
