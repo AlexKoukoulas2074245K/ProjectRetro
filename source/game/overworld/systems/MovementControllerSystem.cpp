@@ -11,18 +11,22 @@
 
 #include "MovementControllerSystem.h"
 #include "../components/ActiveLevelSingletonComponent.h"
+#include "../components/EncounterStateSingletonComponent.h"
 #include "../components/JumpingStateComponent.h"
 #include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/EncounterUtils.h"
 #include "../utils/LevelUtils.h"
+#include "../utils/LevelLoadingUtils.h"
 #include "../utils/MovementUtils.h"
+#include "../utils/OverworldUtils.h"
 #include "../utils/WarpConnectionsUtils.h"
 #include "../../common/GameConstants.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
+#include "../../common/utils/TextboxUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -218,8 +222,14 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     hasPlayerTag
                 )
                 {
-                    const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
-                    (void)encounterInfo;
+                    //const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
+                    //DestroyLevel(levelModelComponent.mLevelName, mWorld);
+                    //mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
+                    //const auto newLevelEntityId = LoadAndCreateLevelByName(StringId("battle"), mWorld);
+                    //auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+                    //mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = levelModelComponent.mLevelName;
+                    mWorld.GetSingletonComponent<EncounterStateSingletonComponent>().mActiveEncounterType = EncounterType::WILD;
+                    return;
                 }
 
                 // Jumping ledge tile flow

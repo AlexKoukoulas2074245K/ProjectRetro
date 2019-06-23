@@ -18,6 +18,9 @@
 
 #include "../../ECS.h"
 #include "../../common/utils/Timer.h"
+#include "../../resources/ResourceLoadingService.h"
+
+#include <queue>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +28,7 @@
 
 enum class TransitionAnimationType
 {
-    WARP, BATTLE
+    WARP, WILD_FLASH, ENCOUNTER
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -34,10 +37,14 @@ enum class TransitionAnimationType
 
 class TransitionAnimationStateSingletonComponent final: public ecs::IComponent
 {
-public:    
+public:
+    std::queue<ResourceId> mAnimFrameResourceIdQueue;
     std::unique_ptr<Timer> mAnimationTimer           = nullptr;
     TransitionAnimationType mTransitionAnimationType = TransitionAnimationType::WARP;
-    int mWarpAnimationProgressionStep                = 0;
+    ecs::EntityId mEncounterSpecificAnimFrameEntity  = ecs::NULL_ENTITY_ID;
+    int mAnimationProgressionStep                    = 0;
+    int mAnimationCycleCompletionCount               = 0;
+    bool mAscendingPalette                           = false;
     bool mIsPlayingTransitionAnimation               = false;
         
 };

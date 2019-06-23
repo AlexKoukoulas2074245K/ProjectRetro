@@ -165,6 +165,14 @@ ecs::EntityId CreateTextboxWithDimensions
     return textboxEntityId;
 }
 
+ecs::EntityId CreateChatbox
+(
+    ecs::World& world
+)
+{
+    return CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, world);
+}
+
 void DestroyActiveTextbox
 (
     ecs::World& world

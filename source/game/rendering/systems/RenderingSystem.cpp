@@ -93,7 +93,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     
     // Set background color
     const auto& currentLevel    = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
-    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, currentLevel.mLevelName, transitionAnimationComponent.mWarpAnimationProgressionStep);
+    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, currentLevel.mLevelName, transitionAnimationComponent.mAnimationProgressionStep);
     GL_CHECK(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
     
     // Clear buffers
@@ -374,7 +374,7 @@ void RenderingSystem::RenderEntityInternal
     world = glm::scale(world, scale);
     
     // Set matrix uniforms
-    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mWarpAnimationProgressionStep));
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mAnimationProgressionStep));
     GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(CURRENT_LEVEL_COLOR_UNIFORM_NAME), currentLevelColor.x, currentLevelColor.y, currentLevelColor.z, currentLevelColor.w));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));

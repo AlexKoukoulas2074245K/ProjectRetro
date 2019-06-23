@@ -27,7 +27,7 @@
 
 bool DoesLevelHaveWildEncounters(const LevelModelComponent& levelModelComponent)
 {
-    return levelModelComponent.mEncounters.size() > 0;
+    return levelModelComponent.mWildEncounters.size() > 0;
 }
 
 bool WildEncounterRNGTriggered(const LevelModelComponent& levelModelComponent)
@@ -35,12 +35,12 @@ bool WildEncounterRNGTriggered(const LevelModelComponent& levelModelComponent)
     return levelModelComponent.mEncounterDensity >= math::RandomInt(1, 256);
 }
 
-const EncounterInfo& SelectRandomWildEncounter(const LevelModelComponent& levelModelComponent)
+const WildEncounterInfo& SelectRandomWildEncounter(const LevelModelComponent& levelModelComponent)
 {
     const auto randomEncounterIndex  = math::RandomInt(1, 256);
     auto encounterRateAccumulator    = 0;
 
-    for (const auto& encounterInfo: levelModelComponent.mEncounters)
+    for (const auto& encounterInfo: levelModelComponent.mWildEncounters)
     {
         encounterRateAccumulator += encounterInfo.mRate;
         if (randomEncounterIndex <= encounterRateAccumulator)
@@ -49,8 +49,8 @@ const EncounterInfo& SelectRandomWildEncounter(const LevelModelComponent& levelM
         }
     }
 
-    assert(false && "Encounter rate accuulator larger than sum of encounter rates");
-    return levelModelComponent.mEncounters[0];
+    assert(false && "Encounter rate accumulator larger than sum of encounter rates");
+    return levelModelComponent.mWildEncounters[0];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

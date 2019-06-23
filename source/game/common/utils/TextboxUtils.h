@@ -63,6 +63,11 @@ ecs::EntityId CreateTextboxWithDimensions
     ecs::World& world
 );
 
+ecs::EntityId CreateChatbox
+(
+    ecs::World& world
+);
+
 void DestroyActiveTextbox
 (
     ecs::World& world

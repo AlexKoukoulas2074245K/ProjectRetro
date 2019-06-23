@@ -22,6 +22,7 @@
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../overworld/OverworldConstants.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/EncounterStateSingletonComponent.h"
 #include "../../overworld/components/MovementStateComponent.h"
 #include "../../overworld/components/NpcAiComponent.h"
 #include "../../overworld/components/LevelModelComponent.h"
@@ -49,6 +50,7 @@ PlayerActionControllerSystem::PlayerActionControllerSystem(ecs::World& world)
 void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) const
 {
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+    const auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
@@ -63,7 +65,13 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             {
                 continue;
             }
-
+            
+            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {
+                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+                continue;
+            }
+            
             if (warpConnectionsComponent.mHasPendingWarpConnection)
             {
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
@@ -172,8 +180,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             }
 
-            const auto textboxEntityId = CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, mWorld);
-            QueueDialogForTextbox(textboxEntityId, npcAiComponent.mDialog, mWorld);
+            QueueDialogForTextbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
             npcTimerComponent.mAnimationTimer->Reset();
         }

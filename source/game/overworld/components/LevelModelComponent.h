@@ -56,7 +56,7 @@ struct Tile
     ecs::EntityId mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
 };
 
-struct EncounterInfo
+struct WildEncounterInfo
 {
     PokemonInfo mPokemonInfo;
     int mRate = 0;
@@ -76,7 +76,7 @@ class LevelModelComponent final: public ecs::IComponent
 {
 public:    
      LevelTilemap mLevelTilemap;
-     std::vector<EncounterInfo> mEncounters;
+     std::vector<WildEncounterInfo> mWildEncounters;
      StringId mLevelName              = StringId();
      glm::vec4 mLevelColor            = colors::PALLET_COLOR;
      ecs::EntityId mGroundLayerEntity = ecs::NULL_ENTITY_ID;

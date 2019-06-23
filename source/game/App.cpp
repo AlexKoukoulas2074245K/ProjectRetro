@@ -26,6 +26,7 @@
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/MeshUtils.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
+#include "overworld/components/EncounterStateSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
@@ -137,6 +138,8 @@ void App::DummyInitialization()
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
+    mWorld.SetSingletonComponent<EncounterStateSingletonComponent>(std::make_unique<EncounterStateSingletonComponent>());
+    
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));

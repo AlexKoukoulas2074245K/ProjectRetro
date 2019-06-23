@@ -30,11 +30,16 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
    
 private:
-    static const float TRANSITION_STEP_DURATION;
-    static const int TRANSITION_STEPS_COUNT;
+    static const float WARP_TRANSITION_STEP_DURATION;
+    static const float WILD_FLASH_ANIMATION_STEP_DURATION;
+    static const float ENCOUNTER_ANIMATION_FRAME_DURATION;
+    static const int TRANSITION_STEP_COUNT;
+    static const int WILD_FLASH_CYCLE_REPEAT_COUNT;
 
     void UpdateWarpTransitionAnimation(const float dt) const;
-    void UpdateBattleTransitionAnimation(const float dt) const;
+    void UpdateWildFlashTransitionAnimation(const float dt) const;
+    void UpdateEncounterTransitionAnimation(const float dt) const;
+    void LoadEncounterSpecificAnimation() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../components/LevelModelComponent.h"
+#include "../components/LevelResidentComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
@@ -134,6 +135,22 @@ inline ecs::EntityId GetLevelIdFromNameId(const StringId& levelNameId, const ecs
     }
     
     return ecs::NULL_ENTITY_ID;
+}
+
+inline void DestroyLevel(const StringId levelNameId, ecs::World& world)
+{
+    for (const auto& entityId : world.GetActiveEntities())
+    {
+        if (world.HasComponent<LevelResidentComponent>(entityId))
+        {
+            if (world.GetComponent<LevelResidentComponent>(entityId).mLevelNameId == levelNameId)
+            {
+                world.RemoveEntity(entityId);
+            }
+        }
+    }
+    
+    world.RemoveEntity(GetLevelIdFromNameId(levelNameId, world));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

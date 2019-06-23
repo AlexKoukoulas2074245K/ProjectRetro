@@ -52,7 +52,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
     
     if (warpConnectionsComponent.mHasPendingWarpConnection && transitionAnimationStateSingletonComponent.mIsPlayingTransitionAnimation == false)
     {        
-        DestroyCurrentLevel(activeLevelSingletonComponent.mActiveLevelNameId);
+        DestroyLevel(activeLevelSingletonComponent.mActiveLevelNameId, mWorld);
         
         const auto playerEntityId           = GetPlayerEntityId(mWorld);
         auto& playerMovementStateComponent  = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
@@ -135,22 +135,6 @@ void WarpConnectionsSystem::PopulateWarpConnections() const
     }
 
     mWorld.SetSingletonComponent<WarpConnectionsSingletonComponent>(std::move(warpConnectionsComponent));
-}
-
-void WarpConnectionsSystem::DestroyCurrentLevel(const StringId levelNameId) const
-{    
-    for (const auto& entityId : mWorld.GetActiveEntities())
-    {
-        if (mWorld.HasComponent<LevelResidentComponent>(entityId))
-        {
-            if (mWorld.GetComponent<LevelResidentComponent>(entityId).mLevelNameId == levelNameId)
-            {
-                mWorld.RemoveEntity(entityId);
-            }
-        }
-    }
-    
-    mWorld.RemoveEntity(GetLevelIdFromNameId(levelNameId, mWorld));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

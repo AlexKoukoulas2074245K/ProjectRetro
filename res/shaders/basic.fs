@@ -41,7 +41,7 @@ vec4 getTransitionAnimationColor()
 	else if (abs(smallestDistance - blueColorDistance) < 0.01)         currentColorIndex = 2;
 	else                                                               currentColorIndex = 3;
 	
-	return colorPool[min((currentColorIndex + transition_progression_step), 3)];
+	return colorPool[max(0, min((currentColorIndex + transition_progression_step), 3))];
 }
 
 vec4 getPaletteColor()
@@ -74,7 +74,7 @@ void main()
 	
 	if (frag_color.w > 0.5)
 	{
-        if (transition_progression_step > 0)
+        if (transition_progression_step != 0)
         {
             frag_color = getTransitionAnimationColor();
         }

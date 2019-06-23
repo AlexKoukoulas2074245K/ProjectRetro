@@ -528,7 +528,7 @@ void CheckAndLoadEncounterInfo
     // Extract encounters
     for (const auto& encounterInfoJsonObject: encounterJson["encounters"])
     {
-        EncounterInfo encounterInfo;
+        WildEncounterInfo encounterInfo;
         encounterInfo.mRate                   = encounterInfoJsonObject["rate"].get<int>();
         encounterInfo.mPokemonInfo.mName      = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
         encounterInfo.mPokemonInfo.mLevel     = encounterInfoJsonObject["level"].get<int>();
@@ -536,7 +536,7 @@ void CheckAndLoadEncounterInfo
         //TODO: fix
         encounterInfo.mPokemonInfo.mPokedexId = 1;
         
-        levelModelComponent.mEncounters.push_back(encounterInfo);
+        levelModelComponent.mWildEncounters.push_back(encounterInfo);
     }
     
     resourceLoadingService.UnloadResource(encounterDataFilePath);
