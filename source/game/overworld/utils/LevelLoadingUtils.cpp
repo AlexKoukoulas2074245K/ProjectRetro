@@ -342,10 +342,17 @@ void CreateLevelModelEntry
         StringId("out_flower_top_left"),
     };
     
+    static const std::vector<StringId> grassModels =
+    {
+        StringId("out_grass_wild")
+    };
+    
     // Extract model name from the: 'model_name (col_dim, row_dim)' format
     const auto modelName             = StringSplit(modelEntryJsonObject["model_name"].get<std::string>(), ' ')[0];
     const auto isSeaTileModel        = StringStartsWith(modelName, LEVEL_SEA_TILE_MODEL_NAME);
     const auto isAnimatedFlowerModel = std::find(flowerModels.begin(), flowerModels.end(), modelName) != flowerModels.end();
+    const auto isWildGrassModel      = std::find(grassModels.begin(), grassModels.end(), modelName) != grassModels.end();
+    const auto isUndergroundModel    = std::find(undergroundModels.begin(), undergroundModels.end(), modelName) != undergroundModels.end();
     
     // In the case of sea tiles dont create any entities, since they will be populated at a future step
     if (isSeaTileModel)
@@ -402,12 +409,18 @@ void CreateLevelModelEntry
             LoadResource(ResourceLoadingService::RES_MODELS_ROOT + modelName + ".obj"
         ));
         
-        renderableComponent->mRenderableLayer = std::find
-        (
-            undergroundModels.begin(),
-            undergroundModels.end(),
-            StringId(modelName)
-        ) != undergroundModels.end() ? RenderableLayer::UNDERGROUND : RenderableLayer::LEVEL_FLOOR_LEVEL;
+        if (isUndergroundModel)
+        {
+            renderableComponent->mRenderableLayer = RenderableLayer::UNDERGROUND;
+        }
+        else if (isWildGrassModel)
+        {
+            renderableComponent->mRenderableLayer = RenderableLayer::UNDERGROUND;
+        }
+        else
+        {
+            renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
+        }
         
         renderableComponent->mActiveAnimationNameId = StringId("default");
         renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
