@@ -28,7 +28,7 @@ public:
     void Run();
     
 private:    
-    void InitializeSystems();
+    void CreateSystems();
     void GameLoop();
     bool AppShouldQuit();
     void DummyInitialization();

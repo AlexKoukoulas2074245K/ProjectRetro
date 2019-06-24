@@ -15,6 +15,7 @@
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/systems/GuiManagementSystem.h"
+#include "encounter/components/EncounterStateSingletonComponent.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationTimerComponent.h"
@@ -26,7 +27,6 @@
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/MeshUtils.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
-#include "overworld/components/EncounterStateSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
@@ -43,6 +43,7 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
+#include "encounter/systems/EncounterStateControllerSystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@
 
 void App::Run()
 {    
-    InitializeSystems();
+    CreateSystems();
     GameLoop();
 }
 
@@ -58,7 +59,7 @@ void App::Run()
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void App::InitializeSystems()
+void App::CreateSystems()
 {
     auto renderingSystem = std::make_unique<RenderingSystem>(mWorld);
 
@@ -72,6 +73,7 @@ void App::InitializeSystems()
     mWorld.AddSystem(std::make_unique<SeaTilesAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<EncounterStateControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.AddSystem(std::move(renderingSystem));
 }
@@ -138,8 +140,6 @@ void App::DummyInitialization()
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
-    mWorld.SetSingletonComponent<EncounterStateSingletonComponent>(std::make_unique<EncounterStateSingletonComponent>());
-    
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));

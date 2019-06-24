@@ -10,12 +10,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "TransitionAnimationSystem.h"
-#include "../components/EncounterStateSingletonComponent.h"
 #include "../components/TransitionAnimationStateSingletonComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/Logging.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
@@ -114,9 +114,10 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
             {
                 if (++transitionAnimationStateComponent.mAnimationCycleCompletionCount == WILD_FLASH_CYCLE_REPEAT_COUNT)
                 {
-                    encounterStateComponent.mEncounterState = EncounterState::ENCOUNTER_ANIMATION;
+                    encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION;
+
                     transitionAnimationStateComponent.mTransitionAnimationType = TransitionAnimationType::ENCOUNTER;
-                    transitionAnimationStateComponent.mAnimationTimer = std::make_unique<Timer>(ENCOUNTER_ANIMATION_FRAME_DURATION);
+                    transitionAnimationStateComponent.mAnimationTimer          = std::make_unique<Timer>(ENCOUNTER_ANIMATION_FRAME_DURATION);
                     LoadEncounterSpecificAnimation();
                 }
             }
@@ -134,7 +135,7 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
 void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float dt) const
 {
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    //auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     transitionAnimationStateComponent.mAnimationTimer->Update(dt);
     if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
@@ -171,8 +172,7 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
         }
         else
         {
-            const auto b = false;
-            (void)b;
+            encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
         }           
     }
 }

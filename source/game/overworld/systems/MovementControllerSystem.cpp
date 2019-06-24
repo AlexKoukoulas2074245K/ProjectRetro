@@ -11,7 +11,6 @@
 
 #include "MovementControllerSystem.h"
 #include "../components/ActiveLevelSingletonComponent.h"
-#include "../components/EncounterStateSingletonComponent.h"
 #include "../components/JumpingStateComponent.h"
 #include "../components/LevelModelComponent.h"
 #include "../components/MovementStateComponent.h"
@@ -27,6 +26,7 @@
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
