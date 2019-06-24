@@ -18,6 +18,8 @@
 
 #include "../../ECS.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,7 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
    
 private:
+    static const std::string TRANSITION_ANIM_MODEL_FILE_NAME;
     static const float WARP_TRANSITION_STEP_DURATION;
     static const float WILD_FLASH_ANIMATION_STEP_DURATION;
     static const float ENCOUNTER_ANIMATION_FRAME_DURATION;

@@ -14,7 +14,6 @@
 #include "../components/TransitionAnimationStateSingletonComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
-#include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/Logging.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -25,11 +24,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION      = 0.13f;
-const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION = 0.05f;
-const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION = 0.05f;
-const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                = 3;
-const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT        = 3;
+const std::string TransitionAnimationSystem::TRANSITION_ANIM_MODEL_FILE_NAME = "transition_anim_quad.obj";
+const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION         = 0.13f;
+const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION    = 0.035f;
+const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION    = 0.045f;
+const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                   = 3;
+const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT           = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
                 {
                     encounterStateComponent.mEncounterState = EncounterState::ENCOUNTER_ANIMATION;
                     transitionAnimationStateComponent.mTransitionAnimationType = TransitionAnimationType::ENCOUNTER;
-                    transitionAnimationStateComponent.mAnimationTimer = std::make_unique<Timer>(WILD_FLASH_ANIMATION_STEP_DURATION);
+                    transitionAnimationStateComponent.mAnimationTimer = std::make_unique<Timer>(ENCOUNTER_ANIMATION_FRAME_DURATION);
                     LoadEncounterSpecificAnimation();
                 }
             }
@@ -141,30 +141,39 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
     {
         transitionAnimationStateComponent.mAnimationTimer->Reset();
         if (transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity != ecs::NULL_ENTITY_ID)
-        {
+        {            
             mWorld.RemoveEntity(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity);
+            transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = ecs::NULL_ENTITY_ID;
         }
         
-        transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = mWorld.CreateEntity();
-        
-        auto renderableComponent = std::make_unique<RenderableComponent>();
-        renderableComponent->mTextureResourceId = transitionAnimationStateComponent.mAnimFrameResourceIdQueue.front();
-        renderableComponent->mActiveAnimationNameId = StringId("default");
-        renderableComponent->mShaderNameId          = StringId("gui");
-        renderableComponent->mAffectedByPerspective = false;
-        renderableComponent->mActiveAnimationNameId = StringId("default");
-        
-        const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + GUI_COMPONENTS_MODEL_NAME + ".obj";
-        auto& resourceLoadingService = ResourceLoadingService::GetInstance();
-        renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
-        
-        transitionAnimationStateComponent.mAnimFrameResourceIdQueue.pop();
-        
-        auto transformComponent = std::make_unique<TransformComponent>();
-        transformComponent->mScale = glm::vec3(2.0f, 2.0f, 1.0f);
-        
-        mWorld.AddComponent<RenderableComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(renderableComponent));
-        mWorld.AddComponent<TransformComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(transformComponent));
+        if (transitionAnimationStateComponent.mAnimFrameResourceIdQueue.size() > 0)
+        {
+            transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = mWorld.CreateEntity();
+
+            auto renderableComponent = std::make_unique<RenderableComponent>();
+            renderableComponent->mTextureResourceId = transitionAnimationStateComponent.mAnimFrameResourceIdQueue.front();
+            renderableComponent->mActiveAnimationNameId = StringId("default");
+            renderableComponent->mShaderNameId = StringId("gui");
+            renderableComponent->mAffectedByPerspective = false;
+            renderableComponent->mActiveAnimationNameId = StringId("default");
+
+            const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + TRANSITION_ANIM_MODEL_FILE_NAME;
+            auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+            renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
+
+            transitionAnimationStateComponent.mAnimFrameResourceIdQueue.pop();
+
+            auto transformComponent = std::make_unique<TransformComponent>();
+            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
+
+            mWorld.AddComponent<RenderableComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(renderableComponent));
+            mWorld.AddComponent<TransformComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(transformComponent));
+        }
+        else
+        {
+            const auto b = false;
+            (void)b;
+        }           
     }
 }
 
@@ -177,11 +186,8 @@ void TransitionAnimationSystem::LoadEncounterSpecificAnimation() const
     const auto transitionAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + "transition_animations/wild_anim1/";
     const auto& encounterAnimFilenames = GetAllFilenamesInDirectory(transitionAnimationDirPath);
     for (const auto& filename: encounterAnimFilenames)
-    {
-        if (resourceLoadingService.HasLoadedResource(transitionAnimationDirPath + filename) == false)
-        {
-            transitionAnimationStateComponent.mAnimFrameResourceIdQueue.push(resourceLoadingService.LoadResource(transitionAnimationDirPath + filename));
-        }
+    {        
+        transitionAnimationStateComponent.mAnimFrameResourceIdQueue.push(resourceLoadingService.LoadResource(transitionAnimationDirPath + filename));        
     }
 }
 
