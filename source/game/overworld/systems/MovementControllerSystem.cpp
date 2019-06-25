@@ -222,12 +222,6 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     hasPlayerTag
                 )
                 {
-                    //const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
-                    //DestroyLevel(levelModelComponent.mLevelName, mWorld);
-                    //mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
-                    //const auto newLevelEntityId = LoadAndCreateLevelByName(StringId("battle"), mWorld);
-                    //auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
-                    //mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = levelModelComponent.mLevelName;
                     mWorld.GetSingletonComponent<EncounterStateSingletonComponent>().mActiveEncounterType = EncounterType::WILD;
                     return;
                 }

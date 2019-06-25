@@ -105,7 +105,7 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
         transitionAnimationStateComponent.mAnimationTimer->Reset();
         if (transitionAnimationStateComponent.mAscendingPalette)
         {
-            if (++transitionAnimationStateComponent.mAnimationProgressionStep > TRANSITION_STEP_COUNT)
+            if (++transitionAnimationStateComponent.mAnimationProgressionStep >= TRANSITION_STEP_COUNT)
             {
                 transitionAnimationStateComponent.mAscendingPalette = false;
             }
@@ -124,11 +124,13 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
         }
         else
         {
-            if (--transitionAnimationStateComponent.mAnimationProgressionStep < -TRANSITION_STEP_COUNT)
+            if (--transitionAnimationStateComponent.mAnimationProgressionStep <= -TRANSITION_STEP_COUNT)
             {
                 transitionAnimationStateComponent.mAscendingPalette = true;
             }
         }
+        
+        Log(LogType::INFO, "%d", transitionAnimationStateComponent.mAnimationProgressionStep);
     }
 }
 

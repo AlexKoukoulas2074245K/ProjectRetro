@@ -22,7 +22,6 @@ EncounterStateControllerSystem::EncounterStateControllerSystem(ecs::World& world
     : BaseSystem(world)
 {
     InitializeEncounterState();
-    //CalculateAndSetComponentUsageMask<AnimatedFlowerTagComponent, RenderableComponent>();
 }
 
 void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt) const
@@ -47,6 +46,13 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     else if (encounterStateComponent.mOverworldEncounterAnimationState == OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE)
     {
         encounterStateComponent.mActiveEncounterFlowState = std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld);
+        
+        const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
+        DestroyLevel(levelModelComponent.mLevelName, mWorld);
+        mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
+        const auto newLevelEntityId = LoadAndCreateLevelByName(StringId("battle"), mWorld);
+        auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = levelModelComponent.mLevelName;
     }
 }
 
