@@ -23,7 +23,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
 
 void OpponentIntroTextEncounterFlowState::VUpdate(const float)
 {
-    CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+    //CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

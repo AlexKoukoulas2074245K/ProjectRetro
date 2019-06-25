@@ -16,7 +16,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../../common/utils/Logging.h"
+
 #include <memory>
+#include <typeinfo>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +57,13 @@ protected:
     {
         static_assert(std::is_base_of<BaseEncounterFlowState, FlowStateType>::value, 
             "Tried to transition to a non BaseEncounterFlowState subclass");
+        
+#ifndef NDEBUG
+        Log(LogType::INFO, "Transitioned to state: %s", typeid(FlowStateType).name());
+#endif
+        
         mNextFlowState = std::make_unique<FlowStateType>(mWorld);
+
     }
 
     ecs::World& mWorld;
