@@ -34,6 +34,11 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
     const int transitionAnimationStep
 )
 {
+    if (currentLevelNameId.GetString() == "battle")
+    {
+        return colors::GLOBAL_WHITE_COLOR;
+    }
+    
     if (IsLevelIndoors(currentLevelNameId))
     {
         return colors::GLOBAL_BLACK_COLOR;

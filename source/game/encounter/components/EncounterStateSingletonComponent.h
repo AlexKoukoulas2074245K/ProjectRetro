@@ -18,8 +18,10 @@
 
 #include "../../ECS.h"
 #include "../flowstates/BaseEncounterFlowState.h"
+#include "../../common/GameConstants.h"
 
 #include <memory>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +43,8 @@ enum class OverworldEncounterAnimationState
 
 class EncounterStateSingletonComponent final: public ecs::IComponent
 {
-public:    
+public:
+    std::vector<PokemonInfo> mOpponentPokemonRoster;
     std::unique_ptr<BaseEncounterFlowState> mActiveEncounterFlowState = nullptr;
     EncounterType mActiveEncounterType = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;    

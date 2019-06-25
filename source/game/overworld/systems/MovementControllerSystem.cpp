@@ -222,7 +222,13 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     hasPlayerTag
                 )
                 {
-                    mWorld.GetSingletonComponent<EncounterStateSingletonComponent>().mActiveEncounterType = EncounterType::WILD;
+                    const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
+                    
+                    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+                    
+                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
+                    encounterStateComponent.mOpponentPokemonRoster.push_back(encounterInfo.mPokemonInfo);
+                    
                     return;
                 }
 

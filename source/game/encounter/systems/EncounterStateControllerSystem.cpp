@@ -13,6 +13,12 @@
 #include "../flowstates/BaseEncounterFlowState.h"
 #include "../flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
 #include "../components/EncounterStateSingletonComponent.h"
+#include "../../common/utils/TextboxUtils.h"
+#include "../../overworld/components/LevelModelComponent.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
+#include "../../overworld/utils/LevelLoadingUtils.h"
+#include "../../overworld/utils/OverworldUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -47,12 +53,18 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     {
         encounterStateComponent.mActiveEncounterFlowState = std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld);
         
-        const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
+        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+        const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+        
         DestroyLevel(levelModelComponent.mLevelName, mWorld);
         mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
-        const auto newLevelEntityId = LoadAndCreateLevelByName(StringId("battle"), mWorld);
-        auto& levelModelComponent   = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
-        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = levelModelComponent.mLevelName;
+        
+        const auto newLevelEntityId     = LoadAndCreateLevelByName(StringId("battle"), mWorld);
+        auto& battleLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+        
+        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = battleLevelModelComponent.mLevelName;
+        
+        CreateChatbox(mWorld);
     }
 }
 

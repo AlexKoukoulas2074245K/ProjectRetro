@@ -2,7 +2,7 @@
     "level_header":
     {
         "name": "battle",
-        "dimensions": { "cols": 32, "rows": 32},
+        "dimensions": { "cols": 1, "rows": 1},
         "color": "PALLET"
     },
     "level_ground_layer_editor":
@@ -11,7 +11,7 @@
     ],
     "level_ground_layer_game":
     [
-        { "texture_name": "pallet_groundLayer.png", "game_position_x": 25.6, "game_position_z": 25.6 }
+        { "texture_name": "battle_groundLayer", "game_position_x": 0.0, "game_position_z":0.0 }
     ],
     "level_npc_list":
     [
