@@ -11,11 +11,23 @@
 
 #include "DarkenedOpponentsIntroEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
+#include "../components/EncounterStateSingletonComponent.h"
+#include "../utils/EncounterSpriteUtils.h"
 #include "../../ECS.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
-#include "../../resources/MeshUtils.h"
-#include "../../rendering/components/RenderableComponent.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_INIT_POS = glm::vec3(0.5f, 0.06f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_TARGET_POS = glm::vec3(-0.39f, 0.06f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_INIT_POS = glm::vec3(-0.5f, 0.61f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_TARGET_POS = glm::vec3(0.38f, 0.61f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::SPRITE_SCALE = glm::vec3(0.49f, 0.49f, 1.0f);
+
+const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 0.7f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -23,71 +35,76 @@
 
 DarkenedOpponentsIntroEncounterFlowState::DarkenedOpponentsIntroEncounterFlowState(ecs::World& world)
     : BaseEncounterFlowState(world)
-{    
-    const auto playerTrainerSpriteEntity = world.CreateEntity();
+{
+    CreateBattleOpponentsSprites();
+    mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = true;
+}
+
+void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    auto renderableComponent                    = std::make_unique<RenderableComponent>();
-    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "trainers.png");
-    renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mShaderNameId          = StringId("gui");
-    renderableComponent->mRenderableLayer       = RenderableLayer::TOP;
-    renderableComponent->mAffectedByPerspective = false;
+    auto& playerTrainerSpriteTransformComponent   = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mPlayerActiveSpriteEntityId);
+    auto& opponentTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mOpponentActiveSpriteEntityId);
     
-    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations
+    playerTrainerSpriteTransformComponent.mPosition.x   -= SPRITE_ANIMATION_SPEED * dt;
+    opponentTrainerSpriteTransformComponent.mPosition.x += SPRITE_ANIMATION_SPEED * dt;
+    
+    if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_SPRITE_TARGET_POS.x)
+    {
+        playerTrainerSpriteTransformComponent.mPosition.x   = PLAYER_TRAINER_SPRITE_TARGET_POS.x;
+        opponentTrainerSpriteTransformComponent.mPosition.x = OPPONENT_SPRITE_TARGET_POS.x;
+        
+        mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = false;
+        CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void DarkenedOpponentsIntroEncounterFlowState::CreateBattleOpponentsSprites() const
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    encounterStateComponent.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
     (
         6,
         4,
-        10,
-        5,
-        false,
-        "camera_facing_quad",
-        renderableComponent->mActiveAnimationNameId,
-        *renderableComponent
+        PLAYER_TRAINER_SPRITE_INIT_POS,
+        SPRITE_SCALE,
+        mWorld
     );
     
-    auto transformComponent       = std::make_unique<TransformComponent>();
-    transformComponent->mPosition = glm::vec3(-0.37f, 0.05f, 0.0f);
-    transformComponent->mScale    = glm::vec3(0.5f, 0.5f, 1.0f);
-
-    mWorld.AddComponent<RenderableComponent>(playerTrainerSpriteEntity, std::move(renderableComponent));
-    mWorld.AddComponent<TransformComponent>(playerTrainerSpriteEntity, std::move(transformComponent));
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+    {
+        encounterStateComponent.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
+        (
+            4,
+            4,
+            OPPONENT_SPRITE_INIT_POS,
+            SPRITE_SCALE,
+            mWorld
+        );
+    }
+    else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+    {
+        encounterStateComponent.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
+        (
+            encounterStateComponent.mOpponentPokemonRoster.front().mName,
+            true,
+            OPPONENT_SPRITE_INIT_POS,
+            SPRITE_SCALE,
+            mWorld
+        );
+    }
     
-    const auto enemyTrainerSpriteEntity = world.CreateEntity();
     
-    renderableComponent                         = std::make_unique<RenderableComponent>();
-    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "trainers.png");
-    renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mShaderNameId          = StringId("gui");
-    renderableComponent->mRenderableLayer       = RenderableLayer::TOP;
-    renderableComponent->mAffectedByPerspective = false;
-    
-    LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations
-    (
-        4,
-        4,
-        10,
-        5,
-        false,
-        "camera_facing_quad",
-        renderableComponent->mActiveAnimationNameId,
-        *renderableComponent
-    );
-    
-    transformComponent            = std::make_unique<TransformComponent>();
-    transformComponent->mPosition = glm::vec3(0.37f, 0.56f, 0.0f);
-    transformComponent->mScale    = glm::vec3(0.5f, 0.5f, 1.0f);
-    
-    mWorld.AddComponent<RenderableComponent>(enemyTrainerSpriteEntity, std::move(renderableComponent));
-    mWorld.AddComponent<TransformComponent>(enemyTrainerSpriteEntity, std::move(transformComponent));
-    
-    mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mAnimationProgressionStep = 2;
-}
-
-void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float)
-{
-    CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+    mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+

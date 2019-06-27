@@ -44,6 +44,7 @@ public:
     ecs::EntityId mEncounterSpecificAnimFrameEntity  = ecs::NULL_ENTITY_ID;
     int mAnimationProgressionStep                    = 0;
     int mAnimationCycleCompletionCount               = 0;
+    bool mBlackAndWhiteModeEnabled                   = false;
     bool mAscendingPalette                           = false;
     bool mIsPlayingTransitionAnimation               = false;
         

@@ -50,6 +50,7 @@ private:
     void UpdateChatboxParagraphEndDelay(const float dt) const;
     void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
     
+    bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

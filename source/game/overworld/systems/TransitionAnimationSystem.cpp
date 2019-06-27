@@ -154,11 +154,10 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
             transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = mWorld.CreateEntity();
 
             auto renderableComponent = std::make_unique<RenderableComponent>();
-            renderableComponent->mTextureResourceId = transitionAnimationStateComponent.mAnimFrameResourceIdQueue.front();
+            renderableComponent->mTextureResourceId     = transitionAnimationStateComponent.mAnimFrameResourceIdQueue.front();
             renderableComponent->mActiveAnimationNameId = StringId("default");
-            renderableComponent->mShaderNameId = StringId("gui");
+            renderableComponent->mShaderNameId          = StringId("gui");
             renderableComponent->mAffectedByPerspective = false;
-            renderableComponent->mActiveAnimationNameId = StringId("default");
 
             const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + TRANSITION_ANIM_MODEL_FILE_NAME;
             auto& resourceLoadingService = ResourceLoadingService::GetInstance();

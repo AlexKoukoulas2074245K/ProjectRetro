@@ -13,12 +13,25 @@ uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
 
 uniform vec4 current_level_color;
 uniform int transition_progression_step;
+uniform int black_and_white_mode;
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;
 
 // actual output
 // gl_FragColor is deprecated
 out vec4 frag_color;
+
+vec4 getBlackAndWhiteModeColor()
+{
+    if (distance(global_white_color, frag_color) < 0.01)
+    {
+        return global_white_color;
+    }
+    else
+    {
+        return global_black_color;
+    }
+}
 
 vec4 getTransitionAnimationColor()
 {
@@ -74,6 +87,10 @@ void main()
 	
 	if (frag_color.w > 0.5)
 	{
+        if (black_and_white_mode != 0)
+        {
+            frag_color = getBlackAndWhiteModeColor();
+        }
         if (transition_progression_step != 0)
         {
             frag_color = getTransitionAnimationColor();

@@ -48,6 +48,7 @@ const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME               = StringI
 const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME                = StringId("view");
 const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME          = StringId("proj");
 const StringId RenderingSystem::TRANSITION_ANIMATION_STEP_UNIFORM_NAME = StringId("transition_progression_step");
+const StringId RenderingSystem::BLACK_AND_WHITE_MODE_UNIFORM_NAME      = StringId("black_and_white_mode");
 const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME       = StringId("current_level_color");
 const StringId RenderingSystem::GUI_SHADER_NAME                        = StringId("gui");
 
@@ -177,13 +178,6 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             {
                 continue;
             }
-            
-            // Extract font entities from textbox components
-            if (renderableComponent.mRenderableLayer == RenderableLayer::TOP)
-            {
-                topRenderedEntities.push_back(entityId);
-                continue;
-            }
                 
             // Separate GUI entities to render them last
             if (renderableComponent.mShaderNameId == GUI_SHADER_NAME)
@@ -266,8 +260,18 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
         );
     }            
 
+    // Sort GUI elements based on z
+    std::sort(guiEntities.begin(), guiEntities.end(), [this](const ecs::EntityId& lhs, const ecs::EntityId& rhs)
+    {
+        const auto& lhsTransformComponent = mWorld.GetComponent<TransformComponent>(lhs);
+        const auto& rhsTransformComponent = mWorld.GetComponent<TransformComponent>(rhs);
+                  
+        return lhsTransformComponent.mPosition.z > rhsTransformComponent.mPosition.z;
+    });
+    
     // Execute GUI render pass
     GL_CHECK(glDisable(GL_DEPTH_TEST));
+    
     for (const auto& entityId : guiEntities)
     {
         const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
@@ -282,24 +286,6 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             transitionAnimationComponent,
             renderingContextComponent,
             previousRenderingStateComponent
-        );
-    }
-    
-    // Execute Font render pass
-    for (const auto& entityId: topRenderedEntities)
-    {
-        const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-        RenderEntityInternal
-        (
-             entityId,
-             renderableComponent,
-             currentLevel.mLevelColor,
-             cameraComponent,
-             shaderStoreComponent,
-             windowComponent,
-             transitionAnimationComponent,
-             renderingContextComponent,
-             previousRenderingStateComponent
         );
     }
 
@@ -375,6 +361,7 @@ void RenderingSystem::RenderEntityInternal
     
     // Set matrix uniforms
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mAnimationProgressionStep));
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(BLACK_AND_WHITE_MODE_UNIFORM_NAME), transitionAnimationComponent.mBlackAndWhiteModeEnabled ? 1 : 0));
     GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(CURRENT_LEVEL_COLOR_UNIFORM_NAME), currentLevelColor.x, currentLevelColor.y, currentLevelColor.z, currentLevelColor.w));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));

@@ -31,6 +31,7 @@ static void CreateTextboxComponents
     const int textboxTileRows,
     const float textboxOriginX,
     const float textboxOriginY,
+    const float textboxZ,
     ecs::World& world
 );
 
@@ -123,6 +124,7 @@ ecs::EntityId CreateTextboxWithDimensions
     const int textboxTileRows,
     const float textboxOriginX,
     const float textboxOriginY,
+    const float textboxZ,
     ecs::World& world
 )
 {
@@ -152,11 +154,12 @@ ecs::EntityId CreateTextboxWithDimensions
         textboxTileRows,
         textboxOriginX,
         textboxOriginY,
+        textboxZ,
         world
     );
 
     auto transformComponent       = std::make_unique<TransformComponent>();
-    transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
+    transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, textboxZ);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
     auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
@@ -170,7 +173,7 @@ ecs::EntityId CreateChatbox
     ecs::World& world
 )
 {
-    return CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, world);
+    return CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, 0.0f, world);
 }
 
 void DestroyActiveTextbox
@@ -244,7 +247,6 @@ void WriteCharAtTextboxCoords
     renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
     renderableComponent->mActiveAnimationNameId = StringId("default");
     renderableComponent->mShaderNameId          = StringId("gui");
-    renderableComponent->mRenderableLayer       = RenderableLayer::TOP;
     renderableComponent->mAffectedByPerspective = false;
     renderableComponent->mAnimationsToMeshes[renderableComponent->mActiveAnimationNameId].push_back(guiStateComponent.mFontEntities.at(character));
     
@@ -268,7 +270,7 @@ void WriteCharAtTextboxCoords
     (
         textboxTopLeftPoint.x + tileWidth * textboxCol,
         textboxTopLeftPoint.y - tileHeightAccountingForAspect * textboxRow,
-        0.0f
+        textboxTransformComponent.mPosition.z -0.05f
      );
     
     world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));
@@ -404,6 +406,7 @@ void CreateTextboxComponents
     const int textboxTileRows,
     const float textboxOriginX,
     const float textboxOriginY,
+    const float textboxZ,
     ecs::World& world
 )
 {
@@ -418,20 +421,20 @@ void CreateTextboxComponents
     const auto guiTileHeightAccountingForAspect = guiTileHeight * windowSingletonComponent.mAspectRatio;
 
     // Calculate textbox corners in screen coords
-    const auto textboxTopLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, 0.0f);
-    const auto textboxTopRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, 0.0f);
-    const auto textboxBotLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, 0.0f);
-    const auto textboxBotRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, 0.0f);
+    const auto textboxTopLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, textboxZ - 0.05f);
+    const auto textboxTopRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY + (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f - guiTileHeightAccountingForAspect * 0.5f, textboxZ - 0.05f);
+    const auto textboxBotLeftPoint  = glm::vec3(textboxOriginX - (textboxTileCols * guiTileWidth) * 0.5f + guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, textboxZ - 0.05f);
+    const auto textboxBotRightPoint = glm::vec3(textboxOriginX + (textboxTileCols * guiTileWidth) * 0.5f - guiTileWidth * 0.5f, textboxOriginY - (textboxTileRows * guiTileHeightAccountingForAspect) * 0.5f + guiTileHeightAccountingForAspect * 0.5f, textboxZ - 0.05f);
     
     // Calculate filler components' dimensions
     const auto textboxHorizontalFillerWidth = guiTileWidth  * (textboxTileCols - 2);
     const auto textboxVerticalFillerHeight  = guiTileHeight * (textboxTileRows - 2);
     
     // Calculate filler components' screen coords
-    const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxTopLeftPoint.y, 0.0f);
-    const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxBotLeftPoint.y, 0.0f);
-    const auto textboxLeftFillerCoords       = glm::vec3(textboxTopLeftPoint.x, textboxOriginY, 0.0f);
-    const auto textboxRightFillerCoords      = glm::vec3(textboxTopRightPoint.x, textboxOriginY, 0.0f);
+    const auto textboxTopFillerCoords        = glm::vec3(textboxOriginX, textboxTopLeftPoint.y, textboxZ - 0.05f);
+    const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxBotLeftPoint.y, textboxZ - 0.05f);
+    const auto textboxLeftFillerCoords       = glm::vec3(textboxTopLeftPoint.x, textboxOriginY, textboxZ - 0.05f);
+    const auto textboxRightFillerCoords      = glm::vec3(textboxTopRightPoint.x, textboxOriginY, textboxZ - 0.05f);
     const auto textboxBackgroundFillerCoords = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
     
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 2, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopLeftPoint, world);

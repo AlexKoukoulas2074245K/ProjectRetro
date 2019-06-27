@@ -222,6 +222,14 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
             case ChatboxContentEndState::NORMAL:
             {
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;
+                
+                if (DetectedKillSwitch(textboxEntityId))
+                {
+                    DestroyActiveTextbox(mWorld);
+                    guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+                    guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+                    return;
+                }
             } break;
                 
             case ChatboxContentEndState::PARAGRAPH_END:
@@ -373,6 +381,32 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
             }
         }
     }
+}
+
+bool GuiManagementSystem::DetectedKillSwitch(const ecs::EntityId textboxEntityId) const
+{
+    const auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+    const auto& queuedParagraph  = textboxComponent.mQueuedDialog.front();
+    const auto& queuedLine       = queuedParagraph.front();
+    auto queuedLineCopy          = queuedLine;
+    
+    if (queuedLineCopy.size() >= 3)
+    {
+        if (queuedLineCopy.front() == 'E')
+        {
+            queuedLineCopy.pop();
+            if (queuedLineCopy.front() == 'N')
+            {
+                queuedLineCopy.pop();
+                if (queuedLineCopy.front() == 'D')
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

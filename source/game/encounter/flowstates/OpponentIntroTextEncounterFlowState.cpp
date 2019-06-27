@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentIntroTextEncounterFlowState.h"
+#include "../components/EncounterStateSingletonComponent.h"
+#include "../../common/utils/TextboxUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +19,16 @@
 
 OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::World& world)
     : BaseEncounterFlowState(world)
-{    
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto overlaidChatboxEntityId  = CreateChatbox(mWorld);
+    
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+    {
+        const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster.front().mName;
+        QueueDialogForTextbox(overlaidChatboxEntityId, "Wild " + wildPokemonName.GetString() + "#appeared!#END", mWorld);
+    }
+    
     
 }
 

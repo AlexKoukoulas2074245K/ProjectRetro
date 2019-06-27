@@ -45,8 +45,10 @@ class EncounterStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<PokemonInfo> mOpponentPokemonRoster;
-    std::unique_ptr<BaseEncounterFlowState> mActiveEncounterFlowState = nullptr;
-    EncounterType mActiveEncounterType = EncounterType::NONE;
+    std::unique_ptr<BaseEncounterFlowState> mActiveEncounterFlowState  = nullptr;
+    ecs::EntityId mPlayerActiveSpriteEntityId                          = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentActiveSpriteEntityId                        = ecs::NULL_ENTITY_ID;
+    EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;    
 };
 

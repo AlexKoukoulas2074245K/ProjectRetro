@@ -13,12 +13,25 @@ uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
 
 uniform vec4 current_level_color;
 uniform int transition_progression_step;
+uniform int black_and_white_mode;
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;
 
 // actual output
 // gl_FragColor is deprecated
 out vec4 frag_color;
+
+vec4 getBlackAndWhiteModeColor()
+{
+    if (distance(global_white_color, frag_color) < 0.01)
+    {
+        return global_white_color;
+    }
+    else
+    {
+        return global_black_color;
+    }
+}
 
 vec4 getTransitionAnimationColor()
 {
@@ -41,21 +54,46 @@ vec4 getTransitionAnimationColor()
 	else if (abs(smallestDistance - blueColorDistance) < 0.01)         currentColorIndex = 2;
 	else                                                               currentColorIndex = 3;
 	
-	return colorPool[min((currentColorIndex + transition_progression_step), 3)];
+	return colorPool[max(0, min((currentColorIndex + transition_progression_step), 3))];
+}
+
+vec4 getPaletteColor()
+{
+    if (distance(global_black_color, frag_color) < 0.1)
+    {
+        return global_black_color;
+    }
+    else if (distance(global_blue_color, frag_color) < 0.1)
+    {
+        return global_blue_color;
+    }
+    else if (distance(global_white_color, frag_color) < 0.1)
+    {
+        return global_white_color;
+    }
+    
+    return current_level_color;
 }
 
 void main()
 {
-    float final_uv_x = uv_frag.x;
-    if (flip_tex_hor) final_uv_x = 1.00 - final_uv_x;
+    float finalUvX = uv_frag.x;
+    if (flip_tex_hor) finalUvX = 1.00 - finalUvX;
 
-    float final_uv_y = 1.00 - uv_frag.y;
-    if (flip_tex_ver) final_uv_y = 1.00 - final_uv_y;
+    float finalUvY = 1.00 - uv_frag.y;
+    if (flip_tex_ver) finalUvY = 1.00 - finalUvY;
 
-    frag_color = texture(tex, vec2(final_uv_x, final_uv_y));
+    frag_color = texture(tex, vec2(finalUvX, finalUvY));
 	
-	if (transition_progression_step > 0 && frag_color.w > 0.5)
+	if (frag_color.w > 0.5)
 	{
-		frag_color = getTransitionAnimationColor();
+        if (black_and_white_mode != 0)
+        {
+            frag_color = getBlackAndWhiteModeColor();
+        }
+        else if (transition_progression_step != 0)
+        {
+            frag_color = getTransitionAnimationColor();
+        }
 	}	
 }

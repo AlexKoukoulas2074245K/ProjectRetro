@@ -60,6 +60,7 @@ ecs::EntityId CreateTextboxWithDimensions
     const int textboxTileRows,
     const float textboxOriginX,
     const float textboxOriginY,
+    const float textboxZ,
     ecs::World& world
 );
 

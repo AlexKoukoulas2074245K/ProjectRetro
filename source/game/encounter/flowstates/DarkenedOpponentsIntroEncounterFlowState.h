@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseEncounterFlowState.h"
+#include "../../common/utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +29,17 @@ public:
     DarkenedOpponentsIntroEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
+  
+private:
+    void CreateBattleOpponentsSprites() const;
     
+    static const glm::vec3 PLAYER_TRAINER_SPRITE_INIT_POS;
+    static const glm::vec3 PLAYER_TRAINER_SPRITE_TARGET_POS;
+    static const glm::vec3 OPPONENT_SPRITE_INIT_POS;
+    static const glm::vec3 OPPONENT_SPRITE_TARGET_POS;
+    static const glm::vec3 SPRITE_SCALE;
+    
+    static const float SPRITE_ANIMATION_SPEED;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
