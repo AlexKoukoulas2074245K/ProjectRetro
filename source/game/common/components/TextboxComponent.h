@@ -35,6 +35,7 @@ const int TEXTBOX_MIN_TILE_ROWS = 3;
 enum class TextboxType
 {
     GENERIC_TEXTBOX,
+    BARE_TEXTBOX,
     CHATBOX
 };
 

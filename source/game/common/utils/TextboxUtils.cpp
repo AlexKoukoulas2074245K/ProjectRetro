@@ -128,9 +128,6 @@ ecs::EntityId CreateTextboxWithDimensions
     ecs::World& world
 )
 {
-    assert(textboxTileCols >= TEXTBOX_MIN_TILE_COLS && "Invalid textbox tile cols were supplied");
-    assert(textboxTileRows >= TEXTBOX_MIN_TILE_ROWS && "Invalid textbox tile rows were supplied");
-    
     const auto textboxEntityId = world.CreateEntity();
 
     TextboxContent textContent(textboxTileRows);
@@ -147,17 +144,20 @@ ecs::EntityId CreateTextboxWithDimensions
     
     world.AddComponent<TextboxComponent>(textboxEntityId, std::move(textboxComponent));
 
-    CreateTextboxComponents
-    (
-        textboxEntityId,
-        textboxTileCols,
-        textboxTileRows,
-        textboxOriginX,
-        textboxOriginY,
-        textboxZ,
-        world
-    );
-
+    if (textboxType != TextboxType::BARE_TEXTBOX)
+    {
+        CreateTextboxComponents
+        (
+            textboxEntityId,
+            textboxTileCols,
+            textboxTileRows,
+            textboxOriginX,
+            textboxOriginY,
+            textboxZ,
+            world
+        );
+    }
+    
     auto transformComponent       = std::make_unique<TransformComponent>();
     transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, textboxZ);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
@@ -218,9 +218,6 @@ void WriteCharAtTextboxCoords
     
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
-    
-    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
-    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     
     if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
     {
@@ -290,8 +287,6 @@ void WriteTextAtTextboxCoords
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
 
-    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
-    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
 #endif    
     
@@ -362,9 +357,6 @@ void DeleteCharAtTextboxCoords
 {
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     
-    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
-    assert((textboxCol > 0 && textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1) && "Textbox col out of deletion bounds");
-    
     const auto characterEntityId = textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId;
     
     if (characterEntityId == ecs::NULL_ENTITY_ID)
@@ -386,8 +378,6 @@ void DeleteTextAtTextboxRow
 )
 {
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
-    
-    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
     
     for (size_t textboxCol = 1U; textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1; ++textboxCol)
     {

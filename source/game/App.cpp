@@ -13,6 +13,7 @@
 #include "common/components/DirectionComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
+#include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/systems/GuiManagementSystem.h"
 #include "encounter/components/EncounterStateSingletonComponent.h"
@@ -136,6 +137,9 @@ bool App::AppShouldQuit()
 void App::DummyInitialization()
 {
     const auto playerEntity = mWorld.CreateEntity();
+    
+    mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back({StringId("PIKACHU"), 1, 5});
     
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

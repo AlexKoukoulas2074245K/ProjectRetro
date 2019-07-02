@@ -1,66 +1,46 @@
 //
-//  EncounterSpriteUtils.h
+//  OpponentPokemonStatusDisplayEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 27/06/2019.
+//  Created by Alex Koukoulas on 29/06/2019.
 //
 
-#ifndef EncounterSpriteUtils_h
-#define EncounterSpriteUtils_h
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef OpponentPokemonStatusDisplayEncounterFlowState_h
+#define OpponentPokemonStatusDisplayEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../ECS.h"
+#include "BaseEncounterFlowState.h"
 #include "../../common/utils/MathUtils.h"
-#include "../../common/utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-struct PokemonInfo;
+class OpponentPokemonStatusDisplayEncounterFlowState final: public BaseEncounterFlowState
+{
+public:
+    OpponentPokemonStatusDisplayEncounterFlowState(ecs::World&);
+    
+    void VUpdate(const float dt) override;
+
+private:
+    static const glm::vec3 OPPONENT_STATUS_DISPLAY_POSITION;
+    static const glm::vec3 OPPONENT_STATUS_DISPLAY_SCALE;
+    static const glm::vec3 OPPONENT_POKEMON_INFO_TEXTBOX_POSITION;
+    
+    static const int OPPONENT_POKEMON_INFO_TEXTBOX_COLS;
+    static const int OPPONENT_POKEMON_INFO_TEXTBOX_ROWS;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ecs::EntityId LoadAndCreateTrainerSprite
-(
-    const int atlasCol,
-    const int atlasRow,
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
-    ecs::World& world
-);
-
-ecs::EntityId LoadAndCreatePokemonSprite
-(
-    const StringId pokemonName,
-    const bool frontFace,
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
-    ecs::World& world
-);
-
-ecs::EntityId LoadAndCreatePlayerRosterDisplay
-(
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
-    ecs::World& world
-);
-
-ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
-(
-    PokemonInfo& pokemonInfo,
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
-    ecs::World& world
-);
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#endif /* EncounterSpriteUtils_h */
+#endif /* OpponentPokemonStatusDisplayEncounterFlowState_h */

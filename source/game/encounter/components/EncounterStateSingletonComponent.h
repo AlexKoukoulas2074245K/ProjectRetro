@@ -48,6 +48,10 @@ public:
     std::unique_ptr<BaseEncounterFlowState> mActiveEncounterFlowState  = nullptr;
     ecs::EntityId mPlayerActiveSpriteEntityId                          = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId                        = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPlayerStatusDisplayEntityId                         = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentStatusDisplayEntityId                       = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentPokemonInfoTextboxEntityId                  = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPlayerPokemonInfoTextboxEntityId                    = ecs::NULL_ENTITY_ID;
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;    
 };

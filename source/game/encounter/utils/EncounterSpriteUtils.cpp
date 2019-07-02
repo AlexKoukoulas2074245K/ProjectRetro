@@ -10,11 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "EncounterSpriteUtils.h"
+#include "../../common/GameConstants.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../../resources/ResourceLoadingService.h"
-
 
 #include <string>
 
@@ -22,11 +22,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string ENCOUNTER_SPRITE_MODEL_NAME      = "camera_facing_quad";
-static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME = "pokemon_battle_sprite";
-static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME  = "default";
-static const std::string ENCOUNTER_SPRITE_SHADER_NAME     = "gui";
-static const std::string TRAINER_ATLAS_FILE_NAME          = "trainers.png";
+static const std::string ENCOUNTER_SPRITE_MODEL_NAME                  = "camera_facing_quad";
+static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME             = "pokemon_battle_sprite";
+static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME              = "default";
+static const std::string ENCOUNTER_SPRITE_SHADER_NAME                 = "gui";
+static const std::string TRAINER_ATLAS_FILE_NAME                      = "trainers.png";
+static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME           = "battle_player_roster";
+static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME = "battle_enemy_pokemon_status";
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -105,6 +107,69 @@ ecs::EntityId LoadAndCreatePokemonSprite
     world.AddComponent<TransformComponent>(pokemonSpriteEntityId, std::move(transformComponent));
     
     return pokemonSpriteEntityId;
+}
+
+ecs::EntityId LoadAndCreatePlayerRosterDisplay
+(
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+)
+{
+    const auto playerRosterDisplayEntityId = world.CreateEntity();
+    
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + PLAYER_ROSTER_DISPLAY_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = spritePosition;
+    transformComponent->mScale    = spriteScale;
+    
+    world.AddComponent<RenderableComponent>(playerRosterDisplayEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(playerRosterDisplayEntityId, std::move(transformComponent));
+    
+    return playerRosterDisplayEntityId;
+}
+
+ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
+(
+    PokemonInfo&,
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+)
+{
+    const auto opponentStatusDisplayEntityId = world.CreateEntity();
+    
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = spritePosition;
+    transformComponent->mScale    = spriteScale;
+    
+    world.AddComponent<RenderableComponent>(opponentStatusDisplayEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(opponentStatusDisplayEntityId, std::move(transformComponent));
+    
+    return opponentStatusDisplayEntityId;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
