@@ -21,13 +21,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_INIT_POS = glm::vec3(0.5f, 0.06f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_INIT_POS = glm::vec3(0.9f, 0.06f, 0.0f);
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_TARGET_POS = glm::vec3(-0.39f, 0.06f, 0.0f);
-const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_INIT_POS = glm::vec3(-0.5f, 0.61f, 0.0f);
-const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_TARGET_POS = glm::vec3(0.38f, 0.61f, 0.0f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_INIT_POS = glm::vec3(-0.9f, 0.61f, 0.1f);
+const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_TARGET_POS = glm::vec3(0.38f, 0.61f, 0.1f);
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::SPRITE_SCALE = glm::vec3(0.49f, 0.49f, 1.0f);
 
-const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 0.7f;
+const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 0.8f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,12 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
 
 void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterEdges() const
 {
-    
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    const auto& encounterEdgeEntityIds = LoadAndCreateLevelEdges(mWorld);
+
+    encounterStateComponent.mLevelLeftEdgeEntityId  = encounterEdgeEntityIds.first;
+    encounterStateComponent.mLevelRightEdgeEntityId = encounterEdgeEntityIds.second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

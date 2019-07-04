@@ -68,7 +68,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         WriteTextAtTextboxCoords
         (
             encounterStateComponent.mPlayerPokemonInfoTextboxEntityId,
-            "~",
+            "~", // Pokeball status icon character
             1 + i,
             3,
             mWorld

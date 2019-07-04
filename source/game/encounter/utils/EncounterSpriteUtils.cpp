@@ -29,6 +29,11 @@ static const std::string ENCOUNTER_SPRITE_SHADER_NAME                 = "gui";
 static const std::string TRAINER_ATLAS_FILE_NAME                      = "trainers.png";
 static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME           = "battle_player_roster";
 static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME = "battle_enemy_pokemon_status";
+static const std::string ENCOUNTER_EDGE_TEXTURE_NAME                  = "battle_edge";
+
+static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
+static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
+static const glm::vec3 ENCOUNTER_EDGE_SCALE          = glm::vec3(0.5f, 1.5f, 1.0f);
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -170,6 +175,50 @@ ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
     world.AddComponent<TransformComponent>(opponentStatusDisplayEntityId, std::move(transformComponent));
     
     return opponentStatusDisplayEntityId;
+}
+
+std::pair<ecs::EntityId, ecs::EntityId> LoadAndCreateLevelEdges(ecs::World& world)
+{
+    const auto ledgeEdgeEntityId = world.CreateEntity();
+
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + ENCOUNTER_EDGE_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = ENCOUNTER_LEFT_EDGE_POSITION;
+    transformComponent->mScale    = ENCOUNTER_EDGE_SCALE;
+
+    world.AddComponent<RenderableComponent>(ledgeEdgeEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(ledgeEdgeEntityId, std::move(transformComponent));
+
+    const auto rightEdgeEntityId = world.CreateEntity();
+
+    renderableComponent = std::make_unique<RenderableComponent>();
+    
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+
+    transformComponent            = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = ENCOUNTER_RIGHT_EDGE_POSITION;
+    transformComponent->mScale    = ENCOUNTER_EDGE_SCALE;
+
+    world.AddComponent<RenderableComponent>(rightEdgeEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(rightEdgeEntityId, std::move(transformComponent));
+
+
+    return std::make_pair(ledgeEdgeEntityId, rightEdgeEntityId);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
