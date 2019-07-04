@@ -54,9 +54,9 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
         mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
         
         const auto newLevelEntityId     = LoadAndCreateLevelByName(StringId("battle"), mWorld);
-        auto& battleLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+        auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
         
-        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = battleLevelModelComponent.mLevelName;
+        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
         
         CreateChatbox(mWorld);
     }

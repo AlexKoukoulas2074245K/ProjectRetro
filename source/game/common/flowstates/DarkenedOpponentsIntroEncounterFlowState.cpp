@@ -36,7 +36,8 @@ const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 0
 DarkenedOpponentsIntroEncounterFlowState::DarkenedOpponentsIntroEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    CreateBattleOpponentsSprites();
+    CreateEncounterOpponentsSprites();
+    CreateEncounterEdges();
     mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = true;
 }
 
@@ -64,7 +65,7 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void DarkenedOpponentsIntroEncounterFlowState::CreateBattleOpponentsSprites() const
+void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites() const
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
@@ -102,6 +103,11 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateBattleOpponentsSprites() co
     
     
     mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = true;
+}
+
+void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterEdges() const
+{
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
