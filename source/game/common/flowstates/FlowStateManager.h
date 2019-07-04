@@ -1,48 +1,47 @@
 //
-//  OpponentIntroTextEncounterFlowState.h
+//  FlowStateManager.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 25/06/2019.
+//  Created by Alex Koukoulas on 04/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OpponentIntroTextEncounterFlowState_h
-#define OpponentIntroTextEncounterFlowState_h
+#ifndef FlowStateManager_h
+#define FlowStateManager_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "BaseEncounterFlowState.h"
+#include "BaseFlowState.h"
 
-#include "../../common/utils/MathUtils.h"
+#include <memory>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class OpponentIntroTextEncounterFlowState final: public BaseEncounterFlowState
+class FlowStateManager final
 {
 public:
-    OpponentIntroTextEncounterFlowState(ecs::World&);
-    
-    void VUpdate(const float dt) override;
+    FlowStateManager();
+    FlowStateManager(std::unique_ptr<BaseFlowState> initialFlowState);
+    ~FlowStateManager() = default;
+
+    bool HasActiveFlowState() const;
+    void SetActiveFlowState(std::unique_ptr<BaseFlowState> flowState);
+
+    void Update(const float dt);
 
 private:
-    static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME;
-    static const glm::vec3 PLAYER_ROSTER_DISPLAY_POSITION;
-    static const glm::vec3 PLAYER_ROSTER_DISPLAY_SCALE;
-    static const glm::vec3 PLAYER_POKEMON_INFO_TEXTBOX_POSITION;
-    
-    static const int PLAYER_POKEMON_INFO_TEXTBOX_COLS;
-    static const int PLAYER_POKEMON_INFO_TEXTBOX_ROWS;
+    std::unique_ptr<BaseFlowState> mActiveFlowState = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* OpponentIntroTextEncounterFlowState_h */
+#endif /* FlowStateManager_h */

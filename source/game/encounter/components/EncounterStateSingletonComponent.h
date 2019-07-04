@@ -17,10 +17,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
-#include "../flowstates/BaseEncounterFlowState.h"
 #include "../../common/GameConstants.h"
+#include "../../common/flowstates/FlowStateManager.h"
 
-#include <memory>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +43,8 @@ enum class OverworldEncounterAnimationState
 class EncounterStateSingletonComponent final: public ecs::IComponent
 {
 public:
-    std::vector<PokemonInfo> mOpponentPokemonRoster;
-    std::unique_ptr<BaseEncounterFlowState> mActiveEncounterFlowState  = nullptr;
+    FlowStateManager mFlowStateManager;
+    std::vector<PokemonInfo> mOpponentPokemonRoster;    
     ecs::EntityId mPlayerActiveSpriteEntityId                          = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId                        = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId                         = ecs::NULL_ENTITY_ID;

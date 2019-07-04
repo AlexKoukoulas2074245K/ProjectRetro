@@ -1,46 +1,48 @@
 //
-//  OpponentPokemonStatusDisplayEncounterFlowState.h
+//  OpponentIntroTextEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 29/06/2019.
+//  Created by Alex Koukoulas on 25/06/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OpponentPokemonStatusDisplayEncounterFlowState_h
-#define OpponentPokemonStatusDisplayEncounterFlowState_h
+#ifndef OpponentIntroTextEncounterFlowState_h
+#define OpponentIntroTextEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "BaseEncounterFlowState.h"
-#include "../../common/utils/MathUtils.h"
+#include "BaseFlowState.h"
+
+#include "../utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class OpponentPokemonStatusDisplayEncounterFlowState final: public BaseEncounterFlowState
+class OpponentIntroTextEncounterFlowState final: public BaseFlowState
 {
 public:
-    OpponentPokemonStatusDisplayEncounterFlowState(ecs::World&);
+    OpponentIntroTextEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
 
 private:
-    static const glm::vec3 OPPONENT_STATUS_DISPLAY_POSITION;
-    static const glm::vec3 OPPONENT_STATUS_DISPLAY_SCALE;
-    static const glm::vec3 OPPONENT_POKEMON_INFO_TEXTBOX_POSITION;
+    static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME;
+    static const glm::vec3 PLAYER_ROSTER_DISPLAY_POSITION;
+    static const glm::vec3 PLAYER_ROSTER_DISPLAY_SCALE;
+    static const glm::vec3 PLAYER_POKEMON_INFO_TEXTBOX_POSITION;
     
-    static const int OPPONENT_POKEMON_INFO_TEXTBOX_COLS;
-    static const int OPPONENT_POKEMON_INFO_TEXTBOX_ROWS;
+    static const int PLAYER_POKEMON_INFO_TEXTBOX_COLS;
+    static const int PLAYER_POKEMON_INFO_TEXTBOX_ROWS;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* OpponentPokemonStatusDisplayEncounterFlowState_h */
+#endif /* OpponentIntroTextEncounterFlowState_h */

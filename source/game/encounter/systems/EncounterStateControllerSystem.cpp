@@ -10,9 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "EncounterStateControllerSystem.h"
-#include "../flowstates/BaseEncounterFlowState.h"
-#include "../flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
 #include "../components/EncounterStateSingletonComponent.h"
+#include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../overworld/components/LevelModelComponent.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
@@ -39,19 +38,14 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     {
 
     }    
-    else if (encounterStateComponent.mActiveEncounterFlowState != nullptr)
+    else if (encounterStateComponent.mFlowStateManager.HasActiveFlowState())
     {
-        encounterStateComponent.mActiveEncounterFlowState->VUpdate(dt);
-
-        if (encounterStateComponent.mActiveEncounterFlowState->mNextFlowState != nullptr)
-        { 
-            encounterStateComponent.mActiveEncounterFlowState = std::move(encounterStateComponent.mActiveEncounterFlowState->mNextFlowState);
-        }
+        encounterStateComponent.mFlowStateManager.Update(dt);
     }
     // Battle started condition
     else if (encounterStateComponent.mOverworldEncounterAnimationState == OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE)
     {
-        encounterStateComponent.mActiveEncounterFlowState = std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld);
+        encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
         
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));

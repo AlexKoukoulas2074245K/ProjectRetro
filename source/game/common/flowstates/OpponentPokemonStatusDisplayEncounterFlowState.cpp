@@ -10,9 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
-#include "../components/EncounterStateSingletonComponent.h"
-#include "../utils/EncounterSpriteUtils.h"
-#include "../../common/utils/TextboxUtils.h"
+#include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ const int OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_
 ////////////////////////////////////////////////////////////////////////////////////
 
 OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEncounterFlowState(ecs::World& world)
-    : BaseEncounterFlowState(world)
+    : BaseFlowState(world)
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     

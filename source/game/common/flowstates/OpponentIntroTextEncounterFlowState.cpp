@@ -11,12 +11,12 @@
 
 #include "OpponentIntroTextEncounterFlowState.h"
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
-#include "../components/EncounterStateSingletonComponent.h"
-#include "../utils/EncounterSpriteUtils.h"
-#include "../../common/components/GuiStateSingletonComponent.h"
-#include "../../common/components/PlayerStateSingletonComponent.h"
-#include "../../common/components/TransformComponent.h"
-#include "../../common/utils/TextboxUtils.h"
+#include "../components/GuiStateSingletonComponent.h"
+#include "../components/PlayerStateSingletonComponent.h"
+#include "../components/TransformComponent.h"
+#include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -38,7 +38,7 @@ const int OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS 
 ////////////////////////////////////////////////////////////////////////////////////
 
 OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::World& world)
-    : BaseEncounterFlowState(world)
+    : BaseFlowState(world)
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     

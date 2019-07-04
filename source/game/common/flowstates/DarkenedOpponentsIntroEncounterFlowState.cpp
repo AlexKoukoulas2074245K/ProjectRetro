@@ -11,10 +11,10 @@
 
 #include "DarkenedOpponentsIntroEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
-#include "../components/EncounterStateSingletonComponent.h"
-#include "../utils/EncounterSpriteUtils.h"
+#include "../components/TransformComponent.h"
 #include "../../ECS.h"
-#include "../../common/components/TransformComponent.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 0
 ////////////////////////////////////////////////////////////////////////////////////
 
 DarkenedOpponentsIntroEncounterFlowState::DarkenedOpponentsIntroEncounterFlowState(ecs::World& world)
-    : BaseEncounterFlowState(world)
+    : BaseFlowState(world)
 {
     CreateBattleOpponentsSprites();
     mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = true;
