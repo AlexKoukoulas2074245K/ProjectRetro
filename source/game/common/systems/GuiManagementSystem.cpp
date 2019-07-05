@@ -117,13 +117,20 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
 
     if (textboxComponent.mQueuedDialog.size() > 0)
     {
+        if (DetectedFreeze(textboxEntityId))
+        {
+            StripFreezeStringFromQueuedText(textboxEntityId);
+            guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::FROZEN;
+        }
+
         switch (guiStateComponent.mActiveChatboxDisplayState)
         {
-        case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(textboxEntityId, dt); break;
-        case ChatboxDisplayState::FILLED: UpdateChatboxFilled(textboxEntityId, dt); break;
-        case ChatboxDisplayState::SCROLL_ANIM_PHASE_1: UpdateChatboxScrollAnim1(textboxEntityId, dt); break;
-        case ChatboxDisplayState::SCROLL_ANIM_PHASE_2: UpdateChatboxScrollAnim2(textboxEntityId, dt); break;
-        case ChatboxDisplayState::PARAGRAPH_END_DELAY: UpdateChatboxParagraphEndDelay(dt); break;
+            case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(textboxEntityId, dt); break;
+            case ChatboxDisplayState::FILLED: UpdateChatboxFilled(textboxEntityId, dt); break;
+            case ChatboxDisplayState::SCROLL_ANIM_PHASE_1: UpdateChatboxScrollAnim1(textboxEntityId, dt); break;
+            case ChatboxDisplayState::SCROLL_ANIM_PHASE_2: UpdateChatboxScrollAnim2(textboxEntityId, dt); break;
+            case ChatboxDisplayState::PARAGRAPH_END_DELAY: UpdateChatboxParagraphEndDelay(dt); break;
+            case ChatboxDisplayState::FROZEN: break;
         }
     }
     else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
@@ -391,23 +398,94 @@ bool GuiManagementSystem::DetectedKillSwitch(const ecs::EntityId textboxEntityId
     const auto& queuedLine       = queuedParagraph.front();
     auto queuedLineCopy          = queuedLine;
     
-    if (queuedLineCopy.size() >= 3)
+    if (queuedLineCopy.size() >= 4)
     {
-        if (queuedLineCopy.front() == 'E')
+        if (queuedLineCopy.front() == '+')
         {
             queuedLineCopy.pop();
-            if (queuedLineCopy.front() == 'N')
+            if (queuedLineCopy.front() == 'E')
             {
                 queuedLineCopy.pop();
-                if (queuedLineCopy.front() == 'D')
+                if (queuedLineCopy.front() == 'N')
                 {
-                    return true;
+                    queuedLineCopy.pop();
+                    if (queuedLineCopy.front() == 'D')
+                    {
+                        return true;
+                    }
                 }
             }
-        }
+        }        
     }
     
     return false;
+}
+
+bool GuiManagementSystem::DetectedFreeze(const ecs::EntityId textboxEntityId) const
+{
+    const auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+
+    if (textboxComponent.mQueuedDialog.size() <= 0 || textboxComponent.mQueuedDialog.front().size() <= 0) return false;
+
+    const auto& queuedParagraph = textboxComponent.mQueuedDialog.front();    
+    const auto& queuedLine      = queuedParagraph.front();
+    auto queuedLineCopy         = queuedLine;
+    
+    if (queuedLineCopy.size() >= 7)
+    {
+        if (queuedLineCopy.front() == '+')
+        {
+            queuedLineCopy.pop();
+            if (queuedLineCopy.front() == 'F')
+            {
+                queuedLineCopy.pop();
+                if (queuedLineCopy.front() == 'R')
+                {
+                    queuedLineCopy.pop();
+                    if (queuedLineCopy.front() == 'E')
+                    {
+                        queuedLineCopy.pop();
+                        if (queuedLineCopy.front() == 'E')
+                        {
+                            queuedLineCopy.pop();
+                            if (queuedLineCopy.front() == 'Z')
+                            {
+                                queuedLineCopy.pop();
+                                if (queuedLineCopy.front() == 'E')
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }        
+    }
+    
+    return false;
+}
+
+void GuiManagementSystem::StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const
+{
+    auto& textboxComponent  = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& currentQueuedLine = textboxComponent.mQueuedDialog.front().front();
+    TextboxQueuedTextLine mStrippedText;
+    
+    for(;;)
+    {
+        if (currentQueuedLine.front() == '+')
+        {
+            break;
+        }
+        else
+        {
+            mStrippedText.push(currentQueuedLine.front());
+            currentQueuedLine.pop();
+        }
+    }
+
+    textboxComponent.mQueuedDialog.front().front() = mStrippedText;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -10,13 +10,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "EncounterSpriteUtils.h"
-#include "../../common/GameConstants.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 
 #include <string>
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +147,7 @@ ecs::EntityId LoadAndCreatePlayerRosterDisplay
 
 ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
 (
-    PokemonInfo&,
+    const PokemonInfo&,
     const glm::vec3& spritePosition,
     const glm::vec3& spriteScale,
     ecs::World& world
@@ -175,6 +175,45 @@ ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
     world.AddComponent<TransformComponent>(opponentStatusDisplayEntityId, std::move(transformComponent));
     
     return opponentStatusDisplayEntityId;
+}
+
+ecs::EntityId LoadAndCreatePokemonHealthBar
+(
+    const PokemonHealthBarStatus healthBarStatus,
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+)
+{
+    static const std::unordered_map<PokemonHealthBarStatus, std::string> healthBarStatusToTextureName =
+    {
+        { PokemonHealthBarStatus::GREEN,  "hp_bar_green"},
+        { PokemonHealthBarStatus::ORANGE, "hp_bar_orange" },
+        { PokemonHealthBarStatus::RED,    "hp_bar_red" }
+    };
+
+    const auto pokemonHealthBarEntityId = world.CreateEntity();
+
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + healthBarStatusToTextureName.at(healthBarStatus) + ".png";
+    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = spritePosition;
+    transformComponent->mScale    = spriteScale;
+
+    world.AddComponent<RenderableComponent>(pokemonHealthBarEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(pokemonHealthBarEntityId, std::move(transformComponent));
+
+    return pokemonHealthBarEntityId;
 }
 
 std::pair<ecs::EntityId, ecs::EntityId> LoadAndCreateLevelEdges(ecs::World& world)

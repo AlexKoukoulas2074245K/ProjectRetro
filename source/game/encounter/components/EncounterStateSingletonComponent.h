@@ -40,16 +40,9 @@ enum class OverworldEncounterAnimationState
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class EncounterStateSingletonComponent final: public ecs::IComponent
-{
+class EncounterViewEntities final
+{    
 public:
-    // Model
-    FlowStateManager mFlowStateManager;
-    std::vector<PokemonInfo> mOpponentPokemonRoster;        
-    EncounterType mActiveEncounterType                                 = EncounterType::NONE;
-    OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;    
-    
-    // Sprites
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
@@ -58,6 +51,22 @@ public:
     ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
     ecs::EntityId mLevelLeftEdgeEntityId              = ecs::NULL_ENTITY_ID;
     ecs::EntityId mLevelRightEdgeEntityId             = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+class EncounterStateSingletonComponent final: public ecs::IComponent
+{
+public:    
+    FlowStateManager mFlowStateManager;
+    EncounterViewEntities mViewEntities;
+    std::vector<PokemonInfo> mOpponentPokemonRoster;        
+    EncounterType mActiveEncounterType                                 = EncounterType::NONE;
+    OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

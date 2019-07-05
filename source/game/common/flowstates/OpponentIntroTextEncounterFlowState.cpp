@@ -42,7 +42,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
+    encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
     (
         PLAYER_ROSTER_DISPLAY_POSITION,
         PLAYER_ROSTER_DISPLAY_SCALE,
@@ -50,7 +50,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     );
     
     // Pokemon party pokeball rendering
-    encounterStateComponent.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+    encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
     (
         TextboxType::BARE_TEXTBOX,
         PLAYER_POKEMON_INFO_TEXTBOX_COLS,
@@ -67,7 +67,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         // select normal pokeball, status or faint
         WriteTextAtTextboxCoords
         (
-            encounterStateComponent.mPlayerPokemonInfoTextboxEntityId,
+            encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId,
             "~", // Pokeball status icon character
             1 + i,
             3,
@@ -81,7 +81,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
         const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster.front().mName;
-        QueueDialogForTextbox(overlaidChatboxEntityId, "Wild " + wildPokemonName.GetString() + "#appeared!#END", mWorld);
+        QueueDialogForTextbox(overlaidChatboxEntityId, "Wild " + wildPokemonName.GetString() + "#appeared!#+END", mWorld);
     }
 }
 
@@ -92,9 +92,9 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mPlayerStatusDisplayEntityId);
-        DeleteTextAtTextboxRow(encounterStateComponent.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
-        encounterStateComponent.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
+        mWorld.RemoveEntity(encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId);
+        DeleteTextAtTextboxRow(encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
+        encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
         CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
     }
 }

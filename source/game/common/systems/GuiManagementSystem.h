@@ -51,6 +51,8 @@ private:
     void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
     
     bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
+    bool DetectedFreeze(const ecs::EntityId textboxEntityId) const;
+    void StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

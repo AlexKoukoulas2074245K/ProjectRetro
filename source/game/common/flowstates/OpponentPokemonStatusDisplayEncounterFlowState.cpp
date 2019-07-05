@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
-#include "PlayerPokemonIntroEncounterFlowState.h"
+#include "PlayerPokemonTextIntroEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -21,6 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_POSITION       = glm::vec3(-0.32f, 0.7f, 0.0f);
+const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_HEALTHBAR_DISPLAY_POSITION    = glm::vec3(-0.32f, 0.7f, 0.1f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_SCALE          = glm::vec3(1.0f, 1.0f, 1.0f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.04f, 0.858f, -0.5f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::PLAYER_TRAINER_EXIT_TARGET_POSITION    = glm::vec3(-1.0f, 0.61f, 0.1f);
@@ -39,7 +40,7 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
+    encounterStateComponent.mViewEntities.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
     (
         encounterStateComponent.mOpponentPokemonRoster.front(),
         OPPONENT_STATUS_DISPLAY_POSITION,
@@ -47,8 +48,17 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
         mWorld
     );
     
+    //TODO: select appropriate bar color
+    encounterStateComponent.mViewEntities.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+    (
+        PokemonHealthBarStatus::GREEN,
+        OPPONENT_HEALTHBAR_DISPLAY_POSITION,
+        OPPONENT_STATUS_DISPLAY_SCALE,
+        mWorld
+    );
+
     // Create opponent pokemon name and level textbox
-    encounterStateComponent.mOpponentPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+    encounterStateComponent.mViewEntities.mOpponentPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
     (
         TextboxType::BARE_TEXTBOX,
         OPPONENT_POKEMON_INFO_TEXTBOX_COLS,
@@ -61,25 +71,24 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     
     // Write opponent pokemon name string
     const auto opponentPokemonName = encounterStateComponent.mOpponentPokemonRoster.front().mName.GetString();
-    WriteTextAtTextboxCoords(encounterStateComponent.mOpponentPokemonInfoTextboxEntityId, opponentPokemonName, 0, 0, mWorld);
+    WriteTextAtTextboxCoords(encounterStateComponent.mViewEntities.mOpponentPokemonInfoTextboxEntityId, opponentPokemonName, 0, 0, mWorld);
     
     // Write opponent pokemon level string
     const auto opponentPokemonLevel = encounterStateComponent.mOpponentPokemonRoster.front().mLevel;
-    WriteTextAtTextboxCoords(encounterStateComponent.mOpponentPokemonInfoTextboxEntityId, std::to_string(opponentPokemonLevel), 4, 1, mWorld);
+    WriteTextAtTextboxCoords(encounterStateComponent.mViewEntities.mOpponentPokemonInfoTextboxEntityId, std::to_string(opponentPokemonLevel), 4, 1, mWorld);
 }
 
 void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    auto& playerTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mPlayerActiveSpriteEntityId);
-
-    playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;
-
+    auto& playerTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewEntities.mPlayerActiveSpriteEntityId);
+    
+    playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;    
     if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_EXIT_TARGET_POSITION.x)
     {
         playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;
-        CompleteAndTransitionTo<PlayerPokemonIntroEncounterFlowState>();
+        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
     }
 }
 

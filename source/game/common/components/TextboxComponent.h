@@ -81,9 +81,10 @@ class TextboxComponent final: public ecs::IComponent
 public:
     TextboxContent mTextContent;
     TextboxQueuedDialog mQueuedDialog;
-    int mTextboxTileCols     = TEXTBOX_MIN_TILE_COLS;
-    int mTextboxTileRows     = TEXTBOX_MIN_TILE_ROWS;
-    TextboxType mTextboxType = TextboxType::GENERIC_TEXTBOX;
+    int mTextboxTileCols           = TEXTBOX_MIN_TILE_COLS;
+    int mTextboxTileRows           = TEXTBOX_MIN_TILE_ROWS;
+    TextboxType mTextboxType       = TextboxType::GENERIC_TEXTBOX;
+    bool mShouldFreezeWhenComplete = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

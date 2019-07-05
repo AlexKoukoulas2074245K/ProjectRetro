@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/GameConstants.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/StringUtils.h"
 
@@ -55,7 +56,15 @@ ecs::EntityId LoadAndCreatePlayerRosterDisplay
 
 ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
 (
-    PokemonInfo& pokemonInfo,
+    const PokemonInfo& pokemonInfo,
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+);
+
+ecs::EntityId LoadAndCreatePokemonHealthBar
+(
+    const PokemonHealthBarStatus healthBarStatus,
     const glm::vec3& spritePosition,
     const glm::vec3& spriteScale,
     ecs::World& world
