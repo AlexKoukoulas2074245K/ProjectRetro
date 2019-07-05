@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
+#include "PlayerPokemonIntroEncounterFlowState.h"
+#include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -21,9 +23,12 @@
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_POSITION       = glm::vec3(-0.32f, 0.7f, 0.0f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_SCALE          = glm::vec3(1.0f, 1.0f, 1.0f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.04f, 0.858f, -0.5f);
+const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::PLAYER_TRAINER_EXIT_TARGET_POSITION    = glm::vec3(-1.0f, 0.61f, 0.1f);
 
 const int OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_TEXTBOX_COLS = 20;
 const int OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_TEXTBOX_ROWS = 2;
+
+const float OpponentPokemonStatusDisplayEncounterFlowState::SPRITE_ANIMATION_SPEED = 2.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -63,9 +68,19 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     WriteTextAtTextboxCoords(encounterStateComponent.mOpponentPokemonInfoTextboxEntityId, std::to_string(opponentPokemonLevel), 4, 1, mWorld);
 }
 
-void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float)
+void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)
 {
-    
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    auto& playerTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mPlayerActiveSpriteEntityId);
+
+    playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;
+
+    if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_EXIT_TARGET_POSITION.x)
+    {
+        playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;
+        CompleteAndTransitionTo<PlayerPokemonIntroEncounterFlowState>();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
