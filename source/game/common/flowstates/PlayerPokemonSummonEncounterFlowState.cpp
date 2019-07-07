@@ -13,6 +13,15 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_POSITION    = glm::vec3(0.3f, -0.23f, 0.0f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_HEALTHBAR_DISPLAY_POSITION = glm::vec3(0.3f, -0.23f, 0.1f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_SCALE       = glm::vec3(1.0f, 1.0f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -22,8 +31,16 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     : BaseFlowState(world)
 {
     // TODO: differentiate between PIKACHU summon and other pokemon anim
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    // Player pokemon status display
+    encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerPokemonStatusDisplay
+    (
+        PLAYER_STATUS_DISPLAY_POSITION,
+        PLAYER_STATUS_DISPLAY_SCALE,
+        mWorld
+    );
     
     // Write player's pokemon name
     WriteTextAtTextboxCoords

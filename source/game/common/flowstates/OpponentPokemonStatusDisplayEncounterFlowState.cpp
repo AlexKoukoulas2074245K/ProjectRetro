@@ -42,7 +42,6 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     
     encounterStateComponent.mViewEntities.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
     (
-        encounterStateComponent.mOpponentPokemonRoster.front(),
         OPPONENT_STATUS_DISPLAY_POSITION,
         OPPONENT_STATUS_DISPLAY_SCALE,
         mWorld
