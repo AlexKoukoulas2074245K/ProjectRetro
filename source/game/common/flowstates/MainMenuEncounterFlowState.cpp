@@ -16,10 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_POSITION = glm::vec3(0.275f, -0.6701f, -0.2f);
 
-const int MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_COLS = 12;
-const int MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_ROWS = 6;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -28,20 +25,7 @@ const int MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_ROWS = 6;
 MainMenuEncounterFlowState::MainMenuEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto mainMenuTextboxEntityId = CreateTextboxWithDimensions
-    (
-        TextboxType::ENCOUNTER_MAIN_MENU,
-        MAIN_MENU_TEXTBOX_COLS, 
-        MAIN_MENU_TEXTBOX_ROWS, 
-        MAIN_MENU_TEXTBOX_POSITION.x, 
-        MAIN_MENU_TEXTBOX_POSITION.y, 
-        MAIN_MENU_TEXTBOX_POSITION.z, mWorld
-    );
-
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "}FIGHT", 1, 2, mWorld);
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "<>", 8, 2, mWorld);
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "ITEM", 2, 4, mWorld);
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, mWorld);
+    CreateEncounterMainMenuTextbox(mWorld);
 }
 
 void MainMenuEncounterFlowState::VUpdate(const float)

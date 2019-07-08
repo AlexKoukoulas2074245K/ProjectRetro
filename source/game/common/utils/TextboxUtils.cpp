@@ -11,6 +11,7 @@
 
 #include "TextboxUtils.h"
 #include "../../ECS.h"
+#include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
@@ -24,10 +25,15 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 CHATBOX_POSITION = glm::vec3(0.0f, -0.6701f, 0.0f);
+static const glm::vec3 CHATBOX_POSITION                     = glm::vec3(0.0f, -0.6701f, 0.0f);
+static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION = glm::vec3(0.275f, -0.6701f, -0.2f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
+
+static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS = 12;
+static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS = 6;
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -195,6 +201,32 @@ ecs::EntityId CreateChatbox
         CHATBOX_POSITION.z, 
         world
     );
+}
+
+ecs::EntityId CreateEncounterMainMenuTextbox
+(
+    ecs::World& world
+)
+{
+    const auto mainMenuTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::ENCOUNTER_MAIN_MENU,
+        ENCOUNTER_MAIN_MENU_TEXTBOX_COLS,
+        ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS,
+        ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION.x,
+        ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION.y,
+        ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION.z,
+        world
+    );
+    
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "}FIGHT", 1, 2, world);
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "<>", 8, 2, world);
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "ITEM", 2, 4, world);
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, world);
+    
+    world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::make_unique<CursorComponent>());
+    
+    return mainMenuTextboxEntityId;
 }
 
 void DestroyActiveTextbox
@@ -446,7 +478,7 @@ void CreateTextboxComponents
     const auto textboxBotFillerCoords        = glm::vec3(textboxOriginX, textboxBotLeftPoint.y, textboxZ - 0.05f);
     const auto textboxLeftFillerCoords       = glm::vec3(textboxTopLeftPoint.x, textboxOriginY, textboxZ - 0.05f);
     const auto textboxRightFillerCoords      = glm::vec3(textboxTopRightPoint.x, textboxOriginY, textboxZ - 0.05f);
-    const auto textboxBackgroundFillerCoords = glm::vec3(textboxOriginX, textboxOriginY, 0.0f);
+    const auto textboxBackgroundFillerCoords = glm::vec3(textboxOriginX, textboxOriginY, textboxZ - 0.02f);
     
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 2, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopLeftPoint, world);
     CreateTextboxComponentFromAtlasCoords(textboxEntityId, 4, 6, glm::vec3(guiTileWidth, guiTileHeight, 1.0f), textboxTopRightPoint, world);

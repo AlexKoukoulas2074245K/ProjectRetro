@@ -69,6 +69,11 @@ ecs::EntityId CreateChatbox
     ecs::World& world
 );
 
+ecs::EntityId CreateEncounterMainMenuTextbox
+(
+    ecs::World& world
+);
+
 void DestroyActiveTextbox
 (
     ecs::World& world
