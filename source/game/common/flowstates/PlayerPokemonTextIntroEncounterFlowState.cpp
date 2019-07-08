@@ -14,6 +14,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -22,12 +23,19 @@
 PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto overlaidChatboxEntityId = CreateChatbox(mWorld);
+    auto& encounterStateSingletonComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    encounterStateSingletonComponent.mViewObjects.mMainChatboxEntityId = CreateChatbox(mWorld);
 
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     //TODO: differentiate between summoning dialogs
-    QueueDialogForTextbox(overlaidChatboxEntityId, "GO! " + playerStateComponent.mPlayerPokemonRoster.front().mName.GetString() + "!+FREEZE", mWorld);
+    QueueDialogForTextbox
+    (
+        encounterStateSingletonComponent.mViewObjects.mMainChatboxEntityId, 
+        "GO! " + playerStateComponent.mPlayerPokemonRoster.front().mName.GetString() + "!+FREEZE",
+        mWorld
+    );
 }
 
 void PlayerPokemonTextIntroEncounterFlowState::VUpdate(const float)

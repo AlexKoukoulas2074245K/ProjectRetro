@@ -56,6 +56,7 @@ public:
     std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;
     std::unique_ptr<Timer> mBattleAnimationTimer;
     ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mMainChatboxEntityId                = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;

@@ -89,7 +89,7 @@ void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)
     playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;    
     if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_EXIT_TARGET_POSITION.x)
     {
-        playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;
+        playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;        
         CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
     }
 }

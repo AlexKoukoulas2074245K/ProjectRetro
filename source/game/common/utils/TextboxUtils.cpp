@@ -171,8 +171,11 @@ ecs::EntityId CreateTextboxWithDimensions
     transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, textboxZ);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
-    auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
-    guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);
+    if (textboxType != TextboxType::BARE_TEXTBOX)
+    {
+        auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
+        guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);
+    }    
     
     return textboxEntityId;
 }

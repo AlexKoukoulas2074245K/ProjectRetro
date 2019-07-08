@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_POSITION = glm::vec3(0.3f, -0.6701f, -0.1f);
+const glm::vec3 MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_POSITION = glm::vec3(0.275f, -0.6701f, -0.2f);
 
 const int MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_COLS = 12;
 const int MainMenuEncounterFlowState::MAIN_MENU_TEXTBOX_ROWS = 6;
