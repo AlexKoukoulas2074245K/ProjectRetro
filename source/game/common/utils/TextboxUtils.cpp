@@ -24,6 +24,15 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+static const glm::vec3 CHATBOX_POSITION = glm::vec3(0.0f, -0.6701f, 0.0f);
+
+static const int CHATBOX_COLS = 20;
+static const int CHATBOX_ROWS = 6;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 static void CreateTextboxComponents
 (
     const ecs::EntityId textboxEntityId,
@@ -173,7 +182,16 @@ ecs::EntityId CreateChatbox
     ecs::World& world
 )
 {
-    return CreateTextboxWithDimensions(TextboxType::CHATBOX, 20, 6, 0.0f, -0.6701f, 0.0f, world);
+    return CreateTextboxWithDimensions
+    (
+        TextboxType::CHATBOX,
+        CHATBOX_COLS, 
+        CHATBOX_ROWS, 
+        CHATBOX_POSITION.x, 
+        CHATBOX_POSITION.y,
+        CHATBOX_POSITION.z, 
+        world
+    );
 }
 
 void DestroyActiveTextbox

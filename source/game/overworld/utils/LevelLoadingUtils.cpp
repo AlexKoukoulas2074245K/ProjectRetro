@@ -546,7 +546,7 @@ void CheckAndLoadEncounterInfo
         encounterInfo.mPokemonInfo.mName      = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
         encounterInfo.mPokemonInfo.mLevel     = encounterInfoJsonObject["level"].get<int>();
 
-        //TODO: fix
+        //TODO: Replace with correct pokedex id
         encounterInfo.mPokemonInfo.mPokedexId = 1;
         
         levelModelComponent.mWildEncounters.push_back(encounterInfo);

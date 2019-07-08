@@ -1,0 +1,376 @@
+{
+    "POUND":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "GROWL":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "EA-1"
+    },
+
+    "SCREECH":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 216,
+        "pp": 40,
+        "effect": "ED-2"
+    },
+
+    "TAIL_WHIP":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "ED-1"
+    },
+
+    "SAND-ATTACK":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "EH-1"
+    },
+
+    "STRING_SHOT":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 242,
+        "pp": 40,
+        "effect": "ES-1"
+    },
+
+    "HARDEN":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "PD+1"
+    },
+
+    "CONFUSION":
+    {
+        "type": "PSYCHIC",
+        "power": 50,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "KARATE_CHOP":
+    {
+        "type": "NORMAL",
+        "power": 50,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "LOW_KICK":
+    {
+        "type": "NORMAL",
+        "power": 50,
+        "accuracy": 229,
+        "pp": 20
+    },
+
+    "MEGA_PUNCH":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 216,
+        "pp": 20
+    },
+
+    "SCRATCH":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "VICEGRIP":
+    {
+        "type": "NORMAL",
+        "power": 55,
+        "accuracy": 255,
+        "pp": 30
+    },
+
+    "GUST":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "WING_ATTACK":
+    {
+        "type": "FLYING",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "AGILITY":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "PS+2"
+    },
+
+    "THUNDER_WAVE":
+    {
+        "type": "ELECTRIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "EPAR"
+    },
+
+    "SLAM":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 191,
+        "pp": 20
+    },
+
+    "VINE_WHIP":
+    {
+        "type": "GRASS",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "MEGA_KICK":
+    {
+        "type": "NORMAL",
+        "power": 120,
+        "accuracy": 191,
+        "pp": 5
+    },
+
+    "HORN_ATTACK":
+    {
+        "type": "NORMAL",
+        "power": 65,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "TACKLE":
+    {
+        "type": "NORMAL",
+        "power": 35,
+        "accuracy": 242,
+        "pp": 35
+    },
+
+    "WATER_GUN":
+    {
+        "type": "WATER",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "HYDRO_PUMP":
+    {
+        "type": "WATER",
+        "power": 120,
+        "accuracy": 204,
+        "pp": 5
+    },
+
+    "SURF":
+    {
+        "type": "WATER",
+        "power": 95,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "PECK":
+    {
+        "type": "FLYING",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "DRILL_PECK":
+    {
+        "type": "FLYING",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 20
+    },
+
+    "STRENGTH":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "RAZOR_LEAF":
+    {
+        "type": "GRASS",
+        "power": 55,
+        "accuracy": 242,
+        "pp": 25
+    },
+
+    "ROCK_THROW":
+    {
+        "type": "ROCK",
+        "power": 50,
+        "accuracy": 165,
+        "pp": 15
+    },
+
+    "EARTHQUAKE":
+    {
+        "type": "GROUND",
+        "power": 100,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "EGG_BOMB":
+    {
+        "type": "NORMAL",
+        "power": 100,
+        "accuracy": 191,
+        "pp": 10
+    },
+
+    "WATERFALL":
+    {
+        "type": "WATER",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "DIZZY_PUNCH":
+    {
+        "type": "NORMAL",
+        "power": 70,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "CRABHAMMER":
+    {
+        "type": "WATER",
+        "power": 90,
+        "accuracy": 216,
+        "pp": 10
+    },
+
+    "STOMP":
+    {
+        "type": "NORMAL",
+        "power": 65,
+        "accuracy": 255,
+        "pp": 20
+    },
+
+    "ROCK_SLIDE":
+    {
+        "type": "ROCK",
+        "power": 75,
+        "accuracy": 229,
+        "pp": 10
+    },
+
+    "SLASH":
+    {
+        "type": "NORMAL",
+        "power": 70,
+        "accuracy": 255,
+        "pp": 20
+    },
+
+    "TRI_ATTACK":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "QUICK_ATTACK":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 30
+    },
+
+    "THUNDERSHOCK":
+    {
+        "type": "ELECTRIC",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 30
+    },
+
+    "THUNDERBOLT":
+    {
+        "type": "ELECTRIC",
+        "power": 95,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "ICE_BEAM":
+    {
+        "type": "ICE",
+        "power": 75,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "HYPER_BEAM":
+    {
+        "type": "NORMAL",
+        "power": 150,
+        "accuracy": 229,
+        "pp": 5
+    },
+
+    "FLAMETHROWER":
+    {
+        "type": "FIRE",
+        "power": 90,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "LICK":
+    {
+        "type": "GHOST",
+        "power": 10,
+        "accuracy": 255,
+        "pp": 10
+    }}

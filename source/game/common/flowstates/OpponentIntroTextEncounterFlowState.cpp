@@ -42,7 +42,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
+    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
     (
         PLAYER_ROSTER_DISPLAY_POSITION,
         PLAYER_ROSTER_DISPLAY_SCALE,
@@ -50,7 +50,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     );
     
     // Pokemon party pokeball rendering
-    encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
     (
         TextboxType::BARE_TEXTBOX,
         PLAYER_POKEMON_INFO_TEXTBOX_COLS,
@@ -67,7 +67,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         // select normal pokeball, status or faint
         WriteTextAtTextboxCoords
         (
-            encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId,
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
             "~", // Pokeball status icon character
             1 + i,
             3,
@@ -92,9 +92,9 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId);
-        DeleteTextAtTextboxRow(encounterStateComponent.mViewEntities.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
-        encounterStateComponent.mViewEntities.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+        DeleteTextAtTextboxRow(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
+        encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
         CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
     }
 }

@@ -184,6 +184,7 @@ void TransitionAnimationSystem::LoadEncounterSpecificAnimation() const
     
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
     
+    //TODO: select correct transition animation
     const auto transitionAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + "transition_animations/wild_anim1/";
     const auto& encounterAnimFilenames = GetAllFilenamesInDirectory(transitionAnimationDirPath);
     for (const auto& filename: encounterAnimFilenames)

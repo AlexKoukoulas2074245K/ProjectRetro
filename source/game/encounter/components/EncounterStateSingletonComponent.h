@@ -19,7 +19,11 @@
 #include "../../ECS.h"
 #include "../../common/GameConstants.h"
 #include "../../common/flowstates/FlowStateManager.h"
+#include "../../common/utils/Timer.h"
+#include "../../resources/ResourceLoadingService.h"
 
+#include <memory>
+#include <queue>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,9 +44,18 @@ enum class OverworldEncounterAnimationState
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class EncounterViewEntities final
+static const float BATTLE_ANIMATION_FRAME_DURATION = 0.04f;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+class EncounterViewObjects final
 {    
 public:
+    std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;
+    std::unique_ptr<Timer> mBattleAnimationTimer;
+    ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
@@ -63,7 +76,7 @@ class EncounterStateSingletonComponent final: public ecs::IComponent
 {
 public:    
     FlowStateManager mFlowStateManager;
-    EncounterViewEntities mViewEntities;
+    EncounterViewObjects mViewObjects;
     std::vector<PokemonInfo> mOpponentPokemonRoster;        
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            

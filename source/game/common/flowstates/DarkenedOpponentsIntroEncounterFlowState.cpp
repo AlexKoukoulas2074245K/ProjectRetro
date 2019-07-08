@@ -45,8 +45,8 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    auto& playerTrainerSpriteTransformComponent   = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewEntities.mPlayerActiveSpriteEntityId);
-    auto& opponentTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewEntities.mOpponentActiveSpriteEntityId);
+    auto& playerTrainerSpriteTransformComponent   = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    auto& opponentTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
     
     playerTrainerSpriteTransformComponent.mPosition.x   -= SPRITE_ANIMATION_SPEED * dt;
     opponentTrainerSpriteTransformComponent.mPosition.x += SPRITE_ANIMATION_SPEED * dt;
@@ -69,7 +69,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mViewEntities.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
+    encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
     (
         6,
         4,
@@ -80,7 +80,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
-        encounterStateComponent.mViewEntities.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
+        encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
         (
             4,
             4,
@@ -91,7 +91,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
-        encounterStateComponent.mViewEntities.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
+        encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
         (
             encounterStateComponent.mOpponentPokemonRoster.front().mName,
             true,
@@ -111,8 +111,8 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterEdges() const
 
     const auto& encounterEdgeEntityIds = LoadAndCreateLevelEdges(mWorld);
 
-    encounterStateComponent.mViewEntities.mLevelLeftEdgeEntityId  = encounterEdgeEntityIds.first;
-    encounterStateComponent.mViewEntities.mLevelRightEdgeEntityId = encounterEdgeEntityIds.second;
+    encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId  = encounterEdgeEntityIds.first;
+    encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId = encounterEdgeEntityIds.second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

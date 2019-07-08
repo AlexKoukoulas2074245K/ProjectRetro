@@ -47,9 +47,10 @@ private:
     void UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxScrollAnim1(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxScrollAnim2(const ecs::EntityId textboxEntityId, const float dt) const;
-    void UpdateChatboxParagraphEndDelay(const float dt) const;
+    void UpdateChatboxParagraphEndDelay(const float dt) const;    
     void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
-    
+    void UpdateEncounterMainMenu(const ecs::EntityId textboxEntityid) const;
+
     bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
     bool DetectedFreeze(const ecs::EntityId textboxEntityId) const;
     void StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const;

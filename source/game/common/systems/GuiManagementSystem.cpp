@@ -53,6 +53,7 @@ void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
             switch (textboxComponent.mTextboxType)
             {
                 case TextboxType::CHATBOX: UpdateChatbox(entityId, dt); break;
+                case TextboxType::ENCOUNTER_MAIN_MENU: break;
                 case TextboxType::BARE_TEXTBOX: break;
                 case TextboxType::GENERIC_TEXTBOX: break;
             }
@@ -389,6 +390,11 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
             }
         }
     }
+}
+
+void GuiManagementSystem::UpdateEncounterMainMenu(const ecs::EntityId) const
+{
+
 }
 
 bool GuiManagementSystem::DetectedKillSwitch(const ecs::EntityId textboxEntityId) const
