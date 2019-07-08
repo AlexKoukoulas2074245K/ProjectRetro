@@ -224,7 +224,11 @@ ecs::EntityId CreateEncounterMainMenuTextbox
     WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "ITEM", 2, 4, world);
     WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, world);
     
-    world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::make_unique<CursorComponent>());
+    auto cursorComponent = std::make_unique<CursorComponent>();
+    cursorComponent->mCursorColCount = 2;
+    cursorComponent->mCursorRowCount = 2;
+
+    world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::move(cursorComponent));
     
     return mainMenuTextboxEntityId;
 }

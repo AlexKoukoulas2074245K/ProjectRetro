@@ -11,11 +11,13 @@
 
 #include "GuiManagementSystem.h"
 #include "../GameConstants.h"
+#include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
+#include "../../input/utils/InputUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/MeshUtils.h"
@@ -53,7 +55,7 @@ void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
             switch (textboxComponent.mTextboxType)
             {
                 case TextboxType::CHATBOX: UpdateChatbox(entityId, dt); break;
-                case TextboxType::ENCOUNTER_MAIN_MENU: break;
+                case TextboxType::ENCOUNTER_MAIN_MENU: UpdateEncounterMainMenu(entityId); break;
                 case TextboxType::BARE_TEXTBOX: break;
                 case TextboxType::GENERIC_TEXTBOX: break;
             }
@@ -392,9 +394,31 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
     }
 }
 
-void GuiManagementSystem::UpdateEncounterMainMenu(const ecs::EntityId) const
-{
-
+void GuiManagementSystem::UpdateEncounterMainMenu(const ecs::EntityId textboxEntityId) const
+{    
+    auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    
+    inputStateComponent.mHasBeenConsumed = true;
+    if (IsActionTypeKeyTapped(VirtualActionType::LEFT, inputStateComponent))
+    {
+        MoveTextboxCursor(textboxEntityId, Direction::WEST);
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT, inputStateComponent))
+    {
+        MoveTextboxCursor(textboxEntityId, Direction::EAST);
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::UP, inputStateComponent))
+    {
+        MoveTextboxCursor(textboxEntityId, Direction::NORTH);
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN, inputStateComponent))
+    {
+        MoveTextboxCursor(textboxEntityId, Direction::SOUTH);
+    }
+    else
+    {
+        inputStateComponent.mHasBeenConsumed = false;
+    }
 }
 
 bool GuiManagementSystem::DetectedKillSwitch(const ecs::EntityId textboxEntityId) const
@@ -492,6 +516,53 @@ void GuiManagementSystem::StripFreezeStringFromQueuedText(const ecs::EntityId te
     }
 
     textboxComponent.mQueuedDialog.front().front() = mStrippedText;
+}
+
+void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId, const Direction direction) const
+{
+    auto& cursorComponent = mWorld.GetComponent<CursorComponent>(textboxEntityId);
+    
+    DeleteCharAtTextboxCoords
+    (
+        textboxEntityId, 
+        1 + 6 * cursorComponent.mCursorCol,
+        2 + 2 * cursorComponent.mCursorRow,
+        mWorld
+    );
+
+    switch (direction)
+    {
+        case Direction::EAST:  cursorComponent.mCursorCol++; break;
+        case Direction::NORTH: cursorComponent.mCursorRow--; break;
+        case Direction::SOUTH: cursorComponent.mCursorRow++; break;
+        case Direction::WEST:  cursorComponent.mCursorCol--; break;
+    }
+
+    if (cursorComponent.mCursorCol >= cursorComponent.mCursorColCount)
+    {
+        cursorComponent.mCursorCol = cursorComponent.mCursorColCount - 1;
+    }
+    else if (cursorComponent.mCursorCol < 0)
+    {
+        cursorComponent.mCursorCol = 0;
+    }
+    else if (cursorComponent.mCursorRow >= cursorComponent.mCursorRowCount)
+    {
+        cursorComponent.mCursorRow = cursorComponent.mCursorRowCount - 1;
+    }
+    else if (cursorComponent.mCursorRow < 0)
+    {
+        cursorComponent.mCursorRow = 0;
+    }
+
+    WriteCharAtTextboxCoords
+    (
+        textboxEntityId,
+        '}',
+        1 + 6 * cursorComponent.mCursorCol,
+        2 + 2 * cursorComponent.mCursorRow,
+        mWorld
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

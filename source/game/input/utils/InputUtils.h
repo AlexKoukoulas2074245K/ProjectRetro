@@ -23,17 +23,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-bool IsActionTypeKeyTapped(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
+inline bool IsActionTypeKeyTapped(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
 {
     return inputStateComponent.mCurrentInputState.at(actionType) == VirtualActionInputState::TAPPED;
 }
 
-bool IsActionTypeKeyPressed(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
+inline bool IsActionTypeKeyPressed(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
 {
     return inputStateComponent.mCurrentInputState.at(actionType) == VirtualActionInputState::PRESSED;
 }
 
-bool IsActionTypeKeyReleased(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
+inline bool IsActionTypeKeyReleased(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
 {
     return inputStateComponent.mCurrentInputState.at(actionType) == VirtualActionInputState::RELEASED;
 }

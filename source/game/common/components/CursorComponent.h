@@ -21,7 +21,8 @@ class CursorComponent final: public ecs::IComponent
 public:
     int mCursorRow = 0;
     int mCursorCol = 0;
-    
+    int mCursorColCount = 0;
+    int mCursorRowCount = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
