@@ -23,16 +23,14 @@
 PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    auto& encounterStateSingletonComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
-    encounterStateSingletonComponent.mViewObjects.mMainChatboxEntityId = CreateChatbox(mWorld);
+    const auto mainChatboxEntityId = CreateChatbox(world);
 
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     //TODO: differentiate between summoning dialogs
     QueueDialogForTextbox
     (
-        encounterStateSingletonComponent.mViewObjects.mMainChatboxEntityId, 
+        mainChatboxEntityId,
         "GO! " + playerStateComponent.mPlayerPokemonRoster.front().mName.GetString() + "!+FREEZE",
         mWorld
     );

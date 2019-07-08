@@ -200,7 +200,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             playerTrainerSpriteTransformComponent.mPosition.x += SPRITE_ANIMATION_SPEED * dt;
             if (playerTrainerSpriteTransformComponent.mPosition.x > PLAYER_POKEMON_SPRITE_END_POSITION.x)
             {
-                playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_POKEMON_SPRITE_END_POSITION.x;
+                playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_POKEMON_SPRITE_END_POSITION.x;                
                 DestroyActiveTextbox(mWorld);
                 CompleteAndTransitionTo<MainMenuEncounterFlowState>();
             }

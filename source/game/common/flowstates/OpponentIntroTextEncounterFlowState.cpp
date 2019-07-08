@@ -76,14 +76,14 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     }
     
     
-    encounterStateComponent.mViewObjects.mMainChatboxEntityId = CreateChatbox(mWorld);
+    const auto mainChatboxEntityId = CreateChatbox(mWorld);
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
         const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster.front().mName;
         QueueDialogForTextbox
         (
-            encounterStateComponent.mViewObjects.mMainChatboxEntityId, 
+            mainChatboxEntityId,
             "Wild " + wildPokemonName.GetString() + "#appeared!#+END", 
             mWorld
         );
@@ -96,8 +96,7 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
-    {
-        encounterStateComponent.mViewObjects.mMainChatboxEntityId = ecs::NULL_ENTITY_ID;
+    {        
         mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
         DeleteTextAtTextboxRow(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
         encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
