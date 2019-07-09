@@ -544,7 +544,7 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
     }
     else if (cursorComponent.mCursorCol < 0)
     {
-        cursorComponent.mCursorCol = cursorComponent.mWarp ? cursorComponent.mCursorCol - 1 : 0;
+        cursorComponent.mCursorCol = cursorComponent.mWarp ? cursorComponent.mCursorColCount - 1 : 0;
     }
     else if (cursorComponent.mCursorRow >= cursorComponent.mCursorRowCount)
     {
