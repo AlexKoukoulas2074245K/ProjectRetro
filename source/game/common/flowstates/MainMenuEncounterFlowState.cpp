@@ -38,6 +38,9 @@ void MainMenuEncounterFlowState::VUpdate(const float)
                 
         if (cursorComponent.mCursorCol == 0 && cursorComponent.mCursorRow == 0)
         {
+            // Destroy encounter main menu
+            DestroyActiveTextbox(mWorld);
+
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;            
             CompleteAndTransitionTo<FightMenuEncounterFlowState>();
         }
@@ -58,10 +61,7 @@ void MainMenuEncounterFlowState::VUpdate(const float)
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::RUN;
             //TODO: create actual one
             CompleteAndTransitionTo<FightMenuEncounterFlowState>();
-        }
-
-        // Destroy encounter main menu
-        DestroyActiveTextbox(mWorld);
+        }        
     }
 }
 

@@ -525,8 +525,8 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
     DeleteCharAtTextboxCoords
     (
         textboxEntityId, 
-        1 + 6 * cursorComponent.mCursorCol,
-        2 + 2 * cursorComponent.mCursorRow,
+        1 + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        2 + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
         mWorld
     );
 
@@ -559,8 +559,8 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
     (
         textboxEntityId,
         '}',
-        1 + 6 * cursorComponent.mCursorCol,
-        2 + 2 * cursorComponent.mCursorRow,
+        1 + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        2 + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
         mWorld
     );
 }

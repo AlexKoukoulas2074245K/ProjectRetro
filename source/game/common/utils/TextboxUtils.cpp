@@ -25,15 +25,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 CHATBOX_POSITION                     = glm::vec3(0.0f, -0.6701f, 0.0f);
-static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION = glm::vec3(0.275f, -0.6701f, -0.2f);
+static const glm::vec3 CHATBOX_POSITION                      = glm::vec3(0.0f, -0.6701f, 0.0f);
+static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION  = glm::vec3(0.275f, -0.6701f, -0.2f);
+static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION = glm::vec3(0.1375f, -0.6701f, -0.2f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
-static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS = 12;
-static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS = 6;
-
+static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS  = 12;
+static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS  = 6;
+static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_COLS = 16;
+static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS = 6;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +208,7 @@ ecs::EntityId CreateChatbox
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
     const MainMenuActionType actionTypeSelected,
+
     ecs::World& world
 )
 {
@@ -234,18 +237,68 @@ ecs::EntityId CreateEncounterMainMenuTextbox
     cursorComponent->mCursorColCount = 2;
     cursorComponent->mCursorRowCount = 2;
 
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 6;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
     WriteCharAtTextboxCoords
     (
         mainMenuTextboxEntityId,
         '}',
-        1 + 6 * cursorComponent->mCursorCol,
-        2 + 2 * cursorComponent->mCursorRow,
+        1 + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        2 + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
         world
     );
 
     world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::move(cursorComponent));
     
     return mainMenuTextboxEntityId;
+}
+
+ecs::EntityId CreateEncounterFightMenuTextbox
+(
+    const PokemonMoveSet& moveset,
+    const int lastSelectedMoveIndex,
+    ecs::World& world
+)
+{
+    const auto fightMenuTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        ENCOUNTER_FIGHT_MENU_TEXTBOX_COLS,
+        ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS,
+        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.x,
+        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.y,
+        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.z,
+        world
+    );
+
+    for (auto i = 0U; i < moveset.size(); ++i)
+    {
+        WriteTextAtTextboxCoords(fightMenuTextboxEntityId, moveset[i].mName.GetString(), 2, i + 1, world);
+    }    
+
+    auto cursorComponent = std::make_unique<CursorComponent>();    
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = lastSelectedMoveIndex;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 4;
+
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 1;
+
+    WriteCharAtTextboxCoords
+    (
+        fightMenuTextboxEntityId,
+        '}',
+        1 + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        1 + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    world.AddComponent<CursorComponent>(fightMenuTextboxEntityId, std::move(cursorComponent));
+
+    return fightMenuTextboxEntityId;
 }
 
 void DestroyActiveTextbox

@@ -100,6 +100,7 @@ public:
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
+    int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
 
 };
 
