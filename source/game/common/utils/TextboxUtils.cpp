@@ -237,6 +237,8 @@ ecs::EntityId CreateEncounterMainMenuTextbox
     cursorComponent->mCursorColCount = 2;
     cursorComponent->mCursorRowCount = 2;
 
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
     cursorComponent->mCursorDisplayHorizontalTileIncrements = 6;
     cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
 
@@ -244,11 +246,13 @@ ecs::EntityId CreateEncounterMainMenuTextbox
     (
         mainMenuTextboxEntityId,
         '}',
-        1 + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
-        2 + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
         world
     );
 
+    cursorComponent->mWarp = false;
+    
     world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::move(cursorComponent));
     
     return mainMenuTextboxEntityId;
@@ -284,6 +288,8 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     cursorComponent->mCursorColCount = 1;
     cursorComponent->mCursorRowCount = 4;
 
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 1;
     cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
     cursorComponent->mCursorDisplayVerticalTileIncrements   = 1;
 
@@ -291,11 +297,13 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     (
         fightMenuTextboxEntityId,
         '}',
-        1 + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
-        1 + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
         world
     );
 
+    cursorComponent->mWarp = true;
+    
     world.AddComponent<CursorComponent>(fightMenuTextboxEntityId, std::move(cursorComponent));
 
     return fightMenuTextboxEntityId;

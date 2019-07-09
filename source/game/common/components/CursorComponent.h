@@ -29,8 +29,11 @@ public:
     int mCursorCol                             = 0;
     int mCursorColCount                        = 0;
     int mCursorRowCount                        = 0;
+    int mCursorDisplayHorizontalTileOffset     = 0;
+    int mCursorDisplayVerticalTileOffset       = 0;
     int mCursorDisplayHorizontalTileIncrements = 0;
     int mCursorDisplayVerticalTileIncrements   = 0;
+    bool mWarp                                 = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

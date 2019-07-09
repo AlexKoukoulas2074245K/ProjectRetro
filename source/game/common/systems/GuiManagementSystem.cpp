@@ -525,8 +525,8 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
     DeleteCharAtTextboxCoords
     (
         textboxEntityId, 
-        1 + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
-        2 + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
+        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
         mWorld
     );
 
@@ -540,27 +540,27 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
 
     if (cursorComponent.mCursorCol >= cursorComponent.mCursorColCount)
     {
-        cursorComponent.mCursorCol = cursorComponent.mCursorColCount - 1;
+        cursorComponent.mCursorCol = cursorComponent.mWarp ? 0 : cursorComponent.mCursorColCount - 1;
     }
     else if (cursorComponent.mCursorCol < 0)
     {
-        cursorComponent.mCursorCol = 0;
+        cursorComponent.mCursorCol = cursorComponent.mWarp ? cursorComponent.mCursorCol - 1 : 0;
     }
     else if (cursorComponent.mCursorRow >= cursorComponent.mCursorRowCount)
     {
-        cursorComponent.mCursorRow = cursorComponent.mCursorRowCount - 1;
+        cursorComponent.mCursorRow = cursorComponent.mWarp ? 0 : cursorComponent.mCursorRowCount - 1;
     }
     else if (cursorComponent.mCursorRow < 0)
     {
-        cursorComponent.mCursorRow = 0;
+        cursorComponent.mCursorRow = cursorComponent.mWarp ? cursorComponent.mCursorRowCount - 1 : 0;
     }
 
     WriteCharAtTextboxCoords
     (
         textboxEntityId,
         '}',
-        1 + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
-        2 + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
+        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
         mWorld
     );
 }

@@ -35,28 +35,31 @@ void MainMenuEncounterFlowState::VUpdate(const float)
     {        
         auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
         const auto& cursorComponent   = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-                
-        if (cursorComponent.mCursorCol == 0 && cursorComponent.mCursorRow == 0)
+        
+        const auto cursorCol = cursorComponent.mCursorCol;
+        const auto cursorRow = cursorComponent.mCursorRow;
+        
+        DestroyActiveTextbox(mWorld);
+
+        if (cursorCol == 0 && cursorRow == 0)
         {
             // Destroy encounter main menu
-            DestroyActiveTextbox(mWorld);
-
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;            
             CompleteAndTransitionTo<FightMenuEncounterFlowState>();
         }
-        else if (cursorComponent.mCursorCol == 1 && cursorComponent.mCursorRow == 0)
+        else if (cursorCol == 1 && cursorRow == 0)
         {
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::POKEMON;
             //TODO: create actual one
             CompleteAndTransitionTo<FightMenuEncounterFlowState>();
         }
-        else if (cursorComponent.mCursorCol == 0 && cursorComponent.mCursorRow == 1)
+        else if (cursorCol == 0 && cursorRow == 1)
         {
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::ITEM;
             //TODO: create actual one
             CompleteAndTransitionTo<FightMenuEncounterFlowState>();
         }
-        else if (cursorComponent.mCursorCol == 1 && cursorComponent.mCursorRow == 1)
+        else if (cursorCol == 1 && cursorRow == 1)
         {
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::RUN;
             //TODO: create actual one
