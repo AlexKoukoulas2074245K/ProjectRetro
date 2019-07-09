@@ -24,6 +24,8 @@
 
 #include <memory>
 #include <queue>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,9 +37,26 @@ enum class EncounterType
     NONE, WILD, TRAINER
 };
 
+enum class MainMenuActionType
+{
+    FIGHT, POKEMON, ITEM, RUN
+};
+
 enum class OverworldEncounterAnimationState
 {
     NONE, SCREEN_FLASH, ENCOUNTER_INTRO_ANIMATION, ENCOUNTER_INTRO_ANIMATION_COMPLETE
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+static const std::unordered_map<MainMenuActionType, std::pair<int, int>> sMainMenuActionTypesToCursorCoords =
+{
+    { MainMenuActionType::FIGHT,   { 0, 0 } },
+    { MainMenuActionType::POKEMON, { 1, 0 } },
+    { MainMenuActionType::ITEM,    { 0, 1 } },
+    { MainMenuActionType::RUN,     { 1, 1 } }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +74,7 @@ class EncounterViewObjects final
 public:
     std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;
     std::unique_ptr<Timer> mBattleAnimationTimer;
-    ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;    
+    ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;        
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
@@ -80,6 +99,8 @@ public:
     std::vector<PokemonInfo> mOpponentPokemonRoster;        
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
+    MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

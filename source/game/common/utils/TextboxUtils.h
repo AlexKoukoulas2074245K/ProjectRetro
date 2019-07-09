@@ -18,6 +18,7 @@
 
 #include "../../ECS.h"
 #include "../components/TextboxComponent.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 #include <string>
 #include <vector>
@@ -71,6 +72,7 @@ ecs::EntityId CreateChatbox
 
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
+    const MainMenuActionType actionTypeSelected,
     ecs::World& world
 );
 

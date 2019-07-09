@@ -205,6 +205,7 @@ ecs::EntityId CreateChatbox
 
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
+    const MainMenuActionType actionTypeSelected,
     ecs::World& world
 )
 {
@@ -219,14 +220,28 @@ ecs::EntityId CreateEncounterMainMenuTextbox
         world
     );
     
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "}FIGHT", 1, 2, world);
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "FIGHT", 2, 2, world);
     WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "<>", 8, 2, world);
     WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "ITEM", 2, 4, world);
-    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, world);
-    
+    WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, world);    
+
     auto cursorComponent = std::make_unique<CursorComponent>();
+    const auto targetCursorCoords = sMainMenuActionTypesToCursorCoords.at(actionTypeSelected);
+
+    cursorComponent->mCursorCol = targetCursorCoords.first;
+    cursorComponent->mCursorRow = targetCursorCoords.second;
+
     cursorComponent->mCursorColCount = 2;
     cursorComponent->mCursorRowCount = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        mainMenuTextboxEntityId,
+        '}',
+        1 + 6 * cursorComponent->mCursorCol,
+        2 + 2 * cursorComponent->mCursorRow,
+        world
+    );
 
     world.AddComponent<CursorComponent>(mainMenuTextboxEntityId, std::move(cursorComponent));
     
