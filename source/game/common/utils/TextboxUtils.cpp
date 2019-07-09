@@ -210,7 +210,7 @@ ecs::EntityId CreateEncounterMainMenuTextbox
 {
     const auto mainMenuTextboxEntityId = CreateTextboxWithDimensions
     (
-        TextboxType::ENCOUNTER_MAIN_MENU,
+        TextboxType::CURSORED_TEXTBOX,
         ENCOUNTER_MAIN_MENU_TEXTBOX_COLS,
         ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS,
         ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION.x,
