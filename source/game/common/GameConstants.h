@@ -67,6 +67,12 @@ struct PokemonInfo
     int mLevel;
 };
 
+struct EvolutionInfo
+{
+    StringId mEvolutionTargetPokemonName;
+    StringId mEvolutionMethod;
+};
+
 struct TileCoords
 {
     TileCoords()

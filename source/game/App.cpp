@@ -15,8 +15,11 @@
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
+#include "common/components/PokemonBaseStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
+#include "common/utils/PokemonStatsUtils.h"
 #include "encounter/components/EncounterStateSingletonComponent.h"
+#include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "rendering/components/AnimationTimerComponent.h"
@@ -44,7 +47,6 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
-#include "encounter/systems/EncounterStateControllerSystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +138,10 @@ bool App::AppShouldQuit()
 
 void App::DummyInitialization()
 {
+    auto pokemonBaseStatsComponent = std::make_unique<PokemonBaseStatsSingletonComponent>();
+    LoadAndPopulatePokemonBaseStats(*pokemonBaseStatsComponent);
+    mWorld.SetSingletonComponent<PokemonBaseStatsSingletonComponent>(std::move(pokemonBaseStatsComponent));
+
     const auto playerEntity = mWorld.CreateEntity();
     
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
