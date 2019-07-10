@@ -276,9 +276,11 @@ ecs::EntityId CreateEncounterFightMenuTextbox
         world
     );
 
+    auto numberOfValidMoves = 0;
     for (auto i = 0U; i < moveset.size(); ++i)
     {
         WriteTextAtTextboxCoords(fightMenuTextboxEntityId, moveset[i].mName.GetString(), 2, i + 1, world);
+        numberOfValidMoves += moveset[i].mName != StringId("-") ? 1 : 0;
     }    
 
     auto cursorComponent = std::make_unique<CursorComponent>();    
@@ -286,7 +288,7 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     cursorComponent->mCursorRow = lastSelectedMoveIndex;
 
     cursorComponent->mCursorColCount = 1;
-    cursorComponent->mCursorRowCount = 4;
+    cursorComponent->mCursorRowCount = numberOfValidMoves;
 
     cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
     cursorComponent->mCursorDisplayVerticalTileOffset       = 1;
