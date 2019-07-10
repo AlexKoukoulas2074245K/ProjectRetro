@@ -44,18 +44,20 @@ GuiManagementSystem::GuiManagementSystem(ecs::World& world)
 
 void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
 {    
-    auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    const auto& activeEntities = mWorld.GetActiveEntities();
+    auto& inputStateComponent        = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& activeEntities       = mWorld.GetActiveEntities();
+    const auto activeTextboxEntityId = GetActiveTextboxEntityId(mWorld);
+
     for (const auto& entityId: activeEntities)
     {
-        if (ShouldProcessEntity(entityId) && GetActiveTextboxEntityId(mWorld) == entityId)
+        if (ShouldProcessEntity(entityId) && entityId == activeTextboxEntityId)
         {
             auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(entityId);
             
             switch (textboxComponent.mTextboxType)
             {
                 case TextboxType::CHATBOX: UpdateChatbox(entityId, dt); break;
-                case TextboxType::CURSORED_TEXTBOX: UpdateEncounterMainMenu(entityId); break;
+                case TextboxType::CURSORED_TEXTBOX: UpdateCursoredTextbox(entityId); break;
                 case TextboxType::BARE_TEXTBOX: break;
                 case TextboxType::GENERIC_TEXTBOX: break;
             }
@@ -394,7 +396,7 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
     }
 }
 
-void GuiManagementSystem::UpdateEncounterMainMenu(const ecs::EntityId textboxEntityId) const
+void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const
 {    
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     

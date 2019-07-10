@@ -83,8 +83,20 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     ecs::World& world
 );
 
+ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
+(
+    const PokemonMove& pokemonMove,
+    ecs::World& world
+);
+
 void DestroyActiveTextbox
 (
+    ecs::World& world
+);
+
+void DestroyGenericOrBareTextbox
+(
+    ecs::EntityId textboxEntityId,
     ecs::World& world
 );
 

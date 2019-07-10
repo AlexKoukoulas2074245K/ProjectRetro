@@ -74,17 +74,18 @@ class EncounterViewObjects final
 public:
     std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;
     std::unique_ptr<Timer> mBattleAnimationTimer;
-    ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;        
+    ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;            
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;    
     ecs::EntityId mLevelLeftEdgeEntityId              = ecs::NULL_ENTITY_ID;
     ecs::EntityId mLevelRightEdgeEntityId             = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mFightMenuMoveInfoTexbotxEntityId   = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

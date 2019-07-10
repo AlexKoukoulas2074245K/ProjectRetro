@@ -50,7 +50,7 @@ private:
     void UpdateChatboxScrollAnim2(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxParagraphEndDelay(const float dt) const;    
     void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
-    void UpdateEncounterMainMenu(const ecs::EntityId textboxEntityid) const;
+    void UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const;
 
     bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
     bool DetectedFreeze(const ecs::EntityId textboxEntityId) const;

@@ -25,17 +25,22 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 CHATBOX_POSITION                      = glm::vec3(0.0f, -0.6701f, 0.0f);
-static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION  = glm::vec3(0.275f, -0.6701f, -0.2f);
-static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION = glm::vec3(0.1375f, -0.6701f, -0.2f);
+static const glm::vec3 CHATBOX_POSITION                                = glm::vec3(0.0f, -0.6701f, 0.0f);
+static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
+static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION           = glm::vec3(0.1375f, -0.6701f, -0.2f);
+static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS  = 12;
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS  = 6;
+
 static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_COLS = 16;
 static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS = 6;
+
+static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_COLS = 11;
+static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_ROWS = 5;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +184,7 @@ ecs::EntityId CreateTextboxWithDimensions
     transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, textboxZ);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
-    if (textboxType != TextboxType::BARE_TEXTBOX)
+    if (textboxType != TextboxType::GENERIC_TEXTBOX && textboxType != TextboxType::BARE_TEXTBOX)
     {
         auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
         guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);
@@ -311,6 +316,38 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     return fightMenuTextboxEntityId;
 }
 
+ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
+(
+    const PokemonMove& pokemonMove,
+    ecs::World& world
+)
+{
+    const auto fightMenuMoveInfoTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::GENERIC_TEXTBOX,
+        ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_COLS,
+        ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_ROWS,
+        ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION.x,
+        ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION.y,
+        ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, "TYPE/", 1, 1, world);
+    WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, pokemonMove.mType.GetString(), 2, 2, world);
+    WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, "/", 7, 3, world);
+
+    const auto powerPointsLeftString  = std::to_string(pokemonMove.mPowerPointsLeft);
+    const auto totalPowerPointsString = std::to_string(pokemonMove.mTotalPowerPoints);
+
+    //TODO: change color when reaching low PP
+
+    WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, powerPointsLeftString, 7 - powerPointsLeftString.size(), 3, world);
+    WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, totalPowerPointsString, 10 - totalPowerPointsString.size(), 3, world);
+
+    return fightMenuMoveInfoTextboxEntityId;
+}
+
 void DestroyActiveTextbox
 (
     ecs::World& world
@@ -335,6 +372,41 @@ void DestroyActiveTextbox
         }
     }
     
+    world.RemoveEntity(textboxEntityId);
+}
+
+void DestroyGenericOrBareTextbox
+(
+    ecs::EntityId textboxEntityId,
+    ecs::World& world
+)
+{
+    auto& guiStateComponent  = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto activeTextboxesCopy = guiStateComponent.mActiveTextboxesStack;
+    
+    // Make sure the textbox is not in the active textboxes stack
+    while (activeTextboxesCopy.size() != 0)
+    {
+        if (activeTextboxesCopy.top() == textboxEntityId)
+        {
+            assert(false && "Tried to destroy a non-generic/non-bare textbox");
+        }
+        activeTextboxesCopy.pop();
+    }
+
+    const auto& entityIds = world.GetActiveEntities();
+    for (const auto& entityId : entityIds)
+    {
+        if
+        (
+            world.HasComponent<TextboxResidentComponent>(entityId) &&
+            world.GetComponent<TextboxResidentComponent>(entityId).mTextboxParentEntityId == textboxEntityId
+        )
+        {
+            world.RemoveEntity(entityId);
+        }
+    }
+
     world.RemoveEntity(textboxEntityId);
 }
 

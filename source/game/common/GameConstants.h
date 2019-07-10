@@ -55,7 +55,9 @@ enum class PokemonHealthBarStatus
 struct PokemonMove
 {
     StringId mName;
+    StringId mType;
     int mPowerPointsLeft;
+    int mTotalPowerPoints;
 };
 
 struct PokemonInfo
