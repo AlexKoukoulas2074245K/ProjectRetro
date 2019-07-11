@@ -84,8 +84,8 @@ struct PokemonMoveStats
     const int mPower;
     const int mAccuracy;
     
-    int mPowerPointsLeft;
     int mTotalPowerPoints;
+    int mPowerPointsLeft;
 };
 
 using PokemonMoveSet = std::array<std::unique_ptr<PokemonMoveStats>, 4>;

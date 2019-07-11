@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PlayerMoveAnnouncementEncounterFlowState.h"
+#include "PlayerMoveAnimationEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
@@ -32,7 +33,7 @@ PlayerMoveAnnouncementEncounterFlowState::PlayerMoveAnnouncementEncounterFlowSta
     QueueDialogForTextbox
     (
         mainChatboxEntityId,
-        activePlayerPokemon.mName.GetString + "#used " +  selectedMove.mName.GetString() + "!+FREEZE",
+        activePlayerPokemon.mName.GetString() + "#used " +  selectedMove.mName.GetString() + "!+FREEZE",
         mWorld
     );
 }
@@ -42,9 +43,7 @@ void PlayerMoveAnnouncementEncounterFlowState::VUpdate(const float)
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        // Here show attack animation
-        const auto b = false;
-        (void)b;
+        CompleteAndTransitionTo<PlayerMoveAnimationEncounterFlowState>();
     }
 }
 

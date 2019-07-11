@@ -166,16 +166,16 @@ void LoadAndPopulatePokemonBaseStats
 
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
-    // Get level data file resource
-    const auto levelFilePath = ResourceLoadingService::RES_DATA_ROOT + BASE_STATS_FILE_NAME;
-    resourceLoadingService.LoadResource(levelFilePath);
-    const auto& levelFileResource = resourceLoadingService.GetResource<DataFileResource>(levelFilePath);
+    // Get pokemon base stats data file resource
+    const auto pokemonBaseStatsFilePath = ResourceLoadingService::RES_DATA_ROOT + BASE_STATS_FILE_NAME;
+    resourceLoadingService.LoadResource(pokemonBaseStatsFilePath);
+    const auto& baseStasFileResource = resourceLoadingService.GetResource<DataFileResource>(pokemonBaseStatsFilePath);
 
-    // Parse level json
-    const auto levelJson = nlohmann::json::parse(levelFileResource.GetContents());
+    // Parse base stats json
+    const auto baseStatsJson = nlohmann::json::parse(baseStasFileResource.GetContents());
     
     auto& pokemonBaseStats = pokemonBaseStatsComponent.mPokemonBaseStats;
-    for (auto it = levelJson.begin(); it != levelJson.end(); ++it)
+    for (auto it = baseStatsJson.begin(); it != baseStatsJson.end(); ++it)
     {
         const auto pokemonName  = StringId(it.key());
         const auto& statsObject = it.value();

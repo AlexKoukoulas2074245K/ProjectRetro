@@ -11,14 +11,15 @@
 
 #include "PlayerPokemonSummonEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
+#include "../components/TransformComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
-#include "../components/TransformComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +125,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
 void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& guiStateComponent          = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
 
@@ -175,6 +177,9 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 );
 
                 DestroyActiveTextbox(mWorld);
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+                guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+                
                 CompleteAndTransitionTo<MainMenuEncounterFlowState>();
             }
         }
@@ -202,6 +207,8 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             {
                 playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_POKEMON_SPRITE_END_POSITION.x;                
                 DestroyActiveTextbox(mWorld);
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+                guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
                 CompleteAndTransitionTo<MainMenuEncounterFlowState>();
             }
         }        

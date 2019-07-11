@@ -35,10 +35,27 @@ size_t GetFindFirstUnusedMoveIndex(const PokemonMoveSet& moveset);
 
 void LoadAndPopulateMoveStats(MoveStatsSingletonComponent&);
 
+float GetTypeEffectiveness
+(
+    const StringId attackingMoveType,
+    const StringId defendingMoveType,
+    const ecs::World& world
+);
+
 const PokemonMoveStats& GetMoveStats
 (
     const StringId moveName,
     const ecs::World& world
+);
+
+int CalculateDamage
+(
+    const int attackingPokemonLevel,
+    const int attackingMovePower,
+    const int attackingPokemonAttackingStat, // Attack or Special
+    const int defendingPokemonDefensiveStat, // Defense or Special
+    const float effectivenessFactor,
+    const bool isStab
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

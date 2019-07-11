@@ -30,7 +30,7 @@ class MoveStatsSingletonComponent final: public ecs::IComponent
 {
 public:
     std::unordered_map<StringId, PokemonMoveStats, StringIdHasher> mMoveStats;
-    
+    std::unordered_map<StringId, std::unordered_map<StringId, float, StringIdHasher>, StringIdHasher> mMoveEffectivenessChart;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

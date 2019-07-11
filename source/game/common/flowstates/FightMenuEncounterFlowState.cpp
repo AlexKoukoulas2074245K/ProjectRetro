@@ -14,6 +14,7 @@
 #include "PlayerMoveAnnouncementEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -51,6 +52,14 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         // Destroy move info textbox
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);
 
+        // Calculate Damage
+        auto& playerStateComponent        = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
+        const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+        const auto& selectedMove          = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
+        
+        const auto damage = CalculateDamage(activePlayerPokemon.mLevel, selectedMove.mPower, activePlayerPokemon.mSpecial, activeOpponentPokemon.mSpecial, 1.0, true);
+        (void)damage;
         CompleteAndTransitionTo<PlayerMoveAnnouncementEncounterFlowState>();
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent))
