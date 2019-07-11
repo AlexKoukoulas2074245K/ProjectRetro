@@ -85,7 +85,7 @@ ecs::EntityId CreateEncounterFightMenuTextbox
 
 ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
 (
-    const PokemonMove& pokemonMove,
+    const PokemonMoveStats& pokemonMove,
     ecs::World& world
 );
 

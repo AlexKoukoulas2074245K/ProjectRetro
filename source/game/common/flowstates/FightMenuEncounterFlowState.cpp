@@ -12,6 +12,7 @@
 #include "FightMenuEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "../components/CursorComponent.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -24,14 +25,11 @@ FightMenuEncounterFlowState::FightMenuEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    PokemonMoveSet moveset;
-    moveset[0] = { StringId("THUNDERSHOCK"), StringId("ELECTRIC"), 30, 30};
-    moveset[1] = { StringId("GROWL"), StringId("NORMAL"), 40, 40 };
-    moveset[2] = { StringId("-"), StringId("NORMAL"), 0, 0 };
-    moveset[3] = { StringId("-"), StringId("NORMAL"), 0, 0 };
-    CreateEncounterFightMenuTextbox(moveset, encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu, mWorld);
-    encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(moveset[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu], mWorld);
+    const auto& playerPokemonMoveset = playerStateComponent.mPlayerPokemonRoster.front()->mMoveSet;
+    CreateEncounterFightMenuTextbox(playerPokemonMoveset, encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu, mWorld);
+    encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(*playerPokemonMoveset[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu], mWorld);
 }
 
 void FightMenuEncounterFlowState::VUpdate(const float)
@@ -59,15 +57,10 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);
 
         const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-        
-        // TEMP
-        PokemonMoveSet moveset;
-        moveset[0] = { StringId("THUNDERSHOCK"), StringId("ELECTRIC"), 30, 30 };
-        moveset[1] = { StringId("GROWL"), StringId("NORMAL"), 40, 40 };
-        moveset[2] = { StringId("-"), StringId("NORMAL"), 0, 0 };
-        moveset[3] = { StringId("-"), StringId("NORMAL"), 0, 0 };
-
-        encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(moveset[cursorComponent.mCursorRow], mWorld);
+                
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        const auto& playerPokemonMoveset = playerStateComponent.mPlayerPokemonRoster.front()->mMoveSet;
+        encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(*playerPokemonMoveset[cursorComponent.mCursorRow], mWorld);
     }
 }
 

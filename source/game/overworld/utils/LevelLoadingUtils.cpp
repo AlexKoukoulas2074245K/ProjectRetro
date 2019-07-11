@@ -542,12 +542,9 @@ void CheckAndLoadEncounterInfo
     for (const auto& encounterInfoJsonObject: encounterJson["encounters"])
     {
         WildEncounterInfo encounterInfo;
-        encounterInfo.mRate                   = encounterInfoJsonObject["rate"].get<int>();
-        encounterInfo.mPokemonInfo.mName      = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
-        encounterInfo.mPokemonInfo.mLevel     = encounterInfoJsonObject["level"].get<int>();
-
-        //TODO: Replace with correct pokedex id
-        encounterInfo.mPokemonInfo.mPokedexId = 1;
+        encounterInfo.mRate         = encounterInfoJsonObject["rate"].get<int>();
+        encounterInfo.mPokemonName  = StringId(encounterInfoJsonObject["pokemon"].get<std::string>());
+        encounterInfo.mPokemonLevel = encounterInfoJsonObject["level"].get<int>();
         
         levelModelComponent.mWildEncounters.push_back(encounterInfo);
     }

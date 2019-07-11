@@ -72,11 +72,11 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     );
     
     // Write opponent pokemon name string
-    const auto opponentPokemonName = encounterStateComponent.mOpponentPokemonRoster.front().mName.GetString();
+    const auto opponentPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName.GetString();
     WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, opponentPokemonName, 0, 0, mWorld);
     
     // Write opponent pokemon level string
-    const auto opponentPokemonLevel = encounterStateComponent.mOpponentPokemonRoster.front().mLevel;
+    const auto opponentPokemonLevel = encounterStateComponent.mOpponentPokemonRoster.front()->mLevel;
     WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
 }
 

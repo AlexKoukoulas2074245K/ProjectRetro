@@ -58,7 +58,8 @@ struct Tile
 
 struct WildEncounterInfo
 {
-    PokemonInfo mPokemonInfo;
+    StringId mPokemonName;
+    int mPokemonLevel;
     int mRate = 0;
 };
 

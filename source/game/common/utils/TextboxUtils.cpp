@@ -284,8 +284,15 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     auto numberOfValidMoves = 0;
     for (auto i = 0U; i < moveset.size(); ++i)
     {
-        WriteTextAtTextboxCoords(fightMenuTextboxEntityId, moveset[i].mName.GetString(), 2, i + 1, world);
-        numberOfValidMoves += moveset[i].mName != StringId("-") ? 1 : 0;
+        if (moveset[i] != nullptr)
+        {
+            WriteTextAtTextboxCoords(fightMenuTextboxEntityId, moveset[i]->mName.GetString(), 2, i + 1, world);
+            numberOfValidMoves++;
+        }
+        else
+        {
+            WriteTextAtTextboxCoords(fightMenuTextboxEntityId, "-", 2, i + 1, world);
+        }        
     }    
 
     auto cursorComponent = std::make_unique<CursorComponent>();    
@@ -318,7 +325,7 @@ ecs::EntityId CreateEncounterFightMenuTextbox
 
 ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
 (
-    const PokemonMove& pokemonMove,
+    const PokemonMoveStats& pokemonMove,
     ecs::World& world
 )
 {

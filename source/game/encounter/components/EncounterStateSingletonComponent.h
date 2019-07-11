@@ -97,7 +97,7 @@ class EncounterStateSingletonComponent final: public ecs::IComponent
 public:    
     FlowStateManager mFlowStateManager;
     EncounterViewObjects mViewObjects;
-    std::vector<PokemonInfo> mOpponentPokemonRoster;        
+    std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;

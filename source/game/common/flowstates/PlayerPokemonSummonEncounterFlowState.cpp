@@ -71,7 +71,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        playerStateComponent.mPlayerPokemonRoster.front().mName.GetString(),
+        playerStateComponent.mPlayerPokemonRoster.front()->mName.GetString(),
         0,
         0,
         mWorld
@@ -81,7 +81,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        "=" + std::to_string(playerStateComponent.mPlayerPokemonRoster.front().mLevel),
+        "=" + std::to_string(playerStateComponent.mPlayerPokemonRoster.front()->mLevel),
         4,
         1,
         mWorld
@@ -111,7 +111,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     );
 
     // Pikachu gets summoned from the side of the screen, while all other pokemon via pokeball summons
-    if (playerStateComponent.mPlayerPokemonRoster.front().mName == StringId("PIKACHU"))
+    if (playerStateComponent.mPlayerPokemonRoster.front()->mName == StringId("PIKACHU"))
     { 
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }
@@ -128,7 +128,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
     
 
     // Standard pokemon summon animation flow
-    if (playerStateComponent.mPlayerPokemonRoster.front().mName != StringId("PIKACHU"))
+    if (playerStateComponent.mPlayerPokemonRoster.front()->mName != StringId("PIKACHU"))
     {
         encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
         if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
@@ -167,7 +167,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             {                
                 encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
                 (
-                    playerStateComponent.mPlayerPokemonRoster.front().mName,
+                    playerStateComponent.mPlayerPokemonRoster.front()->mName,
                     false,
                     PLAYER_POKEMON_SPRITE_END_POSITION,
                     SPRITE_SCALE,
@@ -186,7 +186,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
         {
             encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
             (
-                playerStateComponent.mPlayerPokemonRoster.front().mName,
+                playerStateComponent.mPlayerPokemonRoster.front()->mName,
                 false,
                 PLAYER_POKEMON_SPRITE_START_POSITION,
                 SPRITE_SCALE,

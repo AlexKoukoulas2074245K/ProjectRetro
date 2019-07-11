@@ -11,13 +11,15 @@
 
 #include "App.h"
 #include "common/components/DirectionComponent.h"
+#include "common/components/MoveStatsSingletonComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/components/PokemonBaseStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
-#include "common/utils/PokemonStatsUtils.h"
+#include "common/utils/PokemonMoveUtils.h"
+#include "common/utils/PokemonUtils.h"
 #include "encounter/components/EncounterStateSingletonComponent.h"
 #include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
@@ -142,10 +144,14 @@ void App::DummyInitialization()
     LoadAndPopulatePokemonBaseStats(*pokemonBaseStatsComponent);
     mWorld.SetSingletonComponent<PokemonBaseStatsSingletonComponent>(std::move(pokemonBaseStatsComponent));
 
+    auto moveStatsComponent = std::make_unique<MoveStatsSingletonComponent>();
+    LoadAndPopulateMoveStats(*moveStatsComponent);
+    mWorld.SetSingletonComponent<MoveStatsSingletonComponent>(std::move(moveStatsComponent));
+
     const auto playerEntity = mWorld.CreateEntity();
     
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
-    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back({StringId("PIKACHU"), 1, 5});
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, mWorld));
     
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

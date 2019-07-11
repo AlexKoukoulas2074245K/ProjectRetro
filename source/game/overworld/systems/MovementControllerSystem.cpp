@@ -26,6 +26,7 @@
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/TextboxUtils.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -227,7 +228,15 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
                     encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
-                    encounterStateComponent.mOpponentPokemonRoster.push_back(encounterInfo.mPokemonInfo);
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
+                        (
+                            encounterInfo.mPokemonName,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
                     
                     return;
                 }

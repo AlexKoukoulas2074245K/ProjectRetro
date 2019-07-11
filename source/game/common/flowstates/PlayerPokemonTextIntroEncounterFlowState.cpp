@@ -31,7 +31,7 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
     QueueDialogForTextbox
     (
         mainChatboxEntityId,
-        "GO! " + playerStateComponent.mPlayerPokemonRoster.front().mName.GetString() + "!+FREEZE",
+        "GO! " + playerStateComponent.mPlayerPokemonRoster.front()->mName.GetString() + "!+FREEZE",
         mWorld
     );
 }

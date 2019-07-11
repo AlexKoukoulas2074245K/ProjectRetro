@@ -16,6 +16,7 @@
 #include "../../common/GameConstants.h"
 
 #include <vector>
+#include <memory>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@
 class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
-    std::vector<PokemonInfo> mPlayerPokemonRoster;
+    std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
     
 };
 
