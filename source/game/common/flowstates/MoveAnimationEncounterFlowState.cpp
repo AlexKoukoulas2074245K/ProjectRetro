@@ -67,9 +67,11 @@ void MoveAnimationEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
 
             auto transformComponent = std::make_unique<TransformComponent>();
+            
             transformComponent->mPosition.z = -1.0f;
-            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
-
+            transformComponent->mScale      = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
+            transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
+            
             mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
             mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
         }
