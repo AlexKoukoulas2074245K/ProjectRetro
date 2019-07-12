@@ -153,7 +153,6 @@ struct PokemonBaseStats
 
 struct Pokemon
 {
-public:
     Pokemon
     (
         const StringId name,

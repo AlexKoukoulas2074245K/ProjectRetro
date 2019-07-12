@@ -11,11 +11,9 @@
 
 #include "FightMenuEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
-#include "PlayerMoveAnnouncementEncounterFlowState.h"
+#include "RoundStructureCalculationEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
-#include "../../common/utils/Logging.h"
-#include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -50,48 +48,9 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         DestroyActiveTextbox(mWorld);
 
         // Destroy move info textbox
-        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);
+        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);                                            
 
-        // Calculate Damage        
-        auto& playerStateComponent        = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-        const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
-        const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-        const auto& selectedMove          = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
-
-        encounterStateComponent.mLastMoveMiss = false;
-        encounterStateComponent.mLastMoveCrit = false;
-
-        encounterStateComponent.mOutstandingFloatDamage = 0.0f;
-        encounterStateComponent.mDefenderFloatHealth    = static_cast<float>(activeOpponentPokemon.mHp);
-
-        if (ShouldMoveMiss(selectedMove.mAccuracy, activePlayerPokemon.mAccuracyStage, activeOpponentPokemon.mEvasionStage))
-        {
-            encounterStateComponent.mLastMoveMiss = true;
-        }
-        else
-        {                
-            const auto isCrit = ShouldMoveCrit(selectedMove.mName, activePlayerPokemon.mSpeed);       
-            auto isStab       = selectedMove.mType == activePlayerPokemon.mBaseStats.mFirstType || selectedMove.mType == activePlayerPokemon.mBaseStats.mSecondType;            
-
-            auto effectivenessFactor = GetTypeEffectiveness(selectedMove.mType, activeOpponentPokemon.mBaseStats.mFirstType, mWorld);
-            if (activeOpponentPokemon.mBaseStats.mSecondType != StringId())
-            {
-                effectivenessFactor *= GetTypeEffectiveness(selectedMove.mType, activeOpponentPokemon.mBaseStats.mSecondType, mWorld);
-            }
-
-            encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculateDamage
-            (
-                activePlayerPokemon.mLevel,
-                selectedMove.mPower,
-                activePlayerPokemon.mSpecial, 
-                activeOpponentPokemon.mSpecial, 
-                effectivenessFactor, 
-                isCrit, 
-                isStab
-            ));
-        }                                    
-
-        CompleteAndTransitionTo<PlayerMoveAnnouncementEncounterFlowState>();
+        CompleteAndTransitionTo<RoundStructureCalculationEncounterFlowState>();
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent))
     {

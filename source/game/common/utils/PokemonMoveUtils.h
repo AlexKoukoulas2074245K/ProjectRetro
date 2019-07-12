@@ -31,7 +31,7 @@ class MoveStatsSingletonComponent;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-size_t GetFindFirstUnusedMoveIndex(const PokemonMoveSet& moveset);
+size_t FindFirstUnusedMoveIndex(const PokemonMoveSet& moveset);
 
 void LoadAndPopulateMoveStats(MoveStatsSingletonComponent&);
 
@@ -59,6 +59,14 @@ bool ShouldMoveCrit
 (
     const StringId moveName,
     const int attackerSpeed
+);
+
+bool ShouldOpponentGoFirst
+(
+    const StringId playersMoveName,
+    const StringId opponentsMoveName,
+    const int playersPokemonSpeed,
+    const int opponentsPokemonSpeed
 );
 
 int CalculateDamage

@@ -98,14 +98,17 @@ public:
     FlowStateManager mFlowStateManager;
     EncounterViewObjects mViewObjects;
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
+    StringId mLastMoveSelected                                         = StringId();
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
     int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
+    int mTurnsCompleted                                                = 0;
     float mOutstandingFloatDamage                                      = 0.0f;
-    float mDefenderFloatHealth                                         = 0.0f;
+    float mDefenderFloatHealth                                         = 0.0f;   
     bool mLastMoveCrit                                                 = false;
     bool mLastMoveMiss                                                 = false;
+    bool mIsOpponentsTurn                                              = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

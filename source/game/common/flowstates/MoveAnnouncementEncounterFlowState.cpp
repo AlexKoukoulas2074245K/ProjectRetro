@@ -1,5 +1,5 @@
 //
-//  PlayerMoveAnnouncementEncounterFlowState.cpp
+//  MoveAnnouncementEncounterFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 11/07/2019.
@@ -9,8 +9,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PlayerMoveAnnouncementEncounterFlowState.h"
-#include "PlayerMoveAnimationEncounterFlowState.h"
+#include "MoveAnnouncementEncounterFlowState.h"
+#include "MoveAnimationEncounterFlowState.h"
+#include "MoveMissEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
@@ -19,31 +20,44 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-PlayerMoveAnnouncementEncounterFlowState::PlayerMoveAnnouncementEncounterFlowState(ecs::World& world)
+MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto mainChatboxEntityId = CreateChatbox(world);
 
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster.front();
-    const auto& selectedMove            = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
+    const auto& selectedMove            = encounterStateComponent.mLastMoveSelected;
+
+    const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
+        encounterStateComponent.mOpponentPokemonRoster.front() :
+        playerStateComponent.mPlayerPokemonRoster.front();
+
 
     //TODO: differentiate between summoning dialogs
     QueueDialogForTextbox
     (
-        mainChatboxEntityId,
-        activePlayerPokemon.mName.GetString() + "#used " +  selectedMove.mName.GetString() + "!+FREEZE",
+        mainChatboxEntityId,        
+        attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
         mWorld
     );
 }
 
-void PlayerMoveAnnouncementEncounterFlowState::VUpdate(const float)
+void MoveAnnouncementEncounterFlowState::VUpdate(const float)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        CompleteAndTransitionTo<PlayerMoveAnimationEncounterFlowState>();
+        if (encounterStateComponent.mLastMoveMiss)
+        {
+            CompleteAndTransitionTo<MoveMissEncounterFlowState>();
+        }
+        else
+        {
+            CompleteAndTransitionTo<MoveAnimationEncounterFlowState>();
+        }        
     }
 }
 

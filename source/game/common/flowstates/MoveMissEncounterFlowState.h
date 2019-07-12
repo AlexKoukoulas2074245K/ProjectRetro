@@ -1,12 +1,12 @@
 //
-//  PlayerMoveOpponentShakeEncounterFlowState.h
+//  MoveMissEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 11/07/2019.
+//  Created by Alex Koukoulas on 12/07/2019.
 //
 
-#ifndef PlayerMoveOpponentShakeEncounterFlowState_h
-#define PlayerMoveOpponentShakeEncounterFlowState_h
+#ifndef MoveMissEncounterFlowState_h
+#define MoveMissEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -18,10 +18,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PlayerMoveOpponentShakeEncounterFlowState final: public BaseFlowState
+class MoveMissEncounterFlowState final: public BaseFlowState
 {
 public:
-    PlayerMoveOpponentShakeEncounterFlowState(ecs::World&);
+    MoveMissEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
     
@@ -32,4 +32,4 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-#endif /* PlayerMoveOpponentShakeEncounterFlowState_h */
+#endif /* MoveMissEncounterFlowState_h */

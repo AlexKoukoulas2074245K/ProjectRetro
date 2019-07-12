@@ -26,11 +26,13 @@
 static const std::string MOVE_STATS_FILE_NAME         = "moves.json";
 static const std::string TYPE_EFFECTIVENESS_FILE_NAME = "type_effectiveness.json";
 
+static const StringId FASTEST_MOVE_NAME = StringId("QUICK_ATTACK");
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-size_t GetFindFirstUnusedMoveIndex(const PokemonMoveSet& moveset)
+size_t FindFirstUnusedMoveIndex(const PokemonMoveSet& moveset)
 {
     for (auto i = 0U; i < moveset.size(); ++i)
     {
@@ -159,6 +161,32 @@ bool ShouldMoveCrit
     const auto finalThresholdValue = static_cast<int>(thresholdValue);
         
     return math::RandomInt(0, 255) < finalThresholdValue;
+}
+
+bool ShouldOpponentGoFirst
+(
+    const StringId playersMoveName,
+    const StringId opponentsMoveName,
+    const int playersPokemonSpeed,
+    const int opponentsPokemonSpeed
+)
+{
+    if (playersMoveName == FASTEST_MOVE_NAME && opponentsMoveName != FASTEST_MOVE_NAME)
+    {
+        return false;
+    }
+    else if (playersMoveName != FASTEST_MOVE_NAME && opponentsMoveName == FASTEST_MOVE_NAME)
+    {
+        return true;
+    }
+    else if (playersPokemonSpeed == opponentsPokemonSpeed)
+    {
+        return math::RandomSign() == 1;
+    }
+    else
+    {
+        return opponentsPokemonSpeed > playersPokemonSpeed;
+    }
 }
 
 int CalculateDamage

@@ -1,5 +1,5 @@
 //
-//  PlayerMoveAnimationEncounterFlowState.cpp
+//  MoveAnimationEncounterFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 11/07/2019.
@@ -9,22 +9,22 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PlayerMoveAnimationEncounterFlowState.h"
-#include "PlayerMoveOpponentShakeEncounterFlowState.h"
+#include "MoveAnimationEncounterFlowState.h"
+#include "MoveOpponentShakeEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-PlayerMoveAnimationEncounterFlowState::PlayerMoveAnimationEncounterFlowState(ecs::World& world)
+MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     
 }
 
-void PlayerMoveAnimationEncounterFlowState::VUpdate(const float)
+void MoveAnimationEncounterFlowState::VUpdate(const float)
 {
-    CompleteAndTransitionTo<PlayerMoveOpponentShakeEncounterFlowState>();
+    CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
