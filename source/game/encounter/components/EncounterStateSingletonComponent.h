@@ -102,7 +102,10 @@ public:
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
     int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
-
+    float mOutstandingFloatDamage                                      = 0.0f;
+    float mDefenderFloatHealth                                         = 0.0f;
+    bool mLastMoveCrit                                                 = false;
+    bool mLastMoveMiss                                                 = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
