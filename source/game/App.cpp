@@ -49,6 +49,7 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
+#include "encounter/systems/EncounterShakeControllerSystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,7 @@ void App::CreateSystems()
     mWorld.AddSystem(std::make_unique<SeaTilesAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<TransitionAnimationSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<EncounterShakeControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<EncounterStateControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.AddSystem(std::move(renderingSystem));

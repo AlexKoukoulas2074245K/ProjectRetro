@@ -44,14 +44,15 @@ class CameraSingletonComponent final: public ecs::IComponent
 {
 public:
     CameraFrustum mFrustum;
-    glm::mat4 mViewMatrix       = glm::mat4(1.0f);
-    glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
-    glm::vec3 mPosition         = glm::vec3(0.0f, 18.4f, 0.0f);
-    glm::vec3 mFocusPosition    = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 mUpVector         = glm::vec3(0.0f, 1.0f, 0.0f);
-    float mFieldOfView          = CAMERA_FIELD_OF_VIEW;
-    float mZNear                = CAMERA_Z_NEAR;
-    float mZFar                 = CAMERA_Z_FAR;
+    glm::mat4 mViewMatrix         = glm::mat4(1.0f);
+    glm::mat4 mProjectionMatrix   = glm::mat4(1.0f);
+    glm::vec3 mPosition           = glm::vec3(0.0f, 18.4f, 0.0f);
+    glm::vec3 mFocusPosition      = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 mUpVector           = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 mGlobalScreenOffset = glm::vec3(0.0f, 0.0f, 0.0f);
+    float mFieldOfView            = CAMERA_FIELD_OF_VIEW;
+    float mZNear                  = CAMERA_Z_NEAR;
+    float mZFar                   = CAMERA_Z_FAR;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

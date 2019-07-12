@@ -223,6 +223,12 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     hasPlayerTag
                 )
                 {
+                    // Delete jump if landing coincided with encounter
+                    if (mWorld.HasComponent<JumpingStateComponent>(entityId))
+                    {
+                        DestroyJumpSprite(entityId);
+                    }
+
                     const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -260,9 +266,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     // Delete component at the end of the jump
                     if (mWorld.HasComponent<JumpingStateComponent>(entityId))
                     {
-                        auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
-                        mWorld.RemoveEntity(jumpingStateComponent.mJumpShadowSpriteEntityid);
-                        mWorld.RemoveComponent<JumpingStateComponent>(entityId);
+                        DestroyJumpSprite(entityId);
                     }
                 }
             }
@@ -326,6 +330,13 @@ void MovementControllerSystem::SimulateJumpDisplacement(const float dt, JumpingS
     auto& jumpShadowTransform = mWorld.GetComponent<TransformComponent>(jumpStateComponent.mJumpShadowSpriteEntityid);
     jumpShadowTransform.mPosition.x = transformComponent.mPosition.x;
     jumpShadowTransform.mPosition.z = transformComponent.mPosition.z;    
+}
+
+void MovementControllerSystem::DestroyJumpSprite(const ecs::EntityId entityId) const
+{
+    auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
+    mWorld.RemoveEntity(jumpingStateComponent.mJumpShadowSpriteEntityid);
+    mWorld.RemoveComponent<JumpingStateComponent>(entityId);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

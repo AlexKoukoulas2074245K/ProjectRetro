@@ -62,10 +62,13 @@ void LoadAndPopulateMoveStats(MoveStatsSingletonComponent& moveStatsComponent)
         const auto moveName = StringId(it.key());
         const auto& statsObject = it.value();
 
+        const auto effect = statsObject.count("effect") != 0 ? StringId(statsObject["effect"].get<std::string>()) : StringId();
+
         moveStatsComponent.mMoveStats.insert(std::make_pair(moveName, PokemonMoveStats
         (
             moveName,
             StringId(statsObject["type"].get<std::string>()),
+            effect,
             statsObject["power"].get<int>(),
             statsObject["accuracy"].get<int>(),
             statsObject["pp"].get<int>()

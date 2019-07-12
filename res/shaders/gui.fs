@@ -14,6 +14,8 @@ uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
 uniform vec4 current_level_color;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
+uniform float global_x_offset;
+uniform float global_y_offset;
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;
 

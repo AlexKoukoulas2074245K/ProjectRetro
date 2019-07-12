@@ -11,6 +11,7 @@
 
 #include "MoveAnimationEncounterFlowState.h"
 #include "MoveOpponentShakeEncounterFlowState.h"
+#include "../components/TransformComponent.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -35,9 +36,48 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     LoadMoveAnimationFrames();
 }
 
-void MoveAnimationEncounterFlowState::VUpdate(const float)
+void MoveAnimationEncounterFlowState::VUpdate(const float dt)
 {
-    CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+    if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
+    {
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+        {
+            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+        }
+
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() > 0)
+        {
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = mWorld.CreateEntity();
+
+            auto renderableComponent = std::make_unique<RenderableComponent>();
+            renderableComponent->mTextureResourceId = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
+            renderableComponent->mActiveAnimationNameId = StringId("default");
+            renderableComponent->mShaderNameId = StringId("gui");
+            renderableComponent->mAffectedByPerspective = false;
+
+            const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
+            auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+            renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
+
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
+
+            auto transformComponent = std::make_unique<TransformComponent>();
+            transformComponent->mPosition.z = -1.0f;
+            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
+
+            mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
+            mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
+        }
+        else
+        {
+            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+        }
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +89,8 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& resourceLoadingService  = ResourceLoadingService::GetInstance();
     
+    encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION);
+
     const auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "/";
     const auto& battleAnimFilenames = GetAllFilenamesInDirectory(battleAnimationDirPath);
     if (battleAnimFilenames.size() == 0)
@@ -68,9 +110,7 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
         (
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
-    }
-    
-    encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION);
+    }        
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

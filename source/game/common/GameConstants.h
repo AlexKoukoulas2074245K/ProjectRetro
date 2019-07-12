@@ -65,12 +65,14 @@ struct PokemonMoveStats
     (
         const StringId name,
         const StringId type,
+        const StringId effect,
         const int power,
         const int accuracy,
         const int powerPoints
     )
         : mName(name)
         , mType(type)
+        , mEffect(effect)
         , mPower(power)
         , mAccuracy(accuracy)
         , mTotalPowerPoints(powerPoints)
@@ -81,6 +83,8 @@ struct PokemonMoveStats
 
     const StringId mName;
     const StringId mType;
+    const StringId mEffect;
+
     const int mPower;
     const int mAccuracy;
     

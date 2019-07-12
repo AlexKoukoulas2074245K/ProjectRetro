@@ -98,6 +98,7 @@ std::unique_ptr<Pokemon> CreatePokemon
         (
             moveStats.mName,
             moveStats.mType,
+            moveStats.mEffect,
             moveStats.mPower,
             moveStats.mAccuracy,
             moveStats.mTotalPowerPoints

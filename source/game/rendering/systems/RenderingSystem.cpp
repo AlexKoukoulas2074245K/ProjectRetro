@@ -346,7 +346,7 @@ void RenderingSystem::RenderEntityInternal
         
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
-    world = glm::translate(world, transformComponent.mPosition);
+    world = glm::translate(world, transformComponent.mPosition + cameraComponent.mGlobalScreenOffset);
     world = glm::rotate(world, transformComponent.mRotation.x, math::X_AXIS);
     world = glm::rotate(world, transformComponent.mRotation.y, math::Y_AXIS);
     world = glm::rotate(world, transformComponent.mRotation.z, math::Z_AXIS);

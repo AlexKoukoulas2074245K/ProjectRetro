@@ -24,7 +24,9 @@ public:
     MoveOpponentShakeEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
-    
+ 
+private:
+    void DetermineShakeTypeToBeInitiated() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
