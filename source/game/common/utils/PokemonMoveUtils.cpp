@@ -17,6 +17,7 @@
 #include "../../resources/ResourceLoadingService.h"
 
 #include <json.hpp>
+#include <unordered_set>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +112,55 @@ const PokemonMoveStats& GetMoveStats
     return moveStatsComponent.mMoveStats.at(moveName);
 }
 
+bool ShouldMoveMiss
+(
+    const int moveAccuracy,
+    const int attackerAccuracyStage,
+    const int defenderEvasionStage
+)
+{
+    // Gen 1 Miss
+    if (math::RandomInt(0, 255) == 255)
+    {
+        return true;
+    }
+
+    const auto accuracyFactor = attackerAccuracyStage > 0 ? (attackerAccuracyStage + 3)/3.0f : (3.0f/(attackerAccuracyStage + 3));
+    const auto evasionFactor  = defenderEvasionStage > 0  ? (defenderEvasionStage + 3)/3.0f  : (3.0f/(defenderEvasionStage + 3));
+
+    const auto moveLandingProbability = (moveAccuracy/255.0f) * accuracyFactor/evasionFactor;
+    return math::RandomInt(0, 100) > static_cast<int>(moveLandingProbability * 100);
+}
+
+bool ShouldMoveCrit
+(
+    const StringId moveName,
+    const int attackerSpeed
+)
+{
+    // https://bulbapedia.bulbagarden.net/wiki/Critical_hit
+    static const std::unordered_set<StringId, StringIdHasher> highCritMoveNames = 
+    {
+        StringId("CRABHAMMER"), StringId("SLASH"), StringId("KARATE_CHOP"), StringId("RAZOR_LEAF")
+    };
+
+    auto thresholdValue = attackerSpeed * 0.5f;
+
+    // Focus energy bug
+    if (moveName == StringId("FOCUS_ENERGY"))
+    {
+        thresholdValue *= 0.25f;
+    }
+    else if (highCritMoveNames.count(moveName) != 0)
+    {
+        thresholdValue *= 8.0f;
+    }
+
+    const auto finalThresholdValue = static_cast<int>(thresholdValue);
+        
+    return math::RandomInt(0, 255) < finalThresholdValue;
+}
+
 int CalculateDamage
 (
     const int attackingPokemonLevel,
@@ -118,14 +168,17 @@ int CalculateDamage
     const int attackingPokemonAttackingStat, // Attack or Special
     const int defendingPokemonDefensiveStat, // Defense or Special
     const float effectivenessFactor,
+    const bool isCrit,
     const bool isStab
 )
 {
-    const auto innerFractionTerm         = static_cast<int>((2 * attackingPokemonLevel)/5.0f);
-    const auto attackDefenseFractionTerm = static_cast<int>(attackingPokemonAttackingStat/static_cast<float>(defendingPokemonDefensiveStat));
-    const auto outerFractionTerm         = static_cast<int>(((innerFractionTerm + 2) * attackingMovePower * attackDefenseFractionTerm)/50.0f);
-    return static_cast<int>((outerFractionTerm + 2) * (isStab ? 1.5f : 1.0f) * effectivenessFactor * math::RandomInt(217, 255)/255.0f);
-
+    // https://bulbapedia.bulbagarden.net/wiki/Damage
+    const auto innerFractionTerm = static_cast<int>((2 * (isCrit ? 2 : 1) * attackingPokemonLevel)/5.0f) + 2;
+    const auto numeratorTerm     = static_cast<int>(innerFractionTerm * attackingMovePower * attackingPokemonAttackingStat);
+    const auto denominatorTerm   = static_cast<int>(50 * defendingPokemonDefensiveStat);
+    const auto fractionResult    = static_cast<int>(numeratorTerm / static_cast<float>(denominatorTerm)) + 2;
+    const auto modifiers         = (isStab ? 1.5f : 1.0f) * effectivenessFactor * (math::RandomInt(217, 255) / 255.0f);    
+    return static_cast<int>(fractionResult * modifiers);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

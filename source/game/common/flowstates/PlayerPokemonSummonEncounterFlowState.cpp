@@ -33,7 +33,7 @@ const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_SCA
 const glm::vec3 PlayerPokemonSummonEncounterFlowState::SPRITE_SCALE                         = glm::vec3(0.49f, 0.49f, 1.0f);
 
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME = "battle_anim_quad.obj";
-const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME   = "battle_animations/player_pokemon_summon/";
+const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME   = "battle_animations/PLAYER_POKEMON_SUMMON/";
 
 const float PlayerPokemonSummonEncounterFlowState::SPRITE_ANIMATION_SPEED = 2.0f;
 

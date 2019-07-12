@@ -80,6 +80,8 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mDefenseEncounterStage = 0;
     pokemonInstance->mSpeedEncounterStage   = 0;
     pokemonInstance->mSpecialEncounterStage = 0;
+    pokemonInstance->mAccuracyStage         = 0;
+    pokemonInstance->mEvasionStage          = 0;
 
     // Popuplate moveset
     auto nextInsertedMoveIndex = 0U;

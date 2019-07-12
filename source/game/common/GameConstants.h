@@ -180,6 +180,9 @@ public:
     int mSpeed;   int mSpeedEncounterStage;
     int mSpecial; int mSpecialEncounterStage; 
 
+    int mAccuracyStage;
+    int mEvasionStage;
+
     // IVs/EVs
     int mHpIv;      int mHpEv;
     int mAttackIv;  int mAttackEv;

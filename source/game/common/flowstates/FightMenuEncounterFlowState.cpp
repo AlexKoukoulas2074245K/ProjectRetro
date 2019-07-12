@@ -14,6 +14,7 @@
 #include "PlayerMoveAnnouncementEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../../common/utils/Logging.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -57,9 +58,45 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
         const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
         const auto& selectedMove          = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
-        
-        const auto damage = CalculateDamage(activePlayerPokemon.mLevel, selectedMove.mPower, activePlayerPokemon.mSpecial, activeOpponentPokemon.mSpecial, 1.0, true);
-        (void)damage;
+        const auto& opponentMoveBaseStats = GetMoveStats(StringId("TACKLE"), mWorld);
+
+        for (int i = 0; i < 50; ++i)
+        {
+            if (ShouldMoveMiss(selectedMove.mAccuracy, activePlayerPokemon.mAccuracyStage, activeOpponentPokemon.mEvasionStage))
+            {
+                Log(LogType::INFO, "Thundershock missed");
+            }
+            else
+            {                
+                const auto isCrit = ShouldMoveCrit(StringId("THUNDERSHOCK"), activePlayerPokemon.mSpeed);
+                if (isCrit)
+                {
+                    Log(LogType::INFO, "Thundershock Crit for %d damage", CalculateDamage(activePlayerPokemon.mLevel, selectedMove.mPower, activePlayerPokemon.mSpecial, activeOpponentPokemon.mSpecial, 1.0, isCrit, true));
+                }
+                else
+                {
+                    Log(LogType::INFO, "Thundershock dealt %d damage", CalculateDamage(activePlayerPokemon.mLevel, selectedMove.mPower, activePlayerPokemon.mSpecial, activeOpponentPokemon.mSpecial, 1.0, isCrit, true));
+                }
+            }
+            
+            if (ShouldMoveMiss(opponentMoveBaseStats.mAccuracy, activeOpponentPokemon.mAccuracyStage, activePlayerPokemon.mEvasionStage))
+            {
+                Log(LogType::INFO, "Tackle missed");
+            }
+            else
+            {
+                const auto isCrit = ShouldMoveCrit(StringId("TACKLE"), activeOpponentPokemon.mSpeed);
+                if (isCrit)
+                {
+                    Log(LogType::INFO, "Tackle Crit for %d damage", CalculateDamage(activeOpponentPokemon.mLevel, opponentMoveBaseStats.mPower, activeOpponentPokemon.mAttack, activePlayerPokemon.mDefense, 1.0, isCrit, true));
+                }
+                else
+                {
+                    Log(LogType::INFO, "Tackle dealt %d damage", CalculateDamage(activeOpponentPokemon.mLevel, opponentMoveBaseStats.mPower, activeOpponentPokemon.mAttack, activePlayerPokemon.mDefense, 1.0, isCrit, true));
+                }
+            }
+        }        
+
         CompleteAndTransitionTo<PlayerMoveAnnouncementEncounterFlowState>();
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent))

@@ -48,6 +48,19 @@ const PokemonMoveStats& GetMoveStats
     const ecs::World& world
 );
 
+bool ShouldMoveMiss
+(
+    const int moveAccuracy,
+    const int attackerAccuracyStage,
+    const int defenderEvasionStage
+);
+
+bool ShouldMoveCrit
+(
+    const StringId moveName,
+    const int attackerSpeed
+);
+
 int CalculateDamage
 (
     const int attackingPokemonLevel,
@@ -55,6 +68,7 @@ int CalculateDamage
     const int attackingPokemonAttackingStat, // Attack or Special
     const int defendingPokemonDefensiveStat, // Defense or Special
     const float effectivenessFactor,
+    const bool isCrit,
     const bool isStab
 );
 
