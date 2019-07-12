@@ -366,6 +366,12 @@ void DestroyActiveTextbox
     auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
     guiStateComponent.mActiveTextboxesStack.pop();
     
+    if (world.GetComponent<TextboxComponent>(textboxEntityId).mTextboxType == TextboxType::CHATBOX)
+    {
+        guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+        guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+    }
+    
     const auto& entityIds = world.GetActiveEntities();
     for (const auto& entityId: entityIds)
     {

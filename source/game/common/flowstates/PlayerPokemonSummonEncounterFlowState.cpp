@@ -176,8 +176,6 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 );
 
                 DestroyActiveTextbox(mWorld);
-                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
-                guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
                 
                 CompleteAndTransitionTo<MainMenuEncounterFlowState>();
             }

@@ -62,7 +62,7 @@ void LoadAndPopulateMoveStats(MoveStatsSingletonComponent& moveStatsComponent)
         const auto moveName = StringId(it.key());
         const auto& statsObject = it.value();
 
-        const auto effect = statsObject.count("effect") != 0 ? StringId(statsObject["effect"].get<std::string>()) : StringId();
+        const auto effect = statsObject.find("effect") != statsObject.end() ? StringId(statsObject["effect"].get<std::string>()) : StringId();
 
         moveStatsComponent.mMoveStats.insert(std::make_pair(moveName, PokemonMoveStats
         (
@@ -125,7 +125,7 @@ bool ShouldMoveMiss
 )
 {
     // Gen 1 Miss
-    if (math::RandomInt(0, 255) == 255)
+    if (math::RandomInt(0, 255) < 255)
     {
         return true;
     }

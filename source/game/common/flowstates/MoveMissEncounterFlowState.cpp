@@ -24,6 +24,8 @@
 MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
+    DestroyActiveTextbox(mWorld);
+    
     const auto mainChatboxEntityId = CreateChatbox(world);
     
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -36,7 +38,7 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
     QueueDialogForTextbox
     (
         mainChatboxEntityId,
-        attackingPokemon->mName.GetString() + "'s#attack missed!+END",
+        attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
         mWorld
     );
 }

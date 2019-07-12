@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +32,12 @@ public:
     
 private:
     void InitializeShakeComponent() const;
-
+    void UpdateOpponentPokemonBlink(const float dt) const;
+    void UpdateOpponentPokemonShortHorizontalShake(const float dt) const;
+    void UpdateOpponentPokemonLongHorizontalShake(const float dt) const;
+    void UpdatePlayerPokemonVerticalShake(const float dt) const;
+    void UpdatePlayerPokmeonLongHorizontalShake(const float dt) const;
+    void UpdatePlayerPokemonRapidLongHorizontalShake(const float dt) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

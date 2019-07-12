@@ -332,7 +332,8 @@
         "type": "ELECTRIC",
         "power": 40,
         "accuracy": 255,
-        "pp": 30
+        "pp": 30,
+	"effect": "10%PAR"
     },
 
     "THUNDERBOLT":

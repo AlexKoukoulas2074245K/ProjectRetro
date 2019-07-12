@@ -11,9 +11,17 @@
 
 #include "MoveOpponentShakeEncounterFlowState.h"
 #include "../utils/PokemonMoveUtils.h"
+#include "../../common/components/TransformComponent.h"
 #include "../../encounter/components/EncounterShakeSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/CameraSingletonComponent.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
+const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -27,11 +35,22 @@ MoveOpponentShakeEncounterFlowState::MoveOpponentShakeEncounterFlowState(ecs::Wo
 
 void MoveOpponentShakeEncounterFlowState::VUpdate(const float)
 {
-    const auto& shakeComponent = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& cameraComponent         = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    const auto& shakeComponent          = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
 
     // Wait until Shake is finished
     if (shakeComponent.mActiveShakeType == ShakeType::NONE)
-    {        
+    {
+    }
+    else
+    {
+        // Make level edges immune to global screen offsets to achieve the desired cutoff
+        auto& levelLeftEdgeTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
+        auto& levelRightEdgeTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
+        
+        levelLeftEdgeTransformComponent.mPosition = ENCOUNTER_LEFT_EDGE_POSITION - cameraComponent.mGlobalScreenOffset;
+        levelRightEdgeTransformComponent.mPosition = ENCOUNTER_RIGHT_EDGE_POSITION - cameraComponent.mGlobalScreenOffset;
     }
 }
 
@@ -46,6 +65,8 @@ void MoveOpponentShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() cons
     const auto isOpponentsTurn     = encounterComponent.mIsOpponentsTurn;
     auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
 
+    shakeComponent.mShakeProgressionStep = 0;
+    
     if (isOpponentsTurn == false)
     {
         if (lastMoveUsedStats.mEffect == StringId())
