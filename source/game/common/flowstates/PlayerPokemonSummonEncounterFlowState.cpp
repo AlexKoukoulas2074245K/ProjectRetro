@@ -15,6 +15,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/FileUtils.h"
+#include "../../common/utils/OSMessageBox.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -46,6 +47,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
 {    
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster.front();
     
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
 
@@ -88,15 +90,12 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
         mWorld
     );
     
-    const auto playersTotalHp = 31;
-    const auto playersCurrentHp = 15;
-    
     // Write player's pokemon current hp
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        std::to_string(playersCurrentHp) + "/",
-        4 - static_cast<int>(std::to_string(playersCurrentHp).size()),
+        std::to_string(activePlayerPokemon.mHp) + "/",
+        4 - static_cast<int>(std::to_string(activePlayerPokemon.mHp).size()),
         3,
         mWorld
     );
@@ -105,8 +104,8 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        std::to_string(playersTotalHp),
-        8 - static_cast<int>(std::to_string(playersTotalHp).size()),
+        std::to_string(activePlayerPokemon.mMaxHp),
+        8 - static_cast<int>(std::to_string(activePlayerPokemon.mMaxHp).size()),
         3,
         mWorld
     );

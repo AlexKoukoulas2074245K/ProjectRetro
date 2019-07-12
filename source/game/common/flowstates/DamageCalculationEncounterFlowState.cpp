@@ -14,7 +14,7 @@
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonMoveUtils.h"
-#include "../../encounter/components\EncounterStateSingletonComponent.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 #include <unordered_set>
 

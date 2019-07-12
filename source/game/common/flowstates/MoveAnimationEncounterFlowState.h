@@ -24,7 +24,12 @@ public:
     MoveAnimationEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
+
+private:
+    void LoadMoveAnimationFrames() const;
     
+    static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
+    static const std::string BATTLE_ANIMATION_DIR_NAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
