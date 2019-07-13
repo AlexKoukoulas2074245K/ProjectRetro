@@ -35,6 +35,8 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
     encounterStateComponent.mTurnsCompleted  = 0;
 
     auto& playerSelectedMove   = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
+    
+    // Ultra smart AI
     auto& opponentSelectedMove = *activeOpponentPokemon.mMoveSet[math::RandomInt(0, FindFirstUnusedMoveIndex(activeOpponentPokemon.mMoveSet) - 1)];
 
     if (ShouldOpponentGoFirst(playerSelectedMove.mName, opponentSelectedMove.mName, activePlayerPokemon.mSpeed, activeOpponentPokemon.mSpeed))

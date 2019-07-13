@@ -20,20 +20,27 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const float MoveAnnouncementEncounterFlowState::MOVE_MISS_TRANSITION_DELAY = 0.3f;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto mainChatboxEntityId = CreateChatbox(world);
 
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    const auto& selectedMove            = encounterStateComponent.mLastMoveSelected;
-
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& selectedMove         = encounterStateComponent.mLastMoveSelected;
+    
     const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
         encounterStateComponent.mOpponentPokemonRoster.front() :
         playerStateComponent.mPlayerPokemonRoster.front();
 
-
+    encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
+    
     //TODO: differentiate between summoning dialogs
     QueueDialogForTextbox
     (
@@ -43,21 +50,34 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
     );
 }
 
-void MoveAnnouncementEncounterFlowState::VUpdate(const float)
+void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
 {
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        if (encounterStateComponent.mLastMoveMiss)
+        if (encounterStateComponent.mViewObjects.mBattleAnimationTimer == nullptr)
         {
-            CompleteAndTransitionTo<MoveMissEncounterFlowState>();
+            encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(MOVE_MISS_TRANSITION_DELAY);
         }
         else
         {
-            CompleteAndTransitionTo<MoveAnimationEncounterFlowState>();
-        }        
+            encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+            if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
+            {
+                encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
+                
+                if (encounterStateComponent.mLastMoveMiss)
+                {
+                    CompleteAndTransitionTo<MoveMissEncounterFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<MoveAnimationEncounterFlowState>();
+                }
+            }
+        }
     }
 }
 

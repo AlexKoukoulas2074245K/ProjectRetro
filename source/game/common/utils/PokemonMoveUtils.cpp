@@ -125,7 +125,7 @@ bool ShouldMoveMiss
 )
 {
     // Gen 1 Miss
-    if (math::RandomInt(0, 255) < 255)
+    if (math::RandomInt(0, 255) == 255)
     {
         return true;
     }

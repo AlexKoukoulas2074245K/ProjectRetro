@@ -10,8 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveMissEncounterFlowState.h"
-#include "MainMenuEncounterFlowState.h"
-#include "DamageCalculationEncounterFlowState.h"
+#include "FirstTurnOverEncounterFlowState.h"
 #include "../utils/TextboxUtils.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -46,21 +45,10 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
 void MoveMissEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;
-
-        // Both player turns are over
-        if (++encounterStateComponent.mTurnsCompleted == 2)
-        {
-            CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-        }
-        else
-        {
-            CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
-        }
+        CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
     }
 }
 

@@ -455,7 +455,7 @@ void WriteCharAtTextboxCoords
     world.AddComponent<TextboxResidentComponent>(characterEntityId, std::move(textboxResidentComponent));
     
     // Don't add transform or model components for whitespace character
-    if (character == ' ')
+    if (character == ' ' || character == '_')
     {
         return;
     }

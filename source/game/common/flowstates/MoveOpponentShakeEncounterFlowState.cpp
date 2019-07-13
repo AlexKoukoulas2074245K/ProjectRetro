@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveOpponentShakeEncounterFlowState.h"
+#include "HealthDepletionEncounterFlowState.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../encounter/components/EncounterShakeSingletonComponent.h"
@@ -42,14 +43,15 @@ void MoveOpponentShakeEncounterFlowState::VUpdate(const float)
     // Wait until Shake is finished
     if (shakeComponent.mActiveShakeType == ShakeType::NONE)
     {
+        CompleteAndTransitionTo<HealthDepletionEncounterFlowState>();
     }
     else
     {
         // Make level edges immune to global screen offsets to achieve the desired cutoff
-        auto& levelLeftEdgeTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
+        auto& levelLeftEdgeTransformComponent  = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
         auto& levelRightEdgeTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
         
-        levelLeftEdgeTransformComponent.mPosition = ENCOUNTER_LEFT_EDGE_POSITION - cameraComponent.mGlobalScreenOffset;
+        levelLeftEdgeTransformComponent.mPosition  = ENCOUNTER_LEFT_EDGE_POSITION - cameraComponent.mGlobalScreenOffset;
         levelRightEdgeTransformComponent.mPosition = ENCOUNTER_RIGHT_EDGE_POSITION - cameraComponent.mGlobalScreenOffset;
     }
 }
