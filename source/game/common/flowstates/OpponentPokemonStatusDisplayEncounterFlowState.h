@@ -32,7 +32,6 @@ public:
 
 private:
     static const glm::vec3 OPPONENT_STATUS_DISPLAY_POSITION;
-    static const glm::vec3 OPPONENT_HEALTHBAR_DISPLAY_POSITION;
     static const glm::vec3 OPPONENT_STATUS_DISPLAY_SCALE;
     static const glm::vec3 OPPONENT_POKEMON_INFO_TEXTBOX_POSITION;
     static const glm::vec3 PLAYER_TRAINER_EXIT_TARGET_POSITION;

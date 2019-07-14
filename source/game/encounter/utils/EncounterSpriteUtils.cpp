@@ -31,10 +31,18 @@ static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME           = "battle_
 static const std::string PLAYER_POKEMON_STATUS_DISPLAY_TEXTURE_NAME   = "battle_player_pokemon_status";
 static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME = "battle_enemy_pokemon_status";
 static const std::string ENCOUNTER_EDGE_TEXTURE_NAME                  = "battle_edge";
+static const std::string GREEN_HEALTHBAR_FILE_NAME                    = "hp_bar_green.png";
+static const std::string ORANGE_HEALTHBAR_FILE_NAME                   = "hp_bar_orange.png";
+static const std::string RED_HEALTHBAR_FILE_NAME                      = "hp_bar_red.png";
 
 static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_EDGE_SCALE          = glm::vec3(0.5f, 1.5f, 1.0f);
+
+static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION  = glm::vec3(-0.32f, 0.7f, 0.1f);
+static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION = glm::vec3(-0.6952f, 0.7f, 0.1f);
+static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION    = glm::vec3(0.3568f, -0.08f, 0.1f);
+static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION   = glm::vec3(-0.0184f, -0.08f, 0.1f);
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -210,24 +218,26 @@ ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
 
 ecs::EntityId LoadAndCreatePokemonHealthBar
 (
-    const PokemonHealthBarStatus healthBarStatus,
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
+    const float depletionProportion,
+    const bool isOpponentsHealthbar,
     ecs::World& world
 )
 {
-    static const std::unordered_map<PokemonHealthBarStatus, std::string> healthBarStatusToTextureName =
-    {
-        { PokemonHealthBarStatus::GREEN,  "hp_bar_green"},
-        { PokemonHealthBarStatus::ORANGE, "hp_bar_orange" },
-        { PokemonHealthBarStatus::RED,    "hp_bar_red" }
-    };
-
     const auto pokemonHealthBarEntityId = world.CreateEntity();
 
     auto renderableComponent = std::make_unique<RenderableComponent>();
     
-    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + healthBarStatusToTextureName.at(healthBarStatus) + ".png";
+    auto healthBarStatusFileName = GREEN_HEALTHBAR_FILE_NAME;
+    if (depletionProportion <= 0.5f)
+    {
+        healthBarStatusFileName = ORANGE_HEALTHBAR_FILE_NAME;
+    }
+    if (depletionProportion <= 0.25f)
+    {
+        healthBarStatusFileName = RED_HEALTHBAR_FILE_NAME;
+    }
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + healthBarStatusFileName;
     renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(texturePath);
     renderableComponent->mActiveAnimationNameId = StringId("default");
     renderableComponent->mShaderNameId = StringId("gui");
@@ -238,8 +248,9 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
 
     auto transformComponent       = std::make_unique<TransformComponent>();
-    transformComponent->mPosition = spritePosition;
-    transformComponent->mScale    = spriteScale;
+    transformComponent->mPosition = isOpponentsHealthbar ?
+        math::Lerp(OPPONENT_EMPTY_HEALTHBAR_POSITION, OPPONENT_FULL_HEALTHBAR_POSITION, depletionProportion) :
+        math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION, PLAYER_FULL_HEALTHBAR_POSITION, depletionProportion);
 
     world.AddComponent<RenderableComponent>(pokemonHealthBarEntityId, std::move(renderableComponent));
     world.AddComponent<TransformComponent>(pokemonHealthBarEntityId, std::move(transformComponent));

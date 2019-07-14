@@ -21,7 +21,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_POSITION       = glm::vec3(-0.32f, 0.7f, 0.0f);
-const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_HEALTHBAR_DISPLAY_POSITION    = glm::vec3(-0.32f, 0.7f, 0.1f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_STATUS_DISPLAY_SCALE          = glm::vec3(1.0f, 1.0f, 1.0f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::OPPONENT_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.04f, 0.858f, -0.5f);
 const glm::vec3 OpponentPokemonStatusDisplayEncounterFlowState::PLAYER_TRAINER_EXIT_TARGET_POSITION    = glm::vec3(-1.0f, 0.61f, 0.1f);
@@ -38,7 +37,8 @@ const float OpponentPokemonStatusDisplayEncounterFlowState::SPRITE_ANIMATION_SPE
 OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
     
     encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
     (
@@ -50,9 +50,8 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     //TODO: select appropriate bar color
     encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
-        PokemonHealthBarStatus::GREEN,
-        OPPONENT_HEALTHBAR_DISPLAY_POSITION,
-        OPPONENT_STATUS_DISPLAY_SCALE,
+        static_cast<float>(activeOpponentPokemon.mHp)/activeOpponentPokemon.mMaxHp,
+        true,
         mWorld
     );
 
@@ -72,11 +71,11 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     );
     
     // Write opponent pokemon name string
-    const auto opponentPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName.GetString();
+    const auto opponentPokemonName = activeOpponentPokemon.mName.GetString();
     WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, opponentPokemonName, 0, 0, mWorld);
     
     // Write opponent pokemon level string
-    const auto opponentPokemonLevel = encounterStateComponent.mOpponentPokemonRoster.front()->mLevel;
+    const auto opponentPokemonLevel = activeOpponentPokemon.mLevel;
     WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
 }
 

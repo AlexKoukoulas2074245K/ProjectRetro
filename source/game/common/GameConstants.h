@@ -45,11 +45,6 @@ enum class CharacterMovementType
     DYNAMIC, STATIONARY, STATIC
 };
 
-enum class PokemonHealthBarStatus
-{
-    GREEN, ORANGE, RED
-};
-
 enum class OverworldPokemonSpriteType
 {
     BALL, BEAST, BUG, DRAGON, FLYING, FOSSIL, GRASS, NORMAL, PIKACHU, WATER

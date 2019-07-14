@@ -34,7 +34,6 @@ private:
     void LoadPokemonSummonBattleAnimation() const;
 
     static const glm::vec3 PLAYER_STATUS_DISPLAY_POSITION;
-    static const glm::vec3 PLAYER_HEALTHBAR_DISPLAY_POSITION;
     static const glm::vec3 PLAYER_POKEMON_SPRITE_START_POSITION;
     static const glm::vec3 PLAYER_POKEMON_SPRITE_END_POSITION;
     static const glm::vec3 PLAYER_STATUS_DISPLAY_SCALE;        

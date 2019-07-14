@@ -70,9 +70,8 @@ ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
 
 ecs::EntityId LoadAndCreatePokemonHealthBar
 (
-    const PokemonHealthBarStatus healthBarStatus,
-    const glm::vec3& spritePosition,
-    const glm::vec3& spriteScale,
+    const float depletionProportion,
+    const bool isOpponentHealthBar,
     ecs::World& world
 );
 
