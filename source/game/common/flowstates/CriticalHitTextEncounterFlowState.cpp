@@ -1,5 +1,5 @@
 //
-//  MoveEffectivenessTextEncounterFlowState.cpp
+//  CriticalHitTextEncounterFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 14/07/2019.
@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "CriticalHitTextEncounterFlowState.h"
 #include "MoveEffectivenessTextEncounterFlowState.h"
-#include "FirstTurnOverEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
 
@@ -19,21 +19,28 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState(ecs::World& world)
+CriticalHitTextEncounterFlowState::CriticalHitTextEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    DestroyActiveTextbox(mWorld);
 
-    // This is in all cases 2, except for when a critical hit is achieved
-    if (guiStateComponent.mActiveTextboxesStack.size() == 2)
-    {
-        DestroyActiveTextbox(mWorld);
-    }    
+    const auto mainChatboxEntityId = CreateChatbox(mWorld);
+
+    QueueDialogForTextbox
+    (
+        mainChatboxEntityId,
+        "Critical hit!# #+END",
+        mWorld
+    );
 }
 
-void MoveEffectivenessTextEncounterFlowState::VUpdate(const float)
+void CriticalHitTextEncounterFlowState::VUpdate(const float)
 {
-    CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
+    {
+        CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

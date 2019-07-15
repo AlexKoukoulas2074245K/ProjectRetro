@@ -11,6 +11,7 @@
 
 #include "PokemonMoveUtils.h"
 #include "MathUtils.h"
+#include "PokemonUtils.h"
 #include "../GameConstants.h"
 #include "../components/MoveStatsSingletonComponent.h"
 #include "../../resources/DataFileResource.h"
@@ -140,16 +141,18 @@ bool ShouldMoveMiss
 bool ShouldMoveCrit
 (
     const StringId moveName,
+    const int attackerSpeedModifier,
     const int attackerSpeed
 )
-{
+{   
     // https://bulbapedia.bulbagarden.net/wiki/Critical_hit
     static const std::unordered_set<StringId, StringIdHasher> highCritMoveNames = 
     {
         StringId("CRABHAMMER"), StringId("SLASH"), StringId("KARATE_CHOP"), StringId("RAZOR_LEAF")
     };
 
-    auto thresholdValue = attackerSpeed * 0.5f;
+    const auto modifiedAttackerSpeed = GetStatWithModifierApplied(attackerSpeed, attackerSpeedModifier);
+    auto thresholdValue = modifiedAttackerSpeed * 0.5f;
 
     // Focus energy bug
     if (moveName == StringId("FOCUS_ENERGY"))
@@ -170,10 +173,15 @@ bool ShouldOpponentGoFirst
 (
     const StringId playersMoveName,
     const StringId opponentsMoveName,
+    const int playersPokemonSpeedModifier,
+    const int opponentsPokemonSpeedModifier,
     const int playersPokemonSpeed,
     const int opponentsPokemonSpeed
 )
 {
+    const auto modifiedPlayerSpeed   = GetStatWithModifierApplied(playersPokemonSpeed, playersPokemonSpeedModifier);
+    const auto modifiedOpponentSpeed = GetStatWithModifierApplied(opponentsPokemonSpeed, opponentsPokemonSpeedModifier);
+
     if (playersMoveName == FASTEST_MOVE_NAME && opponentsMoveName != FASTEST_MOVE_NAME)
     {
         return false;
@@ -182,13 +190,13 @@ bool ShouldOpponentGoFirst
     {
         return true;
     }
-    else if (playersPokemonSpeed == opponentsPokemonSpeed)
+    else if (modifiedPlayerSpeed == modifiedOpponentSpeed)
     {
         return math::RandomSign() == 1;
     }
     else
     {
-        return opponentsPokemonSpeed > playersPokemonSpeed;
+        return modifiedOpponentSpeed > modifiedPlayerSpeed;
     }
 }
 
@@ -205,6 +213,8 @@ int CalculateDamage
 (
     const int attackingPokemonLevel,
     const int attackingMovePower,
+    const int attackingStatModifier,
+    const int defensiveStatModifier,
     const int attackingPokemonAttackingStat, // Attack or Special
     const int defendingPokemonDefensiveStat, // Defense or Special
     const float effectivenessFactor,
@@ -213,9 +223,12 @@ int CalculateDamage
 )
 {
     // https://bulbapedia.bulbagarden.net/wiki/Damage
+    const auto modifiedAttackStat    = isCrit ? attackingPokemonAttackingStat : GetStatWithModifierApplied(attackingPokemonAttackingStat, attackingStatModifier);
+    const auto modifiedDefensiveStat = isCrit ? defendingPokemonDefensiveStat : GetStatWithModifierApplied(defendingPokemonDefensiveStat, defensiveStatModifier);
+
     const auto innerFractionTerm = static_cast<int>((2 * (isCrit ? 2 : 1) * attackingPokemonLevel)/5.0f) + 2;
-    const auto numeratorTerm     = static_cast<int>(innerFractionTerm * attackingMovePower * attackingPokemonAttackingStat);
-    const auto denominatorTerm   = static_cast<int>(50 * defendingPokemonDefensiveStat);
+    const auto numeratorTerm     = static_cast<int>(innerFractionTerm * attackingMovePower * modifiedAttackStat);
+    const auto denominatorTerm   = static_cast<int>(50 * modifiedDefensiveStat);
     const auto fractionResult    = static_cast<int>(numeratorTerm / static_cast<float>(denominatorTerm)) + 2;
     const auto modifiers         = (isStab ? 1.5f : 1.0f) * effectivenessFactor * (math::RandomInt(217, 255) / 255.0f);    
     return static_cast<int>(fractionResult * modifiers);

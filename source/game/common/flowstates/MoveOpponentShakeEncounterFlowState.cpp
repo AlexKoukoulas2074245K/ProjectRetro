@@ -68,6 +68,7 @@ void MoveOpponentShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() cons
     auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
 
     shakeComponent.mShakeProgressionStep = 0;
+    shakeComponent.mShakeHelperCounter   = 0;
     
     if (isOpponentsTurn == false)
     {

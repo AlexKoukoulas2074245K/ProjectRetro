@@ -1,50 +1,38 @@
 //
-//  EncounterShakeControllerSystem.h
+//  CriticalHitTextEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 12/07/2019.
+//  Created by Alex Koukoulas on 15/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef EncounterShakeControllerSystem_h
-#define EncounterShakeControllerSystem_h
+#ifndef CriticalHitTextEncounterFlowState_h
+#define CriticalHitTextEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../ECS.h"
-#include "../../common/utils/MathUtils.h"
+#include "BaseFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class EncounterShakeControllerSystem final: public ecs::BaseSystem
+class CriticalHitTextEncounterFlowState final : public BaseFlowState
 {
 public:
-    EncounterShakeControllerSystem(ecs::World&);
-    
-    void VUpdateAssociatedComponents(const float dt) const override;
-    
-private:
-    void InitializeShakeComponent() const;
-    void UpdateOpponentPokemonBlink(const float dt) const;
-    void UpdateOpponentPokemonShortHorizontalShake(const float dt) const;
-    void UpdateOpponentPokemonLongHorizontalShake(const float dt) const;
-    void UpdatePlayerPokemonVerticalShake(const float dt) const;
-    void UpdatePlayerPokemonLongHorizontalShake(const float dt) const;
-    void UpdatePlayerPokemonRapidLongHorizontalShake(const float dt) const;
+    CriticalHitTextEncounterFlowState(ecs::World&);
 
-    static const glm::vec3 OPPONENT_SPRITE_POSITION;
-    static const glm::vec3 OPPONENT_SPRITE_SCALE;
+    void VUpdate(const float dt) override;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* EncounterShakeControllerSystem_h */
+#endif /* MoveEffectivenessTextEncounterFlowState_h */

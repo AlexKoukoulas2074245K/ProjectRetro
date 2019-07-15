@@ -58,6 +58,7 @@ bool ShouldMoveMiss
 bool ShouldMoveCrit
 (
     const StringId moveName,
+    const int attackerSpeedModifier,
     const int attackerSpeed
 );
 
@@ -65,6 +66,8 @@ bool ShouldOpponentGoFirst
 (
     const StringId playersMoveName,
     const StringId opponentsMoveName,
+    const int playersPokemonSpeedModifier,
+    const int opponentsPokemonSpeedModifier,
     const int playersPokemonSpeed,
     const int opponentsPokemonSpeed
 );
@@ -78,6 +81,8 @@ int CalculateDamage
 (
     const int attackingPokemonLevel,
     const int attackingMovePower,
+    const int attackingStatModifier,
+    const int defensiveStatModifier,
     const int attackingPokemonAttackingStat, // Attack or Special
     const int defendingPokemonDefensiveStat, // Defense or Special
     const float effectivenessFactor,

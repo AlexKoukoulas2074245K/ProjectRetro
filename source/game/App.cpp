@@ -153,7 +153,7 @@ void App::DummyInitialization()
     const auto playerEntity = mWorld.CreateEntity();
     
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
-    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), 5, mWorld));
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 100, mWorld));
     
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

@@ -38,7 +38,7 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
 
     if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
     {
-        encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION * 1.5f);
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION * 2.5f);
         encounterStateComponent.mSpecialMoveAnimationStep = 0;
     }
     else

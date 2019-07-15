@@ -138,6 +138,28 @@ int CalculateStatOtherThanHp
     return divTerm + 5;
 }
 
+int GetStatWithModifierApplied
+(
+    const int stat,
+    const int statModifier
+)
+{
+    return static_cast<int>(stat * (statModifier > 0 ? (statModifier + 3) / 3.0f : (3.0f / (statModifier + 3))));
+}
+
+void ResetPokemonEncounterModifierStages
+(
+    Pokemon& pokemon
+) 
+{
+    pokemon.mAttackEncounterStage  = 0;
+    pokemon.mDefenseEncounterStage = 0;
+    pokemon.mSpeedEncounterStage   = 0;
+    pokemon.mSpecialEncounterStage = 0;
+    pokemon.mAccuracyStage         = 0;
+    pokemon.mEvasionStage          = 0;
+}
+
 const PokemonBaseStats& GetPokemonBaseStats
 (
     const StringId pokemonName,

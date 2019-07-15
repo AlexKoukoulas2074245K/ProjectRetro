@@ -37,7 +37,7 @@ private:
     static const float PLAYER_EMPTY_HEALTHBAR_X;
     static const float OPPONENT_FULL_HEALTHBAR_X;
     static const float OPPONENT_EMPTY_HEALTHBAR_X;
-    
+    static const float DEPLETION_SPEED;
 };
 
 #endif /* HealthDepletionEncounterFlowState_h */

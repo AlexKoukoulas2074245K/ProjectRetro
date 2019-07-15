@@ -11,7 +11,9 @@
 
 #include "EncounterStateControllerSystem.h"
 #include "../components/EncounterStateSingletonComponent.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../overworld/components/LevelModelComponent.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
@@ -47,6 +49,13 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     {
         encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
         
+        // Reset all stat modifiers for all player's pokemon
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        for (const auto& pokemon : playerStateComponent.mPlayerPokemonRoster)
+        {
+            ResetPokemonEncounterModifierStages(*pokemon);
+        }
+
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
         

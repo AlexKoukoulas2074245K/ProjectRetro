@@ -78,7 +78,14 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
     }
     else
     {
-        const auto isCrit = ShouldMoveCrit(selectedMoveStats.mName, attackingPokemon.mSpeed);
+        encounterStateComponent.mLastMoveCrit = ShouldMoveCrit
+        (
+            selectedMoveStats.mName,
+            attackingPokemon.mSpeedEncounterStage, 
+            attackingPokemon.mSpeed
+        );
+
+        
         auto isStab = selectedMoveStats.mType == attackingPokemon.mBaseStats.mFirstType || selectedMoveStats.mType == attackingPokemon.mBaseStats.mSecondType;
 
         auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mFirstType, mWorld);
@@ -92,14 +99,19 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
         const auto effectiveAttackStat  = isSpecialMove ? attackingPokemon.mSpecial : attackingPokemon.mAttack;
         const auto effectiveDefenseStat = isSpecialMove ? defendingPokemon.mSpecial : defendingPokemon.mDefense;
 
+        const auto attackingStatModifier = isSpecialMove ? attackingPokemon.mSpecialEncounterStage : attackingPokemon.mAttackEncounterStage;
+        const auto defensiveStatModifier = isSpecialMove ? defendingPokemon.mSpecialEncounterStage : defendingPokemon.mDefenseEncounterStage;
+
         encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculateDamage
         (
             attackingPokemon.mLevel,
             selectedMoveStats.mPower,
+            attackingStatModifier,
+            defensiveStatModifier,
             effectiveAttackStat,
             effectiveDefenseStat,
             effectivenessFactor,
-            isCrit,
+            encounterStateComponent.mLastMoveCrit,
             isStab
         ));
 

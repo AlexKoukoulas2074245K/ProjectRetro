@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "CriticalHitTextEncounterFlowState.h"
 #include "HealthDepletionEncounterFlowState.h"
 #include "MoveEffectivenessTextEncounterFlowState.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -19,6 +20,12 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/utils/InputUtils.h"
 #include "../utils/TextboxUtils.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const float HealthDepletionEncounterFlowState::DEPLETION_SPEED = 17.5f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +63,8 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         return;
     }
 
-    encounterStateComponent.mDefenderFloatHealth -= 10.0f * dt;
-    encounterStateComponent.mOutstandingFloatDamage -= 10.0f * dt;
+    encounterStateComponent.mDefenderFloatHealth -= DEPLETION_SPEED * dt;
+    encounterStateComponent.mOutstandingFloatDamage -= DEPLETION_SPEED * dt;
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {
@@ -68,11 +75,25 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         RefreshOpponentPokemonStats();
     }
 
-    if (encounterStateComponent.mOutstandingFloatDamage <= 0.0f)
+    if 
+    (
+        encounterStateComponent.mOutstandingFloatDamage <= 0.0f ||
+        encounterStateComponent.mDefenderFloatHealth <= 0.0f
+    )
     {
         // End damage calculation
         encounterStateComponent.mOutstandingFloatDamage = 0.0f;
-        
+
+        // Make sure to not show negative damage
+        if (encounterStateComponent.mIsOpponentsTurn)
+        {
+            RefreshPlayerPokemonStats();
+        }
+        else
+        {
+            RefreshOpponentPokemonStats();
+        }
+
         if (encounterStateComponent.mDefenderFloatHealth <= 0.0f)
         {
             encounterStateComponent.mDefenderFloatHealth = 0.0f;
@@ -89,7 +110,14 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         }
         else
         {
-            CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
+            if (encounterStateComponent.mLastMoveCrit)
+            {
+                CompleteAndTransitionTo<CriticalHitTextEncounterFlowState>();
+            }
+            else
+            {
+                CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
+            }
         }        
     }       
 }

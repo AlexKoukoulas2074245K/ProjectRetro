@@ -58,6 +58,17 @@ int CalculateStatOtherThanHp
     const int pokemonStatEv
 );
 
+int GetStatWithModifierApplied
+(
+    const int stat,
+    const int statModifier
+);
+
+void ResetPokemonEncounterModifierStages
+(
+    Pokemon& pokemon
+);
+
 const PokemonBaseStats& GetPokemonBaseStats
 (
     const StringId pokemonName,

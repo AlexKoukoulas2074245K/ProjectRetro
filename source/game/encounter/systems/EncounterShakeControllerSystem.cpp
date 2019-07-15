@@ -21,6 +21,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const glm::vec3 EncounterShakeControllerSystem::OPPONENT_SPRITE_POSITION = glm::vec3(0.38f, 0.61f, -0.1f);
+const glm::vec3 EncounterShakeControllerSystem::OPPONENT_SPRITE_SCALE    = glm::vec3(0.49f, 0.49f, 1.0f);
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 EncounterShakeControllerSystem::EncounterShakeControllerSystem(ecs::World& world)
     : BaseSystem(world)
 {
@@ -43,7 +50,7 @@ void EncounterShakeControllerSystem::VUpdateAssociatedComponents(const float dt)
             case ShakeType::OPPONENT_POKEMON_SHORT_HORIZONTAL_SHAKE: UpdateOpponentPokemonShortHorizontalShake(dt); break;
             case ShakeType::OPPONENT_POKEMON_LONG_HORIZONTAL_SHAKE:  UpdateOpponentPokemonLongHorizontalShake(dt); break;
             case ShakeType::PLAYER_POKEMON_VERTICAL_SHAKE:           UpdatePlayerPokemonVerticalShake(dt); break;
-            case ShakeType::PLAYER_POKEMON_LONG_HORIZONTAL_SHAKE:    UpdatePlayerPokmeonLongHorizontalShake(dt); break;
+            case ShakeType::PLAYER_POKEMON_LONG_HORIZONTAL_SHAKE:    UpdatePlayerPokemonLongHorizontalShake(dt); break;
             case ShakeType::PLAYER_RAPID_LONG_HORIZONTAL_SHAKE:      UpdatePlayerPokemonRapidLongHorizontalShake(dt); break;
         }
     }
@@ -83,9 +90,8 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonBlink(const float) con
             (
                 encounterStateComponent.mOpponentPokemonRoster.front()->mName,
                 true,
-                // TODO: fix when sprite positions and other battle ves are handled differently
-                glm::vec3(0.38f, 0.61f, 0.1f),
-                glm::vec3(0.49f, 0.49f, 1.0f),
+                OPPONENT_SPRITE_POSITION,
+                OPPONENT_SPRITE_SCALE,
                 mWorld
             );
         }
@@ -103,23 +109,13 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonShortHorizontalShake(c
     switch (shakeComponent.mShakeProgressionStep)
     {
         case 0:
+        case 1:
         {
             cameraComponent.mGlobalScreenOffset.x = GUI_PIXEL_SIZE * 2;
             shakeComponent.mShakeProgressionStep++;
         } break;
                 
-        case 1:
-        {
-            cameraComponent.mGlobalScreenOffset.x = 0.0f;
-            shakeComponent.mShakeProgressionStep++;
-        } break;
-                
         case 2:
-        {
-            cameraComponent.mGlobalScreenOffset.x = GUI_PIXEL_SIZE;
-            shakeComponent.mShakeProgressionStep++;
-        } break;
-                
         case 3:
         {
             cameraComponent.mGlobalScreenOffset.x = 0.0f;
@@ -127,6 +123,20 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonShortHorizontalShake(c
         } break;
                 
         case 4:
+        case 5:
+        {
+            cameraComponent.mGlobalScreenOffset.x = GUI_PIXEL_SIZE;
+            shakeComponent.mShakeProgressionStep++;
+        } break;
+                
+        case 6:
+        case 7:
+        {
+            cameraComponent.mGlobalScreenOffset.x = 0.0f;
+            shakeComponent.mShakeProgressionStep++;
+        } break;
+                
+        case 8:
         {
             shakeComponent.mShakeProgressionStep = 0;
             shakeComponent.mActiveShakeType = ShakeType::NONE;
@@ -163,11 +173,40 @@ void EncounterShakeControllerSystem::UpdatePlayerPokemonVerticalShake(const floa
     shakeComponent.mShakeProgressionStep++;
 }
 
-void EncounterShakeControllerSystem::UpdatePlayerPokmeonLongHorizontalShake(const float) const
+void EncounterShakeControllerSystem::UpdatePlayerPokemonLongHorizontalShake(const float) const
 {
     auto& shakeComponent = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
-    shakeComponent.mActiveShakeType = ShakeType::NONE;
-    ShowMessageBox(MessageBoxType::INFO, "Missing Shake Flow", "Player Pokemon Long Horizontal Shake not implemented");
+    auto& cameraComponent = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+
+    switch (shakeComponent.mShakeProgressionStep)
+    {
+        case 0:
+        case 2:
+        {
+            if (++shakeComponent.mShakeHelperCounter == 6)
+            {
+                ++shakeComponent.mShakeProgressionStep;               
+            }
+        } break;
+
+        case 1:
+        case 3:
+        {
+            if (--shakeComponent.mShakeHelperCounter == 0)
+            {
+                ++shakeComponent.mShakeProgressionStep;
+            }
+        } break;
+
+        case 4:
+        {
+            shakeComponent.mShakeHelperCounter = 0;
+            cameraComponent.mGlobalScreenOffset.y = 0.0f;
+            shakeComponent.mActiveShakeType = ShakeType::NONE;
+        }
+    }
+
+    cameraComponent.mGlobalScreenOffset.x = shakeComponent.mShakeHelperCounter * GUI_PIXEL_SIZE;
 }
 
 void EncounterShakeControllerSystem::UpdatePlayerPokemonRapidLongHorizontalShake(const float) const
