@@ -75,6 +75,7 @@ private:
     static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;
     static const StringId GUI_SHADER_NAME;
 
+    static const float TARGET_ASPECT_RATIO;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

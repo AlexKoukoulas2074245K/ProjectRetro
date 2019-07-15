@@ -52,6 +52,8 @@ const StringId RenderingSystem::BLACK_AND_WHITE_MODE_UNIFORM_NAME      = StringI
 const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME       = StringId("current_level_color");
 const StringId RenderingSystem::GUI_SHADER_NAME                        = StringId("gui");
 
+const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -413,7 +415,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     SDL_GetCurrentDisplayMode(0, &displayMode);
     
     const auto desiredWindowWidth  = static_cast<int>(displayMode.w * 0.66f);
-    const auto desiredWindowHeight = static_cast<int>(displayMode.h * 0.66f);
+    const auto desiredWindowHeight = static_cast<int>(desiredWindowWidth/TARGET_ASPECT_RATIO);
 
     // Create SDL window
     auto windowComponent           = std::make_unique<WindowSingletonComponent>();   
