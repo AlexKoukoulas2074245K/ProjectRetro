@@ -67,10 +67,24 @@ void MoveAnimationEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
 
             auto transformComponent = std::make_unique<TransformComponent>();
-            
             transformComponent->mPosition.z = -1.0f;
-            transformComponent->mScale      = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
-            transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
+
+            const auto testEnemyFramesPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "_ENEMY/";
+            const auto& testWhetherSeparateFoldersExistsResultFrames = GetAllFilenamesInDirectory(testEnemyFramesPath);
+            
+            // In case we loaded enemy specific frames, position and scale them normally
+            if (testWhetherSeparateFoldersExistsResultFrames.size() > 0)
+            {
+                transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
+                transformComponent->mPosition.y = 0.0f;
+            }
+            // Otherwise, position them normally for player moves, and flip them horizontally and position them appropriately 
+            // for enemy ones
+            else
+            {
+                transformComponent->mScale = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
+                transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
+            }                        
             
             mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
             mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
@@ -93,7 +107,20 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
     
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION);
 
-    const auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "/";
+    auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "/";
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        // This tests whether the move has a separate folder for the enemy animation as is in some cases (Gust, Growl, etc), 
+        // and if so, loads these frames instead
+        const auto testEnemyFramesPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "_ENEMY/";
+        const auto& testWhetherSeparateFoldersExistsResultFrames = GetAllFilenamesInDirectory(testEnemyFramesPath);
+        
+        if (testWhetherSeparateFoldersExistsResultFrames.size() > 0)
+        {
+            battleAnimationDirPath = testEnemyFramesPath;
+        }
+    }
+
     const auto& battleAnimFilenames = GetAllFilenamesInDirectory(battleAnimationDirPath);
     if (battleAnimFilenames.size() == 0)
     {

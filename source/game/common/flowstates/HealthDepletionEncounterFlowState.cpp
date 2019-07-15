@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "HealthDepletionEncounterFlowState.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/Logging.h"
@@ -34,6 +35,11 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
     auto& activeOpponentPokemon      = *encounterStateComponent.mOpponentPokemonRoster.front();
     auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();
     
+    if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
+    {
+        // Continue to effectiveness text
+    }
+
     encounterStateComponent.mDefenderFloatHealth    -= 10.0f * dt;
     encounterStateComponent.mOutstandingFloatDamage -= 10.0f * dt;
     
@@ -44,11 +50,11 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         // End damage calculation with pokemon death
         if (encounterStateComponent.mIsOpponentsTurn)
         {
-            activePlayerPokemon.mHp = 0.0f;
+            activePlayerPokemon.mHp = 0;
         }
         else
         {
-            activeOpponentPokemon.mHp = 0.0f;
+            activeOpponentPokemon.mHp = 0;
         }
         
         
