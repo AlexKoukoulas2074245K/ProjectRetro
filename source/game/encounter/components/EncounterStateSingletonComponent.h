@@ -102,6 +102,7 @@ public:
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
+    int mSpecialMoveAnimationStep                                      = 0;
     int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
     int mTurnsCompleted                                                = 0;
     float mOutstandingFloatDamage                                      = 0.0f;

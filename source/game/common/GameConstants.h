@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const float GAME_TILE_SIZE                 = 1.6f;
+const float GUI_PIXEL_SIZE                 = 0.00859375f;
 const float CHARACTER_ANIMATION_FRAME_TIME = 0.125f;
 const float STATIONARY_NPC_RESET_TIME      = 1.5f;
 

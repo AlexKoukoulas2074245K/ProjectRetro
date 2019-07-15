@@ -192,6 +192,15 @@ bool ShouldOpponentGoFirst
     }
 }
 
+bool DoesMoveHaveSpeciallyHandledAnimation
+(
+    const StringId moveName
+)
+{
+    return moveName == StringId("TACKLE") ||
+           moveName == StringId("TAIL_WHIP");
+}
+
 int CalculateDamage
 (
     const int attackingPokemonLevel,

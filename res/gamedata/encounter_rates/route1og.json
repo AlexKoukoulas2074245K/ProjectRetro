@@ -1,0 +1,16 @@
+{
+    "density": 25,
+    "encounters": 
+    [
+        { "pokemon": "PIDGEY", "level": 3, "rate": 51 },
+        { "pokemon": "PIDGEY", "level": 4, "rate": 51 },
+        { "pokemon": "RATTATA", "level": 2, "rate": 39 },
+        { "pokemon": "RATTATA", "level": 3, "rate": 25 },
+        { "pokemon": "PIDGEY", "level": 2, "rate": 25 },
+        { "pokemon": "PIDGEY", "level": 3, "rate": 25 },
+        { "pokemon": "PIDGEY", "level": 5, "rate": 13 },
+        { "pokemon": "RATTATA", "level": 4, "rate": 13 },
+        { "pokemon": "PIDGEY", "level": 6, "rate": 11 },
+        { "pokemon": "PIDGEY", "level": 7, "rate": 3 }
+    ]
+}

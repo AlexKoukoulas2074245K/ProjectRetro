@@ -12,6 +12,7 @@
 #include "MoveAnimationEncounterFlowState.h"
 #include "MoveOpponentShakeEncounterFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../../common/utils/FileUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -33,66 +34,36 @@ const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME = "
 MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    LoadMoveAnimationFrames();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
+    {
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION * 1.5f);
+        encounterStateComponent.mSpecialMoveAnimationStep = 0;
+    }
+    else
+    {
+        LoadMoveAnimationFrames();
+    }    
 }
 
 void MoveAnimationEncounterFlowState::VUpdate(const float dt)
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
     if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
     {
         encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
-        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+
+        if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
         {
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
-            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
-        }
-
-        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() > 0)
-        {
-            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = mWorld.CreateEntity();
-
-            auto renderableComponent = std::make_unique<RenderableComponent>();
-            renderableComponent->mTextureResourceId = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
-            renderableComponent->mActiveAnimationNameId = StringId("default");
-            renderableComponent->mShaderNameId = StringId("gui");
-            renderableComponent->mAffectedByPerspective = false;
-
-            const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
-            auto& resourceLoadingService = ResourceLoadingService::GetInstance();
-            renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
-
-            encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
-
-            auto transformComponent = std::make_unique<TransformComponent>();
-            transformComponent->mPosition.z = -1.0f;
-
-            const auto testEnemyFramesPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "_ENEMY/";
-            const auto& testWhetherSeparateFoldersExistsResultFrames = GetAllFilenamesInDirectory(testEnemyFramesPath);
-            
-            // In case we loaded enemy specific frames, position and scale them normally
-            if (testWhetherSeparateFoldersExistsResultFrames.size() > 0)
-            {
-                transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
-                transformComponent->mPosition.y = 0.0f;
-            }
-            // Otherwise, position them normally for player moves, and flip them horizontally and position them appropriately 
-            // for enemy ones
-            else
-            {
-                transformComponent->mScale = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
-                transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
-            }                        
-            
-            mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
-            mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
+            UpdateSpeciallyHandledMoveAnimation();
         }
         else
         {
-            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
-        }
+            UpdateNormalFrameBasedMoveAnimation();
+        }       
     }    
 }
 
@@ -140,6 +111,143 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }        
+}
+
+void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation()
+{
+    const auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (encounterStateComponent.mLastMoveSelected == StringId("TACKLE"))
+    {
+        UpdateTackleAnimation();
+    }    
+    else if (encounterStateComponent.mLastMoveSelected == StringId("TAIL_WHIP"))
+    {
+        UpdateTailWhipAnimation();
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+    }
+
+    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() > 0)
+    {
+        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = mWorld.CreateEntity();
+
+        auto renderableComponent = std::make_unique<RenderableComponent>();
+        renderableComponent->mTextureResourceId = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
+        renderableComponent->mActiveAnimationNameId = StringId("default");
+        renderableComponent->mShaderNameId = StringId("gui");
+        renderableComponent->mAffectedByPerspective = false;
+
+        const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
+        auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+        renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
+
+        encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
+
+        auto transformComponent = std::make_unique<TransformComponent>();
+        transformComponent->mPosition.z = -1.0f;
+
+        const auto testEnemyFramesPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "_ENEMY/";
+        const auto& testWhetherSeparateFoldersExistsResultFrames = GetAllFilenamesInDirectory(testEnemyFramesPath);
+
+        // In case we loaded enemy specific frames, position and scale them normally
+        if (testWhetherSeparateFoldersExistsResultFrames.size() > 0)
+        {
+            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
+            transformComponent->mPosition.y = 0.0f;
+        }
+        // Otherwise, position them normally for player moves, and flip them horizontally and position them appropriately 
+        // for enemy ones
+        else
+        {
+            transformComponent->mScale = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
+            transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
+        }
+
+        mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
+        mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
+    }
+    else
+    {
+        CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateTackleAnimation()
+{
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto attackingPokemonSpriteEntityId = encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId;
+    auto& attackerTransformComponent    = mWorld.GetComponent<TransformComponent>(attackingPokemonSpriteEntityId);
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        {
+            attackerTransformComponent.mPosition.x += encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;            
+
+        case 1:
+        {
+            attackerTransformComponent.mPosition.x -= encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 2:
+        {
+            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+            encounterStateComponent.mSpecialMoveAnimationStep = 0;
+        } break;
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateTailWhipAnimation()
+{
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto attackingPokemonSpriteEntityId = encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId;
+    auto& attackerTransformComponent    = mWorld.GetComponent<TransformComponent>(attackingPokemonSpriteEntityId);
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        {
+            attackerTransformComponent.mPosition.x += encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;            
+
+        case 1:
+        {
+            attackerTransformComponent.mPosition.x -= encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 2:
+        {
+            attackerTransformComponent.mPosition.x += encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 3:
+        {
+            attackerTransformComponent.mPosition.x -= encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 8 : GUI_PIXEL_SIZE * 8;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 4:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep = 0;
+            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+        } break;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

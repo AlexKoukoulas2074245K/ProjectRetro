@@ -69,6 +69,11 @@ bool ShouldOpponentGoFirst
     const int opponentsPokemonSpeed
 );
 
+bool DoesMoveHaveSpeciallyHandledAnimation
+(
+    const StringId moveName
+);
+
 int CalculateDamage
 (
     const int attackingPokemonLevel,

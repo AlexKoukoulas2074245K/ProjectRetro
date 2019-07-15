@@ -13,6 +13,7 @@
 #include "MoveAnnouncementEncounterFlowState.h"
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/Logging.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -101,6 +102,8 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
             isCrit,
             isStab
         ));
+
+        Log(LogType::INFO, "Calculated damage: %.1f", encounterStateComponent.mOutstandingFloatDamage);
     }
 }
 

@@ -30,6 +30,9 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    void RefreshPlayerPokemonStats() const;
+    void RefreshOpponentPokemonStats() const;
+
     static const float PLAYER_FULL_HEALTHBAR_X;
     static const float PLAYER_EMPTY_HEALTHBAR_X;
     static const float OPPONENT_FULL_HEALTHBAR_X;

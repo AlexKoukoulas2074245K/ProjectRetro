@@ -27,7 +27,11 @@ public:
 
 private:
     void LoadMoveAnimationFrames() const;
-    
+    void UpdateSpeciallyHandledMoveAnimation();
+    void UpdateNormalFrameBasedMoveAnimation();
+    void UpdateTackleAnimation();
+    void UpdateTailWhipAnimation();
+
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
 };
