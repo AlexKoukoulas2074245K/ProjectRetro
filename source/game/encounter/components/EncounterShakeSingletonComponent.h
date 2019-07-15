@@ -51,7 +51,6 @@ class EncounterShakeSingletonComponent final: public ecs::IComponent
 public:
     std::unique_ptr<Timer> mShakeTimeDelayTimer = nullptr;
     int mShakeProgressionStep                   = 0;
-    int mShakeHelperCounter                     = 0;
     ShakeType mActiveShakeType                  = ShakeType::NONE;
     
 };
