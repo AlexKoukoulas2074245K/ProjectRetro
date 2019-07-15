@@ -34,12 +34,24 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
         encounterStateComponent.mOpponentPokemonRoster.front() :
         playerStateComponent.mPlayerPokemonRoster.front();
 
-    QueueDialogForTextbox
-    (
-        mainChatboxEntityId,
-        attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
-        mWorld
-    );
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        QueueDialogForTextbox
+        (
+            mainChatboxEntityId,
+            "Enemy " + attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
+            mWorld
+        );
+    }
+    else
+    {
+        QueueDialogForTextbox
+        (
+            mainChatboxEntityId,
+            attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
+            mWorld
+        );
+    }
 }
 
 void MoveMissEncounterFlowState::VUpdate(const float)

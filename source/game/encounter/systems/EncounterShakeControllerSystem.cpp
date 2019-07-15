@@ -106,7 +106,6 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonBlink(const float) con
                 mWorld
             );
         }
-        
     }    
 
     shakeComponent.mShakeProgressionStep++;

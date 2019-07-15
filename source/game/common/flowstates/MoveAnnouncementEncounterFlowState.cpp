@@ -41,13 +41,24 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
     
-    //TODO: differentiate between summoning dialogs
-    QueueDialogForTextbox
-    (
-        mainChatboxEntityId,        
-        attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
-        mWorld
-    );
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        QueueDialogForTextbox
+        (
+            mainChatboxEntityId,
+            "Enemy " + attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
+            mWorld
+        );
+    }
+    else
+    {
+        QueueDialogForTextbox
+        (
+            mainChatboxEntityId,
+            attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
+            mWorld
+        );
+    }
 }
 
 void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)

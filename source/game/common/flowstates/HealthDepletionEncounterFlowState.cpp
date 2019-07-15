@@ -53,10 +53,7 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activeOpponentPokemon      = *encounterStateComponent.mOpponentPokemonRoster.front();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();        
-    
+
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
         CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
@@ -94,31 +91,14 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
             RefreshOpponentPokemonStats();
         }
 
-        if (encounterStateComponent.mDefenderFloatHealth <= 0.0f)
+        if (encounterStateComponent.mLastMoveCrit)
         {
-            encounterStateComponent.mDefenderFloatHealth = 0.0f;
-
-            // End damage calculation with pokemon death
-            if (encounterStateComponent.mIsOpponentsTurn)
-            {
-                activePlayerPokemon.mHp = 0;
-            }
-            else
-            {
-                activeOpponentPokemon.mHp = 0;
-            }
+            CompleteAndTransitionTo<CriticalHitTextEncounterFlowState>();
         }
         else
         {
-            if (encounterStateComponent.mLastMoveCrit)
-            {
-                CompleteAndTransitionTo<CriticalHitTextEncounterFlowState>();
-            }
-            else
-            {
-                CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
-            }
-        }        
+            CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
+        }
     }       
 }
 
