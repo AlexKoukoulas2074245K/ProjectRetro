@@ -26,11 +26,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_POSITION       = glm::vec3(0.3568f, -0.08f, 0.0f);
-const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_POKEMON_SPRITE_START_POSITION = glm::vec3(-1.0f, 0.06f, -0.1f);
-const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_POKEMON_SPRITE_END_POSITION   = glm::vec3(-0.39f, 0.06f, -0.1f);
-const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_SCALE          = glm::vec3(1.0f, 1.0f, 1.0f);
-const glm::vec3 PlayerPokemonSummonEncounterFlowState::SPRITE_SCALE                         = glm::vec3(0.49f, 0.49f, 1.0f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_POSITION        = glm::vec3(0.3568f, -0.08f, 0.2f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_POKEMON_SPRITE_START_POSITION  = glm::vec3(-1.0f, 0.06f, 0.1f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_POKEMON_SPRITE_END_POSITION    = glm::vec3(-0.39f, 0.06f, 0.1f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::PLAYER_STATUS_DISPLAY_SCALE           = glm::vec3(1.0f, 1.0f, 1.0f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::OPPONENT_POKEMON_DEATH_COVER_POSITION = glm::vec3(0.3568f, -0.08f, 0.29f);
+const glm::vec3 PlayerPokemonSummonEncounterFlowState::SPRITE_SCALE                          = glm::vec3(0.49f, 0.49f, 1.0f);
 
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME   = "battle_animations/PLAYER_POKEMON_SUMMON/";
@@ -58,15 +59,21 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
         mWorld
     );
     
-    //TODO: select appropriate bar color 
+    // Opponent pokemon death cover texture
+    encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId = LoadAndCreateOpponentPokemonDeathCover
+    (
+        OPPONENT_POKEMON_DEATH_COVER_POSITION,
+        PLAYER_STATUS_DISPLAY_SCALE,
+        mWorld
+    );
+    
+    // Player pokemon health bar
     encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
         static_cast<float>(activePlayerPokemon.mHp)/activePlayerPokemon.mMaxHp,
         false,
         mWorld
     );
-
-    //TODO: displace health bar appropriately
 
     // Write player's pokemon name
     WriteTextAtTextboxCoords

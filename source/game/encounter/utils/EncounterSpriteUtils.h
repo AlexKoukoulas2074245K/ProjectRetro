@@ -61,6 +61,13 @@ ecs::EntityId LoadAndCreatePlayerPokemonStatusDisplay
     ecs::World& world
 );
 
+ecs::EntityId LoadAndCreateOpponentPokemonDeathCover
+(
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+);
+
 ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
 (
     const glm::vec3& spritePosition,

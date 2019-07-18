@@ -34,10 +34,11 @@ const float HealthDepletionEncounterFlowState::DEPLETION_SPEED = 17.5f;
 HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster.front();    
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {

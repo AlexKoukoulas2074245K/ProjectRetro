@@ -26,9 +26,9 @@
 
 const std::string OpponentIntroTextEncounterFlowState::POKEMON_BATTLE_SPRITE_MODEL_NAME = "pokemon_battle_sprite";
 
-const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_POSITION       = glm::vec3(0.3f, -0.23f, 0.0f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_POSITION       = glm::vec3(0.3f, -0.23f, 0.2f);
 const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_SCALE          = glm::vec3(1.1f, 1.1f, 1.0f);
-const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.7225f, -0.025f, -0.5f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.7225f, -0.025f, 0.15f);
 
 const int OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_COLS = 20;
 const int OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS = 4;

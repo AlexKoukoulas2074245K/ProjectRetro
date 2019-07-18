@@ -86,6 +86,7 @@ public:
     ecs::EntityId mFightMenuMoveInfoTexbotxEntityId   = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

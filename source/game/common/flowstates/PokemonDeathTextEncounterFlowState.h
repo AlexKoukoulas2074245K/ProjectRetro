@@ -1,15 +1,16 @@
-//  PlayerPokemonSummonEncounterFlowState.h
+//
+//  PokemonDeathTextEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 05/07/2019.
+//  Created by Alex Koukoulas on 18/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef PlayerPokemonSummonEncounterFlowState_h
-#define PlayerPokemonSummonEncounterFlowState_h
+#ifndef PokemonDeathTextEncounterFlowState_h
+#define PokemonDeathTextEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -17,37 +18,21 @@
 
 #include "BaseFlowState.h"
 
-#include "../../common/utils/MathUtils.h"
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PlayerPokemonSummonEncounterFlowState final: public BaseFlowState
+class PokemonDeathTextEncounterFlowState final: public BaseFlowState
 {
 public:
-    PlayerPokemonSummonEncounterFlowState(ecs::World&);
+    PokemonDeathTextEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
-  
-private:
-    void LoadPokemonSummonBattleAnimation() const;
-
-    static const glm::vec3 PLAYER_STATUS_DISPLAY_POSITION;
-    static const glm::vec3 PLAYER_POKEMON_SPRITE_START_POSITION;
-    static const glm::vec3 PLAYER_POKEMON_SPRITE_END_POSITION;
-    static const glm::vec3 PLAYER_STATUS_DISPLAY_SCALE;
-    static const glm::vec3 OPPONENT_POKEMON_DEATH_COVER_POSITION;
-    static const glm::vec3 SPRITE_SCALE;
-
-    static const std::string POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME;
-    static const std::string POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME;
-
-    static const float SPRITE_ANIMATION_SPEED;
+   
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* PlayerPokemonSummonEncounterFlowState_h */
+#endif /* PokemonDeathTextEncounterFlowState_h */

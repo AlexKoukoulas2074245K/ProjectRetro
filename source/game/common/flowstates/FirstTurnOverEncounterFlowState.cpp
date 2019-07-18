@@ -11,6 +11,7 @@
 
 #include "FirstTurnOverEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
+#include "PokemonDeathMovementEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/MathUtils.h"
@@ -29,8 +30,27 @@ FirstTurnOverEncounterFlowState::FirstTurnOverEncounterFlowState(ecs::World& wor
 
 void FirstTurnOverEncounterFlowState::VUpdate(const float)
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
     encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;
+    
+    
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
+    
+    if (activePlayerPokemon.mHp <= 0)
+    {
+        activePlayerPokemon.mHp = 0;
+        CompleteAndTransitionTo<PokemonDeathMovementEncounterFlowState>();
+        return;
+    }
+    else if (activeOpponentPokemon.mHp <= 0)
+    {
+        activeOpponentPokemon.mHp = 0;
+        CompleteAndTransitionTo<PokemonDeathMovementEncounterFlowState>();
+        return;
+    }
     
     // Both player turns are over
     if (++encounterStateComponent.mTurnsCompleted == 2)

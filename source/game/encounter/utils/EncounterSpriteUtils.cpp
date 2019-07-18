@@ -29,6 +29,7 @@ static const std::string ENCOUNTER_SPRITE_SHADER_NAME                 = "gui";
 static const std::string TRAINER_ATLAS_FILE_NAME                      = "trainers.png";
 static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME           = "battle_player_roster";
 static const std::string PLAYER_POKEMON_STATUS_DISPLAY_TEXTURE_NAME   = "battle_player_pokemon_status";
+static const std::string OPPONENT_POKEMON_DEATH_COVER_TEXTURE_NAME    = "battle_opponent_death_cover";
 static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME = "battle_enemy_pokemon_status";
 static const std::string ENCOUNTER_EDGE_TEXTURE_NAME                  = "battle_edge";
 static const std::string GREEN_HEALTHBAR_FILE_NAME                    = "hp_bar_green.png";
@@ -39,10 +40,10 @@ static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, 
 static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_EDGE_SCALE          = glm::vec3(0.5f, 1.5f, 1.0f);
 
-static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION  = glm::vec3(-0.32f, 0.7f, 0.1f);
-static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION = glm::vec3(-0.6952f, 0.7f, 0.1f);
-static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION    = glm::vec3(0.3568f, -0.08f, 0.1f);
-static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION   = glm::vec3(-0.0184f, -0.08f, 0.1f);
+static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION  = glm::vec3(-0.32f, 0.7f, 0.45f);
+static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION = glm::vec3(-0.6952f, 0.7f, 0.45f);
+static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION    = glm::vec3(0.3568f, -0.08f, 0.25f);
+static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION   = glm::vec3(-0.0184f, -0.08f, 0.25f);
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -183,6 +184,37 @@ ecs::EntityId LoadAndCreatePlayerPokemonStatusDisplay
     world.AddComponent<TransformComponent>(playerPokemonStatusDisplayEntityId, std::move(transformComponent));
     
     return playerPokemonStatusDisplayEntityId;
+}
+
+ecs::EntityId LoadAndCreateOpponentPokemonDeathCover
+(
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+)
+{
+    const auto opponentPokemonDeathCoverEntityId = world.CreateEntity();
+    
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + OPPONENT_POKEMON_DEATH_COVER_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = spritePosition;
+    transformComponent->mScale    = spriteScale;
+    
+    world.AddComponent<RenderableComponent>(opponentPokemonDeathCoverEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(opponentPokemonDeathCoverEntityId, std::move(transformComponent));
+    
+    return opponentPokemonDeathCoverEntityId;
 }
 
 ecs::EntityId LoadAndCreateOpponentPokemonStatusDisplay
