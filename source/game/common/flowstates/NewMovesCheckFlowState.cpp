@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "NewMovesCheckFlowState.h"
+#include "LearnNewMoveFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonMoveUtils.h"
 
@@ -35,7 +36,7 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
         {
             activePlayerPokemon.mMoveToBeLearned = moveLearnInfo.mMoveName;
         }
-    }    
+    }
 }
 
 void NewMovesCheckFlowState::VUpdate(const float)
@@ -96,7 +97,8 @@ void NewMovesCheckFlowState::VUpdate(const float)
         }
         else
         {
-            //CompleteAndTransitionTo<LearnNewMoveFlowState>();
+            activePlayerPokemon.mMovesetIndexForNewMove = firstUnusedIndex;
+            CompleteAndTransitionTo<LearnNewMoveFlowState>();
         }
     }
 }

@@ -39,7 +39,12 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
-
+    
+    if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
+    {
+        encounterStateComponent.mOutstandingFloatDamage = 0.0f;
+    }
+    
     if (encounterStateComponent.mIsOpponentsTurn)
     {
         activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
@@ -48,7 +53,6 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     {
         activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
     }
-
 }
 
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)

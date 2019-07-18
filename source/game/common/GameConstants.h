@@ -165,11 +165,13 @@ struct Pokemon
 
     const StringId mName;
     const PokemonBaseStats& mBaseStats;
-
-    PokemonMoveSet mMoveSet;    
-    StringId mMoveToBeLearned;
+    
     StringId mNickname;
-
+    
+    PokemonMoveSet mMoveSet;
+    StringId mMoveToBeLearned;
+    size_t mMovesetIndexForNewMove;
+    
     int mLevel;
     int mXpPoints;
 

@@ -126,7 +126,11 @@ bool DoesMovesetHaveMove
 {
     for (auto i = 0U; i < 4; ++i)
     {
-        if (moveset[i]->mName == moveName)
+        if (moveset[i] == nullptr)
+        {
+            break;
+        }
+        else if (moveset[i]->mName == moveName)
         {
             return true;
         }
