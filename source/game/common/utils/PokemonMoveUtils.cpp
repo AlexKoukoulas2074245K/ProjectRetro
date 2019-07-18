@@ -118,6 +118,23 @@ const PokemonMoveStats& GetMoveStats
     return moveStatsComponent.mMoveStats.at(moveName);
 }
 
+bool DoesMovesetHaveMove
+(
+    const StringId moveName,
+    const PokemonMoveSet& moveset
+)
+{
+    for (auto i = 0U; i < 4; ++i)
+    {
+        if (moveset[i]->mName == moveName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool ShouldMoveMiss
 (
     const int moveAccuracy,

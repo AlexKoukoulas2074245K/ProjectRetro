@@ -29,6 +29,7 @@ static const glm::vec3 CHATBOX_POSITION                                = glm::ve
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION           = glm::vec3(0.1375f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
+static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::vec3(0.31f, 0.2f, -0.4f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -41,6 +42,9 @@ static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS = 6;
 
 static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_COLS = 11;
 static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_ROWS = 5;
+
+static const int POKEMON_STATS_DISPLAY_TEXTBOX_COLS = 11;
+static const int POKEMON_STATS_DISPLAY_TEXTBOX_ROWS = 10;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +357,40 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
     WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, totalPowerPointsString, 10 - totalPowerPointsString.size(), 3, world);
 
     return fightMenuMoveInfoTextboxEntityId;
+}
+
+ecs::EntityId CreatePokemonStatsDisplay
+(
+    const Pokemon& pokemon,
+    ecs::World& world
+)
+{
+    const auto pokemonStatsDisplayEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::GENERIC_TEXTBOX,
+        POKEMON_STATS_DISPLAY_TEXTBOX_COLS,
+        POKEMON_STATS_DISPLAY_TEXTBOX_ROWS,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.x,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.y,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.z,
+        world
+    );
+
+    const auto attackStatString  = std::to_string(pokemon.mAttack);
+    const auto defenseStatString = std::to_string(pokemon.mDefense);
+    const auto speedStatString   = std::to_string(pokemon.mSpeed);
+    const auto specialStatString = std::to_string(pokemon.mSpecial);
+
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, "ATTACK", 2, 1, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, attackStatString, 9 - attackStatString.size(), 2, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, "DEFENSE", 2, 3, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, defenseStatString, 9 - defenseStatString.size(), 4, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, "SPEED", 2, 5, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, speedStatString, 9 - speedStatString.size(), 6, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, "SPECIAL", 2, 7, world);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, specialStatString, 9 - specialStatString.size(), 8, world);
+
+    return pokemonStatsDisplayEntityId;
 }
 
 void DestroyActiveTextbox

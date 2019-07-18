@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "AwardExperienceEncounterFlowState.h"
+#include "AwardLevelFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
@@ -40,8 +41,14 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
             1
         );
 
-        activePlayerPokemon.mXpPoints += xpAwarded;
-        
+        activePlayerPokemon.mXpPoints  += xpAwarded;
+        AddToEvStat(activeOpponentPokemon.mBaseStats.mAttack, activePlayerPokemon.mAttackEv);
+        AddToEvStat(activeOpponentPokemon.mBaseStats.mDefense, activePlayerPokemon.mDefenseEv);
+        AddToEvStat(activeOpponentPokemon.mBaseStats.mSpeed, activePlayerPokemon.mSpeedEv);
+        AddToEvStat(activeOpponentPokemon.mBaseStats.mSpecial, activePlayerPokemon.mSpecialEv);
+
+        activePlayerPokemon.mXpPoints  += 100;
+
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
         QueueDialogForTextbox
         (
@@ -69,7 +76,11 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
 
         if (activePlayerPokemon.mXpPoints >= totalXpNeededForNextLevel)
         {
-            // Level up state
+            CompleteAndTransitionTo<AwardLevelFlowState>();
+        }
+        else
+        {
+            //CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
         }
     }
 }

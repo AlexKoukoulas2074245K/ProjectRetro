@@ -48,6 +48,8 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mLevel    = pokemonLevel;    
     pokemonInstance->mXpPoints = CalculatePokemonTotalExperienceAtLevel(pokemonName, pokemonLevel, world);    
 
+    pokemonInstance->mMoveToBeLearned = StringId();
+
     // Calculate IVs
     // https://bulbapedia.bulbagarden.net/wiki/Individual_values
     pokemonInstance->mAttackIv  = math::RandomInt(0, 15);
@@ -172,6 +174,46 @@ void ResetPokemonEncounterModifierStages
     pokemon.mSpecialEncounterStage = 0;
     pokemon.mAccuracyStage         = 0;
     pokemon.mEvasionStage          = 0;
+}
+
+void AddToEvStat
+(
+    const int respectiveDefeatedPokemonBaseStat,
+    int& currentEvStat
+)
+{
+    currentEvStat = math::Min(currentEvStat + respectiveDefeatedPokemonBaseStat, 65535);
+}
+
+void LevelUpStats
+(
+    const ecs::World& world,
+    Pokemon& pokemon
+)
+{   
+    auto targetNextLevel = pokemon.mLevel;
+    auto nextLevelXp     = 0;
+
+    do
+    {        
+        nextLevelXp = CalculatePokemonTotalExperienceAtLevel(pokemon.mName, ++targetNextLevel, world);
+    } while (nextLevelXp < pokemon.mXpPoints);
+    
+    targetNextLevel--;
+    
+    // Set new level
+    pokemon.mLevel = targetNextLevel;
+
+    // Calculate new hp stat
+    const auto previousMaxHp = pokemon.mMaxHp;
+    pokemon.mMaxHp = CalculateHpStat(pokemon.mLevel, pokemon.mBaseStats.mHp, pokemon.mHpIv, pokemon.mHpEv);
+    pokemon.mHp   += pokemon.mMaxHp - previousMaxHp;
+
+    // Calculate other stats
+    pokemon.mAttack  = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mAttack, pokemon.mAttackIv, pokemon.mAttackEv);
+    pokemon.mDefense = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mDefense, pokemon.mDefenseIv, pokemon.mDefenseEv);
+    pokemon.mSpeed   = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mSpeed, pokemon.mSpeedIv, pokemon.mSpeedEv);
+    pokemon.mSpecial = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mSpecial, pokemon.mSpecialIv, pokemon.mSpecialEv);   
 }
 
 int CalculatePokemonTotalExperienceAtLevel

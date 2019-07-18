@@ -48,6 +48,12 @@ const PokemonMoveStats& GetMoveStats
     const ecs::World& world
 );
 
+bool DoesMovesetHaveMove
+(
+    const StringId moveName,
+    const PokemonMoveSet& moveset
+);
+
 bool ShouldMoveMiss
 (
     const int moveAccuracy,

@@ -77,6 +77,18 @@ void ResetPokemonEncounterModifierStages
     Pokemon& pokemon
 );
 
+void AddToEvStat
+(
+    const int respectiveDefeatedPokemonBaseStat,
+    int& currentEvStat
+);
+
+void LevelUpStats
+(
+    const ecs::World& world,
+    Pokemon& pokemon
+);
+
 int CalculatePokemonTotalExperienceAtLevel
 (
     const StringId pokemonName,

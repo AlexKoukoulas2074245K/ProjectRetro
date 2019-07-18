@@ -105,7 +105,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
         mWorld
     );
     
-    // Write player's pokemon current hp
+    // Write player's pokemon max hp
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,

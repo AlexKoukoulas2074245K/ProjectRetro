@@ -88,6 +88,7 @@ public:
     ecs::EntityId mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mLevelUpNewStatsTextboxEntityId     = ecs::NULL_ENTITY_ID;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +101,7 @@ public:
     FlowStateManager mFlowStateManager;
     EncounterViewObjects mViewObjects;
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
-    StringId mLastMoveSelected                                         = StringId();
+    StringId mLastMoveSelected                                         = StringId();    
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
