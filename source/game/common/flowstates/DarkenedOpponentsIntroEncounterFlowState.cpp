@@ -12,6 +12,7 @@
 #include "DarkenedOpponentsIntroEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../../ECS.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -93,7 +94,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     {
         encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
         (
-            encounterStateComponent.mOpponentPokemonRoster.front()->mName,
+            GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster).mName,
             true,
             OPPONENT_SPRITE_INIT_POS,
             SPRITE_SCALE,

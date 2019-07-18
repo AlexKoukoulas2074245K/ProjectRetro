@@ -12,6 +12,7 @@
 #include "CriticalHitTextEncounterFlowState.h"
 #include "HealthDepletionEncounterFlowState.h"
 #include "MoveEffectivenessTextEncounterFlowState.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
@@ -37,8 +38,8 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
@@ -115,7 +116,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 
@@ -147,7 +148,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
 void HealthDepletionEncounterFlowState::RefreshOpponentPokemonStats() const
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+    auto& activeOpponentPokemon   = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
 
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
 

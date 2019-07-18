@@ -13,6 +13,7 @@
 #include "MainMenuEncounterFlowState.h"
 #include "PokemonDeathMovementEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
+#include "../utils/PokemonUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
@@ -36,8 +37,8 @@ void FirstTurnOverEncounterFlowState::VUpdate(const float)
     encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;
     
     
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     if (activePlayerPokemon.mHp <= 0)
     {

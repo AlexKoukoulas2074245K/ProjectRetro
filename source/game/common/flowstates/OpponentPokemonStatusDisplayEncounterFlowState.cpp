@@ -12,6 +12,7 @@
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -38,7 +39,7 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     : BaseFlowState(world)
 {
     auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+    const auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
     
     encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
     (

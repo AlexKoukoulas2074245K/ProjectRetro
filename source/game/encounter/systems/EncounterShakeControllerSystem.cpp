@@ -15,6 +15,7 @@
 #include "../utils/EncounterSpriteUtils.h"
 #include "../../common/GameConstants.h"
 #include "../../common/utils/OSMessageBox.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../rendering/components/CameraSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +100,7 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonBlink(const float) con
         {            
             encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
             (
-                encounterStateComponent.mOpponentPokemonRoster.front()->mName,
+                GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster).mName,
                 true,
                 OPPONENT_SPRITE_POSITION,
                 OPPONENT_SPRITE_SCALE,

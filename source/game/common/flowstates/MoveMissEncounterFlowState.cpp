@@ -11,6 +11,7 @@
 
 #include "MoveMissEncounterFlowState.h"
 #include "FirstTurnOverEncounterFlowState.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -31,15 +32,15 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
     
     const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-        encounterStateComponent.mOpponentPokemonRoster.front() :
-        playerStateComponent.mPlayerPokemonRoster.front();
+        GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster) :
+        GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {
         QueueDialogForTextbox
         (
             mainChatboxEntityId,
-            "Enemy " + attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
+            "Enemy " + attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
             mWorld
         );
     }
@@ -48,7 +49,7 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
         QueueDialogForTextbox
         (
             mainChatboxEntityId,
-            attackingPokemon->mName.GetString() + "'s#attack missed!#+END",
+            attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
             mWorld
         );
     }

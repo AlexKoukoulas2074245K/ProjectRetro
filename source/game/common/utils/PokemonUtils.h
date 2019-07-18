@@ -42,6 +42,16 @@ std::unique_ptr<Pokemon> CreatePokemon
     const ecs::World& world
 );
 
+bool HaveAllPokemonInRosterFainted
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
+Pokemon& GetFirstNonFaintedPokemon
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
 int CalculateXpGainFromBattle
 (
     const bool isWildBattle,

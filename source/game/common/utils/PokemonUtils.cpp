@@ -114,6 +114,38 @@ std::unique_ptr<Pokemon> CreatePokemon
     return pokemonInstance;
 }
 
+bool HaveAllPokemonInRosterFainted
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+)
+{
+    for (const auto& pokemonEntry: pokemonRoster)
+    {
+        if (pokemonEntry->mHp > 0)
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+Pokemon& GetFirstNonFaintedPokemon
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+)
+{
+    for (const auto& pokemonEntry: pokemonRoster)
+    {
+        if (pokemonEntry->mHp > 0)
+        {
+            return *pokemonEntry;
+        }
+    }
+    
+    return *pokemonRoster[0];
+}
+
 int CalculateXpGainFromBattle
 (
     const bool isWildBattle,

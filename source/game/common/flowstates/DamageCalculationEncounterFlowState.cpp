@@ -14,6 +14,7 @@
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/Logging.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -30,8 +31,8 @@ DamageCalculationEncounterFlowState::DamageCalculationEncounterFlowState(ecs::Wo
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
-    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+    const auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    const auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
 
     CalculateDamageInternal
     (

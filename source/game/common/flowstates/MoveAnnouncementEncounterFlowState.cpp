@@ -14,6 +14,7 @@
 #include "MoveMissEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,8 +37,8 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
     const auto& selectedMove         = encounterStateComponent.mLastMoveSelected;
     
     const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-        encounterStateComponent.mOpponentPokemonRoster.front() :
-        playerStateComponent.mPlayerPokemonRoster.front();
+        GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster) :
+        GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
     
@@ -46,7 +47,7 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
         QueueDialogForTextbox
         (
             mainChatboxEntityId,
-            "Enemy " + attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
+            "Enemy " + attackingPokemon.mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
             mWorld
         );
     }
@@ -55,7 +56,7 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
         QueueDialogForTextbox
         (
             mainChatboxEntityId,
-            attackingPokemon->mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
+            attackingPokemon.mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
             mWorld
         );
     }

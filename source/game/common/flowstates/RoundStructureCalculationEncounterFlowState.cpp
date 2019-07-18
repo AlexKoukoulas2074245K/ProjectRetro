@@ -12,6 +12,7 @@
 #include "RoundStructureCalculationEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -26,8 +27,8 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
-    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
+    const auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    const auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
 
     encounterStateComponent.mLastMoveMiss    = false;
     encounterStateComponent.mLastMoveCrit    = false;

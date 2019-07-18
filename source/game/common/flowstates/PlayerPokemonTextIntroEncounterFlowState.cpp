@@ -13,6 +13,7 @@
 #include "PlayerPokemonSummonEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -31,7 +32,7 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
     QueueDialogForTextbox
     (
         mainChatboxEntityId,
-        "GO! " + playerStateComponent.mPlayerPokemonRoster.front()->mName.GetString() + "!+FREEZE",
+        "GO! " + GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName.GetString() + "!+FREEZE",
         mWorld
     );
 }

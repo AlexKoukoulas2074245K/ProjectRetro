@@ -12,6 +12,7 @@
 #include "NewMovesCheckFlowState.h"
 #include "LearnNewMoveFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,7 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();    
+    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     activePlayerPokemon.mMoveToBeLearned = StringId();
 
@@ -42,7 +43,7 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
 void NewMovesCheckFlowState::VUpdate(const float)
 { 
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
 
     if (activePlayerPokemon.mMoveToBeLearned != StringId())
     {

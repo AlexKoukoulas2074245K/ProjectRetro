@@ -14,6 +14,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -80,7 +81,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
-        const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName;
+        const auto wildPokemonName = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster).mName;
         QueueDialogForTextbox
         (
             mainChatboxEntityId,

@@ -14,6 +14,7 @@
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -40,8 +41,8 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     if (activeOpponentPokemon.mHp <= 0)
     {

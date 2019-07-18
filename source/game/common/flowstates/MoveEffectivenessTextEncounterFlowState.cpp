@@ -15,6 +15,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/MathUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -38,8 +39,8 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& selectedMoveStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
     const auto& defendingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-            *playerStateComponent.mPlayerPokemonRoster.front() :
-            *encounterStateComponent.mOpponentPokemonRoster.front();
+            GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster) :
+            GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
     
     auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mFirstType, mWorld);
     

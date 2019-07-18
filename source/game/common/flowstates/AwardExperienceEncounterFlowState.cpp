@@ -26,9 +26,9 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster.front();
+    const auto& activeOpponentPokemon   = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
     
-    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster.front();    
+    auto& activePlayerPokemon = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     
     if (activePlayerPokemon.mLevel < 100)
     {
@@ -63,7 +63,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
 {    
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster.front();
+    const auto& activePlayerPokemon  = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {

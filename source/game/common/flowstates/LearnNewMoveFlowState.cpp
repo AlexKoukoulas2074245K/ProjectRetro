@@ -11,6 +11,7 @@
 
 #include "LearnNewMoveFlowState.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 
@@ -24,7 +25,7 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster.front();
+    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
     const auto& moveStats            = GetMoveStats(activePlayerPokemon.mMoveToBeLearned, world);
     
     activePlayerPokemon.mMoveSet[activePlayerPokemon.mMovesetIndexForNewMove] = std::make_unique<PokemonMoveStats>
