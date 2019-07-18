@@ -236,7 +236,7 @@ void PlayerPokemonSummonEncounterFlowState::LoadPokemonSummonBattleAnimation() c
         );
     }
 
-    encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_ANIMATION_FRAME_DURATION);
+    encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_MOVE_ANIMATION_FRAME_DURATION);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

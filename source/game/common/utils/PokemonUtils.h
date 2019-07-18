@@ -42,6 +42,14 @@ std::unique_ptr<Pokemon> CreatePokemon
     const ecs::World& world
 );
 
+int CalculateXpGainFromBattle
+(
+    const bool isWildBattle,
+    const int faintedPokemonXpStat,
+    const int faintedPokemonLevel,
+    const int numberOfPokemonThatDidNotFaintDuringBattle  
+);
+
 int CalculateHpStat
 (
     const int pokemonLevel,
@@ -67,6 +75,13 @@ int GetStatWithModifierApplied
 void ResetPokemonEncounterModifierStages
 (
     Pokemon& pokemon
+);
+
+int CalculatePokemonTotalExperienceAtLevel
+(
+    const StringId pokemonName,
+    const int pokemonLevel,
+    const ecs::World& world
 );
 
 const PokemonBaseStats& GetPokemonBaseStats

@@ -19,6 +19,7 @@
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
 
+#include <cassert>
 #include <json.hpp>
 #include <unordered_map>
 #include <vector>
@@ -28,6 +29,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 static const std::string BASE_STATS_FILE_NAME = "base_stats.json";
+static const std::string POKEMON_XP_GROUPS_FILE_NAME = "xp_groups.json";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +46,7 @@ std::unique_ptr<Pokemon> CreatePokemon
     auto pokemonInstance = std::make_unique<Pokemon>(pokemonName, baseStats);
 
     pokemonInstance->mLevel    = pokemonLevel;    
-    pokemonInstance->mXpPoints = 0;
+    pokemonInstance->mXpPoints = CalculatePokemonTotalExperienceAtLevel(pokemonName, pokemonLevel, world);    
 
     // Calculate IVs
     // https://bulbapedia.bulbagarden.net/wiki/Individual_values
@@ -110,6 +112,18 @@ std::unique_ptr<Pokemon> CreatePokemon
     return pokemonInstance;
 }
 
+int CalculateXpGainFromBattle
+(
+    const bool isWildBattle,
+    const int faintedPokemonXpStat,
+    const int faintedPokemonLevel,
+    const int numberOfPokemonThatDidNotFaintDuringBattle
+)
+{
+    // https://bulbapedia.bulbagarden.net/wiki/Experience#Experience_gain_in_battle
+    return static_cast<int>(((isWildBattle ? 1.0f : 1.5f) * faintedPokemonXpStat * faintedPokemonLevel) / (7.0f * numberOfPokemonThatDidNotFaintDuringBattle));
+}
+
 int CalculateHpStat
 (
     const int pokemonLevel,
@@ -160,6 +174,28 @@ void ResetPokemonEncounterModifierStages
     pokemon.mEvasionStage          = 0;
 }
 
+int CalculatePokemonTotalExperienceAtLevel
+(
+    const StringId pokemonName,
+    const int pokemonLevel,
+    const ecs::World& world
+)
+{
+    const auto& pokemonBaseStatsComponent = world.GetSingletonComponent<PokemonBaseStatsSingletonComponent>();
+    const auto pokemonXpGroup             = pokemonBaseStatsComponent.mPokemonXpGroups.at(pokemonName);
+
+    switch (pokemonXpGroup)
+    {
+        case XpGroup::SLOW: return static_cast<int>((5.0f * (pokemonLevel * pokemonLevel * pokemonLevel)) / 4.0f);
+        case XpGroup::MEDIUM_SLOW: return static_cast<int>(1.2f * (pokemonLevel * pokemonLevel * pokemonLevel) - 15 * (pokemonLevel * pokemonLevel) + 100 * pokemonLevel - 140);
+        case XpGroup::MEDIUM_FAST: return pokemonLevel * pokemonLevel * pokemonLevel; 
+        case XpGroup::FAST: return static_cast<int>((4.0f * (pokemonLevel * pokemonLevel * pokemonLevel)) / 5.0f);
+    }
+
+    assert(false && "Pokemon not present in xp groups");
+    return 0;
+}
+
 const PokemonBaseStats& GetPokemonBaseStats
 (
     const StringId pokemonName,
@@ -190,14 +226,27 @@ void LoadAndPopulatePokemonBaseStats
     };
 
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    
+    // Load pokemon Xp groups
+    const auto pokemonXpGroupsFilePath = ResourceLoadingService::RES_DATA_ROOT + POKEMON_XP_GROUPS_FILE_NAME;
+    resourceLoadingService.LoadResource(pokemonXpGroupsFilePath);
+    const auto& pokemonXpGroupsFileResource = resourceLoadingService.GetResource<DataFileResource>(pokemonXpGroupsFilePath);
+
+    // Parse xp groups json
+    const auto xpGroupsJson = nlohmann::json::parse(pokemonXpGroupsFileResource.GetContents());
+
+    for (const auto& slowGroupEntry : xpGroupsJson["SLOW"])        pokemonBaseStatsComponent.mPokemonXpGroups[StringId(slowGroupEntry.get<std::string>())] = XpGroup::SLOW;
+    for (const auto& slowGroupEntry : xpGroupsJson["MEDIUM_SLOW"]) pokemonBaseStatsComponent.mPokemonXpGroups[StringId(slowGroupEntry.get<std::string>())] = XpGroup::MEDIUM_SLOW;
+    for (const auto& slowGroupEntry : xpGroupsJson["MEDIUM_FAST"]) pokemonBaseStatsComponent.mPokemonXpGroups[StringId(slowGroupEntry.get<std::string>())] = XpGroup::MEDIUM_FAST;
+    for (const auto& slowGroupEntry : xpGroupsJson["FAST"])        pokemonBaseStatsComponent.mPokemonXpGroups[StringId(slowGroupEntry.get<std::string>())] = XpGroup::FAST;
 
     // Get pokemon base stats data file resource
     const auto pokemonBaseStatsFilePath = ResourceLoadingService::RES_DATA_ROOT + BASE_STATS_FILE_NAME;
     resourceLoadingService.LoadResource(pokemonBaseStatsFilePath);
-    const auto& baseStasFileResource = resourceLoadingService.GetResource<DataFileResource>(pokemonBaseStatsFilePath);
+    const auto& baseStatsFileResource = resourceLoadingService.GetResource<DataFileResource>(pokemonBaseStatsFilePath);
 
     // Parse base stats json
-    const auto baseStatsJson = nlohmann::json::parse(baseStasFileResource.GetContents());
+    const auto baseStatsJson = nlohmann::json::parse(baseStatsFileResource.GetContents());
     
     auto& pokemonBaseStats = pokemonBaseStatsComponent.mPokemonBaseStats;
     for (auto it = baseStatsJson.begin(); it != baseStatsJson.end(); ++it)

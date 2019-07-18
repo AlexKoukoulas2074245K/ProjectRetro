@@ -10,7 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokemonDeathTextEncounterFlowState.h"
+#include "AwardExperienceEncounterFlowState.h"
+#include "../utils/PokemonUtils.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -24,11 +27,16 @@ PokemonDeathTextEncounterFlowState::PokemonDeathTextEncounterFlowState(ecs::Worl
 
 void PokemonDeathTextEncounterFlowState::VUpdate(const float)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster.front();
+
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        const auto b = false;
-        (void)b;
+        if (activeOpponentPokemon.mHp <= 0)
+        {
+            CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
+        }        
     }
 }
 

@@ -60,9 +60,7 @@ void FirstTurnOverEncounterFlowState::VUpdate(const float)
     else
     {
         if (encounterStateComponent.mIsOpponentsTurn)
-        {
-            const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster.front();
-            
+        {            
             // Ultra smart AI
             auto& opponentSelectedMove = *activeOpponentPokemon.mMoveSet[math::RandomInt(0, FindFirstUnusedMoveIndex(activeOpponentPokemon.mMoveSet) - 1)];
             
@@ -70,10 +68,7 @@ void FirstTurnOverEncounterFlowState::VUpdate(const float)
         }
         else
         {
-            //TODO: move PP check
-            auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-            const auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster.front();
-            
+            //TODO: move PP check            
             auto& playerSelectedMove = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
             
             playerSelectedMove.mPowerPointsLeft--;
