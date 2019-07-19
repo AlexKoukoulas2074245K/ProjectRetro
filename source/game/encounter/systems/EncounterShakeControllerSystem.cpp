@@ -100,7 +100,7 @@ void EncounterShakeControllerSystem::UpdateOpponentPokemonBlink(const float) con
         {            
             encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
             (
-                GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster).mName,
+                encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mName,
                 true,
                 OPPONENT_SPRITE_POSITION,
                 OPPONENT_SPRITE_SCALE,

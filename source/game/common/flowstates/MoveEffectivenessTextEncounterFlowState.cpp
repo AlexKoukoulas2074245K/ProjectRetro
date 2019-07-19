@@ -39,8 +39,8 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& selectedMoveStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
     const auto& defendingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-            GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster) :
-            GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+            *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]:
+            *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
     auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mFirstType, mWorld);
     

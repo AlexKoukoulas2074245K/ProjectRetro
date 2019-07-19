@@ -38,8 +38,8 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
-    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
@@ -116,7 +116,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 
@@ -148,7 +148,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
 void HealthDepletionEncounterFlowState::RefreshOpponentPokemonStats() const
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& activeOpponentPokemon   = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
 

@@ -27,8 +27,8 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    const auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
-    const auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     encounterStateComponent.mLastMoveMiss    = false;
     encounterStateComponent.mLastMoveCrit    = false;

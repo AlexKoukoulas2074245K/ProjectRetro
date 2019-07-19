@@ -37,8 +37,8 @@ void FirstTurnOverEncounterFlowState::VUpdate(const float)
     encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;
     
     
-    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
-    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     if (activePlayerPokemon.mHp <= 0)
     {

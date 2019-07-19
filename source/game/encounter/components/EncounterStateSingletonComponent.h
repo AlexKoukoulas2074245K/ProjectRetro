@@ -105,6 +105,8 @@ public:
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
+    int mActivePlayerPokemonRosterIndex                                = 0;
+    int mActiveOpponentPokemonRosterIndex                              = 0;
     int mSpecialMoveAnimationStep                                      = 0;
     int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
     int mTurnsCompleted                                                = 0;

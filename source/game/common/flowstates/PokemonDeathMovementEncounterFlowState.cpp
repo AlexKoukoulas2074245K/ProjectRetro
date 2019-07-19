@@ -41,8 +41,8 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
-    auto& activePlayerPokemon   = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     if (activeOpponentPokemon.mHp <= 0)
     {

@@ -130,21 +130,39 @@ bool HaveAllPokemonInRosterFainted
     return true;
 }
 
-Pokemon& GetFirstNonFaintedPokemon
+size_t GetFirstNonFaintedPokemonIndex
 (
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
 )
 {
-    for (const auto& pokemonEntry: pokemonRoster)
+    for (auto i = 0U; i < pokemonRoster.size(); ++i)
     {
-        if (pokemonEntry->mHp > 0)
+        if (pokemonRoster[i]->mHp > 0)
         {
-            return *pokemonEntry;
+            return i;
         }
     }
     
-    return *pokemonRoster[0];
+    return pokemonRoster.size();
 }
+
+size_t GetPokemonRosterIndex
+(
+    const Pokemon& pokemon,
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+)
+{
+    for (auto i = 0U; i < pokemonRoster.size(); ++i)
+    {
+        if (&(pokemon) == pokemonRoster[i].get())
+        {
+            return i;
+        }
+    }
+
+    return pokemonRoster.size();
+}
+
 
 int CalculateXpGainFromBattle
 (

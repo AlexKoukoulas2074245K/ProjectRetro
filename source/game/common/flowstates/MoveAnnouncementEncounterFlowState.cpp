@@ -37,8 +37,8 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
     const auto& selectedMove         = encounterStateComponent.mLastMoveSelected;
     
     const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-        GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster) :
-        GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+        *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]:
+        *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
     

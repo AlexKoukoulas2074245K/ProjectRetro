@@ -39,7 +39,7 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     : BaseFlowState(world)
 {
     auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& activeOpponentPokemon = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
     encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentPokemonStatusDisplay
     (

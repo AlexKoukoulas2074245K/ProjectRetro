@@ -32,8 +32,8 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
     
     const auto& attackingPokemon = encounterStateComponent.mIsOpponentsTurn ?
-        GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster) :
-        GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+        *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]:
+        *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {

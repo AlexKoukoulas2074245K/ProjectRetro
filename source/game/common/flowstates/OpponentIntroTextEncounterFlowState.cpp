@@ -81,7 +81,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
-        const auto wildPokemonName = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster).mName;
+        const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mName;
         QueueDialogForTextbox
         (
             mainChatboxEntityId,

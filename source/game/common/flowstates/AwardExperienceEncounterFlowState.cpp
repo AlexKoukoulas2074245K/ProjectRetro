@@ -26,9 +26,9 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activeOpponentPokemon   = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
-    auto& activePlayerPokemon = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     if (activePlayerPokemon.mLevel < 100)
     {
@@ -61,10 +61,11 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
 
 void AwardExperienceEncounterFlowState::VUpdate(const float)
 {    
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    const auto& activePlayerPokemon  = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
-
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
+    const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         const auto totalXpNeededForNextLevel = CalculatePokemonTotalExperienceAtLevel
@@ -76,6 +77,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
 
         if (activePlayerPokemon.mXpPoints >= totalXpNeededForNextLevel)
         {
+            playerStateComponent.mLeveledUpPokemonRosterIndex = GetPokemonRosterIndex(activePlayerPokemon, playerStateComponent.mPlayerPokemonRoster);
             CompleteAndTransitionTo<AwardLevelFlowState>();
         }
         else

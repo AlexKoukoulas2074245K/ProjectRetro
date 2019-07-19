@@ -17,10 +17,12 @@
 #include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/components/PokemonBaseStatsSingletonComponent.h"
+#include "common/components/PokemonSelectionViewStateSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
 #include "common/utils/PokemonMoveUtils.h"
 #include "common/utils/PokemonUtils.h"
 #include "encounter/components/EncounterStateSingletonComponent.h"
+#include "encounter/systems/EncounterShakeControllerSystem.h"
 #include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
@@ -49,7 +51,6 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
-#include "encounter/systems/EncounterShakeControllerSystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +153,14 @@ void App::DummyInitialization()
 
     const auto playerEntity = mWorld.CreateEntity();
     
+    mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, mWorld));
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));    
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
     
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

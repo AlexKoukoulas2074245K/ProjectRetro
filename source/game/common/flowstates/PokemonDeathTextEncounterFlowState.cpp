@@ -29,11 +29,11 @@ void PokemonDeathTextEncounterFlowState::VUpdate(const float)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& activeOpponentPokemon   = GetFirstNonFaintedPokemon(encounterStateComponent.mOpponentPokemonRoster);
+    const auto& activeOpponentPokemon   = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        if (activeOpponentPokemon.mHp <= 0)
+        if (activeOpponentPokemon->mHp <= 0)
         {
             CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
         }        

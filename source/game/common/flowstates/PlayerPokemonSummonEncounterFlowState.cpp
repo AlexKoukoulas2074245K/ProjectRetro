@@ -48,7 +48,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
 {    
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activePlayerPokemon  = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
 
@@ -80,7 +80,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName.GetString(),
+        activePlayerPokemon.mName.GetString(),
         0,
         0,
         mWorld
@@ -90,7 +90,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        std::to_string(GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mLevel),
+        "=" + std::to_string(activePlayerPokemon.mLevel),
         4,
         1,
         mWorld
@@ -117,7 +117,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     );
 
     // Pikachu gets summoned from the side of the screen, while all other pokemon via pokeball summons
-    if (GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName == StringId("PIKACHU"))
+    if (activePlayerPokemon.mName == StringId("PIKACHU"))
     { 
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }
@@ -132,10 +132,10 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& guiStateComponent          = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
+    const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
     // Standard pokemon summon animation flow
-    if (GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName != StringId("PIKACHU"))
+    if (activePlayerPokemon.mName != StringId("PIKACHU"))
     {
         encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
         if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
@@ -174,7 +174,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             {                
                 encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
                 (
-                    GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName,
+                    activePlayerPokemon.mName,
                     false,
                     PLAYER_POKEMON_SPRITE_END_POSITION,
                     SPRITE_SCALE,
@@ -194,7 +194,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
         {
             encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
             (
-                GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mName,
+                activePlayerPokemon.mName,
                 false,
                 PLAYER_POKEMON_SPRITE_START_POSITION,
                 SPRITE_SCALE,

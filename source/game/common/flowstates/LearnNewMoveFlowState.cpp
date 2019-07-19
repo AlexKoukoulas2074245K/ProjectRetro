@@ -25,7 +25,7 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
     const auto& moveStats            = GetMoveStats(activePlayerPokemon.mMoveToBeLearned, world);
     
     activePlayerPokemon.mMoveSet[activePlayerPokemon.mMovesetIndexForNewMove] = std::make_unique<PokemonMoveStats>

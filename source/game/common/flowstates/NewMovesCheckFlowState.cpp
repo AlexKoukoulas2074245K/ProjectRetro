@@ -21,9 +21,9 @@
 
 NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
     : BaseFlowState(world)
-{
+{    
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
     
     activePlayerPokemon.mMoveToBeLearned = StringId();
 
@@ -43,7 +43,7 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
 void NewMovesCheckFlowState::VUpdate(const float)
 { 
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
     if (activePlayerPokemon.mMoveToBeLearned != StringId())
     {

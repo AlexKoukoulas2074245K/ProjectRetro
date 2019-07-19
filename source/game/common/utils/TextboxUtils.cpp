@@ -170,7 +170,11 @@ ecs::EntityId CreateTextboxWithDimensions
     
     world.AddComponent<TextboxComponent>(textboxEntityId, std::move(textboxComponent));
 
-    if (textboxType != TextboxType::BARE_TEXTBOX)
+    if 
+    (
+        textboxType != TextboxType::BARE_TEXTBOX && 
+        textboxType != TextboxType::CURSORED_BARE_TEXTBOX
+    )
     {
         CreateTextboxComponents
         (
@@ -188,7 +192,11 @@ ecs::EntityId CreateTextboxWithDimensions
     transformComponent->mPosition = glm::vec3(textboxOriginX, textboxOriginY, textboxZ);
     world.AddComponent<TransformComponent>(textboxEntityId, std::move(transformComponent));
     
-    if (textboxType != TextboxType::GENERIC_TEXTBOX && textboxType != TextboxType::BARE_TEXTBOX)
+    if 
+    (
+        textboxType != TextboxType::GENERIC_TEXTBOX &&
+        textboxType != TextboxType::BARE_TEXTBOX        
+    )
     {
         auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
         guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);

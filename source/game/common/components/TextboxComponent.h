@@ -37,6 +37,7 @@ enum class TextboxType
     GENERIC_TEXTBOX,
     BARE_TEXTBOX,
     CURSORED_TEXTBOX,
+    CURSORED_BARE_TEXTBOX,
     CHATBOX
 };
 

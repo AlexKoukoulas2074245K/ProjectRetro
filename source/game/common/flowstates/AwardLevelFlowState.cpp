@@ -27,7 +27,7 @@ AwardLevelFlowState::AwardLevelFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
     LevelUpStats(mWorld, activePlayerPokemon);
     
@@ -48,7 +48,7 @@ void AwardLevelFlowState::VUpdate(const float)
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
@@ -82,7 +82,7 @@ void AwardLevelFlowState::RefreshPokemonStats() const
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& activePlayerPokemon        = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster);
+    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
     mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 

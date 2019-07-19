@@ -28,7 +28,7 @@ FightMenuEncounterFlowState::FightMenuEncounterFlowState(ecs::World& world)
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& playerPokemonMoveset = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mMoveSet;
+    const auto& playerPokemonMoveset = playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mMoveSet;
     
     CreateEncounterFightMenuTextbox(playerPokemonMoveset, encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu, mWorld);
     encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(*playerPokemonMoveset[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu], mWorld);
@@ -69,7 +69,7 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);
 
         auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-        const auto& playerPokemonMoveset = GetFirstNonFaintedPokemon(playerStateComponent.mPlayerPokemonRoster).mMoveSet;
+        const auto& playerPokemonMoveset = playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mMoveSet;
         encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId = CreateEncounterFightMenuMoveInfoTextbox(*playerPokemonMoveset[cursorComponent.mCursorRow], mWorld);
     }
 }

@@ -46,9 +46,7 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     }
     // Battle started condition
     else if (encounterStateComponent.mOverworldEncounterAnimationState == OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE)
-    {
-        encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
-        
+    {        
         // Reset all stat modifiers for all player's pokemon
         auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         for (const auto& pokemon : playerStateComponent.mPlayerPokemonRoster)
@@ -62,11 +60,14 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
         DestroyLevel(levelModelComponent.mLevelName, mWorld);
         mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
         
-        const auto newLevelEntityId     = LoadAndCreateLevelByName(StringId("battle"), mWorld);
+        const auto newLevelEntityId        = LoadAndCreateLevelByName(StringId("battle"), mWorld);
         auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
         
         mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
-        
+     
+        encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
+        encounterStateComponent.mActivePlayerPokemonRosterIndex = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
+
         CreateChatbox(mWorld);
     }
 }
@@ -83,3 +84,4 @@ void EncounterStateControllerSystem::InitializeEncounterState() const
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+

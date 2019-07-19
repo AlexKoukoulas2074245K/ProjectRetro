@@ -47,8 +47,14 @@ bool HaveAllPokemonInRosterFainted
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
 );
 
-Pokemon& GetFirstNonFaintedPokemon
+size_t GetFirstNonFaintedPokemonIndex
 (
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
+size_t GetPokemonRosterIndex
+(
+    const Pokemon&,
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
 );
 
