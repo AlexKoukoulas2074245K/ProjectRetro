@@ -61,6 +61,12 @@ ecs::EntityId LoadAndCreatePlayerPokemonStatusDisplay
     ecs::World& world
 );
 
+ecs::EntityId LoadAndCreatePokemonSelectionViewBareHealthbarContainer
+(
+    const size_t pokemonRosterIndex,
+    ecs::World& world
+);
+
 ecs::EntityId LoadAndCreateOpponentPokemonDeathCover
 (
     const glm::vec3& spritePosition,
@@ -79,7 +85,9 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
 (
     const float depletionProportion,
     const bool isOpponentHealthBar,
-    ecs::World& world
+    ecs::World& world,
+    const bool isInPokemonSelectionView = false,
+    const size_t pokemonRosterIndex = 0
 );
 
 std::pair<ecs::EntityId, ecs::EntityId> LoadAndCreateLevelEdges(ecs::World&);

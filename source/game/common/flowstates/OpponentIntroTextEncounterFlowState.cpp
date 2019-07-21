@@ -65,11 +65,21 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     const auto& playerPokemonRoster = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster;
     for (auto i = 0U; i < playerPokemonRoster.size(); ++i)
     {
+        const auto& pokemon = *playerPokemonRoster[i];
+        
+        std::string statusString = "~"; // normal status
+        
+        if (pokemon.mHp <= 0)
+        {
+            statusString = "+";
+        }
+        // TODO: check for other status
+        
         // select normal pokeball, status or faint
         WriteTextAtTextboxCoords
         (
             encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-            "~", // Pokeball status icon character
+            statusString,
             1 + i,
             3,
             mWorld

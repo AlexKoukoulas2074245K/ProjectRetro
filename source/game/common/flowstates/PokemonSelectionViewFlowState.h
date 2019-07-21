@@ -46,6 +46,8 @@ private:
 
     static const glm::vec3 POKEMON_SELECTION_VIEW_BACKGROUND_POSITION;
     static const glm::vec3 POKEMON_SELECTION_VIEW_BACKGROUND_SCALE;
+    static const glm::vec3 POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION;
+    static const glm::vec3 POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -553,7 +553,7 @@ void WriteTextAtTextboxCoords
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
 
-    assert((textboxCol + text.size() < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
+    assert((textboxCol + text.size() - 1 < textboxContent[textboxRow].size()) && "Word cannot fit in specified textbox coords");
 #endif    
     
     auto wordIter = text.begin();

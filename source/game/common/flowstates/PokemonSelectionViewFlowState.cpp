@@ -18,6 +18,7 @@
 #include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../resources/MeshUtils.h"
@@ -37,8 +38,10 @@ const std::string PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROU
 const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME                           = "camera_facing_quad";
 const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME              = "characters.png";
 
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_POSITION = glm::vec3(0.0f, 0.0f, 0.01f);
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_SCALE    = glm::vec3(2.0f, 2.0f, 2.0f);
+const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_POSITION         = glm::vec3(0.0f, 0.0f, 0.01f);
+const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_SCALE            = glm::vec3(2.0f, 2.0f, 2.0f);
+const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION = glm::vec3(0.0f, 0.89f, -0.3f);
+const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION   = glm::vec3(-0.55f, 0.9f,-0.4f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +55,28 @@ PokemonSelectionViewFlowState::PokemonSelectionViewFlowState(ecs::World& world)
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
     {
-        CreatePokemonOverworldSprite(playerStateComponent.mPlayerPokemonRoster[i]->mBaseStats.mOverworldSpriteType, i);
+        const auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
+        
+        CreatePokemonOverworldSprite
+        (
+            pokemon.mBaseStats.mOverworldSpriteType,
+            i
+        );
+        
+        LoadAndCreatePokemonHealthBar
+        (
+            pokemon.mHp/static_cast<float>(pokemon.mMaxHp),
+            false,
+            mWorld,
+            true,
+            i
+        );
+        
+        LoadAndCreatePokemonSelectionViewBareHealthbarContainer
+        (
+            i,
+            mWorld
+        );
     }
     
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
@@ -115,9 +139,7 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
     const auto& guiStateSingletonComponent         = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& windowSingletonComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
 
-    const auto guiTileWidth = guiStateSingletonComponent.mGlobalGuiTileWidth;
     const auto guiTileHeight = guiStateSingletonComponent.mGlobalGuiTileHeight;
-
     const auto guiTileHeightAccountingForAspect = guiTileHeight * windowSingletonComponent.mAspectRatio;
 
     const auto pokemonSelectionViewTextboxEntityId = CreateTextboxWithDimensions
@@ -125,9 +147,9 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
         TextboxType::CURSORED_BARE_TEXTBOX,
         20,
         2 * playerStateComponent.mPlayerPokemonRoster.size(),
-        0.0f,
-        0.89f - (2 * guiTileHeightAccountingForAspect * (playerStateComponent.mPlayerPokemonRoster.size() - 1))/2.0f,
-        0.0f,
+        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.x,
+        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.y - (2.0f * guiTileHeightAccountingForAspect * (playerStateComponent.mPlayerPokemonRoster.size() - 1))/2.0f,
+        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.z,
         mWorld
     );
 
@@ -135,6 +157,7 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
     {
         const auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
 
+        // Write pokemon's name
         WriteTextAtTextboxCoords
         (
             pokemonSelectionViewTextboxEntityId, 
@@ -144,6 +167,7 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             mWorld
         );
 
+        // Write pokemon's level
         WriteTextAtTextboxCoords
         (
             pokemonSelectionViewTextboxEntityId,
@@ -153,6 +177,20 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             mWorld
         );
         
+        // Write pokemon's dead status or not
+        if (pokemon.mHp <= 0)
+        {
+            WriteTextAtTextboxCoords
+            (
+                pokemonSelectionViewTextboxEntityId,
+                "FNT",
+                17,
+                i * 2,
+                mWorld
+            );
+        }
+        
+        // Write pokemon's current hp
         WriteTextAtTextboxCoords
         (
             pokemonSelectionViewTextboxEntityId,
@@ -162,11 +200,12 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             mWorld
         );
         
+        // Write pokemon's max hp
         WriteTextAtTextboxCoords
         (
             pokemonSelectionViewTextboxEntityId,
             std::to_string(pokemon.mMaxHp),
-            19 - static_cast<int>(std::to_string(pokemon.mMaxHp).size()),
+            20 - static_cast<int>(std::to_string(pokemon.mMaxHp).size()),
             i * 2 + 1,
             mWorld
         );
@@ -180,9 +219,10 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
     cursorComponent->mCursorRowCount = playerStateComponent.mPlayerPokemonRoster.size();
 
     cursorComponent->mCursorDisplayHorizontalTileOffset = 0;
-    cursorComponent->mCursorDisplayVerticalTileOffset = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset   = 1;
+    
     cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
-    cursorComponent->mCursorDisplayVerticalTileIncrements = 2;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
 
     WriteCharAtTextboxCoords
     (
@@ -261,15 +301,15 @@ ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite(const 
         )
     );
 
-    const auto tileWidth  = guiStateComponent.mGlobalGuiTileWidth;
     const auto tileHeight = guiStateComponent.mGlobalGuiTileHeight;    
     const auto tileHeightAccountingForAspect = tileHeight * windowComponent.mAspectRatio;
 
     auto transformComponent    = std::make_unique<TransformComponent>();
     transformComponent->mScale = glm::vec3(guiStateComponent.mGlobalGuiTileWidth * 2, guiStateComponent.mGlobalGuiTileHeight * 2, -0.4f);   
-    transformComponent->mPosition.x = -0.55f;
-    transformComponent->mPosition.y = 0.9f - row * (tileHeightAccountingForAspect * 2);
-
+    transformComponent->mPosition.x = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.x;
+    transformComponent->mPosition.y = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.y - row * (tileHeightAccountingForAspect * 2);
+    transformComponent->mPosition.z = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.z;
+    
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
     animationComponent->mAnimationTimer = std::make_unique<Timer>(0.1f);    
     animationComponent->mAnimationTimer->Pause();

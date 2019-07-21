@@ -22,28 +22,34 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string ENCOUNTER_SPRITE_MODEL_NAME                  = "camera_facing_quad";
-static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME             = "pokemon_battle_sprite";
-static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME              = "default";
-static const std::string ENCOUNTER_SPRITE_SHADER_NAME                 = "gui";
-static const std::string TRAINER_ATLAS_FILE_NAME                      = "trainers.png";
-static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME           = "battle_player_roster";
-static const std::string PLAYER_POKEMON_STATUS_DISPLAY_TEXTURE_NAME   = "battle_player_pokemon_status";
-static const std::string OPPONENT_POKEMON_DEATH_COVER_TEXTURE_NAME    = "battle_opponent_death_cover";
-static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME = "battle_enemy_pokemon_status";
-static const std::string ENCOUNTER_EDGE_TEXTURE_NAME                  = "battle_edge";
-static const std::string GREEN_HEALTHBAR_FILE_NAME                    = "hp_bar_green.png";
-static const std::string ORANGE_HEALTHBAR_FILE_NAME                   = "hp_bar_orange.png";
-static const std::string RED_HEALTHBAR_FILE_NAME                      = "hp_bar_red.png";
+static const std::string ENCOUNTER_SPRITE_MODEL_NAME                             = "camera_facing_quad";
+static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME                        = "pokemon_battle_sprite";
+static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME                         = "default";
+static const std::string ENCOUNTER_SPRITE_SHADER_NAME                            = "gui";
+static const std::string TRAINER_ATLAS_FILE_NAME                                 = "trainers.png";
+static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME                      = "battle_player_roster";
+static const std::string PLAYER_POKEMON_STATUS_DISPLAY_TEXTURE_NAME              = "battle_player_pokemon_status";
+static const std::string OPPONENT_POKEMON_DEATH_COVER_TEXTURE_NAME               = "battle_opponent_death_cover";
+static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME            = "battle_enemy_pokemon_status";
+static const std::string ENCOUNTER_EDGE_TEXTURE_NAME                             = "battle_edge";
+static const std::string POKEMON_SELECTION_VIEW_HEALTHBAR_CONTAINER_TEXTURE_NAME = "pokemon_selection_view_healthbar_container";
+static const std::string GREEN_HEALTHBAR_FILE_NAME                               = "hp_bar_green.png";
+static const std::string ORANGE_HEALTHBAR_FILE_NAME                              = "hp_bar_orange.png";
+static const std::string RED_HEALTHBAR_FILE_NAME                                 = "hp_bar_red.png";
 
 static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_EDGE_SCALE          = glm::vec3(0.5f, 1.5f, 1.0f);
 
-static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION  = glm::vec3(-0.32f, 0.7f, 0.45f);
-static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION = glm::vec3(-0.6952f, 0.7f, 0.45f);
-static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION    = glm::vec3(0.3568f, -0.08f, 0.25f);
-static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION   = glm::vec3(-0.0184f, -0.08f, 0.25f);
+static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION               = glm::vec3(-0.32f, 0.7f, 0.45f);
+static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION              = glm::vec3(-0.6952f, 0.7f, 0.45f);
+static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION                 = glm::vec3(0.3568f, -0.08f, 0.25f);
+static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION                = glm::vec3(-0.0184f, -0.08f, 0.25f);
+static const glm::vec3 POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION = glm::vec3(-0.155f, 0.83f, -0.2);
+
+static const float POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE             = 0.22f;
+static const float POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT = 0.511f;
+static const float POKEMON_SELECTION_VIEW_BARE_HEALTHBAR_Z               = 0.005f;
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -186,6 +192,36 @@ ecs::EntityId LoadAndCreatePlayerPokemonStatusDisplay
     return playerPokemonStatusDisplayEntityId;
 }
 
+ecs::EntityId LoadAndCreatePokemonSelectionViewBareHealthbarContainer
+(
+    const size_t pokemonRosterIndex,
+    ecs::World& world
+)
+{
+    const auto healthbarContainerEntityId = world.CreateEntity();
+    
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+    
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + POKEMON_SELECTION_VIEW_HEALTHBAR_CONTAINER_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    
+    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION;
+    transformComponent->mPosition.y -= pokemonRosterIndex * POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE;
+    
+    world.AddComponent<RenderableComponent>(healthbarContainerEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(healthbarContainerEntityId, std::move(transformComponent));
+    
+    return healthbarContainerEntityId;
+}
+
 ecs::EntityId LoadAndCreateOpponentPokemonDeathCover
 (
     const glm::vec3& spritePosition,
@@ -252,7 +288,9 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
 (
     const float depletionProportion,
     const bool isOpponentsHealthbar,
-    ecs::World& world
+    ecs::World& world,
+    const bool isInPokemonSelectionView /* false */,
+    const size_t pokemonRosterIndex /* 0 */
 )
 {
     const auto pokemonHealthBarEntityId = world.CreateEntity();
@@ -280,9 +318,17 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
 
     auto transformComponent       = std::make_unique<TransformComponent>();
+    
     transformComponent->mPosition = isOpponentsHealthbar ?
         math::Lerp(OPPONENT_EMPTY_HEALTHBAR_POSITION, OPPONENT_FULL_HEALTHBAR_POSITION, depletionProportion) :
         math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION, PLAYER_FULL_HEALTHBAR_POSITION, depletionProportion);
+    
+    if (isInPokemonSelectionView)
+    {
+        transformComponent->mPosition.x -= POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT;
+        transformComponent->mPosition.y = POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION.y - pokemonRosterIndex * POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE;
+        transformComponent->mPosition.z = POKEMON_SELECTION_VIEW_BARE_HEALTHBAR_Z;
+    }
 
     world.AddComponent<RenderableComponent>(pokemonHealthBarEntityId, std::move(renderableComponent));
     world.AddComponent<TransformComponent>(pokemonHealthBarEntityId, std::move(transformComponent));
