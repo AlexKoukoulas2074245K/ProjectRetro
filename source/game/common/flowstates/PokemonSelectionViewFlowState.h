@@ -37,11 +37,17 @@ public:
 private:
     void PokemonSelectedFlow();
     void PokemonNotSelectedFlow();
+    void DisplayPokemonDetailedStatsFlow();
+    void SwitchPokemonFlow();
+    void PokemonRosterIndexSwapFlow();
+    void CancelPokemonSelectionFlow();
 
     void CreatePokemonSelectionBackground() const;
     void CreateIndividualPokemonSprites() const;
     void CreatePokemonStatsInvisibleTextbox() const;
     void DestroyPokemonSelectionView() const;
+    
+    std::string GetCursorCommandTextFirstFourLetters() const;
     ecs::EntityId CreatePokemonOverworldSprite
     (
         const OverworldPokemonSpriteType,

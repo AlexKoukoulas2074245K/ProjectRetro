@@ -13,6 +13,7 @@
 #include "FightMenuEncounterFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "../components/CursorComponent.h"
+#include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -50,6 +51,8 @@ void MainMenuEncounterFlowState::VUpdate(const float)
         }
         else if (cursorCol == 1 && cursorRow == 0)
         {
+            auto& pokemonSelectionViewState = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+            pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_FROM_MAIN_MENU;
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::POKEMON;
             //TODO: create actual one
             CompleteAndTransitionTo<PokemonSelectionViewFlowState>();

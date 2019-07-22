@@ -26,13 +26,25 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+enum class  PokemonSelectionViewCreationSourceType
+{
+    ENCOUNTER_AFTER_POKEMON_FAINTED,
+    ENCOUNTER_FROM_MAIN_MENU,
+    OVERWORLD
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 class PokemonSelectionViewStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::array<ecs::EntityId, 3>> mPokemonSpriteEntityIds;
-    ecs::EntityId mBackgroundEntityId   = ecs::NULL_ENTITY_ID;    
-    int mLastSelectedPokemonRosterIndex = 0;
-    bool mPokemonHasBeenSelected = false;
+    ecs::EntityId mBackgroundEntityId                          = ecs::NULL_ENTITY_ID;    
+    int mLastSelectedPokemonRosterIndex                        = 0;
+    PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
+    bool mPokemonHasBeenSelected                               = false;
 
 };
 

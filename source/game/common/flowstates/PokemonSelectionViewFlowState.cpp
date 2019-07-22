@@ -18,7 +18,6 @@
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonSelectionViewSpriteUtils.h"
 #include "../utils/TextboxUtils.h"
-#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -84,34 +83,32 @@ void PokemonSelectionViewFlowState::VUpdate(const float)
 
 void PokemonSelectionViewFlowState::PokemonSelectedFlow()
 {
-    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();    
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {        
-        switch (cursorComponent.mCursorRow)
+        const auto commandFirstFourLetters = GetCursorCommandTextFirstFourLetters();
+
+        if (commandFirstFourLetters == "SWIT")
         {
-            case 0:
+            if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
             {
-                
-            } break;
-            case 1:
+                PokemonRosterIndexSwapFlow();
+            }
+            else
             {
-
-            } break;
-            case 2: 
-            {
-                // Destroy pokemon selected textbox
-                DestroyActiveTextbox(mWorld);
-
-                DestroyPokemonSelectionView();
-
-                CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-
-                pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
-            } break;
+                SwitchPokemonFlow();
+            }            
         }
+        else if (commandFirstFourLetters == "STAT")
+        {
+            DisplayPokemonDetailedStatsFlow();
+        }
+        else if (commandFirstFourLetters == "CANC")
+        {
+            CancelPokemonSelectionFlow();
+        }        
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {                        
@@ -142,10 +139,12 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
 
         animationTimerComponent.mAnimationTimer->Reset();
         animationTimerComponent.mAnimationTimer->Pause();
-        
-        const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
-        CreatePokemonSelectionViewSelectionTextbox(encounterStateComponent.mActiveEncounterType != EncounterType::NONE, mWorld);
+                
+        CreatePokemonSelectionViewSelectionTextbox
+        (
+            pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::OVERWORLD, 
+            mWorld
+        );
 
         pokemonSelectionViewComponent.mPokemonHasBeenSelected = true;
     }
@@ -188,6 +187,35 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
             animationTimerComponent.mAnimationTimer->Resume();
         }
     }    
+}
+
+void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
+{
+
+}
+
+void PokemonSelectionViewFlowState::SwitchPokemonFlow()
+{
+
+}
+
+void PokemonSelectionViewFlowState::PokemonRosterIndexSwapFlow()
+{
+
+}
+
+void PokemonSelectionViewFlowState::CancelPokemonSelectionFlow()
+{
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+
+    // Destroy pokemon selected textbox
+    DestroyActiveTextbox(mWorld);
+
+    DestroyPokemonSelectionView();
+
+    CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+
+    pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
 }
 
 void PokemonSelectionViewFlowState::CreatePokemonSelectionBackground() const
@@ -383,6 +411,21 @@ void PokemonSelectionViewFlowState::DestroyPokemonSelectionView() const
 
     // Destroy background
     mWorld.RemoveEntity(pokemonSelectionViewStateComponent.mBackgroundEntityId);
+}
+
+std::string PokemonSelectionViewFlowState::GetCursorCommandTextFirstFourLetters() const
+{
+    const auto activeTextboxEntityId   = GetActiveTextboxEntityId(mWorld);
+    const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(activeTextboxEntityId);
+    const auto& activeTextboxComponent = mWorld.GetComponent<TextboxComponent>(activeTextboxEntityId);
+
+    std::string commandFirstFourLetters;
+    commandFirstFourLetters.push_back(activeTextboxComponent.mTextContent[cursorComponent.mCursorRow * 2 + 1][2].mCharacter);
+    commandFirstFourLetters.push_back(activeTextboxComponent.mTextContent[cursorComponent.mCursorRow * 2 + 1][3].mCharacter);
+    commandFirstFourLetters.push_back(activeTextboxComponent.mTextContent[cursorComponent.mCursorRow * 2 + 1][4].mCharacter);
+    commandFirstFourLetters.push_back(activeTextboxComponent.mTextContent[cursorComponent.mCursorRow * 2 + 1][5].mCharacter);
+
+    return commandFirstFourLetters;
 }
 
 ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite
