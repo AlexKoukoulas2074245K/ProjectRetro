@@ -519,7 +519,19 @@ void WriteCharAtTextboxCoords
     
     if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
     {
-        world.RemoveEntity(textboxContent[textboxRow][textboxCol].mEntityId);
+        // In case a previous glyph is present and has a renderable component, instead of going 
+        // throught the whole renderable creation process, swap only the necessary data to change to the new character
+        if (world.HasComponent<RenderableComponent>(textboxContent[textboxRow][textboxCol].mEntityId))
+        {
+            textboxContent[textboxRow][textboxCol].mCharacter = character;
+            auto& renderableComponent = world.GetComponent<RenderableComponent>(textboxContent[textboxRow][textboxCol].mEntityId);
+            renderableComponent.mAnimationsToMeshes[renderableComponent.mActiveAnimationNameId][0] = guiStateComponent.mFontEntities.at(character);
+            return;
+        }
+        else
+        {
+            world.RemoveEntity(textboxContent[textboxRow][textboxCol].mEntityId);
+        }
     }
     
     const auto characterEntityId = world.CreateEntity();

@@ -85,19 +85,42 @@ void PokemonSelectionViewFlowState::VUpdate(const float)
 void PokemonSelectionViewFlowState::PokemonSelectedFlow()
 {
     const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {        
-        
+        switch (cursorComponent.mCursorRow)
+        {
+            case 0:
+            {
+                
+            } break;
+            case 1:
+            {
+
+            } break;
+            case 2: 
+            {
+                // Destroy pokemon selected textbox
+                DestroyActiveTextbox(mWorld);
+
+                DestroyPokemonSelectionView();
+
+                CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+
+                pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
+            } break;
+        }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {                        
         // Destroy pokemon selected textbox
         DestroyActiveTextbox(mWorld);
+        
+        const auto& pokemonSelectionViewCursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
 
-        const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-        const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
+        const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewCursorComponent.mCursorRow][0];
         auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
 
         animationTimerComponent.mAnimationTimer->Resume();
