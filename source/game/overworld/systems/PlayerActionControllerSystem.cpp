@@ -87,7 +87,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             // in this system's udpate, and do the checks (and possibly revert the intent) in MovementControllerSystem
             auto& directionComponent = mWorld.GetComponent<DirectionComponent>(entityId);
             
-            if (inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED)
+            if (inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED)
             {
                 CheckForNpcInteraction(directionComponent.mDirection, movementStateComponent);
                 if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
@@ -95,41 +95,41 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
                     PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 }
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::TAPPED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT_ARROW) == VirtualActionInputState::TAPPED)
             {
                 ChangePlayerDirectionAndAnimation(Direction::WEST, renderableComponent, directionComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT) == VirtualActionInputState::PRESSED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::LEFT_ARROW) == VirtualActionInputState::PRESSED)
             {
                 movementStateComponent.mMoving = true;
                 ChangePlayerDirectionAndAnimation(Direction::WEST, renderableComponent, directionComponent);
                 ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::TAPPED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT_ARROW) == VirtualActionInputState::TAPPED)
             {
                 ChangePlayerDirectionAndAnimation(Direction::EAST, renderableComponent, directionComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT) == VirtualActionInputState::PRESSED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::RIGHT_ARROW) == VirtualActionInputState::PRESSED)
             {
                 movementStateComponent.mMoving = true;
                 ChangePlayerDirectionAndAnimation(Direction::EAST, renderableComponent, directionComponent);
                 ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::TAPPED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP_ARROW) == VirtualActionInputState::TAPPED)
             {
                 ChangePlayerDirectionAndAnimation(Direction::NORTH, renderableComponent, directionComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP) == VirtualActionInputState::PRESSED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::UP_ARROW) == VirtualActionInputState::PRESSED)
             {
                 movementStateComponent.mMoving = true;
                 ChangePlayerDirectionAndAnimation(Direction::NORTH, renderableComponent, directionComponent);
                 ResumeCurrentlyPlayingAnimation(animationTimerComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::TAPPED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN_ARROW) == VirtualActionInputState::TAPPED)
             {
                 ChangePlayerDirectionAndAnimation(Direction::SOUTH, renderableComponent, directionComponent);
             }
-            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN) == VirtualActionInputState::PRESSED)
+            else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::DOWN_ARROW) == VirtualActionInputState::PRESSED)
             {
                 movementStateComponent.mMoving = true;
                 ChangePlayerDirectionAndAnimation(Direction::SOUTH, renderableComponent, directionComponent);

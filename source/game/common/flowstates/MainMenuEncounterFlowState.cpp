@@ -32,7 +32,7 @@ MainMenuEncounterFlowState::MainMenuEncounterFlowState(ecs::World& world)
 void MainMenuEncounterFlowState::VUpdate(const float)
 {
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    if (IsActionTypeKeyTapped(VirtualActionType::A, inputStateComponent))
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {        
         auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
         const auto& cursorComponent   = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));

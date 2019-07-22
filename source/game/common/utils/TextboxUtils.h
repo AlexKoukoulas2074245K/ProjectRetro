@@ -52,7 +52,7 @@ const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
     ecs::World& world
 );
 
-char GetCharacterAtTextboxCoords
+char GetCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
     const size_t textboxCol,

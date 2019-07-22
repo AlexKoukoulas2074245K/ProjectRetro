@@ -48,7 +48,7 @@ static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION                = glm::vec
 static const glm::vec3 POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION = glm::vec3(-0.155f, 0.83f, -0.2);
 
 static const float POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE             = 0.22f;
-static const float POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT = 0.511f;
+static const float POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT = 0.5115f;
 static const float POKEMON_SELECTION_VIEW_BARE_HEALTHBAR_Z               = 0.005f;
 
 static const int TRAINER_ATLAS_COLS = 10;

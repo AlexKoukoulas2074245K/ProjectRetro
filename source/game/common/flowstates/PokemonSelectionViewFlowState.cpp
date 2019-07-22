@@ -2,7 +2,7 @@
 //  PokemonSelectionViewFlowState.cpp
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 17/07/2019.
+//  Created by Alex Koukoulas on 19/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonSelectionViewSpriteUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -43,6 +44,10 @@ const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND
 const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION = glm::vec3(0.0f, 0.89f, -0.3f);
 const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION   = glm::vec3(-0.55f, 0.9f,-0.4f);
 
+const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW   = 0.32f;
+const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_MEDIUM = 0.16f;
+const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_FAST   = 0.08f;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -51,33 +56,7 @@ PokemonSelectionViewFlowState::PokemonSelectionViewFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     CreatePokemonSelectionBackground();    
-
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
-    {
-        const auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
-        
-        CreatePokemonOverworldSprite
-        (
-            pokemon.mBaseStats.mOverworldSpriteType,
-            i
-        );
-        
-        LoadAndCreatePokemonHealthBar
-        (
-            pokemon.mHp/static_cast<float>(pokemon.mMaxHp),
-            false,
-            mWorld,
-            true,
-            i
-        );
-        
-        LoadAndCreatePokemonSelectionViewBareHealthbarContainer
-        (
-            i,
-            mWorld
-        );
-    }
+    CreateIndividualPokemonSprites();
     
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
     WriteTextAtTextboxCoords(mainChatboxEntityId, "Choose a POK^MON.", 1, 2, mWorld);       
@@ -86,25 +65,107 @@ PokemonSelectionViewFlowState::PokemonSelectionViewFlowState(ecs::World& world)
 }
 
 void PokemonSelectionViewFlowState::VUpdate(const float)
-{    
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>(); 
+{        
+    const auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-    if (IsActionTypeKeyTapped(VirtualActionType::A, inputStateComponent))
+    if (pokemonSelectionViewComponent.mPokemonHasBeenSelected)
     {
-        
+        PokemonSelectedFlow();
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent))
+    else
     {
-        // Destroy fight menu textbox
-        DestroyActiveTextbox(mWorld);
-
-        CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-    }
+        PokemonNotSelectedFlow();
+    }   
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+void PokemonSelectionViewFlowState::PokemonSelectedFlow()
+{
+    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {        
+        
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
+    {                        
+        // Destroy pokemon selected textbox
+        DestroyActiveTextbox(mWorld);
+
+        const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+        const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
+        auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
+
+        animationTimerComponent.mAnimationTimer->Resume();
+
+        pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
+    }
+}
+
+void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
+{
+    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {
+        const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));                
+        const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
+        auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
+
+        animationTimerComponent.mAnimationTimer->Reset();
+        animationTimerComponent.mAnimationTimer->Pause();
+        
+        const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+        CreatePokemonSelectionViewSelectionTextbox(encounterStateComponent.mActiveEncounterType != EncounterType::NONE, mWorld);
+
+        pokemonSelectionViewComponent.mPokemonHasBeenSelected = true;
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
+    {
+        DestroyPokemonSelectionView();
+
+        CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+    }
+    else if 
+    (
+        IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) ||
+        IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent)
+    )
+    {
+        const auto& cursorComponent           = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));        
+        const auto& currentPokemonUnderCursor = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[cursorComponent.mCursorRow];
+
+        const auto rosterSize = static_cast<int>(pokemonSelectionViewComponent.mPokemonSpriteEntityIds.size());
+        auto previousPokemonUnderCursorRosterIndex = IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) ? cursorComponent.mCursorRow + 1 : cursorComponent.mCursorRow - 1;
+
+        if (previousPokemonUnderCursorRosterIndex < 0)
+        {
+            previousPokemonUnderCursorRosterIndex = rosterSize - 1;
+        }
+        else if (previousPokemonUnderCursorRosterIndex >= rosterSize)
+        {
+            previousPokemonUnderCursorRosterIndex = 0;
+        }
+
+        const auto previousPokemonUnderCursorSpriteEntityId     = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[previousPokemonUnderCursorRosterIndex][0];
+        auto& previousPokemonUnderCursorAnimationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(previousPokemonUnderCursorSpriteEntityId);
+        previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Reset();
+        previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Pause();
+
+        if (currentPokemonUnderCursor.mHp > 0)
+        {
+            const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
+            auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);            
+            animationTimerComponent.mAnimationTimer->Resume();
+        }
+    }    
+}
 
 void PokemonSelectionViewFlowState::CreatePokemonSelectionBackground() const
 {
@@ -130,6 +191,43 @@ void PokemonSelectionViewFlowState::CreatePokemonSelectionBackground() const
 
     mWorld.AddComponent<RenderableComponent>(pokemonSelectionViewEntities.mBackgroundEntityId, std::move(renderableComponent));
     mWorld.AddComponent<TransformComponent>(pokemonSelectionViewEntities.mBackgroundEntityId, std::move(transformComponent));
+}
+
+void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
+{
+    const auto& playerStateComponent         = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    auto& pokemonSpriteEntityIds             = pokemonSelectionViewStateComponent.mPokemonSpriteEntityIds;
+
+    pokemonSpriteEntityIds.clear();
+    pokemonSpriteEntityIds.resize(playerStateComponent.mPlayerPokemonRoster.size());
+
+    for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
+    {        
+        const auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
+        
+        pokemonSpriteEntityIds[i][0] = CreatePokemonOverworldSprite
+        (
+            pokemon.mBaseStats.mOverworldSpriteType,
+            static_cast<float>(pokemon.mHp)/pokemon.mMaxHp,
+            i
+        );
+        
+        pokemonSpriteEntityIds[i][1] = LoadAndCreatePokemonHealthBar
+        (
+            pokemon.mHp/static_cast<float>(pokemon.mMaxHp),
+            false,
+            mWorld,
+            true,
+            i
+        );
+        
+        pokemonSpriteEntityIds[i][2] = LoadAndCreatePokemonSelectionViewBareHealthbarContainer
+        (
+            i,
+            mWorld
+        );
+    }    
 }
 
 void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
@@ -238,8 +336,38 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
     mWorld.AddComponent<CursorComponent>(pokemonSelectionViewTextboxEntityId, std::move(cursorComponent));    
 }
 
+void PokemonSelectionViewFlowState::DestroyPokemonSelectionView() const
+{
+    // Destroy Invisible Stats Textbox
+    DestroyActiveTextbox(mWorld);
 
-ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite(const OverworldPokemonSpriteType overworldSpriteType, const int row) const
+    // Destroy Choose Pokemon Textbox
+    DestroyActiveTextbox(mWorld);
+
+    // Destroy individual pokemon sprites
+    const auto& playerStateComponent         = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    auto& pokemonSpriteEntityIds             = pokemonSelectionViewStateComponent.mPokemonSpriteEntityIds;
+        
+    for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
+    {
+        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][0]);
+        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][1]);
+        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][2]);
+    }
+
+    pokemonSpriteEntityIds.clear();
+
+    // Destroy background
+    mWorld.RemoveEntity(pokemonSelectionViewStateComponent.mBackgroundEntityId);
+}
+
+ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite
+(
+    const OverworldPokemonSpriteType overworldSpriteType, 
+    const float healthRemainingProportion, 
+    const int row
+) const
 {
     static const std::unordered_map<OverworldPokemonSpriteType, std::pair<int, int>> overworldSpriteTypeToAtlasCoords = 
     {
@@ -311,8 +439,19 @@ ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite(const 
     transformComponent->mPosition.z = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.z;
     
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
-    animationComponent->mAnimationTimer = std::make_unique<Timer>(0.1f);    
-    animationComponent->mAnimationTimer->Pause();
+
+    auto animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_FAST;
+    if (healthRemainingProportion <= 0.25f)
+    {
+        animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW;
+    }
+    else if (healthRemainingProportion <= 0.5f)
+    {
+        animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
+    }
+
+    animationComponent->mAnimationTimer = std::make_unique<Timer>(animationFrameDuration);     
+    animationComponent->mAnimationTimer->Pause();        
 
     mWorld.AddComponent<AnimationTimerComponent>(spriteEntityId, std::move(animationComponent));
     mWorld.AddComponent<RenderableComponent>(spriteEntityId, std::move(renderableComponent));

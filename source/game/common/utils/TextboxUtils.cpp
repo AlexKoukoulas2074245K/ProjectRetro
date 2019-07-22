@@ -71,6 +71,12 @@ static ecs::EntityId CreateTextboxComponentFromAtlasCoords
     ecs::World& world
 );
 
+static void ToggleCursoredTextboxActivityDisplay
+(
+    const ecs::EntityId textboxEntityId,
+    ecs::World& world
+);
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +132,7 @@ const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
     return textboxComponent.mTextContent[textboxRow];
 }
 
-char GetCharacterAtTextboxCoords
+char GetCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
     const size_t textboxCol,
@@ -136,9 +142,6 @@ char GetCharacterAtTextboxCoords
 {
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
-    
-    assert((textboxRow > 0 && textboxRow < textboxContent.size() - 1) && "Textbox row out of writing bounds");
-    assert((textboxCol > 0 && textboxCol < textboxContent[textboxRow].size() - 1) && "Textbox col out of writing bounds");
     
     return textboxContent[textboxRow][textboxCol].mCharacter;
 }
@@ -199,6 +202,21 @@ ecs::EntityId CreateTextboxWithDimensions
     )
     {
         auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
+
+        if (guiStateComponent.mActiveTextboxesStack.size() > 0)
+        {
+            const auto& previousTextboxComponent= world.GetComponent<TextboxComponent>(guiStateComponent.mActiveTextboxesStack.top());
+            if
+            (
+                previousTextboxComponent.mTextboxType == TextboxType::CURSORED_BARE_TEXTBOX ||
+                previousTextboxComponent.mTextboxType == TextboxType::CURSORED_TEXTBOX
+            )
+            {
+                ToggleCursoredTextboxActivityDisplay(guiStateComponent.mActiveTextboxesStack.top(), world);
+            }
+        }
+        
+
         guiStateComponent.mActiveTextboxesStack.push(textboxEntityId);
     }    
     
@@ -412,11 +430,12 @@ void DestroyActiveTextbox
     auto& guiStateComponent = world.GetSingletonComponent<GuiStateSingletonComponent>();
     guiStateComponent.mActiveTextboxesStack.pop();
     
-    if (world.GetComponent<TextboxComponent>(textboxEntityId).mTextboxType == TextboxType::CHATBOX)
+    const auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    if (textboxComponent.mTextboxType == TextboxType::CHATBOX)
     {
         guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
         guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-    }
+    }    
     
     const auto& entityIds = world.GetActiveEntities();
     for (const auto& entityId: entityIds)
@@ -432,6 +451,19 @@ void DestroyActiveTextbox
     }
     
     world.RemoveEntity(textboxEntityId);
+
+    if (guiStateComponent.mActiveTextboxesStack.size() > 0)
+    {
+        const auto& previousTextboxComponent = world.GetComponent<TextboxComponent>(guiStateComponent.mActiveTextboxesStack.top());
+        if
+        (
+            previousTextboxComponent.mTextboxType == TextboxType::CURSORED_BARE_TEXTBOX ||
+            previousTextboxComponent.mTextboxType == TextboxType::CURSORED_TEXTBOX
+        )
+        {
+            ToggleCursoredTextboxActivityDisplay(guiStateComponent.mActiveTextboxesStack.top(), world);
+        }
+    }
 }
 
 void DestroyGenericOrBareTextbox
@@ -746,6 +778,31 @@ ecs::EntityId CreateTextboxComponentFromAtlasCoords
     world.AddComponent<TransformComponent>(componentEntityId, std::move(transformComponent));
 
     return componentEntityId;
+}
+
+void ToggleCursoredTextboxActivityDisplay
+(
+    const ecs::EntityId textboxEntityId,
+    ecs::World& world
+)
+{
+    const auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    for (auto row = 0; row < textboxComponent.mTextboxTileRows; ++row)
+    {
+        for (auto col = 0; col < textboxComponent.mTextboxTileCols; ++col)
+        {
+            const auto currentChar = GetCharAtTextboxCoords(textboxEntityId, col, row, world);
+            if (currentChar == '{')
+            {
+                WriteCharAtTextboxCoords(textboxEntityId, '}', col, row, world);
+            }
+            else if (currentChar == '}')
+            {
+                WriteCharAtTextboxCoords(textboxEntityId, '{', col, row, world);
+            }
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

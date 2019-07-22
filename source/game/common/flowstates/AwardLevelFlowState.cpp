@@ -63,8 +63,8 @@ void AwardLevelFlowState::VUpdate(const float)
         }
         else if 
         (
-            IsActionTypeKeyTapped(VirtualActionType::A, inputStateComponent) ||
-            IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent)
+            IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||
+            IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
         )
         {
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId, mWorld);

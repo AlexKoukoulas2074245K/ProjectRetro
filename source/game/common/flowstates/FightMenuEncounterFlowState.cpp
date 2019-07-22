@@ -40,7 +40,7 @@ void FightMenuEncounterFlowState::VUpdate(const float)
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();    
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    if (IsActionTypeKeyTapped(VirtualActionType::A, inputStateComponent))
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
         //TODO: Here probably check move pp
         encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = cursorComponent.mCursorRow;
@@ -53,7 +53,7 @@ void FightMenuEncounterFlowState::VUpdate(const float)
 
         CompleteAndTransitionTo<RoundStructureCalculationEncounterFlowState>();
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::B, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
         // Destroy fight menu textbox
         DestroyActiveTextbox(mWorld);
@@ -63,7 +63,7 @@ void FightMenuEncounterFlowState::VUpdate(const float)
 
         CompleteAndTransitionTo<MainMenuEncounterFlowState>();
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::UP, inputStateComponent) || IsActionTypeKeyTapped(VirtualActionType::DOWN, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) || IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent))
     {        
         // Destroy move info textbox
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);

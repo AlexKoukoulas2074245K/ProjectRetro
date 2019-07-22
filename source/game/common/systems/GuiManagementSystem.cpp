@@ -143,8 +143,8 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
     {
         if
             (
-                inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
-                inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
+                inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED ||
+                inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::TAPPED
             )
         {
             DestroyActiveTextbox(mWorld);
@@ -161,8 +161,8 @@ void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityI
     
     if
     (
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::PRESSED ||
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::PRESSED
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::PRESSED ||
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::PRESSED
     )
     {
         guiStateComponent.mActiveChatboxTimer->Update(2.0f * dt);
@@ -225,8 +225,8 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
     
     if
     (
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::A) == VirtualActionInputState::TAPPED ||
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::B) == VirtualActionInputState::TAPPED
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED ||
+        inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::TAPPED
     )
     {
         guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(CHATBOX_SCROLL_ANIM_COOLDOWN);
@@ -269,7 +269,7 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
         auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
         if
         (
-            GetCharacterAtTextboxCoords
+            GetCharAtTextboxCoords
             (
                 textboxEntityId,
                 textboxComponent.mTextboxTileCols - 2,
@@ -402,19 +402,19 @@ void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntit
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     
     inputStateComponent.mHasBeenConsumed = true;
-    if (IsActionTypeKeyTapped(VirtualActionType::LEFT, inputStateComponent))
+    if (IsActionTypeKeyTapped(VirtualActionType::LEFT_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::WEST);
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::EAST);
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::UP, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::NORTH);
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::SOUTH);
     }
