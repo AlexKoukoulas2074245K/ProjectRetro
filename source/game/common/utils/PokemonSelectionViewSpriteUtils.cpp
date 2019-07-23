@@ -19,7 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 POKEMON_SELECTED_TEXTBOX_POSITION = glm::vec3(0.375f, -0.6201f, -0.2f);
+static const glm::vec3 POKEMON_SELECTED_TEXTBOX_POSITION = glm::vec3(0.378f, -0.615f, -0.4f);
 
 static const int POKEMON_SELECTED_TEXTBOX_COLS = 9;
 static const int POKEMON_SELECTED_TEXTBOX_ROWS = 7;

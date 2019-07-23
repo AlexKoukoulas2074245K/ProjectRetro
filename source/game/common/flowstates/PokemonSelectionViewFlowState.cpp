@@ -40,7 +40,7 @@ const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FI
 
 const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_POSITION         = glm::vec3(0.0f, 0.0f, 0.01f);
 const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_SCALE            = glm::vec3(2.0f, 2.0f, 2.0f);
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION = glm::vec3(0.0f, 0.89f, -0.3f);
+const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION = glm::vec3(0.0f, 0.885f, -0.3f);
 const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION   = glm::vec3(-0.55f, 0.9f,-0.4f);
 
 const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW   = 0.32f;
