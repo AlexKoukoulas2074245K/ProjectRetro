@@ -16,8 +16,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../ECS.h"
+#include "MathUtils.h"
 #include "../components/TextboxComponent.h"
+#include "../../ECS.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 #include <string>
@@ -98,6 +99,7 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
 ecs::EntityId CreatePokemonStatsDisplay
 (
     const Pokemon& pokemon,
+    const glm::vec3& position,
     ecs::World& world
 );
 
