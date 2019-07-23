@@ -28,6 +28,7 @@
 
 #include <unordered_map>
 #include <utility>
+#include "../utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +187,8 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
             auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);            
             animationTimerComponent.mAnimationTimer->Resume();
         }
+
+        pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex = cursorComponent.mCursorRow;
     }    
 }
 
@@ -249,6 +252,15 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
     const auto& playerStateComponent         = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     auto& pokemonSpriteEntityIds             = pokemonSelectionViewStateComponent.mPokemonSpriteEntityIds;
+
+    // Make sure that selection view cursor does not point to an index bigger than the party.
+    // This could happen if during the last pokemon selection view the last pokemon was pointed to,
+    // however before the view was opened again that last pokemon got released
+    pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex = math::Min
+    (
+        static_cast<int>(playerStateComponent.mPlayerPokemonRoster.size()) - 1,
+        pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex
+    );
 
     pokemonSpriteEntityIds.clear();
     pokemonSpriteEntityIds.resize(playerStateComponent.mPlayerPokemonRoster.size());
@@ -384,6 +396,12 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
 
     cursorComponent->mWarp = true;
 
+    // Start animation on sprite under cursor
+    const auto pokemonSpriteEntityId = pokemonSelectionViewStateComponent.mPokemonSpriteEntityIds[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex][0];
+    auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
+
+    animationTimerComponent.mAnimationTimer->Resume();
+
     mWorld.AddComponent<CursorComponent>(pokemonSelectionViewTextboxEntityId, std::move(cursorComponent));    
 }
 
@@ -450,8 +468,7 @@ ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite
     };
     
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& windowComponent   = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-
+    const auto& windowComponent   = mWorld.GetSingletonComponent<WindowSingletonComponent>();    
 
     auto spriteEntityId = mWorld.CreateEntity();
 
