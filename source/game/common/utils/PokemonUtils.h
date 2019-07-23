@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../GameConstants.h"
 #include "../../ECS.h"
 #include "StringUtils.h"
 
@@ -45,6 +46,12 @@ std::unique_ptr<Pokemon> CreatePokemon
 std::string GetFormattedPokemonIdString
 (
     const int pokemonId
+);
+
+std::string GetFormattedPokemonStatus
+(
+    const int pokemonHp,
+    const PokemonStatus pokemonStatus
 );
 
 bool HaveAllPokemonInRosterFainted

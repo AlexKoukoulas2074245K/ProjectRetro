@@ -126,6 +126,27 @@ std::string GetFormattedPokemonIdString
     return finalIdString.replace(3 - pokemonIdString.size(), pokemonIdString.size(), pokemonIdString);
 }
 
+std::string GetFormattedPokemonStatus
+(
+    const int pokemonHp,
+    const PokemonStatus pokemonStatus
+)
+{
+    if (pokemonHp <= 0)
+    {
+        return "FNT";
+    }
+
+    switch (pokemonStatus)
+    {
+        case PokemonStatus::NORMAL:
+        case PokemonStatus::CONFUSED: return "OK";
+        case PokemonStatus::PARALYZED: return "PRZ";
+        case PokemonStatus::POISONED: return "PSN";
+        default: return "";
+    }
+}
+
 bool HaveAllPokemonInRosterFainted
 (
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster

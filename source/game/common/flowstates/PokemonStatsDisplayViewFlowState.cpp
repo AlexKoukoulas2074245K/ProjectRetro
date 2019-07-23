@@ -39,8 +39,7 @@ PokemonStatsDisplayViewFlowState::PokemonStatsDisplayViewFlowState(ecs::World& w
     : BaseFlowState(world)
 {
     auto& pokemonStatsDisplayViewStateComponent        = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
-    pokemonStatsDisplayViewStateComponent.mIsInScreen1 = true;
-    pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId = CreatePokemonStatsDisplayTextbox(mWorld);
+    pokemonStatsDisplayViewStateComponent.mIsInScreen1 = true;    
 
     CreatePokemonStatsBackground();
     LoadAndCreatePokemonStatsScreen1();
@@ -67,8 +66,7 @@ void PokemonStatsDisplayViewFlowState::VUpdate(const float)
         {
             DestroyPokemonStatsScreen();
             DestroyPokemonStatsBackground();
-            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
-            DestroyGenericOrBareTextbox(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, mWorld);
+            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();            
         }
     } 
 }
@@ -106,9 +104,26 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
     );
 
     
-    
+    pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId = CreatePokemonStatsDisplayTextbox(mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, GetFormattedPokemonIdString(selectedPokemon.mBaseSpeciesStats.mId), 3, 7, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, GetFormattedPokemonStatus(selectedPokemon.mHp, selectedPokemon.mStatus), 16, 6, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, selectedPokemon.mName.GetString(), 9, 1, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "=" + std::to_string(selectedPokemon.mLevel), 14, 2, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mAttack), 9 - std::to_string(selectedPokemon.mAttack).size(), 10, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mDefense), 9 - std::to_string(selectedPokemon.mDefense).size(), 12, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mSpeed), 9 - std::to_string(selectedPokemon.mSpeed).size(), 14, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mSpecial), 9 - std::to_string(selectedPokemon.mSpecial).size(), 16, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(playerStateComponent.mTrainerId), 12, 14, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 12, 16, mWorld);
+
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "TYPE1/", 10, 9, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, selectedPokemon.mBaseSpeciesStats.mFirstType.GetString(), 11, 10, mWorld);
+
+    if (selectedPokemon.mBaseSpeciesStats.mSecondType != StringId())
+    {
+        WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "TYPE2/", 10, 11, mWorld);
+        WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, selectedPokemon.mBaseSpeciesStats.mSecondType.GetString(), 11, 12, mWorld);
+    }
 }
 
 void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen2() const
@@ -128,15 +143,21 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen2() const
         POKEMON_SPRITE_SCALE,
         mWorld
     );
+
+    pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId = CreatePokemonStatsDisplayTextbox(mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, GetFormattedPokemonIdString(selectedPokemon.mBaseSpeciesStats.mId), 3, 7, mWorld);    
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, selectedPokemon.mName.GetString(), 9, 1, mWorld);
+    
 }
 
 void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsScreen() const
 {
-    auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
+    auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();    
     mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId);
     mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mPokemonFrontSpriteEntityId);
     pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId = ecs::NULL_ENTITY_ID;
     pokemonStatsDisplayViewStateComponent.mPokemonFrontSpriteEntityId = ecs::NULL_ENTITY_ID;
+    DestroyGenericOrBareTextbox(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, mWorld);
 }
 
 void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsBackground() const

@@ -26,7 +26,9 @@ class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
+    StringId mTrainerName            = StringId();
     int mLeveledUpPokemonRosterIndex = 0;
+    short mTrainerId                 = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
