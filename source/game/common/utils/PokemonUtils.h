@@ -42,6 +42,11 @@ std::unique_ptr<Pokemon> CreatePokemon
     const ecs::World& world
 );
 
+std::string GetFormattedPokemonIdString
+(
+    const int pokemonId
+);
+
 bool HaveAllPokemonInRosterFainted
 (
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster

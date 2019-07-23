@@ -94,7 +94,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     {
         encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
         (
-            encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mName,
+            encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName,
             true,
             OPPONENT_SPRITE_INIT_POS,
             SPRITE_SCALE,

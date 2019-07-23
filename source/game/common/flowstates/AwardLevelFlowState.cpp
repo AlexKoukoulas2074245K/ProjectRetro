@@ -61,7 +61,7 @@ void AwardLevelFlowState::VUpdate(const float)
     {        
         if (encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId == ecs::NULL_ENTITY_ID)
         {
-            encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = CreatePokemonStatsDisplay
+            encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = CreatePokemonMiniStatsDisplay
             (
                 activePlayerPokemon,
                 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION,

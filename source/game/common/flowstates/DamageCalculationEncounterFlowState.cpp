@@ -87,12 +87,12 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
         );
 
         
-        auto isStab = selectedMoveStats.mType == attackingPokemon.mBaseStats.mFirstType || selectedMoveStats.mType == attackingPokemon.mBaseStats.mSecondType;
+        auto isStab = selectedMoveStats.mType == attackingPokemon.mBaseSpeciesStats.mFirstType || selectedMoveStats.mType == attackingPokemon.mBaseSpeciesStats.mSecondType;
 
-        auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mFirstType, mWorld);
-        if (defendingPokemon.mBaseStats.mSecondType != StringId())
+        auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
+        if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
         {
-            effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mSecondType, mWorld);
+            effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
         }
 
         const auto isSpecialMove = specialMoves.count(selectedMoveStats.mType) != 0;

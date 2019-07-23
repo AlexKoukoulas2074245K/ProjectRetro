@@ -54,20 +54,18 @@ private:
         const float healthRemainingProportion, 
         const int row
     ) const;
-    
-    static const std::string POKEMON_SELECTION_VIEW_BACKGROUND_MODEL_FILE_NAME;
-    static const std::string POKEMON_SELECTION_VIEW_BACKGROUND_TEXTURE_FILE_NAME;
+        
     static const std::string POKEMON_SPRITE_MODEL_NAME;
     static const std::string POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME;
 
-    static const glm::vec3 POKEMON_SELECTION_VIEW_BACKGROUND_POSITION;
-    static const glm::vec3 POKEMON_SELECTION_VIEW_BACKGROUND_SCALE;
-    static const glm::vec3 POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION;
-    static const glm::vec3 POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION;
+    static const glm::vec3 BACKGROUND_POSITION;
+    static const glm::vec3 BACKGROUND_SCALE;
+    static const glm::vec3 STATS_TEXTBOX_BASE_POSITION;
+    static const glm::vec3 OVERWORLD_SPRITE_BASE_POSITION;
 
-    static const float POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW;
-    static const float POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
-    static const float POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_FAST;
+    static const float SPRITE_ANIMATION_FRAME_DURATION_SLOW;
+    static const float SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
+    static const float SPRITE_ANIMATION_FRAME_DURATION_FAST;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

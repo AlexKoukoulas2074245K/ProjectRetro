@@ -96,10 +96,15 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
     ecs::World& world
 );
 
-ecs::EntityId CreatePokemonStatsDisplay
+ecs::EntityId CreatePokemonMiniStatsDisplay
 (
     const Pokemon& pokemon,
     const glm::vec3& position,
+    ecs::World& world
+);
+
+ecs::EntityId CreatePokemonStatsDisplayTextbox
+(
     ecs::World& world
 );
 

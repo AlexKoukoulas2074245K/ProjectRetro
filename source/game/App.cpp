@@ -17,6 +17,7 @@
 #include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
 #include "common/components/PokemonBaseStatsSingletonComponent.h"
+#include "common/components/PokemonStatsDisplayViewStateSingletonComponent.h"
 #include "common/components/PokemonSelectionViewStateSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
 #include "common/utils/PokemonMoveUtils.h"
@@ -154,6 +155,8 @@ void App::DummyInitialization()
     const auto playerEntity = mWorld.CreateEntity();
     
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
+    mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
+
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::make_unique<PlayerStateSingletonComponent>());
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, mWorld));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));    

@@ -36,16 +36,16 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
         const auto xpAwarded = CalculateXpGainFromBattle
         (
             encounterStateComponent.mActiveEncounterType == EncounterType::WILD,
-            activeOpponentPokemon.mBaseStats.mXpStat,
+            activeOpponentPokemon.mBaseSpeciesStats.mXpStat,
             activeOpponentPokemon.mLevel,
             1
         );
 
         activePlayerPokemon.mXpPoints  += xpAwarded;
-        AddToEvStat(activeOpponentPokemon.mBaseStats.mAttack, activePlayerPokemon.mAttackEv);
-        AddToEvStat(activeOpponentPokemon.mBaseStats.mDefense, activePlayerPokemon.mDefenseEv);
-        AddToEvStat(activeOpponentPokemon.mBaseStats.mSpeed, activePlayerPokemon.mSpeedEv);
-        AddToEvStat(activeOpponentPokemon.mBaseStats.mSpecial, activePlayerPokemon.mSpecialEv);
+        AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mAttack, activePlayerPokemon.mAttackEv);
+        AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mDefense, activePlayerPokemon.mDefenseEv);
+        AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpeed, activePlayerPokemon.mSpeedEv);
+        AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpecial, activePlayerPokemon.mSpecialEv);
 
         activePlayerPokemon.mXpPoints  += 100;
 

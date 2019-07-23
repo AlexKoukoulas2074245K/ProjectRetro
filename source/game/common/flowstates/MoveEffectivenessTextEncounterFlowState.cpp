@@ -42,11 +42,11 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
             *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]:
             *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
-    auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mFirstType, mWorld);
+    auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
     
-    if (defendingPokemon.mBaseStats.mSecondType != StringId())
+    if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
     {
-        effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseStats.mSecondType, mWorld);
+        effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
     }
     
     if (effectivenessFactor < 0.9f)

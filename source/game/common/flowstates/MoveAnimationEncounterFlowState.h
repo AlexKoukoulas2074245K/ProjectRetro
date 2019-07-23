@@ -34,6 +34,8 @@ private:
 
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
+
+    static const float BATTLE_MOVE_ANIMATION_Z;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

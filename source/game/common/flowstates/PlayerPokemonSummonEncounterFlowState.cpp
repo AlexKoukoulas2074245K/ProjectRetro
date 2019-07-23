@@ -174,7 +174,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             {                
                 encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
                 (
-                    activePlayerPokemon.mName,
+                    activePlayerPokemon.mBaseSpeciesStats.mSpeciesName,
                     false,
                     PLAYER_POKEMON_SPRITE_END_POSITION,
                     SPRITE_SCALE,
@@ -194,7 +194,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
         {
             encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreatePokemonSprite
             (
-                activePlayerPokemon.mName,
+                activePlayerPokemon.mBaseSpeciesStats.mSpeciesName,
                 false,
                 PLAYER_POKEMON_SPRITE_START_POSITION,
                 SPRITE_SCALE,

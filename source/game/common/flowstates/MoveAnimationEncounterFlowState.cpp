@@ -27,6 +27,8 @@
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME = "battle_animations/";
 
+const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z = -1.0f;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +156,7 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
         encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
 
         auto transformComponent = std::make_unique<TransformComponent>();
-        transformComponent->mPosition.z = -1.0f;
+        transformComponent->mPosition.z = BATTLE_MOVE_ANIMATION_Z;
 
         const auto testEnemyFramesPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "_ENEMY/";
         const auto& testWhetherSeparateFoldersExistsResultFrames = GetAllFilenamesInDirectory(testEnemyFramesPath);

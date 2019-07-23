@@ -42,13 +42,15 @@ std::unique_ptr<Pokemon> CreatePokemon
     const ecs::World& world
 )
 {
-    const auto& baseStats = GetPokemonBaseStats(pokemonName, world);
-    auto pokemonInstance = std::make_unique<Pokemon>(pokemonName, baseStats);
+    const auto& baseSpeciesStats = GetPokemonBaseStats(pokemonName, world);
+    auto pokemonInstance = std::make_unique<Pokemon>(pokemonName, baseSpeciesStats);
 
     pokemonInstance->mLevel    = pokemonLevel;    
     pokemonInstance->mXpPoints = CalculatePokemonTotalExperienceAtLevel(pokemonName, pokemonLevel, world);    
 
     pokemonInstance->mMoveToBeLearned = StringId();
+
+    pokemonInstance->mStatus = PokemonStatus::NORMAL;
 
     // Calculate IVs
     // https://bulbapedia.bulbagarden.net/wiki/Individual_values
@@ -70,14 +72,14 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mSpecialEv = 0;
 
     // Calculate Hp Stat
-    pokemonInstance->mMaxHp  = CalculateHpStat(pokemonInstance->mLevel, baseStats.mHp, pokemonInstance->mHpIv, pokemonInstance->mHpEv);
+    pokemonInstance->mMaxHp  = CalculateHpStat(pokemonInstance->mLevel, baseSpeciesStats.mHp, pokemonInstance->mHpIv, pokemonInstance->mHpEv);
     pokemonInstance->mHp     = pokemonInstance->mMaxHp;
 
     // Calculate other stats
-    pokemonInstance->mAttack  = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseStats.mAttack, pokemonInstance->mAttackIv, pokemonInstance->mAttackEv);
-    pokemonInstance->mDefense = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseStats.mDefense, pokemonInstance->mDefenseIv, pokemonInstance->mDefenseEv);
-    pokemonInstance->mSpeed   = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseStats.mSpeed, pokemonInstance->mSpeedIv, pokemonInstance->mSpeedEv);
-    pokemonInstance->mSpecial = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseStats.mSpecial, pokemonInstance->mSpecialIv, pokemonInstance->mSpecialEv);
+    pokemonInstance->mAttack  = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseSpeciesStats.mAttack, pokemonInstance->mAttackIv, pokemonInstance->mAttackEv);
+    pokemonInstance->mDefense = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseSpeciesStats.mDefense, pokemonInstance->mDefenseIv, pokemonInstance->mDefenseEv);
+    pokemonInstance->mSpeed   = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseSpeciesStats.mSpeed, pokemonInstance->mSpeedIv, pokemonInstance->mSpeedEv);
+    pokemonInstance->mSpecial = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseSpeciesStats.mSpecial, pokemonInstance->mSpecialIv, pokemonInstance->mSpecialEv);
 
     // Reset encounter stage modifiers
     pokemonInstance->mAttackEncounterStage  = 0;
@@ -89,7 +91,7 @@ std::unique_ptr<Pokemon> CreatePokemon
 
     // Popuplate moveset
     auto nextInsertedMoveIndex = 0U;
-    for (const auto& moveLearnInfo: baseStats.mLearnset)
+    for (const auto& moveLearnInfo: baseSpeciesStats.mLearnset)
     {
         if (moveLearnInfo.mLevelLearned > pokemonLevel)
         {
@@ -112,6 +114,16 @@ std::unique_ptr<Pokemon> CreatePokemon
     }
 
     return pokemonInstance;
+}
+
+std::string GetFormattedPokemonIdString
+(
+    const int pokemonId
+)
+{
+    const auto pokemonIdString = std::to_string(pokemonId);
+    std::string finalIdString = "000";
+    return finalIdString.replace(3 - pokemonIdString.size(), pokemonIdString.size(), pokemonIdString);
 }
 
 bool HaveAllPokemonInRosterFainted
@@ -256,14 +268,14 @@ void LevelUpStats
 
     // Calculate new hp stat
     const auto previousMaxHp = pokemon.mMaxHp;
-    pokemon.mMaxHp = CalculateHpStat(pokemon.mLevel, pokemon.mBaseStats.mHp, pokemon.mHpIv, pokemon.mHpEv);
+    pokemon.mMaxHp = CalculateHpStat(pokemon.mLevel, pokemon.mBaseSpeciesStats.mHp, pokemon.mHpIv, pokemon.mHpEv);
     pokemon.mHp   += pokemon.mMaxHp - previousMaxHp;
 
     // Calculate other stats
-    pokemon.mAttack  = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mAttack, pokemon.mAttackIv, pokemon.mAttackEv);
-    pokemon.mDefense = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mDefense, pokemon.mDefenseIv, pokemon.mDefenseEv);
-    pokemon.mSpeed   = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mSpeed, pokemon.mSpeedIv, pokemon.mSpeedEv);
-    pokemon.mSpecial = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseStats.mSpecial, pokemon.mSpecialIv, pokemon.mSpecialEv);   
+    pokemon.mAttack  = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mAttack, pokemon.mAttackIv, pokemon.mAttackEv);
+    pokemon.mDefense = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mDefense, pokemon.mDefenseIv, pokemon.mDefenseEv);
+    pokemon.mSpeed   = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mSpeed, pokemon.mSpeedIv, pokemon.mSpeedEv);
+    pokemon.mSpecial = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mSpecial, pokemon.mSpecialIv, pokemon.mSpecialEv);   
 }
 
 int CalculatePokemonTotalExperienceAtLevel
@@ -390,7 +402,8 @@ void LoadAndPopulatePokemonBaseStats
         pokemonBaseStats.insert(std::make_pair(pokemonName, PokemonBaseStats
         (
             evolutions,
-            learnset,            
+            learnset,           
+            pokemonName,
             firstType, 
             secondType, 
             id,

@@ -27,7 +27,7 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
     
     activePlayerPokemon.mMoveToBeLearned = StringId();
 
-    for (const auto& moveLearnInfo : activePlayerPokemon.mBaseStats.mLearnset)
+    for (const auto& moveLearnInfo : activePlayerPokemon.mBaseSpeciesStats.mLearnset)
     {
         if 
         (

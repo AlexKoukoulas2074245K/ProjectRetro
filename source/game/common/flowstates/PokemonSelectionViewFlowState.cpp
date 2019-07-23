@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokemonSelectionViewFlowState.h"
+#include "PokemonStatsDisplayViewFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -34,19 +35,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_MODEL_FILE_NAME   = "pokemon_selection_view_sprite.obj";
-const std::string PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_TEXTURE_FILE_NAME = "pokemon_selection_view_background.png";
 const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME                           = "camera_facing_quad";
 const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME              = "characters.png";
 
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_POSITION         = glm::vec3(0.0f, 0.0f, 0.01f);
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_BACKGROUND_SCALE            = glm::vec3(2.0f, 2.0f, 2.0f);
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION = glm::vec3(0.0f, 0.885f, -0.3f);
-const glm::vec3 PokemonSelectionViewFlowState::POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION   = glm::vec3(-0.55f, 0.9f,-0.4f);
+const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_POSITION            = glm::vec3(0.0f, 0.0f, 0.01f);
+const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_SCALE               = glm::vec3(2.0f, 2.0f, 2.0f);
+const glm::vec3 PokemonSelectionViewFlowState::STATS_TEXTBOX_BASE_POSITION    = glm::vec3(0.0f, 0.885f, -0.3f);
+const glm::vec3 PokemonSelectionViewFlowState::OVERWORLD_SPRITE_BASE_POSITION = glm::vec3(-0.55f, 0.9f,-0.4f);
 
-const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW   = 0.32f;
-const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_MEDIUM = 0.16f;
-const float PokemonSelectionViewFlowState::POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_FAST   = 0.08f;
+const float PokemonSelectionViewFlowState::SPRITE_ANIMATION_FRAME_DURATION_SLOW   = 0.32f;
+const float PokemonSelectionViewFlowState::SPRITE_ANIMATION_FRAME_DURATION_MEDIUM = 0.16f;
+const float PokemonSelectionViewFlowState::SPRITE_ANIMATION_FRAME_DURATION_FAST   = 0.08f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +193,14 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
 
 void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
 {
+    // Destroy pokemon selected textbox
+    DestroyActiveTextbox(mWorld);
 
+    DestroyPokemonSelectionView();
+
+    mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>().mPokemonHasBeenSelected = false;
+    
+    CompleteAndTransitionTo<PokemonStatsDisplayViewFlowState>();
 }
 
 void PokemonSelectionViewFlowState::SwitchPokemonFlow()
@@ -225,26 +231,12 @@ void PokemonSelectionViewFlowState::CreatePokemonSelectionBackground() const
 {
     auto& pokemonSelectionViewEntities = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-    pokemonSelectionViewEntities.mBackgroundEntityId = mWorld.CreateEntity();
-
-    auto renderableComponent = std::make_unique<RenderableComponent>();
-
-    const auto texturePath                      = ResourceLoadingService::RES_TEXTURES_ROOT + POKEMON_SELECTION_VIEW_BACKGROUND_TEXTURE_FILE_NAME;
-    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(texturePath);
-    renderableComponent->mActiveAnimationNameId = StringId("default");
-    renderableComponent->mShaderNameId          = StringId("gui");
-    renderableComponent->mAffectedByPerspective = false;
-
-    const auto modelPath         = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_SELECTION_VIEW_BACKGROUND_MODEL_FILE_NAME;
-    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
-    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
-
-    auto transformComponent = std::make_unique<TransformComponent>();
-    transformComponent->mPosition = POKEMON_SELECTION_VIEW_BACKGROUND_POSITION;
-    transformComponent->mScale    = POKEMON_SELECTION_VIEW_BACKGROUND_SCALE;
-
-    mWorld.AddComponent<RenderableComponent>(pokemonSelectionViewEntities.mBackgroundEntityId, std::move(renderableComponent));
-    mWorld.AddComponent<TransformComponent>(pokemonSelectionViewEntities.mBackgroundEntityId, std::move(transformComponent));
+    pokemonSelectionViewEntities.mBackgroundEntityId = LoadAndCreateBackgroundCover
+    (
+        BACKGROUND_POSITION, 
+        BACKGROUND_SCALE, 
+        mWorld
+    );
 }
 
 void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
@@ -271,7 +263,7 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
         
         pokemonSpriteEntityIds[i][0] = CreatePokemonOverworldSprite
         (
-            pokemon.mBaseStats.mOverworldSpriteType,
+            pokemon.mBaseSpeciesStats.mOverworldSpriteType,
             static_cast<float>(pokemon.mHp)/pokemon.mMaxHp,
             i
         );
@@ -308,9 +300,9 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
         TextboxType::CURSORED_BARE_TEXTBOX,
         20,
         2 * playerStateComponent.mPlayerPokemonRoster.size(),
-        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.x,
-        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.y - (2.0f * guiTileHeightAccountingForAspect * (playerStateComponent.mPlayerPokemonRoster.size() - 1))/2.0f,
-        POKEMON_SELECTION_VIEW_STATS_TEXTBOX_BASE_POSITION.z,
+        STATS_TEXTBOX_BASE_POSITION.x,
+        STATS_TEXTBOX_BASE_POSITION.y - (2.0f * guiTileHeightAccountingForAspect * (playerStateComponent.mPlayerPokemonRoster.size() - 1))/2.0f,
+        STATS_TEXTBOX_BASE_POSITION.z,
         mWorld
     );
 
@@ -517,20 +509,20 @@ ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite
 
     auto transformComponent    = std::make_unique<TransformComponent>();
     transformComponent->mScale = glm::vec3(guiStateComponent.mGlobalGuiTileWidth * 2, guiStateComponent.mGlobalGuiTileHeight * 2, -0.4f);   
-    transformComponent->mPosition.x = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.x;
-    transformComponent->mPosition.y = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.y - row * (tileHeightAccountingForAspect * 2);
-    transformComponent->mPosition.z = POKEMON_SELECTION_OVERWORLD_SPRITE_BASE_POSITION.z;
+    transformComponent->mPosition.x = OVERWORLD_SPRITE_BASE_POSITION.x;
+    transformComponent->mPosition.y = OVERWORLD_SPRITE_BASE_POSITION.y - row * (tileHeightAccountingForAspect * 2);
+    transformComponent->mPosition.z = OVERWORLD_SPRITE_BASE_POSITION.z;
     
     auto animationComponent = std::make_unique<AnimationTimerComponent>();
 
-    auto animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_FAST;
+    auto animationFrameDuration = SPRITE_ANIMATION_FRAME_DURATION_FAST;
     if (healthRemainingProportion <= 0.25f)
     {
-        animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_SLOW;
+        animationFrameDuration = SPRITE_ANIMATION_FRAME_DURATION_SLOW;
     }
     else if (healthRemainingProportion <= 0.5f)
     {
-        animationFrameDuration = POKEMON_SELECTION_VIEW_SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
+        animationFrameDuration = SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
     }
 
     animationComponent->mAnimationTimer = std::make_unique<Timer>(animationFrameDuration);     

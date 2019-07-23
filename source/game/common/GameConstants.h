@@ -46,6 +46,11 @@ enum class CharacterMovementType
     DYNAMIC, STATIONARY, STATIC
 };
 
+enum class PokemonStatus
+{
+    NORMAL, PARALYZED, POISONED, CONFUSED
+};
+
 enum class OverworldPokemonSpriteType
 {
     BALL, BEAST, BUG, DRAGON, FLYING, FOSSIL, GRASS, NORMAL, PIKACHU, WATER
@@ -108,6 +113,7 @@ struct PokemonBaseStats
     (
         std::vector<EvolutionInfo>& evolutions,
         std::vector<MoveLearnInfo>& learnset,
+        const StringId speciesName,
         const StringId firstType,
         const StringId secondType,
         const int id,
@@ -122,6 +128,7 @@ struct PokemonBaseStats
     )
         : mEvolutions(evolutions)
         , mLearnset(learnset)
+        , mSpeciesName(speciesName)
         , mFirstType(firstType)
         , mSecondType(secondType)
         , mId(id)
@@ -138,6 +145,7 @@ struct PokemonBaseStats
 
     const std::vector<EvolutionInfo> mEvolutions;
     const std::vector<MoveLearnInfo> mLearnset;
+    const StringId mSpeciesName;
     const StringId mFirstType;
     const StringId mSecondType;
     const int mId;
@@ -155,19 +163,16 @@ struct Pokemon
 {
     Pokemon
     (
-        const StringId speciesName,
+        const StringId name,
         const PokemonBaseStats& baseStats    
-    )
-        : mSpeciesName(speciesName)
-        , mName(speciesName)
-        , mBaseStats(baseStats)             
+    )       
+        : mName(name)
+        , mBaseSpeciesStats(baseStats)             
     {
     }
-
-    const StringId mSpeciesName;
-    const PokemonBaseStats& mBaseStats;
     
     StringId mName;
+    const PokemonBaseStats& mBaseSpeciesStats;    
     
     PokemonMoveSet mMoveSet;
     StringId mMoveToBeLearned;
@@ -175,6 +180,8 @@ struct Pokemon
     
     int mLevel;
     int mXpPoints;
+
+    PokemonStatus mStatus;
 
     // Current/Max stats
     int mHp;      int mMaxHp;                 

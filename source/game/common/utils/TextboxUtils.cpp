@@ -29,6 +29,7 @@ static const glm::vec3 CHATBOX_POSITION                                = glm::ve
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION           = glm::vec3(0.1375f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
+static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::vec3(0.0f, 0.0f, -0.8f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -42,8 +43,11 @@ static const int ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS = 6;
 static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_COLS = 11;
 static const int ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_ROWS = 5;
 
-static const int POKEMON_STATS_DISPLAY_TEXTBOX_COLS = 11;
-static const int POKEMON_STATS_DISPLAY_TEXTBOX_ROWS = 10;
+static const int POKEMON_MINI_STATS_DISPLAY_TEXTBOX_COLS = 11;
+static const int POKEMON_MINI_STATS_DISPLAY_TEXTBOX_ROWS = 10;
+
+static const int POKEMON_STATS_DISPLAY_TEXTBOX_COLS = 20;
+static const int POKEMON_STATS_DISPLAY_TEXTBOX_ROWS = 18;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -384,7 +388,7 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
     return fightMenuMoveInfoTextboxEntityId;
 }
 
-ecs::EntityId CreatePokemonStatsDisplay
+ecs::EntityId CreatePokemonMiniStatsDisplay
 (
     const Pokemon& pokemon,
     const glm::vec3& position,
@@ -394,8 +398,8 @@ ecs::EntityId CreatePokemonStatsDisplay
     const auto pokemonStatsDisplayEntityId = CreateTextboxWithDimensions
     (
         TextboxType::GENERIC_TEXTBOX,
-        POKEMON_STATS_DISPLAY_TEXTBOX_COLS,
-        POKEMON_STATS_DISPLAY_TEXTBOX_ROWS,
+        POKEMON_MINI_STATS_DISPLAY_TEXTBOX_COLS,
+        POKEMON_MINI_STATS_DISPLAY_TEXTBOX_ROWS,
         position.x,
         position.y,
         position.z,
@@ -417,6 +421,23 @@ ecs::EntityId CreatePokemonStatsDisplay
     WriteTextAtTextboxCoords(pokemonStatsDisplayEntityId, specialStatString, 9 - specialStatString.size(), 8, world);
 
     return pokemonStatsDisplayEntityId;
+}
+
+ecs::EntityId CreatePokemonStatsDisplayTextbox
+(
+    ecs::World& world
+)
+{
+    return CreateTextboxWithDimensions
+    (
+        TextboxType::BARE_TEXTBOX, 
+        POKEMON_STATS_DISPLAY_TEXTBOX_COLS, 
+        POKEMON_STATS_DISPLAY_TEXTBOX_ROWS,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.x,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.y,
+        POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.z,
+        world
+    );    
 }
 
 void DestroyActiveTextbox

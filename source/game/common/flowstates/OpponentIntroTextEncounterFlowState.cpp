@@ -73,8 +73,11 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         {
             statusString = "+";
         }
-        // TODO: check for other status
-        
+        else if (pokemon.mStatus != PokemonStatus::NORMAL)
+        {
+            statusString = "£";
+        }
+
         // select normal pokeball, status or faint
         WriteTextAtTextboxCoords
         (
