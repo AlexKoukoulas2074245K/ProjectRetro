@@ -155,18 +155,19 @@ struct Pokemon
 {
     Pokemon
     (
-        const StringId name,
-        const PokemonBaseStats& baseStats
+        const StringId speciesName,
+        const PokemonBaseStats& baseStats    
     )
-        : mName(name)
+        : mSpeciesName(speciesName)
+        , mName(speciesName)
         , mBaseStats(baseStats)             
     {
     }
 
-    const StringId mName;
+    const StringId mSpeciesName;
     const PokemonBaseStats& mBaseStats;
     
-    StringId mNickname;
+    StringId mName;
     
     PokemonMoveSet mMoveSet;
     StringId mMoveToBeLearned;
