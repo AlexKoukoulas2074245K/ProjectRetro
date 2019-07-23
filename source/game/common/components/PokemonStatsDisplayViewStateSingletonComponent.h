@@ -29,6 +29,7 @@ public:
     ecs::EntityId mBackgroundCoverEntityId              = ecs::NULL_ENTITY_ID;
     ecs::EntityId mStatsLayoutsEntityId                 = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPokemonFrontSpriteEntityId           = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokemonHealthbarEntityId             = ecs::NULL_ENTITY_ID;
     bool mIsInScreen1                                   = false;    
 };
 

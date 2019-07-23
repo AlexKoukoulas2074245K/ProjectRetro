@@ -86,6 +86,7 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     const float depletionProportion,
     const bool isOpponentHealthBar,
     ecs::World& world,
+    const bool isInPokemonStatsView = false,
     const bool isInPokemonSelectionView = false,
     const size_t pokemonRosterIndex = 0
 );

@@ -273,6 +273,7 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
             pokemon.mHp/static_cast<float>(pokemon.mMaxHp),
             false,
             mWorld,
+            false,
             true,
             i
         );

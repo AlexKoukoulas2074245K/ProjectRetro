@@ -45,6 +45,8 @@ static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION               = glm::vec
 static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION              = glm::vec3(-0.6952f, 0.7f, 0.45f);
 static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION                 = glm::vec3(0.3568f, -0.08f, 0.25f);
 static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION                = glm::vec3(-0.0184f, -0.08f, 0.25f);
+static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY   = glm::vec3(0.3438f, -0.08f, 0.25f);
+static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY  = glm::vec3(-0.06892, -0.08f, 0.25f);
 static const glm::vec3 POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION = glm::vec3(-0.155f, 0.83f, -0.2);
 
 static const float POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE             = 0.22f;
@@ -289,6 +291,7 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     const float depletionProportion,
     const bool isOpponentsHealthbar,
     ecs::World& world,
+    const bool isInPokemonStatsView /* false */,
     const bool isInPokemonSelectionView /* false */,
     const size_t pokemonRosterIndex /* 0 */
 )
@@ -323,7 +326,15 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
         math::Lerp(OPPONENT_EMPTY_HEALTHBAR_POSITION, OPPONENT_FULL_HEALTHBAR_POSITION, depletionProportion) :
         math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION, PLAYER_FULL_HEALTHBAR_POSITION, depletionProportion);
     
-    if (isInPokemonSelectionView)
+    if (isInPokemonStatsView)
+    {        
+        transformComponent->mPosition = math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY, PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY, depletionProportion);
+        transformComponent->mPosition.y = 0.604f;
+        transformComponent->mPosition.z = -0.5f; 
+        transformComponent->mScale.x = 1.1f;
+        transformComponent->mScale.y = 1.1f;
+    }
+    else if (isInPokemonSelectionView)
     {
         transformComponent->mPosition.x -= POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT;
         transformComponent->mPosition.y = POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION.y - pokemonRosterIndex * POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE;
