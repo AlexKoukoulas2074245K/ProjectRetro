@@ -44,6 +44,7 @@ private:
 
     void CreatePokemonSelectionBackground() const;
     void CreateIndividualPokemonSprites() const;
+    void CreatePokemonSelectionViewMainTextbox() const;
     void CreatePokemonStatsInvisibleTextbox() const;
     void DestroyPokemonSelectionView() const;
     

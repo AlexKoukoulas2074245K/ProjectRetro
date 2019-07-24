@@ -10,7 +10,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MainMenuEncounterFlowState.h"
-#include "NoWillToFightEnounterFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "../components/CursorComponent.h"
@@ -57,10 +56,7 @@ PokemonSelectionViewFlowState::PokemonSelectionViewFlowState(ecs::World& world)
 {
     CreatePokemonSelectionBackground();    
     CreateIndividualPokemonSprites();
-    
-    const auto mainChatboxEntityId = CreateChatbox(mWorld);
-    WriteTextAtTextboxCoords(mainChatboxEntityId, "Choose a POK^MON.", 1, 2, mWorld);       
-
+    CreatePokemonSelectionViewMainTextbox();
     CreatePokemonStatsInvisibleTextbox();
 }
 
@@ -78,10 +74,11 @@ void PokemonSelectionViewFlowState::VUpdate(const float)
             // Destroy pokemon attributes textbox
             DestroyActiveTextbox(mWorld);
 
-            const auto mainChatboxEntityId = CreateChatbox(mWorld);
-            WriteTextAtTextboxCoords(mainChatboxEntityId, "Choose a POK^MON.", 1, 2, mWorld);
+            CreatePokemonSelectionViewMainTextbox();
 
             CreatePokemonStatsInvisibleTextbox();
+
+            pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
         }
     }
     else
@@ -268,9 +265,7 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         QueueDialogForChatbox(mainChatboxEntityId, "There's no will#to fight!#+END", mWorld);        
 
         pokemonSelectionViewComponent.mNoWillToFightTextFlowActive = true;
-    }
-
-    pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
+    }    
 }
 
 void PokemonSelectionViewFlowState::PokemonRosterIndexSwapFlow()
@@ -353,15 +348,33 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
     }    
 }
 
+void PokemonSelectionViewFlowState::CreatePokemonSelectionViewMainTextbox() const
+{
+    const auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    const auto mainChatboxEntityId            = CreateChatbox(mWorld);
+
+    if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
+    {
+        WriteTextAtTextboxCoords(mainChatboxEntityId, "Bring out which", 1, 2, mWorld);
+        WriteTextAtTextboxCoords(mainChatboxEntityId, "POK^MON?", 1, 4, mWorld);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(mainChatboxEntityId, "Choose a POK^MON.", 1, 2, mWorld);
+    }
+}
+
 void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
 {
     const auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     const auto& guiStateSingletonComponent         = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& windowSingletonComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    auto& pokemonSelectionViewStateComponent       = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
     const auto guiTileHeight = guiStateSingletonComponent.mGlobalGuiTileHeight;
     const auto guiTileHeightAccountingForAspect = guiTileHeight * windowSingletonComponent.mAspectRatio;
+
+    pokemonSelectionViewStateComponent.mPokemonHasBeenSelected = false;
 
     const auto pokemonSelectionViewTextboxEntityId = CreateTextboxWithDimensions
     (

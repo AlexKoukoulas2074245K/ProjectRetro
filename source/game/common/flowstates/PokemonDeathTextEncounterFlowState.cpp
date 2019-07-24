@@ -50,7 +50,9 @@ void PokemonDeathTextEncounterFlowState::VUpdate(const float)
             }
             else
             {
-
+                auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+                pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
+                CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
             }
         }
     }
