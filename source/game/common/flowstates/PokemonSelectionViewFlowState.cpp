@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MainMenuEncounterFlowState.h"
+#include "PlayerPokemonTextIntroEncounterFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "../components/CursorComponent.h"
@@ -242,6 +243,7 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
 {
     const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
     const auto& selectedPokemon         = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[cursorComponent.mCursorRow];
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
     if (selectedPokemon.mHp <= 0)
@@ -265,7 +267,15 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         QueueDialogForChatbox(mainChatboxEntityId, "There's no will#to fight!#+END", mWorld);        
 
         pokemonSelectionViewComponent.mNoWillToFightTextFlowActive = true;
-    }    
+    }
+    else
+    {
+        encounterStateComponent.mActivePlayerPokemonRosterIndex = cursorComponent.mCursorRow;
+
+        DestroyPokemonSelectionView();
+
+        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+    }
 }
 
 void PokemonSelectionViewFlowState::PokemonRosterIndexSwapFlow()
@@ -499,12 +509,17 @@ void PokemonSelectionViewFlowState::DestroyPokemonSelectionView() const
         mWorld.RemoveEntity(pokemonSpriteEntityIds[i][0]);
         mWorld.RemoveEntity(pokemonSpriteEntityIds[i][1]);
         mWorld.RemoveEntity(pokemonSpriteEntityIds[i][2]);
+
+        pokemonSpriteEntityIds[i][0] = ecs::NULL_ENTITY_ID;
+        pokemonSpriteEntityIds[i][1] = ecs::NULL_ENTITY_ID;
+        pokemonSpriteEntityIds[i][2] = ecs::NULL_ENTITY_ID;
     }
 
     pokemonSpriteEntityIds.clear();
 
     // Destroy background
     mWorld.RemoveEntity(pokemonSelectionViewStateComponent.mBackgroundEntityId);
+    pokemonSelectionViewStateComponent.mBackgroundEntityId = ecs::NULL_ENTITY_ID;
 }
 
 std::string PokemonSelectionViewFlowState::GetCursorCommandTextFirstFourLetters() const

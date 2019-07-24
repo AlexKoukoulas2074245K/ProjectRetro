@@ -38,8 +38,8 @@ PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(e
 
 void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
@@ -66,6 +66,11 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
             
+            encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+
             CompleteAndTransitionTo<PokemonDeathTextEncounterFlowState>();
         }
     }
@@ -92,6 +97,12 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
              
+            encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId        = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId       = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId    = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId  = ecs::NULL_ENTITY_ID;
+
             CompleteAndTransitionTo<PokemonDeathTextEncounterFlowState>();
         }
     }

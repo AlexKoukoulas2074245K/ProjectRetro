@@ -11,6 +11,7 @@
 
 #include "PlayerPokemonSummonEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
+#include "OpponentIntroTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
@@ -50,7 +51,25 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
-    mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    if (encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+    }    
+
+    if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId == ecs::NULL_ENTITY_ID)
+    {
+        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+        (
+            TextboxType::BARE_TEXTBOX,
+            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_COLS,
+            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS,
+            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.x,
+            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.y,
+            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.z,
+            mWorld
+        );
+    }
 
     // Player pokemon status display
     encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerPokemonStatusDisplay
