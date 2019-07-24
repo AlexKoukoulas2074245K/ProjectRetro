@@ -50,7 +50,7 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
         activePlayerPokemon.mXpPoints  += 100;
 
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             activePlayerPokemon.mName.GetString() + " gained#" + std::to_string(xpAwarded) + " EXP. Points!#+END",

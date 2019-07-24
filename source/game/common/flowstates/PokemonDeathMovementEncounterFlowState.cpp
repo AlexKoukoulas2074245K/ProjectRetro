@@ -54,7 +54,7 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             transformComponent.mPosition.y = OPPONENT_POKEMON_DEATH_TARGET_Y;
             
             const auto mainChatboxEntityId = CreateChatbox(mWorld);
-            QueueDialogForTextbox
+            QueueDialogForChatbox
             (
                 mainChatboxEntityId,
                 "Enemy " + activeOpponentPokemon.mName.GetString() + "#fainted!#+END",
@@ -79,7 +79,7 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             transformComponent.mPosition.y = PLAYER_POKEMON_DEATH_TARGET_Y;
             
             const auto mainChatboxEntityId = CreateChatbox(mWorld);
-            QueueDialogForTextbox
+            QueueDialogForChatbox
             (
                 mainChatboxEntityId,
                 activePlayerPokemon.mName.GetString() + "#fainted!#+END",

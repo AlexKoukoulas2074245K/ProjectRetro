@@ -31,7 +31,7 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
 
 
     //TODO: differentiate between summoning dialogs
-    QueueDialogForTextbox
+    QueueDialogForChatbox
     (
         mainChatboxEntityId,
         "GO! " + playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + "!+FREEZE",

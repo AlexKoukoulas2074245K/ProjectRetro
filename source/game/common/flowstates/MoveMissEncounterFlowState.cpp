@@ -37,7 +37,7 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             "Enemy " + attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
@@ -46,7 +46,7 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
     }
     else
     {
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             attackingPokemon.mName.GetString() + "'s#attack missed!#+END",

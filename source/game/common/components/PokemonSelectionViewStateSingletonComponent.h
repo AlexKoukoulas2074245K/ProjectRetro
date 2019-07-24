@@ -45,6 +45,7 @@ public:
     int mLastSelectedPokemonRosterIndex                        = 0;
     PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
     bool mPokemonHasBeenSelected                               = false;
+    bool mNoWillToFightTextFlowActive                          = false;
 
 };
 

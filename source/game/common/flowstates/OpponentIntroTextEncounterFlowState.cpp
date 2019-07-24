@@ -95,7 +95,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
         const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mName;
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             "Wild " + wildPokemonName.GetString() + "#appeared!#+END", 

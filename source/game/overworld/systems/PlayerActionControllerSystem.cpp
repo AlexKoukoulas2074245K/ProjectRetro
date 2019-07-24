@@ -180,7 +180,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             }
 
-            QueueDialogForTextbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
+            QueueDialogForChatbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
             npcTimerComponent.mAnimationTimer->Reset();
         }

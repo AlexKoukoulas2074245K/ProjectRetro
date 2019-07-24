@@ -635,7 +635,7 @@ void WriteTextAtTextboxCoords
     }
 }
 
-void QueueDialogForTextbox
+void QueueDialogForChatbox
 (
     const ecs::EntityId textboxEntityId,
     const std::string& rawDialogText,

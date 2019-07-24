@@ -44,7 +44,7 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
     
     if (encounterStateComponent.mIsOpponentsTurn)
     {
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             "Enemy " + attackingPokemon.mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",
@@ -53,7 +53,7 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
     }
     else
     {
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             attackingPokemon.mName.GetString() + "#used " +  selectedMove.GetString() + "!+FREEZE",

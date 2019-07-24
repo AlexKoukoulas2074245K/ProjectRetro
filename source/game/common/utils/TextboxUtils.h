@@ -139,7 +139,7 @@ void WriteTextAtTextboxCoords
     ecs::World& world
 );
 
-void QueueDialogForTextbox
+void QueueDialogForChatbox
 (
     const ecs::EntityId textboxEntityId,
     const std::string& rawDialogText,

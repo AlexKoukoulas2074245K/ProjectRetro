@@ -52,7 +52,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     if (effectivenessFactor < 0.9f)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             "It's not very#effective...#+END",
@@ -62,7 +62,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     else if (effectivenessFactor > 1.1f)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
-        QueueDialogForTextbox
+        QueueDialogForChatbox
         (
             mainChatboxEntityId,
             "It's super#effective!#+END",

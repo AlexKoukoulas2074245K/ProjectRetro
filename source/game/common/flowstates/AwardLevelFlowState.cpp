@@ -40,7 +40,7 @@ AwardLevelFlowState::AwardLevelFlowState(ecs::World& world)
     RefreshPokemonStats();
 
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
-    QueueDialogForTextbox
+    QueueDialogForChatbox
     (
         mainChatboxEntityId,
         activePlayerPokemon.mName.GetString() + " grew#to level " + std::to_string(activePlayerPokemon.mLevel) + "!+FREEZE",

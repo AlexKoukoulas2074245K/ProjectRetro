@@ -26,7 +26,7 @@ CriticalHitTextEncounterFlowState::CriticalHitTextEncounterFlowState(ecs::World&
 
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
 
-    QueueDialogForTextbox
+    QueueDialogForChatbox
     (
         mainChatboxEntityId,
         "Critical hit!# #+END",

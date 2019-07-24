@@ -41,7 +41,7 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     DestroyActiveTextbox(mWorld);
     
     const auto mainChatboxEntityId = CreateChatbox(world);
-    QueueDialogForTextbox
+    QueueDialogForChatbox
     (
         mainChatboxEntityId,
         activePlayerPokemon.mName.GetString() + " learned#" + moveStats.mName.GetString() + "!#+END",
