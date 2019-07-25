@@ -115,6 +115,7 @@ public:
     bool mLastMoveCrit                                                 = false;
     bool mLastMoveMiss                                                 = false;
     bool mIsOpponentsTurn                                              = false;
+    bool mPlayerChangedPokemonFromMainMenu                             = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

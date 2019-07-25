@@ -46,9 +46,7 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
         AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mDefense, activePlayerPokemon.mDefenseEv);
         AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpeed, activePlayerPokemon.mSpeedEv);
         AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpecial, activePlayerPokemon.mSpecialEv);
-
-        activePlayerPokemon.mXpPoints  += 100;
-
+        
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
         QueueDialogForChatbox
         (

@@ -240,11 +240,10 @@ void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
 }
 
 void PokemonSelectionViewFlowState::SwitchPokemonFlow()
-{
-    const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-    const auto& selectedPokemon         = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[cursorComponent.mCursorRow];
-    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+{    
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& selectedPokemon         = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
     if (selectedPokemon.mHp <= 0)
     {
@@ -270,9 +269,15 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
     }
     else
     {
-        encounterStateComponent.mActivePlayerPokemonRosterIndex = cursorComponent.mCursorRow;
+        encounterStateComponent.mActivePlayerPokemonRosterIndex   = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
+        encounterStateComponent.mPlayerChangedPokemonFromMainMenu = true;
 
         DestroyPokemonSelectionView();
+
+        if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
+        {
+            DestroyActiveTextbox(mWorld);
+        }
 
         CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
     }

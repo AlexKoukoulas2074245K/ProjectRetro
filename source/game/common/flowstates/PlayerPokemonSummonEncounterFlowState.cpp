@@ -23,6 +23,7 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "FirstTurnOverEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +57,24 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
         mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }    
+
+    if (encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+        encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
+    }
+
+    if (encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
+        encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId = ecs::NULL_ENTITY_ID;
+    }
+
+    if (encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+        encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = ecs::NULL_ENTITY_ID;
+    }
 
     if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId == ecs::NULL_ENTITY_ID)
     {
@@ -202,7 +221,16 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
 
                 DestroyActiveTextbox(mWorld);
                 
-                CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+                if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
+                {
+                    encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
+                    encounterStateComponent.mIsOpponentsTurn = false;
+                    CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+                }                
             }
         }
     }
@@ -231,7 +259,17 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 DestroyActiveTextbox(mWorld);
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
                 guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-                CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+
+                if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
+                {
+                    encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
+                    encounterStateComponent.mIsOpponentsTurn = false;
+                    CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+                }
             }
         }        
     }

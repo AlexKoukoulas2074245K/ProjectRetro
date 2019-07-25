@@ -34,8 +34,7 @@ void FirstTurnOverEncounterFlowState::VUpdate(const float)
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;
-    
+    encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;    
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
