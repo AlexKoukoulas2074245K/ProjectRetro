@@ -46,14 +46,7 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     }
     // Battle started condition
     else if (encounterStateComponent.mOverworldEncounterAnimationState == OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE)
-    {        
-        // Reset all stat modifiers for all player's pokemon
-        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-        for (const auto& pokemon : playerStateComponent.mPlayerPokemonRoster)
-        {
-            ResetPokemonEncounterModifierStages(*pokemon);
-        }
-
+    {                
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
         
@@ -65,8 +58,21 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
         
         mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
      
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
         encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
         encounterStateComponent.mActivePlayerPokemonRosterIndex = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
+        encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();
+
+        // Reset all stat modifiers for all player's pokemon        
+        for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
+        {
+            ResetPokemonEncounterModifierStages(*playerStateComponent.mPlayerPokemonRoster[i]);
+            for (auto j = 0U; j < encounterStateComponent.mOpponentPokemonRoster.size(); ++j)
+            {
+                encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap[i][j] = 0.0f;
+            }
+        }
 
         CreateChatbox(mWorld);
     }

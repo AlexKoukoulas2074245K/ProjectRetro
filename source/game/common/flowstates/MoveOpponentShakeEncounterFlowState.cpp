@@ -22,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
-const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
+const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.962f, 0.0f, -1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

@@ -11,6 +11,7 @@
 
 #include "MainMenuEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
+#include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "../components/CursorComponent.h"
@@ -268,8 +269,7 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         pokemonSelectionViewComponent.mNoWillToFightTextFlowActive = true;
     }
     else
-    {
-        encounterStateComponent.mActivePlayerPokemonRosterIndex   = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
+    {        
         encounterStateComponent.mPlayerChangedPokemonFromMainMenu = true;
 
         DestroyPokemonSelectionView();
@@ -277,9 +277,13 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
             DestroyActiveTextbox(mWorld);
+            CompleteAndTransitionTo<PlayerPokemonWithdrawTextEncounterFlowState>();
         }
-
-        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+        else
+        {
+            encounterStateComponent.mActivePlayerPokemonRosterIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
+            CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+        }        
     }
 }
 

@@ -38,7 +38,7 @@ static const std::string ORANGE_HEALTHBAR_FILE_NAME                             
 static const std::string RED_HEALTHBAR_FILE_NAME                                 = "hp_bar_red.png";
 
 static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
-static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.937f, 0.0f, -1.0f);
+static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.962f, 0.0f, -1.0f);
 static const glm::vec3 ENCOUNTER_EDGE_SCALE          = glm::vec3(0.5f, 1.5f, 1.0f);
 
 static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION               = glm::vec3(-0.32f, 0.7f, 0.45f);

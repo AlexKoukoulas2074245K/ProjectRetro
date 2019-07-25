@@ -68,7 +68,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
     {
         const auto totalXpNeededForNextLevel = CalculatePokemonTotalExperienceAtLevel
         (
-            activePlayerPokemon.mName,
+            activePlayerPokemon.mBaseSpeciesStats.mSpeciesName,
             activePlayerPokemon.mLevel + 1,
             mWorld
         );

@@ -39,6 +39,13 @@ DamageCalculationEncounterFlowState::DamageCalculationEncounterFlowState(ecs::Wo
         encounterStateComponent.mIsOpponentsTurn ? activeOpponentPokemon : activePlayerPokemon,
         encounterStateComponent.mIsOpponentsTurn ? activePlayerPokemon : activeOpponentPokemon
     );
+
+    if (encounterStateComponent.mIsOpponentsTurn == false)
+    {
+        encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap
+        [encounterStateComponent.mActivePlayerPokemonRosterIndex]
+        [encounterStateComponent.mActiveOpponentPokemonRosterIndex] += encounterStateComponent.mOutstandingFloatDamage;
+    }
 }
 
 void DamageCalculationEncounterFlowState::VUpdate(const float)
@@ -116,7 +123,7 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
             isStab
         ));
 
-        Log(LogType::INFO, "Calculated damage: %.1f", encounterStateComponent.mOutstandingFloatDamage);
+        Log(LogType::INFO, "Calculated damage: %.1f", encounterStateComponent.mOutstandingFloatDamage);        
     }
 }
 

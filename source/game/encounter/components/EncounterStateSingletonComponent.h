@@ -73,7 +73,7 @@ static const float BATTLE_SPECIAL_MOVE_ANIMATION_DELAY  = 0.15f;
 class EncounterViewObjects final
 {    
 public:
-    std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;
+    std::queue<ResourceId> mBattleAnimationFrameResourceIdQueue;    
     std::unique_ptr<Timer> mBattleAnimationTimer;
     ecs::EntityId mBattleAnimationFrameEntityId       = ecs::NULL_ENTITY_ID;            
     ecs::EntityId mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
@@ -101,6 +101,7 @@ public:
     FlowStateManager mFlowStateManager;
     EncounterViewObjects mViewObjects;
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
+    std::unordered_map<int, std::unordered_map<int, float>> mPlayerPokemonToOpponentPokemonDamageMap;
     StringId mLastMoveSelected                                         = StringId();    
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            

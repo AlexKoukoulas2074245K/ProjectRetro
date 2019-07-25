@@ -28,7 +28,9 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
 
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
+    const auto activeOpponentPokemonHpProportionLeft = activeOpponentPokemon.mHp / static_cast<float>(activeOpponentPokemon.mMaxHp);
     //TODO: differentiate between summoning dialogs
 	// On switch
 	// < 0.5 hp Do it! POKEMONNAME!
@@ -38,17 +40,33 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
 	// < 0.25 hp Get'm! POKEMONNAME!
 	// < 0.5 hp Do it! POKEMONNAME!
 	
-	// Switch first step Random?
-	// POKEMONNAME enough!#Come back! no damage done to opponents pokemon hp
-	// POKEMONNAME good!#Come back! > 0.75 opponents pokemon hp damange done
-	// POKEMONNAME OK!#Come back! > 0.5 opponents pokemon hp damange done
-	// POKEMONNAME#Come back! > 0.25 opponents pokemon hp damange done
-    QueueDialogForChatbox
-    (
-        mainChatboxEntityId,
-        "GO! " + playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + "!+FREEZE",
-        mWorld
-    );
+    if (activeOpponentPokemonHpProportionLeft <= 0.25f)
+    {
+        QueueDialogForChatbox
+        (
+            mainChatboxEntityId,
+            "Get'm! " + playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + "!+FREEZE",
+            mWorld
+        );
+    }
+    else if (activeOpponentPokemonHpProportionLeft <= 0.5f)
+    {
+        QueueDialogForChatbox
+        (
+            mainChatboxEntityId,
+            "Do it! " + playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + "!+FREEZE",
+            mWorld
+        );
+    }
+    else
+    {
+        QueueDialogForChatbox
+        (
+            mainChatboxEntityId,
+            "GO! " + playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + "!+FREEZE",
+            mWorld
+        );
+    }    
 }
 
 void PlayerPokemonTextIntroEncounterFlowState::VUpdate(const float)

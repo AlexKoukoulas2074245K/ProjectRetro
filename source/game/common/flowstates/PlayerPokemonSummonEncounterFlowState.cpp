@@ -155,7 +155,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     );
 
     // Pikachu gets summoned from the side of the screen, while all other pokemon via pokeball summons
-    if (activePlayerPokemon.mName == StringId("PIKACHU"))
+    if (activePlayerPokemon.mBaseSpeciesStats.mSpeciesName == StringId("PIKACHU"))
     { 
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }
@@ -173,7 +173,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
     const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
     // Standard pokemon summon animation flow
-    if (activePlayerPokemon.mName != StringId("PIKACHU"))
+    if (activePlayerPokemon.mBaseSpeciesStats.mSpeciesName != StringId("PIKACHU"))
     {
         encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
         if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
@@ -225,6 +225,9 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 {
                     encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
                     encounterStateComponent.mIsOpponentsTurn = false;
+                    encounterStateComponent.mTurnsCompleted = 0;
+                    encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
+                    encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
                     CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
                 }
                 else
@@ -264,6 +267,9 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 {
                     encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
                     encounterStateComponent.mIsOpponentsTurn = false;
+                    encounterStateComponent.mTurnsCompleted = 0;
+                    encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
+                    encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
                     CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
                 }
                 else
