@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "FirstTurnOverEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "PokemonDeathMovementEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
@@ -24,12 +24,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-FirstTurnOverEncounterFlowState::FirstTurnOverEncounterFlowState(ecs::World& world)
+TurnOverEncounterFlowState::TurnOverEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
 }
 
-void FirstTurnOverEncounterFlowState::VUpdate(const float)
+void TurnOverEncounterFlowState::VUpdate(const float)
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();

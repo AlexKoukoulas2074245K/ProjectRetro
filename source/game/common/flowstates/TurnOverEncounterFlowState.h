@@ -19,10 +19,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class FirstTurnOverEncounterFlowState final: public BaseFlowState
+class TurnOverEncounterFlowState final: public BaseFlowState
 {
 public:
-    FirstTurnOverEncounterFlowState(ecs::World&);
+    TurnOverEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
     

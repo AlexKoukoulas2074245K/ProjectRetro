@@ -428,5 +428,6 @@
         "type": "GHOST",
         "power": 10,
         "accuracy": 255,
-        "pp": 10
+        "pp": 10,
+		"effect": "TODO"
     }}

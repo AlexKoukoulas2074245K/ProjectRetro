@@ -11,9 +11,11 @@
 
 #include "MoveAnnouncementEncounterFlowState.h"
 #include "MoveAnimationEncounterFlowState.h"
+#include "MoveEffectivenessTextEncounterFlowState.h"
 #include "MoveMissEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 
@@ -65,7 +67,19 @@ MoveAnnouncementEncounterFlowState::MoveAnnouncementEncounterFlowState(ecs::Worl
 void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();    
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& selectedMoveStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
+    const auto& defendingPokemon = encounterStateComponent.mIsOpponentsTurn ?
+        *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex] :
+        *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+
+    auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
+
+    if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
+    {
+        effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
+    }
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
@@ -83,6 +97,10 @@ void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
                 if (encounterStateComponent.mLastMoveMiss)
                 {
                     CompleteAndTransitionTo<MoveMissEncounterFlowState>();
+                }
+                else if (effectivenessFactor < 0.1f)
+                {
+                    CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
                 }
                 else
                 {

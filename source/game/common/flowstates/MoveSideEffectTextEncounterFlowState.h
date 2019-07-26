@@ -1,12 +1,12 @@
 //
-//  DamageCalculationEncounterFlowState.h
+//  MoveSideEffectTextEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 12/07/2019.
+//  Created by Alex Koukoulas on 26/07/2019.
 //
 
-#ifndef DamageCalculationEncounterFlowState_h
-#define DamageCalculationEncounterFlowState_h
+#ifndef MoveSideEffectTextEncounterFlowState_h
+#define MoveSideEffectTextEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -14,36 +14,30 @@
 
 #include "BaseFlowState.h"
 
-#include <memory>
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+struct PokemonMoveStats;
 struct Pokemon;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class DamageCalculationEncounterFlowState final: public BaseFlowState
+class MoveSideEffectTextEncounterFlowState final: public BaseFlowState
 {
 public:
-    DamageCalculationEncounterFlowState(ecs::World&);
+    MoveSideEffectTextEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
 
 private:
-    void CalculateDamageInternal
+    void HandleMoveSideEffectText
     (
-        Pokemon& attackingPokemon,
-        Pokemon& defendingPokemon
-    ) const;
-    
-    void HandleMoveEffect
-    (        
-        Pokemon& attackingPokemon,
-        Pokemon& defendingPokemon
+        const PokemonMoveStats& selectedMoveStats,
+        const Pokemon& attackingPokemon,
+        const Pokemon& defendingPokemon
     ) const;
 };
 
@@ -52,4 +46,4 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-#endif /* DamageCalculationEncounterFlowState_h */
+#endif /* MoveSideEffectTextEncounterFlowState_h */

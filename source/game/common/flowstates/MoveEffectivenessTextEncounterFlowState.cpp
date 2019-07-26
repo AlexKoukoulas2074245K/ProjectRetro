@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveEffectivenessTextEncounterFlowState.h"
-#include "FirstTurnOverEncounterFlowState.h"
+#include "MoveSideEffectTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/MathUtils.h"
@@ -49,7 +49,34 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
         effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
     }
     
-    if (effectivenessFactor < 0.9f)
+    if (effectivenessFactor < 0.1f)
+    {
+        const auto mainChatboxEntityId = CreateChatbox(world);
+
+        if (encounterStateComponent.mIsOpponentsTurn)
+        {
+            QueueDialogForChatbox
+            (
+                mainChatboxEntityId,
+                "It doesn't affect#" + defendingPokemon.mName.GetString() + "!#+END",
+                mWorld
+            );
+        }
+        else
+        {
+            QueueDialogForChatbox
+            (
+                mainChatboxEntityId,
+                "It doesn't affect#Enemy " + defendingPokemon.mName.GetString() + "!#+END",
+                mWorld
+            );
+        }        
+    }
+    else if (selectedMoveStats.mPower == 0)
+    {
+        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
+    }
+    else if (effectivenessFactor < 0.9f)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
         QueueDialogForChatbox
@@ -71,7 +98,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     }
     else
     {
-        CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
     }
 }
 
@@ -82,7 +109,7 @@ void MoveEffectivenessTextEncounterFlowState::VUpdate(const float)
     // This is in all cases 2, except for when a critical hit is achieved
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
     }
 }
 

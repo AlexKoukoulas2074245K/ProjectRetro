@@ -12,6 +12,7 @@
 #include "PlayerPokemonSummonEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
@@ -23,7 +24,6 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
-#include "FirstTurnOverEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                     encounterStateComponent.mTurnsCompleted = 0;
                     encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
                     encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-                    CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+                    CompleteAndTransitionTo<TurnOverEncounterFlowState>();
                 }
                 else
                 {
@@ -274,7 +274,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                     encounterStateComponent.mTurnsCompleted = 0;
                     encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
                     encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-                    CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+                    CompleteAndTransitionTo<TurnOverEncounterFlowState>();
                 }
                 else
                 {

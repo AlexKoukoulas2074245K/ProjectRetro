@@ -152,8 +152,8 @@ bool ShouldMoveMiss
         return true;
     }
 
-    const auto accuracyFactor = attackerAccuracyStage > 0 ? (attackerAccuracyStage + 3)/3.0f : (3.0f/(attackerAccuracyStage + 3));
-    const auto evasionFactor  = defenderEvasionStage > 0  ? (defenderEvasionStage + 3)/3.0f  : (3.0f/(defenderEvasionStage + 3));
+    const auto accuracyFactor = attackerAccuracyStage > 0 ? (attackerAccuracyStage + 3)/3.0f : (3.0f/(-attackerAccuracyStage + 3));
+    const auto evasionFactor  = defenderEvasionStage > 0  ? (defenderEvasionStage + 3)/3.0f  : (3.0f/(-defenderEvasionStage + 3));
 
     const auto moveLandingProbability = (moveAccuracy/255.0f) * accuracyFactor/evasionFactor;
     return math::RandomInt(0, 100) > static_cast<int>(moveLandingProbability * 100);

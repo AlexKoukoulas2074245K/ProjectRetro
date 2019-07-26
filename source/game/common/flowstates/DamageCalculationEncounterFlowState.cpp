@@ -14,6 +14,7 @@
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/Logging.h"
+#include "../utils/OSMessageBox.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -31,8 +32,8 @@ DamageCalculationEncounterFlowState::DamageCalculationEncounterFlowState(ecs::Wo
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
-    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     CalculateDamageInternal
     (
@@ -59,8 +60,8 @@ void DamageCalculationEncounterFlowState::VUpdate(const float)
 
 void DamageCalculationEncounterFlowState::CalculateDamageInternal
 (
-    const Pokemon& attackingPokemon,
-    const Pokemon& defendingPokemon
+    Pokemon& attackingPokemon,
+    Pokemon& defendingPokemon
 ) const
 {    
     static const std::unordered_set<StringId, StringIdHasher> specialMoves = 
@@ -85,7 +86,8 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
         encounterStateComponent.mLastMoveMiss = true;        
     }
     else
-    {
+    {        
+        encounterStateComponent.mLastMoveMiss = false;
         encounterStateComponent.mLastMoveCrit = ShouldMoveCrit
         (
             selectedMoveStats.mName,
@@ -100,6 +102,11 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
         if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
         {
             effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
+        }
+
+        if (effectivenessFactor <= 0.1f)
+        {
+            return;
         }
 
         const auto isSpecialMove = specialMoves.count(selectedMoveStats.mType) != 0;
@@ -123,7 +130,68 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
             isStab
         ));
 
+        if (selectedMoveStats.mEffect != StringId())
+        {
+            HandleMoveEffect(attackingPokemon, defendingPokemon);
+        }
+
         Log(LogType::INFO, "Calculated damage: %.1f", encounterStateComponent.mOutstandingFloatDamage);        
+    }
+}
+
+void DamageCalculationEncounterFlowState::HandleMoveEffect
+(    
+    Pokemon& attackingPokemon,
+    Pokemon& defendingPokemon
+) const
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& selectedMoveStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
+    const auto& moveEffectString        = selectedMoveStats.mEffect.GetString();
+
+    if (StringStartsWith(moveEffectString, "EA"))
+    {
+        defendingPokemon.mAttackEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "PA"))
+    {
+        attackingPokemon.mAttackEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "ED"))
+    {
+        defendingPokemon.mDefenseEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "PD"))
+    {
+        attackingPokemon.mDefenseEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "EH"))
+    {
+        defendingPokemon.mAccuracyStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "PH"))
+    {
+        attackingPokemon.mAccuracyStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "ES"))
+    {
+        defendingPokemon.mSpeedEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "PS"))
+    {
+        attackingPokemon.mSpeedEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "EX"))
+    {
+        defendingPokemon.mSpecialEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else if (StringStartsWith(moveEffectString, "PX"))
+    {
+        attackingPokemon.mSpecialEncounterStage += std::stoi(selectedMoveStats.mEffect.GetString().substr(2));
+    }
+    else
+    {
+        ShowMessageBox(MessageBoxType::INFO, "Move Effect Not Handled", "Move effect: " + moveEffectString + " not handled");
     }
 }
 

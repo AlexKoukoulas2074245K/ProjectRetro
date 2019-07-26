@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveMissEncounterFlowState.h"
-#include "FirstTurnOverEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -61,7 +61,7 @@ void MoveMissEncounterFlowState::VUpdate(const float)
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<FirstTurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
     }
 }
 
