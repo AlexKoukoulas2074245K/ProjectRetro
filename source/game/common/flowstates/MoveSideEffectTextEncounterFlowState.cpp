@@ -30,9 +30,9 @@ MoveSideEffectTextEncounterFlowState::MoveSideEffectTextEncounterFlowState(ecs::
     const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     const auto& selectedMoveStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
 
-    if (selectedMoveStats.mEffect != StringId())
+    if (selectedMoveStats.mEffect != StringId() && encounterStateComponent.mNothingHappendFromMoveExecution == false)
     {
-        HandleMoveSideEffectText
+        ConstructAndDisplayMoveSideEffectText
         (
             selectedMoveStats,
             encounterStateComponent.mIsOpponentsTurn ? activeOpponentPokemon : activePlayerPokemon,
@@ -56,7 +56,7 @@ void MoveSideEffectTextEncounterFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void MoveSideEffectTextEncounterFlowState::HandleMoveSideEffectText
+void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
 (
     const PokemonMoveStats& selectedMoveStats,
     const Pokemon& attackingPokemon,
@@ -106,6 +106,10 @@ void MoveSideEffectTextEncounterFlowState::HandleMoveSideEffectText
     {
         sideEffectText += "DEFENSE";
     }
+    else if (moveEffectString[1] == 'E')
+    {
+        sideEffectText += "EVASION";
+    }
     else if (moveEffectString[1] == 'H')
     {
         sideEffectText += "ACCURACY";
@@ -130,11 +134,11 @@ void MoveSideEffectTextEncounterFlowState::HandleMoveSideEffectText
 
     if (moveEffectString[2] == '+')
     {
-        sideEffectText += "rose#+END";
+        sideEffectText += "rose!#+END";
     }
     else
     {
-        sideEffectText += "fell#+END";
+        sideEffectText += "fell!#+END";
     }
 
     QueueDialogForChatbox(mainChatboxEntityId, sideEffectText, mWorld);

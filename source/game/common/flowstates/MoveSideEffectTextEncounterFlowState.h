@@ -33,7 +33,7 @@ public:
     void VUpdate(const float dt) override;
 
 private:
-    void HandleMoveSideEffectText
+    void ConstructAndDisplayMoveSideEffectText
     (
         const PokemonMoveStats& selectedMoveStats,
         const Pokemon& attackingPokemon,

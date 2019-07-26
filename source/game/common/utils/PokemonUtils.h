@@ -100,6 +100,14 @@ int GetStatWithModifierApplied
     const int statModifier
 );
 
+// Returns true if the value changed 
+// post addition or false otherwise
+bool AddToStatStage
+(
+    const int value,
+    int& statStage
+);
+
 void ResetPokemonEncounterModifierStages
 (
     Pokemon& pokemon

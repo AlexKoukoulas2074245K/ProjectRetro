@@ -49,7 +49,18 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
         effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
     }
     
-    if (effectivenessFactor < 0.1f)
+    if (encounterStateComponent.mNothingHappendFromMoveExecution)
+    {
+        const auto mainChatboxEntityId = CreateChatbox(world);
+
+        QueueDialogForChatbox
+        (
+            mainChatboxEntityId,
+            "Nothing happened!# #+END",
+            mWorld
+        );
+    }
+    else if (effectivenessFactor < 0.1f)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
 

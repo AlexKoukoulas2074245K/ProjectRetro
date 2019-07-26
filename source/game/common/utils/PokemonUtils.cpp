@@ -243,7 +243,29 @@ int GetStatWithModifierApplied
     const int statModifier
 )
 {
-    return static_cast<int>(stat * (statModifier > 0 ? (statModifier + 3) / 3.0f : (3.0f / (statModifier + 3))));
+    return static_cast<int>(stat * (statModifier > 0 ? (statModifier + 3) / 3.0f : (3.0f / (-statModifier + 3))));
+}
+
+bool AddToStatStage
+(
+    const int value,
+    int& statStage
+)
+{
+    statStage += value;
+
+    if (statStage > 6)
+    {
+        statStage = 6;
+        return false;
+    }
+    else if (statStage < -6)
+    {
+        statStage = -6;
+        return false;
+    }
+
+    return true;
 }
 
 void ResetPokemonEncounterModifierStages
