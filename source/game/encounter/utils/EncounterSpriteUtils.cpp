@@ -28,6 +28,7 @@ static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME                        
 static const std::string ENCOUNTER_SPRITE_SHADER_NAME                            = "gui";
 static const std::string TRAINER_ATLAS_FILE_NAME                                 = "trainers.png";
 static const std::string PLAYER_ROSTER_DISPLAY_TEXTURE_NAME                      = "battle_player_roster";
+static const std::string OPPONENT_ROSTER_DISPLAY_TEXTURE_NAME                    = "battle_enemy_trainer_roster";
 static const std::string PLAYER_POKEMON_STATUS_DISPLAY_TEXTURE_NAME              = "battle_player_pokemon_status";
 static const std::string OPPONENT_POKEMON_DEATH_COVER_TEXTURE_NAME               = "battle_opponent_death_cover";
 static const std::string OPPONENT_POKEMON_STATUS_DISPLAY_TEXTURE_NAME            = "battle_enemy_pokemon_status";
@@ -160,6 +161,37 @@ ecs::EntityId LoadAndCreatePlayerRosterDisplay
     world.AddComponent<RenderableComponent>(playerRosterDisplayEntityId, std::move(renderableComponent));
     world.AddComponent<TransformComponent>(playerRosterDisplayEntityId, std::move(transformComponent));
     
+    return playerRosterDisplayEntityId;
+}
+
+ecs::EntityId LoadAndCreateOpponentRosterDisplay
+(
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+)
+{
+    const auto playerRosterDisplayEntityId = world.CreateEntity();
+
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + OPPONENT_ROSTER_DISPLAY_TEXTURE_NAME + ".png";
+    renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+
+    const auto modelPath = ResourceLoadingService::RES_MODELS_ROOT + POKEMON_BATTLE_SPRITE_MODEL_NAME + ".obj";
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = spritePosition;
+    transformComponent->mScale = spriteScale;
+
+    world.AddComponent<RenderableComponent>(playerRosterDisplayEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(playerRosterDisplayEntityId, std::move(transformComponent));
+
     return playerRosterDisplayEntityId;
 }
 

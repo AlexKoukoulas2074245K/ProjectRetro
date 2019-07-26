@@ -81,6 +81,7 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
+        //TODO: select correct trainer sprite
         encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
         (
             4,

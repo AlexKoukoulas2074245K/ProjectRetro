@@ -43,6 +43,7 @@ private:
     void UpdateWildFlashTransitionAnimation(const float dt) const;
     void UpdateEncounterTransitionAnimation(const float dt) const;
     void LoadEncounterSpecificAnimation() const;
+    std::string SelectAppropriateBattleTransitionAnimation() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

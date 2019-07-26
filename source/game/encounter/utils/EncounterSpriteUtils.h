@@ -54,6 +54,13 @@ ecs::EntityId LoadAndCreatePlayerRosterDisplay
     ecs::World& world
 );
 
+ecs::EntityId  LoadAndCreateOpponentRosterDisplay
+(
+    const glm::vec3& spritePosition,
+    const glm::vec3& spriteScale,
+    ecs::World& world
+);
+
 ecs::EntityId LoadAndCreatePlayerPokemonStatusDisplay
 (
     const glm::vec3& spritePosition,

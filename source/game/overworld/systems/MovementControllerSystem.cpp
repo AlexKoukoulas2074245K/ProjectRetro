@@ -234,7 +234,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
-                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
+                    encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon
@@ -244,7 +244,24 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                             mWorld
                         )
                     );
-                    
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
+                        (
+                            encounterInfo.mPokemonName,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
+                        (
+                            encounterInfo.mPokemonName,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
                     return;
                 }
 

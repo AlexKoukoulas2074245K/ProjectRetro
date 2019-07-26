@@ -51,6 +51,8 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         // Destroy move info textbox
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mFightMenuMoveInfoTexbotxEntityId, mWorld);                                            
 
+        encounterStateComponent.mNumberOfEscapeAttempts = 0;
+
         CompleteAndTransitionTo<RoundStructureCalculationEncounterFlowState>();
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))

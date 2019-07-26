@@ -36,10 +36,11 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
         
     // Battle finished condition
-    if (false)
+    if (encounterStateComponent.mEncounterJustFinished)
     {
-
+        encounterStateComponent.mEncounterJustFinished = false;
     }    
+    // Battle ongoing condition
     else if (encounterStateComponent.mFlowStateManager.HasActiveFlowState())
     {
         encounterStateComponent.mFlowStateManager.Update(dt);
@@ -58,8 +59,11 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
         
         mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
      
-        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();        
 
+        encounterStateComponent.mNumberOfEscapeAttempts = 0;
+        encounterStateComponent.mHasEscapeSucceeded     = false;
+        encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;
         encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
         encounterStateComponent.mActivePlayerPokemonRosterIndex = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
         encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();

@@ -33,6 +33,7 @@ public:
 
 public:
     static const glm::vec3 PLAYER_POKEMON_INFO_TEXTBOX_POSITION;
+    static const glm::vec3 OPPONENT_INFO_TEXTBOX_POSITION;
     static const int PLAYER_POKEMON_INFO_TEXTBOX_COLS;
     static const int PLAYER_POKEMON_INFO_TEXTBOX_ROWS;
 
@@ -40,6 +41,8 @@ private:
     static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME;
     static const glm::vec3 PLAYER_ROSTER_DISPLAY_POSITION;
     static const glm::vec3 PLAYER_ROSTER_DISPLAY_SCALE;
+    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_POSITION;
+    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_SCALE;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

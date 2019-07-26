@@ -44,7 +44,7 @@ TransitionAnimationSystem::TransitionAnimationSystem(ecs::World& world)
 void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) const
 {    
     const auto& warpConnectionsComponent    = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
-    const auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
 
     if (transitionAnimationStateComponent.mIsPlayingTransitionAnimation)
@@ -64,6 +64,14 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
         transitionAnimationStateComponent.mAscendingPalette              = true;
         transitionAnimationStateComponent.mIsPlayingTransitionAnimation  = true;
         transitionAnimationStateComponent.mAnimationTimer                = std::make_unique<Timer>(WILD_FLASH_ANIMATION_STEP_DURATION);
+    }
+    else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+    {
+        encounterStateComponent.mOverworldEncounterAnimationState       = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION;
+        transitionAnimationStateComponent.mTransitionAnimationType      = TransitionAnimationType::ENCOUNTER;
+        transitionAnimationStateComponent.mIsPlayingTransitionAnimation = true;
+        transitionAnimationStateComponent.mAnimationTimer = std::make_unique<Timer>(ENCOUNTER_ANIMATION_FRAME_DURATION);
+        LoadEncounterSpecificAnimation();
     }
     else if (warpConnectionsComponent.mHasPendingWarpConnection)
     {
@@ -128,9 +136,7 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
             {
                 transitionAnimationStateComponent.mAscendingPalette = true;
             }
-        }
-        
-        Log(LogType::INFO, "%d", transitionAnimationStateComponent.mAnimationProgressionStep);
+        }                
     }
 }
 
@@ -183,14 +189,27 @@ void TransitionAnimationSystem::LoadEncounterSpecificAnimation() const
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
-    
-    //TODO: select correct transition animation
-    const auto transitionAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + "transition_animations/wild_anim1/";
+        
+    auto transitionAnimationDirPath = SelectAppropriateBattleTransitionAnimation();
     const auto& encounterAnimFilenames = GetAllFilenamesInDirectory(transitionAnimationDirPath);
     for (const auto& filename: encounterAnimFilenames)
     {        
         transitionAnimationStateComponent.mAnimFrameResourceIdQueue.push(resourceLoadingService.LoadResource(transitionAnimationDirPath + filename));        
     }
+}
+
+std::string TransitionAnimationSystem::SelectAppropriateBattleTransitionAnimation() const
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+    {
+        return ResourceLoadingService::RES_TEXTURES_ROOT + "transition_animations/wild_anim1/";
+    }
+    else
+    {
+        return ResourceLoadingService::RES_TEXTURES_ROOT + "transition_animations/trainer_anim1/";
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

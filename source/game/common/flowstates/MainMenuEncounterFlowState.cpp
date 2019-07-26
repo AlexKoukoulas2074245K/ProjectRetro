@@ -12,6 +12,7 @@
 #include "MainMenuEncounterFlowState.h"
 #include "FightMenuEncounterFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
+#include "RunAttemptEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -53,8 +54,7 @@ void MainMenuEncounterFlowState::VUpdate(const float)
         {
             auto& pokemonSelectionViewState = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
             pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_FROM_MAIN_MENU;
-            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::POKEMON;
-            //TODO: create actual one
+            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::POKEMON;            
             CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
         }
         else if (cursorCol == 0 && cursorRow == 1)
@@ -65,9 +65,8 @@ void MainMenuEncounterFlowState::VUpdate(const float)
         }
         else if (cursorCol == 1 && cursorRow == 1)
         {
-            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::RUN;
-            //TODO: create actual one
-            CompleteAndTransitionTo<FightMenuEncounterFlowState>();
+            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::RUN;            
+            CompleteAndTransitionTo<RunAttemptEncounterFlowState>();
         }        
     }
 }

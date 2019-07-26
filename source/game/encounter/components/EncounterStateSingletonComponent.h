@@ -111,6 +111,7 @@ public:
     int mSpecialMoveAnimationStep                                      = 0;
     int mLastPlayerSelectedMoveIndexFromFightMenu                      = 0;
     int mTurnsCompleted                                                = 0;
+    int mNumberOfEscapeAttempts                                        = 0;
     float mOutstandingFloatDamage                                      = 0.0f;
     float mDefenderFloatHealth                                         = 0.0f;   
     bool mLastMoveCrit                                                 = false;
@@ -118,6 +119,8 @@ public:
     bool mIsOpponentsTurn                                              = false;
     bool mPlayerChangedPokemonFromMainMenu                             = false;
     bool mNothingHappendFromMoveExecution                              = false;
+    bool mHasEscapeSucceeded                                           = false;
+    bool mEncounterJustFinished                                        = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

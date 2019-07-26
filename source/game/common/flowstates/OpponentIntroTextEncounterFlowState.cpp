@@ -26,14 +26,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION = glm::vec3(0.7225f, -0.025f, 0.15f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::OPPONENT_INFO_TEXTBOX_POSITION       = glm::vec3(-0.2085f, 0.796f, 0.35f);
 
 const int OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_COLS = 20;
 const int OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS = 4;
 
 const std::string OpponentIntroTextEncounterFlowState::POKEMON_BATTLE_SPRITE_MODEL_NAME = "pokemon_battle_sprite";
 
-const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_POSITION = glm::vec3(0.3f, -0.23f, 0.2f);
-const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_SCALE = glm::vec3(1.1f, 1.1f, 1.0f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_POSITION   = glm::vec3(0.3f, -0.23f, 0.2f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::PLAYER_ROSTER_DISPLAY_SCALE      = glm::vec3(1.04f, 1.04f, 1.0f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::OPPONENT_ROSTER_DISPLAY_POSITION = glm::vec3(-0.32f, 0.7f, 0.4f);
+const glm::vec3 OpponentIntroTextEncounterFlowState::OPPONENT_ROSTER_DISPLAY_SCALE    = glm::vec3(1.04f, 1.04f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +53,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         PLAYER_ROSTER_DISPLAY_SCALE,
         mWorld
     );
-    
+
     // Pokemon party pokeball rendering
     encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
     (
@@ -90,18 +93,66 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         );
     }
     
-    
+
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+    {
+        encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentRosterDisplay
+        (
+            OPPONENT_ROSTER_DISPLAY_POSITION,
+            OPPONENT_ROSTER_DISPLAY_SCALE,
+            mWorld
+        );
+
+        // Pokemon party pokeball rendering
+        encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+        (
+            TextboxType::BARE_TEXTBOX,
+            20,
+            2,
+            OPPONENT_INFO_TEXTBOX_POSITION.x,
+            OPPONENT_INFO_TEXTBOX_POSITION.y,
+            OPPONENT_INFO_TEXTBOX_POSITION.z,
+            mWorld
+        );
+
+        const auto& opponentPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
+        for (auto i = 0U; i < opponentPokemonRoster.size(); ++i)
+        {
+            const auto& pokemon = *opponentPokemonRoster[i];
+
+            std::string statusString = "~"; // normal status
+
+            if (pokemon.mHp <= 0)
+            {
+                statusString = "+";
+            }
+            else if (pokemon.mStatus != PokemonStatus::NORMAL)
+            {
+                statusString = "£";
+            }
+
+            // select normal pokeball, status or faint
+            WriteTextAtTextboxCoords
+            (
+                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                statusString,
+                10 - i,
+                1,
+                mWorld
+            );
+        }
+    }
+
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
     {
         const auto wildPokemonName = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mName;
-        QueueDialogForChatbox
-        (
-            mainChatboxEntityId,
-            "Wild " + wildPokemonName.GetString() + "#appeared!#+END", 
-            mWorld
-        );
+        QueueDialogForChatbox(mainChatboxEntityId, "Wild " + wildPokemonName.GetString() + "#appeared!#+END", mWorld);
+    }
+    else
+    {
+        QueueDialogForChatbox(mainChatboxEntityId, "TEST_NAME wants#to fight!#+END", mWorld);
     }
 }
 
