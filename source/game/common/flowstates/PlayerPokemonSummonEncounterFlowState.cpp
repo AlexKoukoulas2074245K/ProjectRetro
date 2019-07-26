@@ -76,19 +76,23 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
         encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = ecs::NULL_ENTITY_ID;
     }
 
-    if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId == ecs::NULL_ENTITY_ID)
+    if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
     {
-        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
-        (
-            TextboxType::BARE_TEXTBOX,
-            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_COLS,
-            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS,
-            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.x,
-            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.y,
-            OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.z,
-            mWorld
-        );
+        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
     }
+
+    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::BARE_TEXTBOX,
+        OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_COLS,
+        OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_ROWS,
+        OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.x,
+        OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.y,
+        OpponentIntroTextEncounterFlowState::PLAYER_POKEMON_INFO_TEXTBOX_POSITION.z,
+        mWorld
+    );
+    
 
     // Player pokemon status display
     encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerPokemonStatusDisplay
