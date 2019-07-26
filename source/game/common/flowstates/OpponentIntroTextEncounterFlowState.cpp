@@ -79,7 +79,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         }
         else if (pokemon.mStatus != PokemonStatus::NORMAL)
         {
-            statusString = "£";
+            statusString = "`";
         }
 
         // select normal pokeball, status or faint
@@ -93,6 +93,17 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
         );
     }
     
+    for (auto i = playerPokemonRoster.size(); i < 6; ++i)
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            "\"",
+            1 + i,
+            3,
+            mWorld
+        );
+    }
 
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
@@ -128,7 +139,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
             }
             else if (pokemon.mStatus != PokemonStatus::NORMAL)
             {
-                statusString = "£";
+                statusString = "`";
             }
 
             // select normal pokeball, status or faint
@@ -136,6 +147,19 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
             (
                 encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
                 statusString,
+                10 - i,
+                1,
+                mWorld
+            );
+        }
+        
+        for (auto i = opponentPokemonRoster.size(); i < 6U; ++i)
+        {
+            // select normal pokeball, status or faint
+            WriteTextAtTextboxCoords
+            (
+                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                "\"",
                 10 - i,
                 1,
                 mWorld
