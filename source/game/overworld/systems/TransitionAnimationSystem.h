@@ -42,6 +42,7 @@ private:
     void UpdateWarpTransitionAnimation(const float dt) const;
     void UpdateWildFlashTransitionAnimation(const float dt) const;
     void UpdateEncounterTransitionAnimation(const float dt) const;
+    void UpdateEncounterEndTransitionAnimation(const float dt) const;
     void LoadEncounterSpecificAnimation() const;
     std::string SelectAppropriateBattleTransitionAnimation() const;
 };

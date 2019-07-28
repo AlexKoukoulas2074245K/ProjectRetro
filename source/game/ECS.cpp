@@ -40,7 +40,7 @@ void ecs::World::Update(const float dt)
     }
 }
 
-void ecs::World::RemoveEntity(const EntityId entityId)
+void ecs::World::DestroyEntity(const EntityId entityId)
 {
     assert(entityId != NULL_ENTITY_ID &&
         "NULL_ENTITY_ID entity removal request");

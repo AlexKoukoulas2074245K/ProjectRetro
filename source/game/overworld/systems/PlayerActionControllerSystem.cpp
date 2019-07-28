@@ -23,9 +23,10 @@
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../overworld/OverworldConstants.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelModelComponent.h"
 #include "../../overworld/components/MovementStateComponent.h"
 #include "../../overworld/components/NpcAiComponent.h"
-#include "../../overworld/components/LevelModelComponent.h"
+#include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 #include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
 
@@ -51,6 +52,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 {
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
     const auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     for (const auto& entityId : mWorld.GetActiveEntities())
@@ -67,6 +69,12 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             }
             
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {
+                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+                continue;
+            }
+            
+            if (transitionStateComponent.mIsPlayingTransitionAnimation)
             {
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 continue;

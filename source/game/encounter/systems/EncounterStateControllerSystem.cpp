@@ -11,15 +11,25 @@
 
 #include "EncounterStateControllerSystem.h"
 #include "../components/EncounterStateSingletonComponent.h"
+#include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
-#include "../../overworld/components/LevelModelComponent.h"
+#include "../../common/utils/Timer.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelModelComponent.h"
+#include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 #include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/LevelLoadingUtils.h"
+#include "../../overworld/utils/OverworldCharacterLoadingUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const float EncounterStateControllerSystem::ENCOUNTER_END_ANIMATION_STEP_DURATION = 0.12f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +48,7 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     // Battle finished condition
     if (encounterStateComponent.mEncounterJustFinished)
     {
-        encounterStateComponent.mEncounterJustFinished = false;
+        DestroyEncounterAndCreateLastPlayedLevel();
     }    
     // Battle ongoing condition
     else if (encounterStateComponent.mFlowStateManager.HasActiveFlowState())
@@ -47,38 +57,8 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
     }
     // Battle started condition
     else if (encounterStateComponent.mOverworldEncounterAnimationState == OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE)
-    {                
-        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-        const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-        
-        DestroyLevel(levelModelComponent.mLevelName, mWorld);
-        mWorld.RemoveEntity(GetPlayerEntityId(mWorld));
-        
-        const auto newLevelEntityId        = LoadAndCreateLevelByName(StringId("battle"), mWorld);
-        auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
-        
-        mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
-     
-        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();        
-
-        encounterStateComponent.mNumberOfEscapeAttempts = 0;
-        encounterStateComponent.mHasEscapeSucceeded     = false;
-        encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;
-        encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
-        encounterStateComponent.mActivePlayerPokemonRosterIndex = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
-        encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();
-
-        // Reset all stat modifiers for all player's pokemon        
-        for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
-        {
-            ResetPokemonEncounterModifierStages(*playerStateComponent.mPlayerPokemonRoster[i]);
-            for (auto j = 0U; j < encounterStateComponent.mOpponentPokemonRoster.size(); ++j)
-            {
-                encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap[i][j] = 0.0f;
-            }
-        }
-
-        CreateChatbox(mWorld);
+    {
+        DestroyCurrentAndCreateEncounterLevel();
     }
 }
 
@@ -89,6 +69,112 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
 void EncounterStateControllerSystem::InitializeEncounterState() const
 {    
     mWorld.SetSingletonComponent<EncounterStateSingletonComponent>(std::make_unique<EncounterStateSingletonComponent>());
+}
+
+void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() const
+{
+    const auto& activeLevelComponent        = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& levelModelComponent         = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    auto& playerStateComponent              = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    const auto overworldPlayerEntityId           = GetPlayerEntityId(mWorld);
+    const auto& overworldPlayerMovementComponent = mWorld.GetComponent<MovementStateComponent>(overworldPlayerEntityId);
+    
+    playerStateComponent.mLastOverworldDirection        = mWorld.GetComponent<DirectionComponent>(overworldPlayerEntityId).mDirection;
+    playerStateComponent.mLastOverworldLevelOccupiedCol = overworldPlayerMovementComponent.mCurrentCoords.mCol;
+    playerStateComponent.mLastOverworldLevelOccupiedRow = overworldPlayerMovementComponent.mCurrentCoords.mRow;
+    
+    DestroyLevel(levelModelComponent.mLevelName, mWorld);
+    mWorld.DestroyEntity(GetPlayerEntityId(mWorld));
+    
+    const auto newLevelEntityId        = LoadAndCreateLevelByName(StringId("battle"), mWorld);
+    auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+    
+    mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
+    
+    encounterStateComponent.mNumberOfEscapeAttempts              = 0;
+    encounterStateComponent.mHasEscapeSucceeded                  = false;
+    encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
+    encounterStateComponent.mActivePlayerPokemonRosterIndex      = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
+    encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
+    encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();
+    
+    // Reset all stat modifiers for all player's pokemon
+    for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
+    {
+        ResetPokemonEncounterModifierStages(*playerStateComponent.mPlayerPokemonRoster[i]);
+        for (auto j = 0U; j < encounterStateComponent.mOpponentPokemonRoster.size(); ++j)
+        {
+            encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap[i][j] = 0.0f;
+        }
+    }
+    
+    CreateChatbox(mWorld);
+    
+    encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
+}
+
+void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() const
+{
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activeLevelComponent    = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& levelModelComponent     = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    
+    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    
+    transitionAnimationStateComponent.mAnimationTimer           = std::make_unique<Timer>(ENCOUNTER_END_ANIMATION_STEP_DURATION);
+    transitionAnimationStateComponent.mAnimationProgressionStep = -5;
+    transitionAnimationStateComponent.mTransitionAnimationType  = TransitionAnimationType::ENCOUNTER_END;
+    
+    encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
+    encounterStateComponent.mEncounterJustFinished               = false;
+    encounterStateComponent.mActiveEncounterType                 = EncounterType::NONE;
+    encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
+    DestroyLevel(levelModelComponent.mLevelName, mWorld);
+    
+    DestroyActiveTextbox(mWorld);
+    
+    DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+    DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+    
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+    
+    encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId              = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId             = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+    
+    
+    const auto newLevelEntityId        = LoadAndCreateLevelByName(playerStateComponent.mLastOverworldLevelName, mWorld);
+    auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+    
+    mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
+    
+    CreatePlayerOverworldSprite
+    (
+        newLevelEntityId,
+        playerStateComponent.mLastOverworldDirection,
+        playerStateComponent.mLastOverworldLevelOccupiedCol,
+        playerStateComponent.mLastOverworldLevelOccupiedRow,
+        mWorld
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

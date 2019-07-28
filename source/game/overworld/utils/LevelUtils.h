@@ -145,12 +145,12 @@ inline void DestroyLevel(const StringId levelNameId, ecs::World& world)
         {
             if (world.GetComponent<LevelResidentComponent>(entityId).mLevelNameId == levelNameId)
             {
-                world.RemoveEntity(entityId);
+                world.DestroyEntity(entityId);
             }
         }
     }
     
-    world.RemoveEntity(GetLevelIdFromNameId(levelNameId, world));
+    world.DestroyEntity(GetLevelIdFromNameId(levelNameId, world));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

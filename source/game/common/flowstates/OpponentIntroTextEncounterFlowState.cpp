@@ -190,7 +190,7 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
         {
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
             
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
             
@@ -201,8 +201,8 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
         }
         else
         {
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
             
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);

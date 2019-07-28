@@ -117,7 +117,7 @@ public:
     // Removes the given entity from the world.    
     // Internally simply clears the component store for the given entity since all entities 
     // with no attached components will be cleaned up at the begining of the next frame    
-    void RemoveEntity(const EntityId);
+    void DestroyEntity(const EntityId);
     
     // Calculates the aggregate component mask for a given entity id (entityId)
     ComponentMask CalculateComponentUsageMaskForEntity(const EntityId entityId) const;

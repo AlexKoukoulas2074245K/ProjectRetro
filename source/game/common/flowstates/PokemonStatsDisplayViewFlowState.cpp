@@ -187,8 +187,8 @@ void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsScreen() const
 {
     auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();    
 
-    mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId);
-    mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mPokemonFrontSpriteEntityId);
+    mWorld.DestroyEntity(pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId);
+    mWorld.DestroyEntity(pokemonStatsDisplayViewStateComponent.mPokemonFrontSpriteEntityId);
 
     pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId       = ecs::NULL_ENTITY_ID;
     pokemonStatsDisplayViewStateComponent.mPokemonFrontSpriteEntityId = ecs::NULL_ENTITY_ID;
@@ -197,7 +197,7 @@ void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsScreen() const
 
     if (pokemonStatsDisplayViewStateComponent.mPokemonHealthbarEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mPokemonHealthbarEntityId);
+        mWorld.DestroyEntity(pokemonStatsDisplayViewStateComponent.mPokemonHealthbarEntityId);
         pokemonStatsDisplayViewStateComponent.mPokemonHealthbarEntityId = ecs::NULL_ENTITY_ID;
     }
     
@@ -206,7 +206,7 @@ void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsScreen() const
 void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsBackground() const
 {
     auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
-    mWorld.RemoveEntity(pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId);
+    mWorld.DestroyEntity(pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId);
     pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId = ecs::NULL_ENTITY_ID;
 }
 

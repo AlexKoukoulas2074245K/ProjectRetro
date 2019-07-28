@@ -26,9 +26,13 @@ class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
-    StringId mTrainerName            = StringId();
-    int mLeveledUpPokemonRosterIndex = 0;
-    short mTrainerId                 = 0;
+    StringId mLastOverworldLevelName   = StringId();
+    StringId mTrainerName              = StringId();
+    int mLastOverworldLevelOccupiedRow = 0;
+    int mLastOverworldLevelOccupiedCol = 0;
+    int mLeveledUpPokemonRosterIndex   = 0;
+    Direction mLastOverworldDirection  = Direction::SOUTH;
+    short mTrainerId                   = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -234,8 +234,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
-                    encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
-                    encounterStateComponent.mOpponentTrainerName = StringId("TEST_ENEMY");
+                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
+                    
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon
@@ -245,24 +245,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                             mWorld
                         )
                     );
-                    encounterStateComponent.mOpponentPokemonRoster.push_back
-                    (
-                        CreatePokemon
-                        (
-                            encounterInfo.mPokemonName,
-                            encounterInfo.mPokemonLevel,
-                            mWorld
-                        )
-                    );
-                    encounterStateComponent.mOpponentPokemonRoster.push_back
-                    (
-                        CreatePokemon
-                        (
-                            encounterInfo.mPokemonName,
-                            encounterInfo.mPokemonLevel,
-                            mWorld
-                        )
-                    );
+                    
                     return;
                 }
 
@@ -354,7 +337,7 @@ void MovementControllerSystem::SimulateJumpDisplacement(const float dt, JumpingS
 void MovementControllerSystem::DestroyJumpSprite(const ecs::EntityId entityId) const
 {
     auto& jumpingStateComponent = mWorld.GetComponent<JumpingStateComponent>(entityId);
-    mWorld.RemoveEntity(jumpingStateComponent.mJumpShadowSpriteEntityid);
+    mWorld.DestroyEntity(jumpingStateComponent.mJumpShadowSpriteEntityid);
     mWorld.RemoveComponent<JumpingStateComponent>(entityId);
 }
 

@@ -35,7 +35,7 @@ CameraControlSystem::CameraControlSystem(ecs::World& world)
 
 void CameraControlSystem::VUpdateAssociatedComponents(const float) const
 {
-    auto& cameraComponent           = mWorld.GetSingletonComponent<CameraSingletonComponent>();
+    auto& cameraComponent = mWorld.GetSingletonComponent<CameraSingletonComponent>();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
     {

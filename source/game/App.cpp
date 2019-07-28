@@ -152,8 +152,6 @@ void App::DummyInitialization()
     LoadAndPopulateMoveStats(*moveStatsComponent);
     mWorld.SetSingletonComponent<MoveStatsSingletonComponent>(std::move(moveStatsComponent));
 
-    const auto playerEntity = mWorld.CreateEntity();
-    
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
 
@@ -176,26 +174,7 @@ void App::DummyInitialization()
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    {
-        auto animationComponent = std::make_unique<AnimationTimerComponent>();
-        animationComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
-        animationComponent->mAnimationTimer->Pause();
-        
-        mWorld.AddComponent<AnimationTimerComponent>(playerEntity, std::move(animationComponent));
-        mWorld.AddComponent<DirectionComponent>(playerEntity, std::make_unique<DirectionComponent>());
-        mWorld.AddComponent<MovementStateComponent>(playerEntity, std::make_unique<MovementStateComponent>());
-        mWorld.AddComponent<PlayerTagComponent>(playerEntity, std::make_unique<PlayerTagComponent>());
-        mWorld.AddComponent<RenderableComponent>(playerEntity, CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, 6, 14)));
-        mWorld.AddComponent<TransformComponent>(playerEntity, std::make_unique<TransformComponent>());
-    }
-
-    auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(playerEntity);
-    auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntity);
-    
-    playerTransformComponent.mPosition = TileCoordsToPosition(16, 16);
-    playerMovementStateComponent.mCurrentCoords = TileCoords(16, 16);
-    GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntity;
-    GetTile(16, 16, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::PLAYER;
+    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 16, 16, mWorld);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

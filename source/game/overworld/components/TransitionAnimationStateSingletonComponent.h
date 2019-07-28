@@ -28,7 +28,7 @@
 
 enum class TransitionAnimationType
 {
-    WARP, WILD_FLASH, ENCOUNTER
+    WARP, WILD_FLASH, ENCOUNTER, ENCOUNTER_END
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

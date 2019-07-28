@@ -118,7 +118,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
     auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
-    mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 
     encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
@@ -150,7 +150,7 @@ void HealthDepletionEncounterFlowState::RefreshOpponentPokemonStats() const
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
-    mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
 
     encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (

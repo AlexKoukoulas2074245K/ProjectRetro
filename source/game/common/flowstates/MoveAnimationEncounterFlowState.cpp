@@ -135,7 +135,7 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
 
     if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
         encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
     }
 

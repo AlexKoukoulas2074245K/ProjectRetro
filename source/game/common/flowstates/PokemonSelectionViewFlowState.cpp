@@ -515,9 +515,9 @@ void PokemonSelectionViewFlowState::DestroyPokemonSelectionView() const
         
     for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
     {
-        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][0]);
-        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][1]);
-        mWorld.RemoveEntity(pokemonSpriteEntityIds[i][2]);
+        mWorld.DestroyEntity(pokemonSpriteEntityIds[i][0]);
+        mWorld.DestroyEntity(pokemonSpriteEntityIds[i][1]);
+        mWorld.DestroyEntity(pokemonSpriteEntityIds[i][2]);
 
         pokemonSpriteEntityIds[i][0] = ecs::NULL_ENTITY_ID;
         pokemonSpriteEntityIds[i][1] = ecs::NULL_ENTITY_ID;
@@ -527,7 +527,7 @@ void PokemonSelectionViewFlowState::DestroyPokemonSelectionView() const
     pokemonSpriteEntityIds.clear();
 
     // Destroy background
-    mWorld.RemoveEntity(pokemonSelectionViewStateComponent.mBackgroundEntityId);
+    mWorld.DestroyEntity(pokemonSelectionViewStateComponent.mBackgroundEntityId);
     pokemonSelectionViewStateComponent.mBackgroundEntityId = ecs::NULL_ENTITY_ID;
 }
 

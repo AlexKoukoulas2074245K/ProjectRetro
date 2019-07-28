@@ -10,9 +10,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OverworldCharacterLoadingUtils.h"
+#include "LevelUtils.h"
 #include "../../common/GameConstants.h"
+#include "../../common/components/DirectionComponent.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/components/TransformComponent.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/StringUtils.h"
+#include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/MeshUtils.h"
@@ -22,7 +27,51 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite(const CharacterSpriteData& spriteData)
+ecs::EntityId CreatePlayerOverworldSprite
+(
+    const ecs::EntityId levelEntityId,
+    const Direction direction,
+    const int currentCol,
+    const int currentRow,
+    ecs::World& world
+)
+{
+    const auto playerEntityId = world.CreateEntity();
+    
+    auto animationComponent = std::make_unique<AnimationTimerComponent>();
+    animationComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    animationComponent->mAnimationTimer->Pause();
+    
+    auto movementStateComponent = std::make_unique<MovementStateComponent>();
+    movementStateComponent->mCurrentCoords = TileCoords(currentCol, currentRow);
+    
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = TileCoordsToPosition(currentCol, currentRow);
+    
+    auto directionComponent = std::make_unique<DirectionComponent>();
+    directionComponent->mDirection = direction;
+    
+    world.AddComponent<AnimationTimerComponent>(playerEntityId, std::move(animationComponent));
+    world.AddComponent<DirectionComponent>(playerEntityId, std::move(directionComponent));
+    world.AddComponent<MovementStateComponent>(playerEntityId, std::move(movementStateComponent));
+    world.AddComponent<PlayerTagComponent>(playerEntityId, std::make_unique<PlayerTagComponent>());
+    world.AddComponent<RenderableComponent>(playerEntityId, CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, 6, 14)));
+    world.AddComponent<TransformComponent>(playerEntityId, std::move(transformComponent));
+    
+    auto& levelModelComponent = world.GetComponent<LevelModelComponent>(levelEntityId);
+    GetTile(currentCol, currentRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = playerEntityId;
+    GetTile(currentCol, currentRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::PLAYER;
+    
+    auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+    playerStateComponent.mLastOverworldLevelName = levelModelComponent.mLevelName;
+    
+    return playerEntityId;
+}
+
+std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite
+(
+    const CharacterSpriteData& spriteData
+)
 {
     auto renderableComponent = std::make_unique<RenderableComponent>();
     

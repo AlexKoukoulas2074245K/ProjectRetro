@@ -86,7 +86,7 @@ void PlayerPokemonWithdrawTextEncounterFlowState::VUpdate(const float)
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
 
         DestroyActiveTextbox(mWorld);

@@ -54,6 +54,7 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
             case TransitionAnimationType::WARP: UpdateWarpTransitionAnimation(dt); break;
             case TransitionAnimationType::WILD_FLASH: UpdateWildFlashTransitionAnimation(dt); break;
             case TransitionAnimationType::ENCOUNTER: UpdateEncounterTransitionAnimation(dt); break;
+            case TransitionAnimationType::ENCOUNTER_END: UpdateEncounterEndTransitionAnimation(dt); break;
         }        
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
@@ -151,7 +152,7 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
         transitionAnimationStateComponent.mAnimationTimer->Reset();
         if (transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity != ecs::NULL_ENTITY_ID)
         {            
-            mWorld.RemoveEntity(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity);
+            mWorld.DestroyEntity(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity);
             transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = ecs::NULL_ENTITY_ID;
         }
         
@@ -181,6 +182,24 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
         {
             encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
         }           
+    }
+}
+
+void TransitionAnimationSystem::UpdateEncounterEndTransitionAnimation(const float dt) const
+{
+    auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    
+    transitionAnimationStateComponent.mAnimationTimer->Update(dt);
+    if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
+    {
+        transitionAnimationStateComponent.mAnimationTimer->Reset();
+        
+        if (++transitionAnimationStateComponent.mAnimationProgressionStep == 0)
+        {
+            transitionAnimationStateComponent.mTransitionAnimationType      = TransitionAnimationType::WARP;
+            transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
+            transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
+        }
     }
 }
 

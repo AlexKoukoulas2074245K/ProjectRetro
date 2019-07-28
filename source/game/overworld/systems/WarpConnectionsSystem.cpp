@@ -16,6 +16,7 @@
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../utils/LevelUtils.h"
 #include "../utils/LevelLoadingUtils.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
@@ -93,7 +94,9 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         newTile.mTileOccupierType     = TileOccupierType::PLAYER;
 
         activeLevelSingletonComponent.mActiveLevelNameId   = targetWarp.mLevelName;
-        warpConnectionsComponent.mHasPendingWarpConnection = false;       
+        warpConnectionsComponent.mHasPendingWarpConnection = false;
+        
+        mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mLastOverworldLevelName = targetWarp.mLevelName;
     }
 }
 

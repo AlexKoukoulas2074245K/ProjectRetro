@@ -52,7 +52,7 @@ void OpponentTrainerPokemonSummonTextEncounterFlowState::VUpdate(const float)
     {
         DestroyActiveTextbox(mWorld);
         
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
         
         encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreatePokemonSprite
         (

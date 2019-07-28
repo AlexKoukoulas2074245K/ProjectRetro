@@ -467,11 +467,11 @@ void DestroyActiveTextbox
             world.GetComponent<TextboxResidentComponent>(entityId).mTextboxParentEntityId == textboxEntityId
         )
         {
-            world.RemoveEntity(entityId);
+            world.DestroyEntity(entityId);
         }
     }
     
-    world.RemoveEntity(textboxEntityId);
+    world.DestroyEntity(textboxEntityId);
 
     if (guiStateComponent.mActiveTextboxesStack.size() > 0)
     {
@@ -515,11 +515,11 @@ void DestroyGenericOrBareTextbox
             world.GetComponent<TextboxResidentComponent>(entityId).mTextboxParentEntityId == textboxEntityId
         )
         {
-            world.RemoveEntity(entityId);
+            world.DestroyEntity(entityId);
         }
     }
 
-    world.RemoveEntity(textboxEntityId);
+    world.DestroyEntity(textboxEntityId);
 }
 
 void WriteCharAtTextboxCoords
@@ -551,7 +551,7 @@ void WriteCharAtTextboxCoords
         }
         else
         {
-            world.RemoveEntity(textboxContent[textboxRow][textboxCol].mEntityId);
+            world.DestroyEntity(textboxContent[textboxRow][textboxCol].mEntityId);
         }
     }
     
@@ -698,7 +698,7 @@ void DeleteCharAtTextboxCoords
     textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = 0;
     textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId = ecs::NULL_ENTITY_ID;
     
-    world.RemoveEntity(characterEntityId);
+    world.DestroyEntity(characterEntityId);
 }
 
 void DeleteTextAtTextboxRow

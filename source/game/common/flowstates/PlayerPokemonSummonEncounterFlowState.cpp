@@ -54,25 +54,25 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     
     if (encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }    
 
     if (encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
         encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
     }
 
     if (encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
         encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId = ecs::NULL_ENTITY_ID;
     }
 
     if (encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId != ecs::NULL_ENTITY_ID)
     {
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
         encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = ecs::NULL_ENTITY_ID;
     }
 
@@ -185,7 +185,7 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
             if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
             {            
-                mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
                 encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
             }
         

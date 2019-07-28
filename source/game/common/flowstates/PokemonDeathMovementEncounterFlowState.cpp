@@ -61,9 +61,9 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
                 mWorld
             );
             
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
             
             encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
@@ -91,10 +91,10 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
                 mWorld
             );
             
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
-            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
              
             encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId        = ecs::NULL_ENTITY_ID;

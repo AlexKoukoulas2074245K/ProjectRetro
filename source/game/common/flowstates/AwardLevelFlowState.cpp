@@ -91,7 +91,7 @@ void AwardLevelFlowState::RefreshPokemonStats() const
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
-    mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 
     encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
