@@ -301,7 +301,7 @@ void LevelUpStats
 
     do
     {        
-        nextLevelXp = CalculatePokemonTotalExperienceAtLevel(pokemon.mName, ++targetNextLevel, world);
+        nextLevelXp = CalculatePokemonTotalExperienceAtLevel(pokemon.mBaseSpeciesStats.mSpeciesName, ++targetNextLevel, world);
     } while (nextLevelXp < pokemon.mXpPoints);
     
     targetNextLevel--;

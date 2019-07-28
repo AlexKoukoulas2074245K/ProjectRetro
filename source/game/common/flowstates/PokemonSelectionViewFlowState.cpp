@@ -269,13 +269,12 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         pokemonSelectionViewComponent.mNoWillToFightTextFlowActive = true;
     }
     else
-    {        
-        encounterStateComponent.mPlayerChangedPokemonFromMainMenu = true;
-
+    {
         DestroyPokemonSelectionView();
 
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
+            encounterStateComponent.mPlayerChangedPokemonFromMainMenu = true;
             DestroyActiveTextbox(mWorld);
             CompleteAndTransitionTo<PlayerPokemonWithdrawTextEncounterFlowState>();
         }
