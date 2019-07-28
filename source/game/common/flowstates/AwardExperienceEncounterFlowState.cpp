@@ -58,11 +58,11 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
 }
 
 void AwardExperienceEncounterFlowState::VUpdate(const float)
-{    
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
-    const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+{
+    const auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent   = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
@@ -80,7 +80,14 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
         }
         else
         {
-            //CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+            if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+            {
+                encounterStateComponent.mEncounterJustFinished = true;
+            }
+            else
+            {
+                //CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+            }
         }
     }
 }

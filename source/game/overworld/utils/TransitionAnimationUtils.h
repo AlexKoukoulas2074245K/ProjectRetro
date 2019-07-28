@@ -46,6 +46,10 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
 
     switch (transitionAnimationStep)
     {
+        case -4:
+        case -3:
+        case -2:
+        case -1: return colors::GLOBAL_WHITE_COLOR;
         case 0: return currentLevelColor; 
         case 1: return colors::GLOBAL_BLUE_COLOR;
         case 2: return colors::GLOBAL_BLACK_COLOR;

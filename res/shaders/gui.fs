@@ -37,6 +37,11 @@ vec4 getBlackAndWhiteModeColor()
 
 vec4 getTransitionAnimationColor()
 {
+    if (transition_progression_step < -3)
+    {
+        return global_white_color;
+    }
+    
 	vec4 colorPool[4]; 
 	colorPool[0] = global_white_color;
 	colorPool[1] = current_level_color;

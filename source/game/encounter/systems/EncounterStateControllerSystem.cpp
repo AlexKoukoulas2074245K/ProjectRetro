@@ -125,41 +125,51 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
     transitionAnimationStateComponent.mAnimationTimer           = std::make_unique<Timer>(ENCOUNTER_END_ANIMATION_STEP_DURATION);
-    transitionAnimationStateComponent.mAnimationProgressionStep = -5;
+    transitionAnimationStateComponent.mAnimationProgressionStep = -4;
     transitionAnimationStateComponent.mTransitionAnimationType  = TransitionAnimationType::ENCOUNTER_END;
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
     encounterStateComponent.mEncounterJustFinished               = false;
     encounterStateComponent.mActiveEncounterType                 = EncounterType::NONE;
     encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
+    encounterStateComponent.mOpponentPokemonRoster.clear();
     DestroyLevel(levelModelComponent.mLevelName, mWorld);
     
     DestroyActiveTextbox(mWorld);
     
-    DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
-    DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+    if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
+    {
+        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+        
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    }
+    
+    if (encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
+    {
+        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+        
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+    }
     
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
     
     encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
     encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId              = ecs::NULL_ENTITY_ID;
     encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId             = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
     encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
     encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
     encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
+    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
     
     
     const auto newLevelEntityId        = LoadAndCreateLevelByName(playerStateComponent.mLastOverworldLevelName, mWorld);
