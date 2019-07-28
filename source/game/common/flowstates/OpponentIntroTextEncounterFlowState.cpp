@@ -11,6 +11,7 @@
 
 #include "OpponentIntroTextEncounterFlowState.h"
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
+#include "OpponentTrainerRetreatEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
@@ -176,7 +177,7 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
     }
     else
     {
-        QueueDialogForChatbox(mainChatboxEntityId, "TEST_NAME wants#to fight!#+END", mWorld);
+        QueueDialogForChatbox(mainChatboxEntityId, encounterStateComponent.mOpponentTrainerName.GetString() + " wants#to fight!#+END", mWorld);
     }
 }
 
@@ -186,11 +187,33 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
-    {        
-        mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-        encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
-        DeleteTextAtTextboxRow(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 3, mWorld);
-        CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
+    {
+        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        {
+            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            
+            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+            
+            encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+            
+            CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
+        }
+        else
+        {
+            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            mWorld.RemoveEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+            
+            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+            
+            encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+            
+            CompleteAndTransitionTo<OpponentTrainerRetreatEncounterFlowState>();
+        }
     }
 }
 

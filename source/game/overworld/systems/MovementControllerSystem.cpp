@@ -235,6 +235,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
                     encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+                    encounterStateComponent.mOpponentTrainerName = StringId("TEST_ENEMY");
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon

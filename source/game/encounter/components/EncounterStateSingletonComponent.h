@@ -102,7 +102,8 @@ public:
     EncounterViewObjects mViewObjects;
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
     std::unordered_map<int, std::unordered_map<int, float>> mPlayerPokemonToOpponentPokemonDamageMap;
-    StringId mLastMoveSelected                                         = StringId();    
+    StringId mLastMoveSelected                                         = StringId();
+    StringId mOpponentTrainerName                                      = StringId();
     EncounterType mActiveEncounterType                                 = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected            = MainMenuActionType::FIGHT;
