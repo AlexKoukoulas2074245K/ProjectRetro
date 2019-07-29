@@ -12,6 +12,7 @@
 #include "PlayerPokemonSummonEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
+#include "PokemonScalingAnimationEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
@@ -24,6 +25,7 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -219,25 +221,14 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                     activePlayerPokemon.mBaseSpeciesStats.mSpeciesName,
                     false,
                     PLAYER_POKEMON_SPRITE_END_POSITION,
-                    SPRITE_SCALE,
+                    glm::vec3(0.0f, 0.0f, 0.0f),
                     mWorld
                 );
-
-                DestroyActiveTextbox(mWorld);
                 
-                if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
-                {
-                    encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
-                    encounterStateComponent.mIsOpponentsTurn = false;
-                    encounterStateComponent.mTurnsCompleted = 0;
-                    encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
-                    encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-                    CompleteAndTransitionTo<TurnOverEncounterFlowState>();
-                }
-                else
-                {
-                    CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-                }                
+                auto& pokemonSpriteScalingComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+                pokemonSpriteScalingComponent.mScaleOpponentPokemon = false;
+                pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;
+                CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
             }
         }
     }

@@ -10,10 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
-#include "OpponentPokemonStatusDisplayEncounterFlowState.h"
+#include "PokemonScalingAnimationEncounterFlowState.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +22,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 OpponentTrainerPokemonSummonTextEncounterFlowState::OPPONENT_SPRITE_TARGET_POS = glm::vec3(0.38f, 0.61f, 0.3f);
-const glm::vec3 OpponentTrainerPokemonSummonTextEncounterFlowState::SPRITE_SCALE               = glm::vec3(0.49f, 0.49f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -59,11 +59,15 @@ void OpponentTrainerPokemonSummonTextEncounterFlowState::VUpdate(const float)
             encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName,
             true,
             OPPONENT_SPRITE_TARGET_POS,
-            SPRITE_SCALE,
+            glm::vec3(0.0f, 0.0f, 0.0f),
             mWorld
         );
         
-        CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
+        auto& pokemonSpriteScalingComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+        pokemonSpriteScalingComponent.mScaleOpponentPokemon = true;
+        pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;
+
+        CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
     }
 }
 

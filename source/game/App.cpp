@@ -159,13 +159,13 @@ void App::DummyInitialization()
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mTrainerId = static_cast<short>(math::RandomInt(0, 65535));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mTrainerName = StringId("TEST");
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 1, mWorld));
-    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));    
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), 5, mWorld));    
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
     mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");    
-    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[1]->mHp = 2;
+    mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[0]->mHp = 0;
     
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

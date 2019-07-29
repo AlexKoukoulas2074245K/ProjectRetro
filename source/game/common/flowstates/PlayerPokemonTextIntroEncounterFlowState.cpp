@@ -31,15 +31,7 @@ PlayerPokemonTextIntroEncounterFlowState::PlayerPokemonTextIntroEncounterFlowSta
     const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     const auto activeOpponentPokemonHpProportionLeft = activeOpponentPokemon.mHp / static_cast<float>(activeOpponentPokemon.mMaxHp);
-    //TODO: differentiate between summoning dialogs
-	// On switch
-	// < 0.5 hp Do it! POKEMONNAME!
-	// < 0.25 hp The enemy's weak!#Get'm! POKEMONNAME!
-	// On faint
-	
-	// < 0.25 hp Get'm! POKEMONNAME!
-	// < 0.5 hp Do it! POKEMONNAME!
-	
+
     if (activeOpponentPokemonHpProportionLeft <= 0.25f)
     {
         QueueDialogForChatbox

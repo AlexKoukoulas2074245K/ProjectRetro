@@ -29,11 +29,6 @@ PlayerPokemonWithdrawTextEncounterFlowState::PlayerPokemonWithdrawTextEncounterF
     const auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent             = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    // Switch first step Random?
-    // POKEMONNAME enough!#Come back! no damage done to opponents pokemon hp
-    // POKEMONNAME good!#Come back! > 0.75 opponents pokemon hp damange done
-    // POKEMONNAME OK!#Come back! > 0.5 opponents pokemon hp damange done
-    // POKEMONNAME#Come back! > 0.25 opponents pokemon hp damange done
     const auto maxOpponentPokemonHp       = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mMaxHp;
     const auto withdrawnPokemonDamageDone = encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap
     [encounterStateComponent.mActivePlayerPokemonRosterIndex]

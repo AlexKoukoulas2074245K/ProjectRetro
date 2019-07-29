@@ -1,43 +1,64 @@
 //
-//  OpponentTrainerPokemonSummonTextEncounterFlowState.h
+//  PokemonScalingAnimationEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 28/07/2019.
+//  Created by Alex Koukoulas on 29/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OpponentTrainerPokemonSummonTextEncounterFlowState_h
-#define OpponentTrainerPokemonSummonTextEncounterFlowState_h
+#ifndef PokemonScalingAnimationEncounterFlowState_h
+#define PokemonScalingAnimationEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../../ECS.h"
 #include "../../common/utils/MathUtils.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class OpponentTrainerPokemonSummonTextEncounterFlowState final: public BaseFlowState
+class PokemonScalingAnimationEncounterFlowState final: public BaseFlowState
 {
 public:
-    OpponentTrainerPokemonSummonTextEncounterFlowState(ecs::World&);
+    PokemonScalingAnimationEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
-    
+   
 private:
-    static const glm::vec3 OPPONENT_SPRITE_TARGET_POS;
-    
+    void ScaleUpTransition();
+    void ScaleDownTransition();
+    void RepopulateScalingBlockEntities();
+    ecs::EntityId CreateScalingBlockEntity
+    (
+        const std::string atlasPath,
+        const bool isOpponentsPokemonSprite,
+        const int colWRTOriginBlock,
+        const int rowWRTOriginBlock,
+        const int atlasCol,
+        const int atlasRow
+    );
+
+    static const glm::vec3 PLAYERS_POKEMON_SCALE_ORIGIN_BLOCK_POSITION;
+    static const glm::vec3 OPPONENTS_POKEMON_SCALE_ORIGIN_BLOCK_POSITION;
+
+    static const int INDIVIDUAL_POKEMON_SPRITE_ATLAS_COLS;
+    static const int INDIVIDUAL_POKEMON_SPRITE_ATLAS_ROWS;
+
+    static const float SCALING_STEP_DURATION;
+    static const float SPRITE_FINAL_SCALE;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-
-#endif /* OpponentTrainerPokemonSummonTextEncounterFlowState_h */
+#endif /* PokemonDeathTextEncounterFlowState_h */

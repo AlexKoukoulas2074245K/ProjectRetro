@@ -11,6 +11,7 @@
 
 #include "EncounterStateControllerSystem.h"
 #include "../components/EncounterStateSingletonComponent.h"
+#include "../components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
@@ -69,6 +70,7 @@ void EncounterStateControllerSystem::VUpdateAssociatedComponents(const float dt)
 void EncounterStateControllerSystem::InitializeEncounterState() const
 {    
     mWorld.SetSingletonComponent<EncounterStateSingletonComponent>(std::make_unique<EncounterStateSingletonComponent>());
+    mWorld.SetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>(std::make_unique<PokemonSpriteScalingAnimationStateSingletonComponent>());
 }
 
 void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() const
