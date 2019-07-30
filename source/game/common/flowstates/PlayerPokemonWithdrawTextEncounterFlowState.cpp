@@ -26,10 +26,9 @@ PlayerPokemonWithdrawTextEncounterFlowState::PlayerPokemonWithdrawTextEncounterF
     : BaseFlowState(world)
 {
     const auto mainChatboxEntityId = CreateChatbox(world);
-
-    const auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-    const auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& encounterStateComponent             = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     const auto maxOpponentPokemonHp       = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mMaxHp;
     const auto withdrawnPokemonDamageDone = encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap
@@ -71,9 +70,7 @@ PlayerPokemonWithdrawTextEncounterFlowState::PlayerPokemonWithdrawTextEncounterF
             playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mName.GetString() + " good!#Come back!+FREEZE",
             mWorld
         );
-    }
-
-    encounterStateComponent.mActivePlayerPokemonRosterIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
+    }    
 }
 
 void PlayerPokemonWithdrawTextEncounterFlowState::VUpdate(const float)
@@ -86,7 +83,7 @@ void PlayerPokemonWithdrawTextEncounterFlowState::VUpdate(const float)
         pokemonSpriteScalingComponent.mScaleOpponentPokemon = false;
         pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_DOWN;
 
-        CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
+        CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();        
     }
 }
 

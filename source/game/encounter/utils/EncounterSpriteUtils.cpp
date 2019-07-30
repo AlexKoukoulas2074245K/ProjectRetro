@@ -46,13 +46,14 @@ static const glm::vec3 OPPONENT_FULL_HEALTHBAR_POSITION               = glm::vec
 static const glm::vec3 OPPONENT_EMPTY_HEALTHBAR_POSITION              = glm::vec3(-0.6952f, 0.7f, 0.45f);
 static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION                 = glm::vec3(0.3568f, -0.08f, 0.25f);
 static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION                = glm::vec3(-0.0184f, -0.08f, 0.25f);
-static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY   = glm::vec3(0.3438f, -0.08f, 0.25f);
-static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY  = glm::vec3(-0.06892, -0.08f, 0.25f);
+static const glm::vec3 PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY   = glm::vec3(0.3438f, 0.605f, -0.5f);
+static const glm::vec3 PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY  = glm::vec3(-0.06892, 0.605f, -0.5f);
 static const glm::vec3 POKEMON_SELECTION_VIEW_HEALTHBAR_BASE_POSITION = glm::vec3(-0.155f, 0.83f, -0.2);
 
 static const float POKEMON_SELECTION_VIEW_HEALTHBAR_DISTANCE             = 0.22f;
 static const float POKEMON_SELECTION_VIEW_BARE_HEALTH_BAR_X_DISPLACEMENT = 0.5115f;
 static const float POKEMON_SELECTION_VIEW_BARE_HEALTHBAR_Z               = 0.005f;
+static const float HEALTH_BAR_STATS_DISPLAY_SCALE                        = 1.1f;
 
 static const int TRAINER_ATLAS_COLS = 10;
 static const int TRAINER_ATLAS_ROWS = 5;
@@ -361,10 +362,8 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     if (isInPokemonStatsView)
     {        
         transformComponent->mPosition = math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY, PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY, depletionProportion);
-        transformComponent->mPosition.y = 0.605f;
-        transformComponent->mPosition.z = -0.5f; 
-        transformComponent->mScale.x = 1.1f;
-        transformComponent->mScale.y = 1.1f;
+        transformComponent->mScale.x = HEALTH_BAR_STATS_DISPLAY_SCALE;
+        transformComponent->mScale.y = HEALTH_BAR_STATS_DISPLAY_SCALE;
     }
     else if (isInPokemonSelectionView)
     {

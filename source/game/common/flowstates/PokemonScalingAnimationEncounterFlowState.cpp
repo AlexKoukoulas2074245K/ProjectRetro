@@ -25,6 +25,7 @@
 #include "../../input/utils/InputUtils.h"
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
+#include "../components/PokemonSelectionViewStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -124,17 +125,16 @@ void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
 
 void PokemonScalingAnimationEncounterFlowState::ScaleDownTransition()
 {
+    const auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     auto& scalingStateComponent   = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    /*
     for (const auto entityId : scalingStateComponent.mScalingBlockEntities)
     {
         mWorld.DestroyEntity(entityId);
     }
     
-    scalingStateComponent.mScalingBlockEntities.clear();
-    */
+    scalingStateComponent.mScalingBlockEntities.clear();    
     
     if (scalingStateComponent.mScaleOpponentPokemon == false)    
     {
@@ -143,6 +143,7 @@ void PokemonScalingAnimationEncounterFlowState::ScaleDownTransition()
         
         mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+        encounterStateComponent.mActivePlayerPokemonRosterIndex          = pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex;
 
         DestroyActiveTextbox(mWorld);
         CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
