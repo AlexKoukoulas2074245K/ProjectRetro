@@ -12,6 +12,7 @@
 #include "AwardExperienceEncounterFlowState.h"
 #include "PokemonDeathTextEncounterFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
+#include "UseNextPokemonQuestionEncounterFlowState.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
@@ -50,9 +51,7 @@ void PokemonDeathTextEncounterFlowState::VUpdate(const float)
             }
             else
             {
-                auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-                pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
-                CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+                CompleteAndTransitionTo<UseNextPokemonQuestionEncounterFlowState>();
             }
         }
     }

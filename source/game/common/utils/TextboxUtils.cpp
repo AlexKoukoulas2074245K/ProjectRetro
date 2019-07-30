@@ -34,6 +34,9 @@ static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::ve
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
+static const int YES_NO_TEXTBOX_COLS = 6;
+static const int YES_NO_TEXTBOX_ROWS = 5;
+
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS  = 12;
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS  = 6;
 
@@ -241,6 +244,56 @@ ecs::EntityId CreateChatbox
         CHATBOX_POSITION.z, 
         world
     );
+}
+
+ecs::EntityId CreateYesNoTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+)
+{
+
+    const auto yesNoTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        YES_NO_TEXTBOX_COLS,
+        YES_NO_TEXTBOX_ROWS,
+        position.x,
+        position.y,
+        position.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(yesNoTextboxEntityId, "YES", 2, 1, world);
+    WriteTextAtTextboxCoords(yesNoTextboxEntityId, "NO", 2, 3, world);
+
+    auto cursorComponent = std::make_unique<CursorComponent>();  
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 2;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset = 1;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        yesNoTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(yesNoTextboxEntityId, std::move(cursorComponent));
+
+    return yesNoTextboxEntityId;
 }
 
 ecs::EntityId CreateEncounterMainMenuTextbox

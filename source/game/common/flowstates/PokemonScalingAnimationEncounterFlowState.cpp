@@ -180,7 +180,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
                 scalingStateComponent.mScaleOpponentPokemon,
                 0,
                 1,
-                6,
+                3,
                 3
             ));
 

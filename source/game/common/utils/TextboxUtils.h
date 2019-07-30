@@ -77,6 +77,12 @@ ecs::EntityId CreateChatbox
     ecs::World& world
 );
 
+ecs::EntityId CreateYesNoTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+);
+
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
     const MainMenuActionType actionTypeSelected,
