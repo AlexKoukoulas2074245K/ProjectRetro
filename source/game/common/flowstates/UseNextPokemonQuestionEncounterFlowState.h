@@ -34,7 +34,7 @@ private:
     void TransitionToPokemonSelectionView();
     void RenderGotAwaySafelyText();
 
-    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
+    static glm::vec3 YES_NO_TEXTBOX_POSITION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

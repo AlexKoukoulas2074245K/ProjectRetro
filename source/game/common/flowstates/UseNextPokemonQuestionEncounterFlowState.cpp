@@ -14,6 +14,7 @@
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
+#include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -22,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 UseNextPokemonQuestionEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(0.5f, 0.0f, -0.1f);
+glm::vec3 UseNextPokemonQuestionEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(0.412899911f, -0.275700212, -0.1f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ UseNextPokemonQuestionEncounterFlowState::UseNextPokemonQuestionEncounterFlowSta
     );
 }
 
-void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float)
+void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float dt)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
@@ -76,9 +77,7 @@ void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float)
             else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
             {
                 RenderGotAwaySafelyText();
-            }
-
-            
+            }            
         }
         // Yes-No textbox has not been created yet
         else
