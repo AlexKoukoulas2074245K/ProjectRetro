@@ -268,7 +268,14 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
 
         if (pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex == encounterStateComponent.mActivePlayerPokemonRosterIndex)
         {
-            QueueDialogForChatbox(mainChatboxEntityId, selectedPokemon.mName.GetString() + " is#already out!#+END", mWorld);
+            if (selectedPokemon.mHp <= 0)
+            {
+                QueueDialogForChatbox(mainChatboxEntityId, "There's no will#to fight!#+END", mWorld);
+            }
+            else
+            {
+                QueueDialogForChatbox(mainChatboxEntityId, selectedPokemon.mName.GetString() + " is#already out!#+END", mWorld);
+            }
         }
         else
         {
@@ -289,14 +296,13 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         }
         else
         {
-            encounterStateComponent.mActivePlayerPokemonRosterIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
-
             if (encounterStateComponent.mOpponentPendingSummoning)
             {
                 CompleteAndTransitionTo<OpponentTrainerPokemonSummonTextEncounterFlowState>();
             }
             else
             {
+                encounterStateComponent.mActivePlayerPokemonRosterIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
                 CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
             }            
         }        

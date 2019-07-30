@@ -133,8 +133,13 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 2, 3, mWorld);
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 3, 3, mWorld);
 
-    const auto integerDefendersHealth = static_cast<int>(encounterStateComponent.mDefenderFloatHealth);
+    auto integerDefendersHealth = static_cast<int>(encounterStateComponent.mDefenderFloatHealth);
 
+    if (integerDefendersHealth == 0 && activePlayerPokemon.mHp > 0)
+    {
+        integerDefendersHealth = 1;
+    }
+    
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,

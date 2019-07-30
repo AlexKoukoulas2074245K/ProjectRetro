@@ -73,9 +73,12 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
         }
         else
         {
-            if (--scalingStateComponent.mScalingStep == 0)
+            --scalingStateComponent.mScalingStep;
+            RepopulateScalingBlockEntities();
+            
+            if (scalingStateComponent.mScalingStep == 0)
             {
-
+                ScaleDownTransition();
             }
         }
     }
@@ -121,11 +124,23 @@ void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
 
 void PokemonScalingAnimationEncounterFlowState::ScaleDownTransition()
 {
-    const auto& scalingStateComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+    auto& scalingStateComponent   = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
+    /*
+    for (const auto entityId : scalingStateComponent.mScalingBlockEntities)
+    {
+        mWorld.DestroyEntity(entityId);
+    }
+    
+    scalingStateComponent.mScalingBlockEntities.clear();
+    */
+    
     if (scalingStateComponent.mScaleOpponentPokemon == false)    
-    {        
+    {
+        mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId).mScale =
+            glm::vec3(0.0f, 0.0f, 1.0f);
+        
         mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
 

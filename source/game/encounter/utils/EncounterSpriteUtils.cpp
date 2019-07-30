@@ -361,7 +361,7 @@ ecs::EntityId LoadAndCreatePokemonHealthBar
     if (isInPokemonStatsView)
     {        
         transformComponent->mPosition = math::Lerp(PLAYER_EMPTY_HEALTHBAR_POSITION_STATS_DISPLAY, PLAYER_FULL_HEALTHBAR_POSITION_STATS_DISPLAY, depletionProportion);
-        transformComponent->mPosition.y = 0.604f;
+        transformComponent->mPosition.y = 0.605f;
         transformComponent->mPosition.z = -0.5f; 
         transformComponent->mScale.x = 1.1f;
         transformComponent->mScale.y = 1.1f;

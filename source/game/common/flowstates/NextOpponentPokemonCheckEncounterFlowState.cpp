@@ -31,7 +31,7 @@ const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_ROSTER_DISP
 const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_ROSTER_DISPLAY_SCALE    = glm::vec3(1.04f, 1.04f, 1.0f);
 const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_INFO_TEXTBOX_POSITION   = glm::vec3(-0.2085f, 0.796f, 0.35f);
 
-glm::vec3 NextOpponentPokemonCheckEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(-0.481498629f, -0.0558000430f, -0.1f);
+glm::vec3 NextOpponentPokemonCheckEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(-0.481498629f, -0.058000f, -0.1f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
