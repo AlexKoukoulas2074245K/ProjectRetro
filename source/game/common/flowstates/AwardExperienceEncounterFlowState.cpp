@@ -12,6 +12,7 @@
 #include "AwardExperienceEncounterFlowState.h"
 #include "AwardLevelFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
+#include "TrainerBattleWonEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
@@ -93,7 +94,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
                 }
                 else
                 {
-                    // CompleteAndTransitionToTrainerBattleEnding
+                    CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
                 }                
             }
         }

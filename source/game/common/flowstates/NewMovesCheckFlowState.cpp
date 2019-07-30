@@ -12,6 +12,7 @@
 #include "NewMovesCheckFlowState.h"
 #include "LearnNewMoveFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
+#include "TrainerBattleWonEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -61,7 +62,7 @@ void NewMovesCheckFlowState::VUpdate(const float)
             }
             else
             {
-                //TODO: CompleteAndTransitionToTrainerBattleEnding
+                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
             }
         }
         else

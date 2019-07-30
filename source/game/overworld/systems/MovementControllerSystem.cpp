@@ -237,6 +237,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
                     encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
                     encounterStateComponent.mOpponentTrainerName = StringId("Gary");
+                    encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
                     
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
@@ -247,16 +248,6 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                             mWorld
                         )
                     );
-                    encounterStateComponent.mOpponentPokemonRoster.push_back
-                    (
-                        CreatePokemon
-                        (
-                            StringId("EEVEE"),
-                            encounterInfo.mPokemonLevel,
-                            mWorld
-                        )
-                    );
-
                     encounterStateComponent.mOpponentPokemonRoster[0]->mHp = 1;
                     return;
                 }

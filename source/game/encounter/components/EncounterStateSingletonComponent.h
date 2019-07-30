@@ -104,6 +104,7 @@ public:
     std::unordered_map<int, std::unordered_map<int, float>> mPlayerPokemonToOpponentPokemonDamageMap;
     StringId mLastMoveSelected                                           = StringId();
     StringId mOpponentTrainerName                                        = StringId();
+    StringId mOpponentTrainerDefeatedText                                = StringId();
     EncounterType mActiveEncounterType                                   = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState   = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected              = MainMenuActionType::FIGHT;
