@@ -1,5 +1,5 @@
 //
-//  UseNextPokemonQuestionEncounterFlowState.h
+//  NextOpponentPokemonCheckEncounterFlowState.h
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 30/07/2019.
@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef UseNextPokemonQuestionEncounterFlowState_h
-#define UseNextPokemonQuestionEncounterFlowState_h
+#ifndef NextOpponentPokemonCheckEncounterFlowState_h
+#define NextOpponentPokemonCheckEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -23,23 +23,27 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class UseNextPokemonQuestionEncounterFlowState final: public BaseFlowState
+class NextOpponentPokemonCheckEncounterFlowState final: public BaseFlowState
 {
 public:
-    UseNextPokemonQuestionEncounterFlowState(ecs::World&);
+    NextOpponentPokemonCheckEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
-  
+    
 private:
+    void CreateOpponentRosterDisplay() const;
     void TransitionToPokemonSelectionView();
-    void RenderGotAwaySafelyText();
+    void TransitionToNextOpponentPokemonState();
 
-    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
+    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_POSITION;
+    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_SCALE;
+    static const glm::vec3 OPPONENT_INFO_TEXTBOX_POSITION;
+
+    static glm::vec3 YES_NO_TEXTBOX_POSITION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* UseNextPokemonQuestionEncounterFlowState_h */
-
+#endif /* NextOpponentPokemonCheckEncounterFlowState_h */

@@ -10,7 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
+#include "MainMenuEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
+#include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
@@ -78,16 +80,33 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
 }
 
 void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)
-{
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
-    auto& playerTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+{    
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;    
-    if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_EXIT_TARGET_POSITION.x)
+    if (encounterStateComponent.mOpponentPendingSummoning)
     {
-        playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;        
-        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+        encounterStateComponent.mOpponentPendingSummoning = false;
+
+        if (encounterStateComponent.mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned)
+        {
+            encounterStateComponent.mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
+            CompleteAndTransitionTo<PlayerPokemonWithdrawTextEncounterFlowState>();
+        }
+        else
+        {
+            CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+        }
+    }
+    else
+    {
+        auto& playerTrainerSpriteTransformComponent = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+
+        playerTrainerSpriteTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;
+        if (playerTrainerSpriteTransformComponent.mPosition.x < PLAYER_TRAINER_EXIT_TARGET_POSITION.x)
+        {
+            playerTrainerSpriteTransformComponent.mPosition.x = PLAYER_TRAINER_EXIT_TARGET_POSITION.x;
+            CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+        }
     }
 }
 

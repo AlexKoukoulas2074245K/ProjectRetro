@@ -11,10 +11,12 @@
 
 #include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
+#include "PokemonScalingAnimationEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -77,15 +79,14 @@ PlayerPokemonWithdrawTextEncounterFlowState::PlayerPokemonWithdrawTextEncounterF
 void PlayerPokemonWithdrawTextEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+        auto& pokemonSpriteScalingComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+        pokemonSpriteScalingComponent.mScaleOpponentPokemon = false;
+        pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_DOWN;
 
-        DestroyActiveTextbox(mWorld);
-        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+        CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
     }
 }
 

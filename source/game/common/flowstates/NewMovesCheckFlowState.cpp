@@ -11,9 +11,11 @@
 
 #include "NewMovesCheckFlowState.h"
 #include "LearnNewMoveFlowState.h"
+#include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -42,10 +44,33 @@ NewMovesCheckFlowState::NewMovesCheckFlowState(ecs::World& world)
 
 void NewMovesCheckFlowState::VUpdate(const float)
 { 
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
-    if (activePlayerPokemon.mMoveToBeLearned != StringId())
+
+    // No new moves to be learned
+    if (activePlayerPokemon.mMoveToBeLearned == StringId())
+    {
+        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+        {
+            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            {
+                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+            }
+            else
+            {
+                //TODO: CompleteAndTransitionToTrainerBattleEnding
+            }
+        }
+        else
+        {
+            //TODO: Continue with overworld
+        }
+    }
+    //TODO: New move to be learned exists
+    else
     {
         const auto firstUnusedIndex = FindFirstUnusedMoveIndex(activePlayerPokemon.mMoveSet);
 

@@ -11,6 +11,8 @@
 
 #include "MainMenuEncounterFlowState.h"
 #include "OpponentPokemonStatusDisplayEncounterFlowState.h"
+#include "PlayerPokemonTextIntroEncounterFlowState.h"
+#include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "PokemonScalingAnimationEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -34,7 +36,7 @@ const glm::vec3 PokemonScalingAnimationEncounterFlowState::OPPONENTS_POKEMON_SCA
 const int PokemonScalingAnimationEncounterFlowState::INDIVIDUAL_POKEMON_SPRITE_ATLAS_COLS = 7;
 const int PokemonScalingAnimationEncounterFlowState::INDIVIDUAL_POKEMON_SPRITE_ATLAS_ROWS = 7;
 
-const float PokemonScalingAnimationEncounterFlowState::SCALING_STEP_DURATION = 0.06f;
+const float PokemonScalingAnimationEncounterFlowState::SCALING_STEP_DURATION = 0.1f;
 const float PokemonScalingAnimationEncounterFlowState::SPRITE_FINAL_SCALE    = 0.49f;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +111,7 @@ void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
             encounterStateComponent.mLastEncounterMainMenuActionSelected      = MainMenuActionType::FIGHT;
             encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
             CompleteAndTransitionTo<TurnOverEncounterFlowState>();
-        }
+        }        
         else
         {
             CompleteAndTransitionTo<MainMenuEncounterFlowState>();
@@ -119,7 +121,17 @@ void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
 
 void PokemonScalingAnimationEncounterFlowState::ScaleDownTransition()
 {
-    
+    const auto& scalingStateComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    if (scalingStateComponent.mScaleOpponentPokemon == false)    
+    {        
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+
+        DestroyActiveTextbox(mWorld);
+        CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+    }    
 }
 
 void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()

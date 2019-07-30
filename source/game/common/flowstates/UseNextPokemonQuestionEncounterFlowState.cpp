@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-glm::vec3 UseNextPokemonQuestionEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(0.412899911f, -0.275700212, -0.1f);
+const glm::vec3 UseNextPokemonQuestionEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(0.412899911f, -0.275700212, -0.1f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ UseNextPokemonQuestionEncounterFlowState::UseNextPokemonQuestionEncounterFlowSta
     );
 }
 
-void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float dt)
+void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
@@ -65,10 +65,12 @@ void UseNextPokemonQuestionEncounterFlowState::VUpdate(const float dt)
 
             if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
             {
+                // Yes selected
                 if (cursorComponent.mCursorRow == 0)
                 {
                     TransitionToPokemonSelectionView();
                 }
+                // No selected
                 else
                 {
                     RenderGotAwaySafelyText();

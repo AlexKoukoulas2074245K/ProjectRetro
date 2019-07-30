@@ -11,6 +11,7 @@
 
 #include "AwardExperienceEncounterFlowState.h"
 #include "AwardLevelFlowState.h"
+#include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
@@ -86,7 +87,14 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
             }
             else
             {
-                //CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+                {                    
+                    CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                }
+                else
+                {
+                    // CompleteAndTransitionToTrainerBattleEnding
+                }                
             }
         }
     }

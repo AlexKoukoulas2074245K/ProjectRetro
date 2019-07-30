@@ -32,6 +32,7 @@
 
 #include <unordered_map>
 #include <utility>
+#include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +247,7 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
     auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& selectedPokemon         = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
-    if (selectedPokemon.mHp <= 0)
+    if (selectedPokemon.mHp <= 0 || pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex == encounterStateComponent.mActivePlayerPokemonRosterIndex)
     {
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
@@ -264,7 +265,15 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         CreatePokemonStatsInvisibleTextbox();
         
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
-        QueueDialogForChatbox(mainChatboxEntityId, "There's no will#to fight!#+END", mWorld);        
+
+        if (pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex == encounterStateComponent.mActivePlayerPokemonRosterIndex)
+        {
+            QueueDialogForChatbox(mainChatboxEntityId, selectedPokemon.mName.GetString() + " is#already out!#+END", mWorld);
+        }
+        else
+        {
+            QueueDialogForChatbox(mainChatboxEntityId, "There's no will#to fight!#+END", mWorld);
+        }        
 
         pokemonSelectionViewComponent.mNoWillToFightTextFlowActive = true;
     }
@@ -281,7 +290,15 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
         else
         {
             encounterStateComponent.mActivePlayerPokemonRosterIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
-            CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+
+            if (encounterStateComponent.mOpponentPendingSummoning)
+            {
+                CompleteAndTransitionTo<OpponentTrainerPokemonSummonTextEncounterFlowState>();
+            }
+            else
+            {
+                CompleteAndTransitionTo<PlayerPokemonTextIntroEncounterFlowState>();
+            }            
         }        
     }
 }
