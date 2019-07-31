@@ -14,11 +14,13 @@
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/Logging.h"
+#include "../utils/MathUtils.h"
 #include "../utils/OSMessageBox.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
+#include <cctype>
 #include <unordered_set>
 
 
@@ -231,6 +233,16 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mEvasionStage))
         {
             encounterStateComponent.mNothingHappendFromMoveExecution = true;
+        }
+    }
+    else if (std::isdigit(moveEffectString[0]))
+    {
+        const auto probability = std::stoi(moveEffectString.substr(0, 2));
+        const auto shouldProc  = math::RandomInt(0, 99) <= probability;
+        
+        if (shouldProc)
+        {
+
         }
     }
     else
