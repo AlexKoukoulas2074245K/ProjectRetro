@@ -28,6 +28,7 @@ public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
     StringId mLastOverworldLevelName   = StringId();
     StringId mTrainerName              = StringId();
+    int mPokeDollarCredits             = 0;
     int mLastOverworldLevelOccupiedRow = 0;
     int mLastOverworldLevelOccupiedCol = 0;
     int mLeveledUpPokemonRosterIndex   = 0;

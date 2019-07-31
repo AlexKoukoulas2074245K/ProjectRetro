@@ -13,6 +13,7 @@
 #include "TrainerUtils.h"
 #include "../GameConstants.h"
 #include "../components/TrainersInfoStatsSingletonComponent.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -39,6 +40,18 @@ const TrainerInfo& GetTrainerInfo
 {
     const auto& trainerInfoStatsComponent = world.GetSingletonComponent<TrainersInfoStatsSingletonComponent>();
     return trainerInfoStatsComponent.mTrainerInfoStats.at(trainerSpeciesName);
+}
+
+int CalculateTrainerBattleWonPayout
+(
+    const ecs::World& world
+)
+{
+    //https://bulbapedia.bulbagarden.net/wiki/Prize_money
+    const auto& encounterStateComponent = world.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& trainerInfo = GetTrainerInfo(encounterStateComponent.mOpponentTrainerSpeciesName, world);
+
+    return trainerInfo.mBasePayout * encounterStateComponent.mOpponentPokemonRoster.back()->mLevel;
 }
 
 void LoadAndPopulateTrainerInfoStats
