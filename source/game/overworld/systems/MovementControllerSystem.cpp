@@ -244,12 +244,12 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            encounterInfo.mPokemonName,
-                            encounterInfo.mPokemonLevel,
+                            StringId("EEVEE"),
+                            5 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
                             mWorld
                         )
                     );
-                    encounterStateComponent.mOpponentPokemonRoster[0]->mHp = 1;
+                    
                     return;
                 }
 

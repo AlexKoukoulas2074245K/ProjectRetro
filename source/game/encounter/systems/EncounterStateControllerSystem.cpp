@@ -152,11 +152,14 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     if (encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
     {
         DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
-        
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
         mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
         mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
     }        
+    
+    if (encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    }
     
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
