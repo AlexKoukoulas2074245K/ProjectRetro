@@ -301,10 +301,10 @@
 		"atlas_row": 4        
     },
 	
-	"RIVAL_2":
+	"RIVAL_3":
     {
         "base_payout": 99,
         "atlas_col": 5,
 		"atlas_row": 4        
-    },
+    }
 }

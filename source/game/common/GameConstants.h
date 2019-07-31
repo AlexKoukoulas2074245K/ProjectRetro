@@ -201,6 +201,28 @@ struct Pokemon
     int mSpecialIv; int mSpecialEv;
 };
 
+struct TrainerInfo
+{
+    TrainerInfo
+    (
+        const StringId trainerSpeciesName,        
+        const int basePayout,
+        const int textureAtlasCol,
+        const int textureAtlasRow
+    )
+        : mTrainerSpeciesName(trainerSpeciesName)
+        , mBasePayout(basePayout)
+        , mTextureAtlasCol(textureAtlasCol)
+        , mTextureAtlasRow(textureAtlasRow)
+    {
+    }
+
+    const StringId mTrainerSpeciesName;
+    const int mBasePayout;
+    const int mTextureAtlasCol;
+    const int mTextureAtlasRow;
+};
+
 struct TileCoords
 {
     TileCoords()

@@ -13,6 +13,7 @@
 #include "OpponentIntroTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonUtils.h"
+#include "../utils/TrainerUtils.h"
 #include "../../ECS.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -29,6 +30,9 @@ const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_TARGET
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::SPRITE_SCALE                     = glm::vec3(0.49f, 0.49f, 1.0f);
 
 const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 1.0f;
+
+const int DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_ATLAS_COL = 6;
+const int DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_ATLAS_ROW = 4;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -67,13 +71,13 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 
 void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites() const
-{
+{    
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
     (
-        6,
-        4,
+        PLAYER_TRAINER_SPRITE_ATLAS_COL,
+        PLAYER_TRAINER_SPRITE_ATLAS_ROW,
         PLAYER_TRAINER_SPRITE_INIT_POS,
         SPRITE_SCALE,
         mWorld
@@ -81,11 +85,12 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
-        //TODO: select correct trainer sprite
+        const auto& trainerInfo = GetTrainerInfo(encounterStateComponent.mOpponentTrainerSpeciesName, mWorld);
+        
         encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
         (
-            4,
-            4,
+            trainerInfo.mTextureAtlasCol,
+            trainerInfo.mTextureAtlasRow,
             OPPONENT_SPRITE_INIT_POS,
             SPRITE_SCALE,
             mWorld

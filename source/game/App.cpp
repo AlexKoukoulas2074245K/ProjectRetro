@@ -19,9 +19,11 @@
 #include "common/components/PokemonBaseStatsSingletonComponent.h"
 #include "common/components/PokemonStatsDisplayViewStateSingletonComponent.h"
 #include "common/components/PokemonSelectionViewStateSingletonComponent.h"
+#include "common/components/TrainersInfoStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
 #include "common/utils/PokemonMoveUtils.h"
 #include "common/utils/PokemonUtils.h"
+#include "common/utils/TrainerUtils.h"
 #include "encounter/components/EncounterStateSingletonComponent.h"
 #include "encounter/systems/EncounterShakeControllerSystem.h"
 #include "encounter/systems/EncounterStateControllerSystem.h"
@@ -147,6 +149,10 @@ void App::DummyInitialization()
     auto pokemonBaseStatsComponent = std::make_unique<PokemonBaseStatsSingletonComponent>();
     LoadAndPopulatePokemonBaseStats(*pokemonBaseStatsComponent);
     mWorld.SetSingletonComponent<PokemonBaseStatsSingletonComponent>(std::move(pokemonBaseStatsComponent));
+
+    auto trainerInfoStatsComponent = std::make_unique<TrainersInfoStatsSingletonComponent>();
+    LoadAndPopulateTrainerInfoStats(*trainerInfoStatsComponent);
+    mWorld.SetSingletonComponent<TrainersInfoStatsSingletonComponent>(std::move(trainerInfoStatsComponent));
 
     auto moveStatsComponent = std::make_unique<MoveStatsSingletonComponent>();
     LoadAndPopulateMoveStats(*moveStatsComponent);

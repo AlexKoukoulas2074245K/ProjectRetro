@@ -1,54 +1,40 @@
-//
-//  DarkenedOpponentsIntroEncounterFlowState.h
+#//
+//  TrainersInfoStatsSingletonComponent.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 25/06/2019.
+//  Created by Alex Koukoulas on 10/07/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DarkenedOpponentsIntroEncounterFlowState_h
-#define DarkenedOpponentsIntroEncounterFlowState_h
+#ifndef TrainersInfoStatsSingletonComponentt_h
+#define TrainersInfoStatsSingletonComponent_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "BaseFlowState.h"
-#include "../utils/MathUtils.h"
+#include "../GameConstants.h"
+#include "../../ECS.h"
+#include "../../common/utils/StringUtils.h"
+
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class DarkenedOpponentsIntroEncounterFlowState final: public BaseFlowState
+class TrainersInfoStatsSingletonComponent final: public ecs::IComponent
 {
-public:
-    DarkenedOpponentsIntroEncounterFlowState(ecs::World&);
+public:        
+    std::unordered_map<StringId, TrainerInfo, StringIdHasher> mTrainerInfoStats;
     
-    void VUpdate(const float dt) override;
-  
-private:
-    void CreateEncounterOpponentsSprites() const;
-    void CreateEncounterEdges() const;
-    
-    static const glm::vec3 PLAYER_TRAINER_SPRITE_INIT_POS;
-    static const glm::vec3 PLAYER_TRAINER_SPRITE_TARGET_POS;
-    static const glm::vec3 OPPONENT_SPRITE_INIT_POS;
-    static const glm::vec3 OPPONENT_SPRITE_TARGET_POS;
-    static const glm::vec3 SPRITE_SCALE;
-    
-    static const float SPRITE_ANIMATION_SPEED;
-
-    static const int PLAYER_TRAINER_SPRITE_ATLAS_COL;
-    static const int PLAYER_TRAINER_SPRITE_ATLAS_ROW;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* DarkenedOpponentsIntroEncounterFlowState_h */
-
+#endif /* TrainersInfoStatsSingletonComponent_h */

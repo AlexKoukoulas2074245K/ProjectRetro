@@ -14,6 +14,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../utils/TrainerUtils.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../components/TransformComponent.h"
 
@@ -36,6 +37,7 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& trainerInfo          = GetTrainerInfo(encounterStateComponent.mOpponentTrainerSpeciesName, mWorld);
 
     const auto mainChatboxEntityId = CreateChatbox(world);
     QueueDialogForChatbox
@@ -44,12 +46,11 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
         playerStateComponent.mTrainerName.GetString() + " defeated#" + encounterStateComponent.mOpponentTrainerName.GetString() + "!#+END",
         mWorld
     );
-
-    //TODO: select correct trainer sprite
+    
     encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = LoadAndCreateTrainerSprite
     (
-        4,
-        4,
+        trainerInfo.mTextureAtlasCol,
+        trainerInfo.mTextureAtlasRow,
         OPPONENT_TRAINER_INIT_POS,
         SPRITE_SCALE,
         mWorld

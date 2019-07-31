@@ -103,6 +103,7 @@ public:
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
     std::unordered_map<int, std::unordered_map<int, float>> mPlayerPokemonToOpponentPokemonDamageMap;
     StringId mLastMoveSelected                                           = StringId();
+    StringId mOpponentTrainerSpeciesName                                 = StringId();
     StringId mOpponentTrainerName                                        = StringId();
     StringId mOpponentTrainerDefeatedText                                = StringId();
     EncounterType mActiveEncounterType                                   = EncounterType::NONE;
