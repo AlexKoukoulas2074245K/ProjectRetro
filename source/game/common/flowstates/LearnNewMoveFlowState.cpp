@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "LearnNewMoveFlowState.h"
+#include "TrainerBattleWonEncounterFlowState.h"
+#include "../components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
@@ -51,7 +53,11 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 
 void LearnNewMoveFlowState::VUpdate(const float)
 {
-    
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
+    {
+        CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

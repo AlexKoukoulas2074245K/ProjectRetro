@@ -90,11 +90,9 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
         encounterStateComponent.mLastMoveMiss = false;
         encounterStateComponent.mLastMoveCrit = ShouldMoveCrit
         (
-            selectedMoveStats.mName,
-            attackingPokemon.mSpeedEncounterStage, 
-            attackingPokemon.mSpeed
+            selectedMoveStats.mName,            
+            attackingPokemon.mBaseSpeciesStats.mSpeed
         );
-
         
         auto isStab = selectedMoveStats.mType == attackingPokemon.mBaseSpeciesStats.mFirstType || selectedMoveStats.mType == attackingPokemon.mBaseSpeciesStats.mSecondType;
 

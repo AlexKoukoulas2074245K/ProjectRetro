@@ -63,9 +63,8 @@ bool ShouldMoveMiss
 
 bool ShouldMoveCrit
 (
-    const StringId moveName,
-    const int attackerSpeedModifier,
-    const int attackerSpeed
+    const StringId moveName,    
+    const int attackerBaseSpeed
 );
 
 bool ShouldOpponentGoFirst

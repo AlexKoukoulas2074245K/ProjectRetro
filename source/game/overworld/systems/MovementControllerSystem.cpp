@@ -238,14 +238,13 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     encounterStateComponent.mActiveEncounterType              = EncounterType::TRAINER;
                     encounterStateComponent.mOpponentTrainerSpeciesName       = StringId("RIVAL_1");
                     encounterStateComponent.mOpponentTrainerName              = StringId("Gary");
-                    encounterStateComponent.mOpponentTrainerDefeatedText      = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
-                    
+                    encounterStateComponent.mOpponentTrainerDefeatedText      = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");                                        
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon
                         (
                             StringId("EEVEE"),
-                            true,
+                            true, //TODO: to false
                             5 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
                             mWorld
                         )

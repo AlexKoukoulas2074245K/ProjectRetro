@@ -161,9 +161,8 @@ bool ShouldMoveMiss
 
 bool ShouldMoveCrit
 (
-    const StringId moveName,
-    const int attackerSpeedModifier,
-    const int attackerSpeed
+    const StringId moveName,    
+    const int attackerBaseSpeed
 )
 {   
     // https://bulbapedia.bulbagarden.net/wiki/Critical_hit
@@ -171,9 +170,8 @@ bool ShouldMoveCrit
     {
         StringId("CRABHAMMER"), StringId("SLASH"), StringId("KARATE_CHOP"), StringId("RAZOR_LEAF")
     };
-
-    const auto modifiedAttackerSpeed = GetStatWithModifierApplied(attackerSpeed, attackerSpeedModifier);
-    auto thresholdValue = modifiedAttackerSpeed * 0.5f;
+    
+    auto thresholdValue = attackerBaseSpeed * 0.5f;
 
     // Focus energy bug
     if (moveName == StringId("FOCUS_ENERGY"))
