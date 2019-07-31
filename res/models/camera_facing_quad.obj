@@ -12,3 +12,4 @@ vn 0.000000 0.000000 -1.000000
 s off
 f 1/1/1 2/2/1 3/3/1
 f 3/3/1 4/4/1 1/1/1
+>	farmheroessaga.exe!usdk::internal::Observable<ServiceLayerViews::IViews::IListener>::Notify<void (__thiscall ServiceLayerViews::IViews::IListener::*)(unsigned int,int,char const *),unsigned int,int,char const *>(void(ServiceLayerViews::IViews::IListener::*)(unsigned int, int, const char *) && func, unsigned int && <args_0>, int && <args_1>, const char * && <args_2>) Line 86	C++

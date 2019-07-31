@@ -1,0 +1,310 @@
+{
+    "BEAUTY":
+    {
+        "base_payout": 70,
+        "atlas_col": 3,
+		"atlas_row": 2        
+    },
+	
+	"BIKER":
+    {
+        "base_payout": 20,
+        "atlas_col": 5,
+		"atlas_row": 2        
+    },
+	
+	"BIRD_KEEPER":
+    {
+        "base_payout": 25,
+        "atlas_col": 4,
+		"atlas_row": 2        
+    },
+	
+	"BLACKBELT":
+    {
+        "base_payout": 25,
+        "atlas_col": 2,
+		"atlas_row": 3        
+    },
+	
+	"GIOVANNI":
+    {
+        "base_payout": 99,
+        "atlas_col": 7,
+		"atlas_row": 0        
+    },
+	
+	"BUG_CATCHER":
+    {
+        "base_payout": 10,
+        "atlas_col": 8,
+		"atlas_row": 0        
+    },
+	
+	"BURGLAR":
+    {
+        "base_payout": 90,
+        "atlas_col": 1,
+		"atlas_row": 3        
+    },
+	
+	"CHANNELER":
+    {
+        "base_payout": 30,
+        "atlas_col": 4,
+		"atlas_row": 1        
+    },
+	
+	"COOLTRAINER]":
+    {
+        "base_payout": 35,
+        "atlas_col": 7,
+		"atlas_row": 2        
+    },
+	
+	"COOLTRAINER[":
+    {
+        "base_payout": 35,
+        "atlas_col": 4,
+		"atlas_row": 3        
+    },
+	
+	"CUE BALL":
+    {
+        "base_payout": 25,
+        "atlas_col": 7,
+		"atlas_row": 3        
+    },
+	
+	"ENGINEER":
+    {
+        "base_payout": 50,
+        "atlas_col": 7,
+		"atlas_row": 4        
+    },
+	
+	"FISHERMAN":
+    {
+        "base_payout": 35,
+        "atlas_col": 2,
+		"atlas_row": 2        
+    },
+	
+	"GAMBLER":
+    {
+        "base_payout": 70,
+        "atlas_col": 1,
+		"atlas_row": 2        
+    },
+	
+	"GENTLEMAN":
+    {
+        "base_payout": 70,
+        "atlas_col": 9,
+		"atlas_row": 1        
+    },
+	
+	"GRUNT":
+    {
+        "base_payout": 30,
+        "atlas_col": 2,
+		"atlas_row": 1        
+    },
+	
+	"HIKER":
+    {
+        "base_payout": 35,
+        "atlas_col": 3,
+		"atlas_row": 1        
+    },
+	
+	"JR._TRAINER[":
+	{
+		"base_payout": 20,
+        "atlas_col": 9,
+		"atlas_row": 0  
+	},
+	
+	"JR._TRAINER]":
+	{
+		"base_payout": 20,
+        "atlas_col": 6,
+		"atlas_row": 1  
+	},
+	
+	"JUGGLER":
+    {
+        "base_payout": 35,
+        "atlas_col": 6,
+		"atlas_row": 2        
+    },
+	
+	"LASS":
+    {
+        "base_payout": 15,
+        "atlas_col": 0,
+		"atlas_row": 1        
+    },
+	
+	"POK^MANIAC":
+    {
+        "base_payout": 50,
+        "atlas_col": 8,
+		"atlas_row": 3        
+    },
+	
+	"PSYCHIC":
+    {
+        "base_payout": 10,
+        "atlas_col": 3,
+		"atlas_row": 3        
+    },
+	
+	"ROCKER":
+    {
+        "base_payout": 25,
+        "atlas_col": 8,
+		"atlas_row": 1        
+    },
+	
+	"SUPER_NERD":
+    {
+        "base_payout": 25,
+        "atlas_col": 1,
+		"atlas_row": 1        
+    },
+	
+	"SWIMMER":
+    {
+        "base_payout": 5,
+        "atlas_col": 5,
+		"atlas_row": 1        
+    },
+	
+	"SAILOR":
+    {
+        "base_payout": 30,
+        "atlas_col": 7,
+		"atlas_row": 1        
+    },
+	
+	"SCIENTIST":
+    {
+        "base_payout": 50,
+        "atlas_col": 6,
+		"atlas_row": 3        
+    },
+	
+	"TAMER":
+    {
+        "base_payout": 40,
+        "atlas_col": 5,
+		"atlas_row": 3        
+    },
+	
+	"YOUNGSTER":
+    {
+        "base_payout": 15,
+        "atlas_col": 0,
+		"atlas_row": 2
+    },
+	
+	"BROCK":
+    {
+        "base_payout": 99,
+        "atlas_col": 0,
+		"atlas_row": 0        
+    },
+	
+	"MISTY":
+    {
+        "base_payout": 99,
+        "atlas_col": 1,
+		"atlas_row": 0        
+    },
+	
+	"LT.SURGE":
+    {
+        "base_payout": 99,
+        "atlas_col": 2,
+		"atlas_row": 0        
+    },
+	
+	"ERIKA":
+    {
+        "base_payout": 99,
+        "atlas_col": 3,
+		"atlas_row": 0        
+    },
+	
+	"KOGA":
+    {
+        "base_payout": 99,
+        "atlas_col": 4,
+		"atlas_row": 0        
+    },
+	
+	"SABRINA":
+    {
+        "base_payout": 99,
+        "atlas_col": 5,
+		"atlas_row": 0        
+    },
+	
+	"BLAINE":
+    {
+        "base_payout": 99,
+        "atlas_col": 6,
+		"atlas_row": 0        
+    },
+	
+	"LORELEI":
+    {
+        "base_payout": 99,
+        "atlas_col": 9,
+		"atlas_row": 3        
+    },	
+	
+	"BRUNO":
+    {
+        "base_payout": 99,
+        "atlas_col": 0,
+		"atlas_row": 4        
+    },
+		
+	"AGATHA":
+    {
+        "base_payout": 99,
+        "atlas_col": 1,
+		"atlas_row": 4        
+    },	
+	
+	"LANCE":
+    {
+        "base_payout": 99,
+        "atlas_col": 2,
+		"atlas_row": 4        
+    },
+	
+	
+	"RIVAL_1":
+    {
+        "base_payout": 35,
+        "atlas_col": 4,
+		"atlas_row": 4        
+    },
+	
+	"RIVAL_2":
+    {
+        "base_payout": 65,
+        "atlas_col": 3,
+		"atlas_row": 4        
+    },
+	
+	"RIVAL_2":
+    {
+        "base_payout": 99,
+        "atlas_col": 5,
+		"atlas_row": 4        
+    },
+}
