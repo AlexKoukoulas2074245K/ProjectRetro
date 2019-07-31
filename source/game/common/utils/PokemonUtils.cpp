@@ -38,6 +38,7 @@ static const std::string POKEMON_XP_GROUPS_FILE_NAME = "xp_groups.json";
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
+    const bool trainerOwned,
     const int pokemonLevel,
     const ecs::World& world
 )
@@ -54,10 +55,21 @@ std::unique_ptr<Pokemon> CreatePokemon
 
     // Calculate IVs
     // https://bulbapedia.bulbagarden.net/wiki/Individual_values
-    pokemonInstance->mAttackIv  = math::RandomInt(0, 15);
-    pokemonInstance->mDefenseIv = math::RandomInt(0, 15);
-    pokemonInstance->mSpeedIv   = math::RandomInt(0, 15);
-    pokemonInstance->mSpecialIv = math::RandomInt(0, 15);
+    if (trainerOwned)
+    {
+        pokemonInstance->mAttackIv  = 9;
+        pokemonInstance->mDefenseIv = 8;
+        pokemonInstance->mSpeedIv   = 8;
+        pokemonInstance->mSpecialIv = 8;
+    }
+    else
+    {
+        pokemonInstance->mAttackIv  = math::RandomInt(0, 15);
+        pokemonInstance->mDefenseIv = math::RandomInt(0, 15);
+        pokemonInstance->mSpeedIv   = math::RandomInt(0, 15);
+        pokemonInstance->mSpecialIv = math::RandomInt(0, 15);
+    }
+    
     pokemonInstance->mHpIv =
         ((pokemonInstance->mAttackIv & 0x1)  << 3) |
         ((pokemonInstance->mDefenseIv & 0x1) << 2) |

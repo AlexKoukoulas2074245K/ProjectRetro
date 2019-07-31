@@ -39,6 +39,7 @@ class PokemonBaseStatsSingletonComponent;
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
+    const bool trainerOwned,
     const int pokemonLevel,
     const ecs::World& world
 );

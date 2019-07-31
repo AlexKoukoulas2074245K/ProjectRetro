@@ -164,12 +164,12 @@ void App::DummyInitialization()
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = static_cast<short>(math::RandomInt(0, 65535));
     playerStateComponent->mTrainerName = StringId("TEST");
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), 5, mWorld));    
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), false, 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), false, 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), false, 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), false, 5, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("RATTATA"), false, 5, mWorld));
     playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");        
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
