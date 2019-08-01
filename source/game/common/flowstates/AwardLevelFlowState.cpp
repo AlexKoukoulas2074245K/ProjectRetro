@@ -132,15 +132,29 @@ void AwardLevelFlowState::RefreshPokemonStats() const
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 4, 1, mWorld);
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 5, 1, mWorld);
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 6, 1, mWorld);
-
-    WriteTextAtTextboxCoords
-    (
-        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        "=" + std::to_string(activePlayerPokemon.mLevel),
-        4,
-        1,
-        mWorld
-    );
+    
+    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL)
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            "=" + std::to_string(activePlayerPokemon.mLevel),
+            4,
+            1,
+            mWorld
+        );
+    }
+    else
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            GetFormattedPokemonStatus(activePlayerPokemon.mHp, activePlayerPokemon.mStatus),
+            4,
+            1,
+            mWorld
+        );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

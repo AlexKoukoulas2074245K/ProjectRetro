@@ -48,7 +48,7 @@ enum class CharacterMovementType
 
 enum class PokemonStatus
 {
-    NORMAL, PARALYZED, POISONED, CONFUSED
+    NORMAL, PARALYZED, POISONED, CONFUSED, FROZEN, ASLEEP, BURNED
 };
 
 enum class OverworldPokemonSpriteType

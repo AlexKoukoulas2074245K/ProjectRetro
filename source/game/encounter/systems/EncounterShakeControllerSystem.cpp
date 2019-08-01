@@ -77,6 +77,7 @@ void EncounterShakeControllerSystem::VUpdateAssociatedComponents(const float dt)
                 // These two are updated based on interpolation rather than fixed offsets. See above
                 case ShakeType::OPPONENT_POKEMON_LONG_HORIZONTAL_SHAKE:  break;
                 case ShakeType::PLAYER_POKEMON_LONG_HORIZONTAL_SHAKE:    break;
+                case ShakeType::PLAYER_POKEMON_STATUS_SHAKE:             break;
                 case ShakeType::NONE:                                    break;
             }
         }
@@ -422,7 +423,14 @@ void EncounterShakeControllerSystem::RedrawOpponentStatusDisplay(const float dx)
 
     // Write opponent pokemon level string
     const auto opponentPokemonLevel = activeOpponentPokemon.mLevel;
-    WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
+    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL)
+    {
+        WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, GetFormattedPokemonStatus(1, activeOpponentPokemon.mStatus), 4, 1, mWorld);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

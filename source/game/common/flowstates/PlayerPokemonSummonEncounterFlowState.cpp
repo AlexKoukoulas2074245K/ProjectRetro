@@ -131,14 +131,28 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     );
     
     // Write player's pokemon level
-    WriteTextAtTextboxCoords
-    (
-        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        "=" + std::to_string(activePlayerPokemon.mLevel),
-        4,
-        1,
-        mWorld
-    );
+    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL)
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            "=" + std::to_string(activePlayerPokemon.mLevel),
+            4,
+            1,
+            mWorld
+        );
+    }
+    else
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            GetFormattedPokemonStatus(1, activePlayerPokemon.mStatus),
+            4,
+            1,
+            mWorld
+        );
+    }
     
     // Write player's pokemon current hp
     WriteTextAtTextboxCoords

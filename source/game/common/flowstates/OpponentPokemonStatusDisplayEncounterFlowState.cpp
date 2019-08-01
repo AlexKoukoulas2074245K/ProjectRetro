@@ -76,7 +76,28 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     
     // Write opponent pokemon level string
     const auto opponentPokemonLevel = activeOpponentPokemon.mLevel;
-    WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
+    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL)
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+            "=" + std::to_string(opponentPokemonLevel),
+            3,
+            1,
+            mWorld
+         );
+    }
+    else
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+            GetFormattedPokemonStatus(1, activeOpponentPokemon.mStatus),
+            4,
+            1,
+            mWorld
+        );
+    }
 }
 
 void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)

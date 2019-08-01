@@ -21,6 +21,7 @@
 #include "../components/TransformComponent.h"
 #include "../utils/MathUtils.h"
 #include "../utils/PokemonSelectionViewSpriteUtils.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -448,6 +449,15 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             pokemonSelectionViewTextboxEntityId,
             "=" + std::to_string(pokemon.mLevel),
             13,
+            i * 2,
+            mWorld
+        );
+        
+        WriteTextAtTextboxCoords
+        (
+            pokemonSelectionViewTextboxEntityId,
+            GetFormattedPokemonStatus(pokemon.mHp, pokemon.mStatus),
+            17,
             i * 2,
             mWorld
         );

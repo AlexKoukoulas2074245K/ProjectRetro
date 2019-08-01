@@ -155,6 +155,9 @@ std::string GetFormattedPokemonStatus
         case PokemonStatus::CONFUSED: return "OK";
         case PokemonStatus::PARALYZED: return "PRZ";
         case PokemonStatus::POISONED: return "PSN";
+        case PokemonStatus::FROZEN: return "FRZ";
+        case PokemonStatus::ASLEEP: return "SLP";
+        case PokemonStatus::BURNED: return "BRN";
         default: return "";
     }
 }
