@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveSideEffectTextEncounterFlowState.h"
-#include "TurnOverEncounterFlowState.h"
+#include "StatusChangeShakeEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -48,7 +48,7 @@ void MoveSideEffectTextEncounterFlowState::VUpdate(const float)
     // This is in all cases 2, except for when a critical hit is achieved
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<StatusChangeShakeEncounterFlowState>();
     }
 }
 
@@ -65,9 +65,9 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
 {        
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    const auto& moveEffectString   = selectedMoveStats.mEffect.GetString();    
+    const auto& moveEffectString = selectedMoveStats.mEffect.GetString();    
 
-    if (moveEffectString == "10%PAR")
+    if (StringEndsWith(moveEffectString, "EPAR"))
     {
         return;
     }

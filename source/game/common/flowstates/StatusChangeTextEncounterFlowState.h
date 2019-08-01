@@ -1,36 +1,29 @@
 //
-//  MoveOpponentShakeEncounterFlowState.h
+//  StatusChangeTextEncounterFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 11/07/2019.
+//  Created by Alex Koukoulas on 01/08/2019.
 //
 
-#ifndef MoveOpponentShakeEncounterFlowState_h
-#define MoveOpponentShakeEncounterFlowState_h
+#ifndef StatusChangeTextEncounterFlowState_h
+#define StatusChangeTextEncounterFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
-#include "../../common/utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class MoveOpponentShakeEncounterFlowState final: public BaseFlowState
+class StatusChangeTextEncounterFlowState final: public BaseFlowState
 {
 public:
-    MoveOpponentShakeEncounterFlowState(ecs::World&);
+    StatusChangeTextEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
- 
-private:
-    void DetermineShakeTypeToBeInitiated() const;
-    
-    static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION;
-    static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -38,4 +31,4 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-#endif /* MoveOpponentShakeEncounterFlowState_h */
+#endif /* StatusChangeTextEncounterFlowState_h */

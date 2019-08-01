@@ -243,9 +243,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("EEVEE"),
+                            StringId("PIKACHU"),
                             true, //TODO: to false
-                            5 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                            4 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
                             mWorld
                         )
                     );

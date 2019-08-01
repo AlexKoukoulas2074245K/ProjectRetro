@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "MoveOpponentShakeEncounterFlowState.h"
+#include "MoveShakeEncounterFlowState.h"
 #include "HealthDepletionEncounterFlowState.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/components/TransformComponent.h"
@@ -21,20 +21,20 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
-const glm::vec3 MoveOpponentShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.962f, 0.0f, -1.0f);
+const glm::vec3 MoveShakeEncounterFlowState::ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
+const glm::vec3 MoveShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.962f, 0.0f, -1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-MoveOpponentShakeEncounterFlowState::MoveOpponentShakeEncounterFlowState(ecs::World& world)
+MoveShakeEncounterFlowState::MoveShakeEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     DetermineShakeTypeToBeInitiated();
 }
 
-void MoveOpponentShakeEncounterFlowState::VUpdate(const float)
+void MoveShakeEncounterFlowState::VUpdate(const float)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& cameraComponent         = mWorld.GetSingletonComponent<CameraSingletonComponent>();
@@ -60,7 +60,7 @@ void MoveOpponentShakeEncounterFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void MoveOpponentShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
+void MoveShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
 {
     const auto& encounterComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& lastMoveUsedStats  = GetMoveStats(encounterComponent.mLastMoveSelected, mWorld);

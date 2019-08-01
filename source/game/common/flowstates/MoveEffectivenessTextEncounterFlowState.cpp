@@ -11,6 +11,7 @@
 
 #include "MoveEffectivenessTextEncounterFlowState.h"
 #include "MoveSideEffectTextEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/MathUtils.h"
@@ -85,7 +86,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     }
     else if (selectedMoveStats.mPower == 0)
     {
-        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
+        TestHpAndTransition();
     }
     else if (effectivenessFactor < 0.9f)
     {
@@ -109,7 +110,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     }
     else
     {
-        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
+        TestHpAndTransition();
     }
 }
 
@@ -120,7 +121,7 @@ void MoveEffectivenessTextEncounterFlowState::VUpdate(const float)
     // This is in all cases 2, except for when a critical hit is achieved
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
+        TestHpAndTransition();
     }
 }
 
@@ -128,3 +129,28 @@ void MoveEffectivenessTextEncounterFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void MoveEffectivenessTextEncounterFlowState::TestHpAndTransition()
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+
+    if 
+    (
+        activePlayerPokemon.mHp <= 0 ||
+        activeOpponentPokemon.mHp <= 0
+    )
+    {
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+    }
+    else
+    {
+        CompleteAndTransitionTo<MoveSideEffectTextEncounterFlowState>();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////

@@ -106,6 +106,8 @@ public:
     StringId mOpponentTrainerSpeciesName                                 = StringId();
     StringId mOpponentTrainerName                                        = StringId();
     StringId mOpponentTrainerDefeatedText                                = StringId();
+    PokemonStatus mPendingStatusToBeAppliedToPlayerPokemon               = PokemonStatus::NORMAL;    
+    PokemonStatus mPendingStatusToBeAppliedToOpponentPokemon             = PokemonStatus::NORMAL;    
     EncounterType mActiveEncounterType                                   = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState   = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected              = MainMenuActionType::FIGHT;

@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MoveAnimationEncounterFlowState.h"
-#include "MoveOpponentShakeEncounterFlowState.h"
+#include "MoveShakeEncounterFlowState.h"
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/utils/FileUtils.h"
@@ -180,7 +180,7 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
     }
     else
     {
-        CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+        CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
     }
 }
 
@@ -206,7 +206,7 @@ void MoveAnimationEncounterFlowState::UpdateTackleAnimation()
 
         case 2:
         {
-            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
             encounterStateComponent.mSpecialMoveAnimationStep = 0;
         } break;
     }
@@ -247,7 +247,7 @@ void MoveAnimationEncounterFlowState::UpdateTailWhipAnimation()
         case 4:
         {
             encounterStateComponent.mSpecialMoveAnimationStep = 0;
-            CompleteAndTransitionTo<MoveOpponentShakeEncounterFlowState>();
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
         } break;
     }
 }
