@@ -83,7 +83,12 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
     encounterStateComponent.mOutstandingFloatDamage = 0.0f;
     encounterStateComponent.mDefenderFloatHealth = static_cast<float>(defendingPokemon.mHp);
 
-    if (ShouldMoveMiss(selectedMoveStats.mAccuracy, attackingPokemon.mAccuracyStage, defendingPokemon.mEvasionStage))
+    encounterStateComponent.mAttackingPokemonIsFullyParalyzed = ShouldAttackingPokemonBeFullyParalyzed(attackingPokemon);
+    if (encounterStateComponent.mAttackingPokemonIsFullyParalyzed)
+    {
+        return;
+    }
+    else if (ShouldMoveMiss(selectedMoveStats.mAccuracy, attackingPokemon.mAccuracyStage, defendingPokemon.mEvasionStage))
     {
         encounterStateComponent.mLastMoveMiss = true;        
     }
@@ -248,11 +253,17 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
 
             if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn)
             {
-                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+                if (defendingPokemon.mStatus != PokemonStatus::PARALYZED)
+                {
+                    encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+                }
             }                
             else if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn == false)
             {
-                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+                if (defendingPokemon.mStatus != PokemonStatus::PARALYZED)
+                {
+                    encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+                }
             }
 
             // Thundershock 9 * x - 2, x + 2, Same for Ember

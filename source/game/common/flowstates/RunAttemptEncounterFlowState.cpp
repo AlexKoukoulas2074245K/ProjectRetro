@@ -80,11 +80,11 @@ void RunAttemptEncounterFlowState::AttemptToRun() const
     
     if (activePlayerPokemon.mStatus == PokemonStatus::PARALYZED)
     {
-        currentPlayerPokemonSpeed = (currentPlayerPokemonSpeed * 3)/4;
+        currentPlayerPokemonSpeed /= 4;
     }
     if (activeOpponentPokemon.mStatus == PokemonStatus::PARALYZED)
     {
-        currentOpponentPokemonSpeed = (currentOpponentPokemonSpeed * 3)/4;
+        currentOpponentPokemonSpeed /= 4;
     }
 
     if (currentPlayerPokemonSpeed > currentOpponentPokemonSpeed || currentOpponentPokemonSpeed == 0)

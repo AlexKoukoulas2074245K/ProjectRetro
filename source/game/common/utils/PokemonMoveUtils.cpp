@@ -139,6 +139,18 @@ bool DoesMovesetHaveMove
     return false;
 }
 
+bool ShouldAttackingPokemonBeFullyParalyzed
+(
+    const Pokemon& pokemon
+)
+{
+    if (pokemon.mStatus == PokemonStatus::PARALYZED)
+    {
+        return math::RandomInt(0, 3) == 3;
+    }
+    return false;
+}
+
 bool ShouldMoveMiss
 (
     const int moveAccuracy,
@@ -205,11 +217,11 @@ bool ShouldOpponentGoFirst
 
     if (playerPokemonStatus == PokemonStatus::PARALYZED)
     {
-        modifiedPlayerSpeed = (modifiedPlayerSpeed * 3)/4;
+        modifiedPlayerSpeed /= 4;
     }
     if (opponentPokemonStatus == PokemonStatus::PARALYZED)
     {
-        modifiedOpponentSpeed = (modifiedOpponentSpeed * 3)/4;
+        modifiedOpponentSpeed /= 4;
     }
     
     if (playersMoveName == FASTEST_MOVE_NAME && opponentsMoveName != FASTEST_MOVE_NAME)

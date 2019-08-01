@@ -127,6 +127,7 @@ public:
     bool mHasEscapeSucceeded                                             = false;
     bool mEncounterJustFinished                                          = false;
     bool mOpponentPendingSummoning                                       = false;
+    bool mAttackingPokemonIsFullyParalyzed                               = false;
     bool mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
 };
 

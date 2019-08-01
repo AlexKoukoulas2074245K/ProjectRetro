@@ -24,6 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+struct Pokemon;
 struct PokemonMoveStats;
 class MoveStatsSingletonComponent;
 
@@ -52,6 +53,11 @@ bool DoesMovesetHaveMove
 (
     const StringId moveName,
     const PokemonMoveSet& moveset
+);
+
+bool ShouldAttackingPokemonBeFullyParalyzed
+(
+    const Pokemon& pokemon
 );
 
 bool ShouldMoveMiss
