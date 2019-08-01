@@ -195,12 +195,23 @@ bool ShouldOpponentGoFirst
     const int playersPokemonSpeedModifier,
     const int opponentsPokemonSpeedModifier,
     const int playersPokemonSpeed,
-    const int opponentsPokemonSpeed
+    const int opponentsPokemonSpeed,
+    const PokemonStatus playerPokemonStatus,
+    const PokemonStatus opponentPokemonStatus
 )
 {
-    const auto modifiedPlayerSpeed   = GetStatWithModifierApplied(playersPokemonSpeed, playersPokemonSpeedModifier);
-    const auto modifiedOpponentSpeed = GetStatWithModifierApplied(opponentsPokemonSpeed, opponentsPokemonSpeedModifier);
+    auto modifiedPlayerSpeed   = GetStatWithModifierApplied(playersPokemonSpeed, playersPokemonSpeedModifier);
+    auto modifiedOpponentSpeed = GetStatWithModifierApplied(opponentsPokemonSpeed, opponentsPokemonSpeedModifier);
 
+    if (playerPokemonStatus == PokemonStatus::PARALYZED)
+    {
+        modifiedPlayerSpeed = (modifiedPlayerSpeed * 3)/4;
+    }
+    if (opponentPokemonStatus == PokemonStatus::PARALYZED)
+    {
+        modifiedOpponentSpeed = (modifiedOpponentSpeed * 3)/4;
+    }
+    
     if (playersMoveName == FASTEST_MOVE_NAME && opponentsMoveName != FASTEST_MOVE_NAME)
     {
         return false;

@@ -75,8 +75,17 @@ void RunAttemptEncounterFlowState::AttemptToRun() const
 
     encounterStateComponent.mNumberOfEscapeAttempts++;
 
-    const auto currentPlayerPokemonSpeed   = GetStatWithModifierApplied(activePlayerPokemon.mSpeed, activePlayerPokemon.mSpeedEncounterStage);
-    const auto currentOpponentPokemonSpeed = GetStatWithModifierApplied(activeOpponentPokemon.mSpeed, activeOpponentPokemon.mSpeedEncounterStage);
+    auto currentPlayerPokemonSpeed   = GetStatWithModifierApplied(activePlayerPokemon.mSpeed, activePlayerPokemon.mSpeedEncounterStage);
+    auto currentOpponentPokemonSpeed = GetStatWithModifierApplied(activeOpponentPokemon.mSpeed, activeOpponentPokemon.mSpeedEncounterStage);
+    
+    if (activePlayerPokemon.mStatus == PokemonStatus::PARALYZED)
+    {
+        currentPlayerPokemonSpeed = (currentPlayerPokemonSpeed * 3)/4;
+    }
+    if (activeOpponentPokemon.mStatus == PokemonStatus::PARALYZED)
+    {
+        currentOpponentPokemonSpeed = (currentOpponentPokemonSpeed * 3)/4;
+    }
 
     if (currentPlayerPokemonSpeed > currentOpponentPokemonSpeed || currentOpponentPokemonSpeed == 0)
     {

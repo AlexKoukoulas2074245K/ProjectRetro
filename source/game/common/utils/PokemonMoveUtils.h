@@ -74,7 +74,9 @@ bool ShouldOpponentGoFirst
     const int playersPokemonSpeedModifier,
     const int opponentsPokemonSpeedModifier,
     const int playersPokemonSpeed,
-    const int opponentsPokemonSpeed
+    const int opponentsPokemonSpeed,
+    const PokemonStatus playerPokemonStatus,
+    const PokemonStatus opponentPokemonStatus
 );
 
 bool DoesMoveHaveSpeciallyHandledAnimation

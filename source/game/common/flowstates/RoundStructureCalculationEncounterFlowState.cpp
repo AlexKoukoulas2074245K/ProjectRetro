@@ -49,7 +49,9 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
             activePlayerPokemon.mSpeedEncounterStage, 
             activeOpponentPokemon.mSpeedEncounterStage, 
             activePlayerPokemon.mSpeed,
-            activeOpponentPokemon.mSpeed
+            activeOpponentPokemon.mSpeed,
+            activePlayerPokemon.mStatus,
+            activeOpponentPokemon.mStatus
         )
     )
     {
