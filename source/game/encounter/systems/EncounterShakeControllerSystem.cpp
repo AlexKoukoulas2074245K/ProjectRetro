@@ -309,7 +309,7 @@ void EncounterShakeControllerSystem::UpdatePlayerPokemonRapidLongHorizontalShake
     }
     else
     {
-        cameraComponent.mGlobalScreenOffset.x = (-8 + shakeComponent.mShakeProgressionStep / 2) * GUI_PIXEL_SIZE;
+        cameraComponent.mGlobalScreenOffset.x = (8 - shakeComponent.mShakeProgressionStep / 2) * GUI_PIXEL_SIZE;
     }
     
     shakeComponent.mShakeProgressionStep++;
@@ -338,7 +338,7 @@ void EncounterShakeControllerSystem::UpdatePlayerPokemonStatusShake(const float 
             }
             else
             {
-                cameraComponent.mGlobalScreenOffset.x = (-8 + shakeComponent.mShakeProgressionStep / 2) * GUI_PIXEL_SIZE;
+                cameraComponent.mGlobalScreenOffset.x = (8 - shakeComponent.mShakeProgressionStep / 2) * GUI_PIXEL_SIZE;
             }
 
             shakeComponent.mShakeProgressionStep++;
