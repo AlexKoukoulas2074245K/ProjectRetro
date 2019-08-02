@@ -61,7 +61,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
             mWorld
         );
     }
-    else if (effectivenessFactor < 0.1f)
+    else if (effectivenessFactor < 0.1f || encounterStateComponent.mMoveHadNoEffect)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
 

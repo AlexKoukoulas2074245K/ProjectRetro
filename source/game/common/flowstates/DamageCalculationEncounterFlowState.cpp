@@ -56,7 +56,7 @@ void DamageCalculationEncounterFlowState::VUpdate(const float)
     if (encounterStateComponent.mAttackingPokemonIsFullyParalyzed)
     {
         CompleteAndTransitionTo<FullParalysisTextEncounterFlowState>();
-    }
+    }    
     else
     {
         CompleteAndTransitionTo<MoveAnnouncementEncounterFlowState>();
@@ -150,6 +150,7 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     const auto& selectedMoveStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
     const auto& fullMoveEffectString  = selectedMoveStats.mEffect.GetString();
 
+    encounterStateComponent.mMoveHadNoEffect                           = false;
     encounterStateComponent.mNothingHappendFromMoveExecution           = false;
     encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon   = PokemonStatus::NORMAL;
     encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
@@ -246,12 +247,20 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
             {
                 encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
             }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
+            }
         }
         else
         {
             if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
             {
                 encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+            }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
             }
         }
     }

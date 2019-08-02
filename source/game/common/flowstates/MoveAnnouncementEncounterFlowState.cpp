@@ -98,7 +98,7 @@ void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
                 {
                     CompleteAndTransitionTo<MoveMissEncounterFlowState>();
                 }
-                else if (effectivenessFactor < 0.1f)
+                else if (effectivenessFactor < 0.1f || encounterStateComponent.mMoveHadNoEffect)
                 {
                     CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
                 }
