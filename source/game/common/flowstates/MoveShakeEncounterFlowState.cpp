@@ -67,6 +67,11 @@ void MoveShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
     const auto isOpponentsTurn     = encounterComponent.mIsOpponentsTurn;
     auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
 
+    if (isMoveNonShake(lastMoveUsedStats.mName))
+    {
+        return;
+    }
+
     shakeComponent.mShakeProgressionStep = 0;
     
     if (isOpponentsTurn == false)

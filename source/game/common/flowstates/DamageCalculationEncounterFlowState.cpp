@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "DamageCalculationEncounterFlowState.h"
+#include "FullParalysisTextEncounterFlowState.h"
 #include "MoveAnnouncementEncounterFlowState.h"
 #include "../GameConstants.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -21,8 +22,6 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
 #include <cctype>
-#include <unordered_set>
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,15 @@ DamageCalculationEncounterFlowState::DamageCalculationEncounterFlowState(ecs::Wo
 
 void DamageCalculationEncounterFlowState::VUpdate(const float)
 {        
-    CompleteAndTransitionTo<MoveAnnouncementEncounterFlowState>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    if (encounterStateComponent.mAttackingPokemonIsFullyParalyzed)
+    {
+        CompleteAndTransitionTo<FullParalysisTextEncounterFlowState>();
+    }
+    else
+    {
+        CompleteAndTransitionTo<MoveAnnouncementEncounterFlowState>();
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -66,17 +73,6 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
     Pokemon& defendingPokemon
 ) const
 {    
-    static const std::unordered_set<StringId, StringIdHasher> specialMoves = 
-    {
-        StringId("WATER"), 
-        StringId("GRASS"),
-        StringId("FIRE"),
-        StringId("ICE"),
-        StringId("ELECTRIC"),
-        StringId("PSYCHIC"), 
-        StringId("DRAGON")
-    };
-
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& selectedMoveStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
 
@@ -114,7 +110,7 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
             return;
         }
 
-        const auto isSpecialMove = specialMoves.count(selectedMoveStats.mType) != 0;
+        const auto isSpecialMove = isMoveSpecial(selectedMoveStats.mType);
 
         const auto effectiveAttackStat  = isSpecialMove ? attackingPokemon.mSpecial : attackingPokemon.mAttack;
         const auto effectiveDefenseStat = isSpecialMove ? defendingPokemon.mSpecial : defendingPokemon.mDefense;
@@ -242,6 +238,23 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
             encounterStateComponent.mNothingHappendFromMoveExecution = true;
         }
     }
+    else if (fullMoveEffectString == "EPAR")
+    {
+        if (encounterStateComponent.mIsOpponentsTurn == true)
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+            }
+        }
+        else
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+            }
+        }
+    }
     else if (std::isdigit(fullMoveEffectString[0]))
     {
         const auto probability = std::stoi(fullMoveEffectString.substr(0, 2));
@@ -253,14 +266,14 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
 
             if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn)
             {
-                if (defendingPokemon.mStatus != PokemonStatus::PARALYZED)
+                if (defendingPokemon.mStatus == PokemonStatus::NORMAL && DoesPokemonHaveType(PokemonType::ELECTRIC, defendingPokemon) == false)
                 {
                     encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
                 }
             }                
             else if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn == false)
             {
-                if (defendingPokemon.mStatus != PokemonStatus::PARALYZED)
+                if (defendingPokemon.mStatus == PokemonStatus::NORMAL && DoesPokemonHaveType(PokemonType::ELECTRIC, defendingPokemon) == false)
                 {
                     encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
                 }

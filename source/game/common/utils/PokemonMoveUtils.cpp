@@ -118,6 +118,38 @@ const PokemonMoveStats& GetMoveStats
     return moveStatsComponent.mMoveStats.at(moveName);
 }
 
+bool isMoveSpecial
+(
+    const StringId moveType
+)
+{
+    static const std::unordered_set<StringId, StringIdHasher> specialMoves =
+    {
+        StringId("WATER"),
+        StringId("GRASS"),
+        StringId("FIRE"),
+        StringId("ICE"),
+        StringId("ELECTRIC"),
+        StringId("PSYCHIC"),
+        StringId("DRAGON")
+    };
+
+    return specialMoves.count(moveType) != 0;
+}
+
+bool isMoveNonShake
+(
+    const StringId moveName
+)
+{
+    static const std::unordered_set<StringId, StringIdHasher> noShakeMoves =
+    {
+        StringId("THUNDER_WAVE")
+    };
+
+    return noShakeMoves.count(moveName) != 0;
+}
+
 bool DoesMovesetHaveMove
 (
     const StringId moveName,

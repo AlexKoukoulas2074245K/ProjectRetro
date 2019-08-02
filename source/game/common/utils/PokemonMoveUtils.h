@@ -49,6 +49,16 @@ const PokemonMoveStats& GetMoveStats
     const ecs::World& world
 );
 
+bool isMoveSpecial
+(
+    const StringId moveType   
+);
+
+bool isMoveNonShake
+(
+    const StringId moveName
+);
+
 bool DoesMovesetHaveMove
 (
     const StringId moveName,

@@ -11,6 +11,7 @@
 
 #include "MoveMissEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -35,23 +36,37 @@ MoveMissEncounterFlowState::MoveMissEncounterFlowState(ecs::World& world)
         *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]:
         *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
-    if (encounterStateComponent.mIsOpponentsTurn)
+    const auto& lastMoveUsedStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
+    
+    if (lastMoveUsedStats.mPower == 0)
     {
         QueueDialogForChatbox
         (
             mainChatboxEntityId,
-            "Enemy " + attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
+            "But, it failed!# #+END",
             mWorld
         );
     }
     else
     {
-        QueueDialogForChatbox
-        (
-            mainChatboxEntityId,
-            attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
-            mWorld
-        );
+        if (encounterStateComponent.mIsOpponentsTurn)
+        {
+            QueueDialogForChatbox
+            (
+                mainChatboxEntityId,
+                "Enemy " + attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
+                mWorld
+            );
+        }
+        else
+        {
+            QueueDialogForChatbox
+            (
+                mainChatboxEntityId,
+                attackingPokemon.mName.GetString() + "'s#attack missed!#+END",
+                mWorld
+            );
+        }
     }
 }
 

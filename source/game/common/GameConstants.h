@@ -22,6 +22,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <unordered_map>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -51,9 +52,36 @@ enum class PokemonStatus
     NORMAL, PARALYZED, POISONED, CONFUSED, FROZEN, ASLEEP, BURNED
 };
 
+enum class PokemonType
+{
+    NORMAL, PSYCHIC, ELECTRIC, FLYING, GRASS, WATER, ROCK, GROUND, ICE, FIRE, GHOST, BUG, POISON, DRAGON
+};
+
 enum class OverworldPokemonSpriteType
 {
     BALL, BEAST, BUG, DRAGON, FLYING, FOSSIL, GRASS, NORMAL, PIKACHU, WATER
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::unordered_map<PokemonType, StringId> sPokemonTypesToStrings =
+{
+    { PokemonType::NORMAL, StringId("NORMAL")},
+    { PokemonType::PSYCHIC, StringId("PSYCHIC") },
+    { PokemonType::ELECTRIC, StringId("ELECTRIC") },
+    { PokemonType::FLYING, StringId("FLYING") },
+    { PokemonType::GRASS, StringId("GRASS") },
+    { PokemonType::WATER, StringId("WATER") },
+    { PokemonType::ROCK, StringId("ROCK") },
+    { PokemonType::GROUND, StringId("GROUND") },
+    { PokemonType::ICE, StringId("ICE") },
+    { PokemonType::FIRE, StringId("FIRE") },
+    { PokemonType::GHOST, StringId("GHOST") },
+    { PokemonType::BUG, StringId("BUG") },
+    { PokemonType::POISON, StringId("POISON") },
+    { PokemonType::DRAGON, StringId("DRAGON") },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

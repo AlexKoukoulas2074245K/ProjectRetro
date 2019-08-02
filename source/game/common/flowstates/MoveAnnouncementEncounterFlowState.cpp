@@ -13,7 +13,6 @@
 #include "MoveAnimationEncounterFlowState.h"
 #include "MoveEffectivenessTextEncounterFlowState.h"
 #include "MoveMissEncounterFlowState.h"
-#include "FullParalysisTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -95,11 +94,7 @@ void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
             {
                 encounterStateComponent.mViewObjects.mBattleAnimationTimer = nullptr;
                 
-                if (encounterStateComponent.mAttackingPokemonIsFullyParalyzed)
-                {
-                    CompleteAndTransitionTo<FullParalysisTextEncounterFlowState>();
-                }
-                else if (encounterStateComponent.mLastMoveMiss)
+                if (encounterStateComponent.mLastMoveMiss)
                 {
                     CompleteAndTransitionTo<MoveMissEncounterFlowState>();
                 }

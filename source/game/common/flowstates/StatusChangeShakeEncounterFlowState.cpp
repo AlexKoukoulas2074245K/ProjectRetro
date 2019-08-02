@@ -12,6 +12,7 @@
 #include "StatusChangeShakeEncounterFlowState.h"
 #include "StatusChangeTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/components/EncounterShakeSingletonComponent.h"
 #include "../../rendering/components/CameraSingletonComponent.h"
@@ -62,7 +63,13 @@ void StatusChangeShakeEncounterFlowState::VUpdate(const float)
 void StatusChangeShakeEncounterFlowState::DetermineStatusShakeSequence() const
 {
     const auto& encounterComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();    
-    auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
+    const auto& lastMoveUsedStats  = GetMoveStats(encounterComponent.mLastMoveSelected, mWorld);        
+    auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();    
+
+    if (isMoveNonShake(lastMoveUsedStats.mName))
+    {
+        return;
+    }
 
     shakeComponent.mShakeProgressionStep = 0;
 

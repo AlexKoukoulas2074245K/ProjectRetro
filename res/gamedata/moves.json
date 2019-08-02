@@ -81,7 +81,7 @@
 	
 	"THUNDER":
 	{
-		"type": "NORMAL",
+		"type": "ELECTRIC",
         "power": 110,
         "accuracy": 255,
         "pp": 25,
@@ -387,7 +387,7 @@
         "power": 40,
         "accuracy": 255,
         "pp": 30,
-		"effect": "99%EPAR"
+		"effect": "10%EPAR"
     },
 
     "THUNDERBOLT":

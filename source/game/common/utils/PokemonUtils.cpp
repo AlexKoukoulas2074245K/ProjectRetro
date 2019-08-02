@@ -368,6 +368,24 @@ const PokemonBaseStats& GetPokemonBaseStats
     return pokemonBaseStatsComponent.mPokemonBaseStats.at(pokemonName);
 }
 
+bool DoesPokemonHaveType
+(
+    const StringId type,
+    const Pokemon& pokemon
+)
+{
+    return pokemon.mBaseSpeciesStats.mFirstType == type || pokemon.mBaseSpeciesStats.mSecondType == type;
+}
+
+bool DoesPokemonHaveType
+(
+    const PokemonType type,
+    const Pokemon& pokemon
+)
+{
+    return sPokemonTypesToStrings.at(type) == pokemon.mBaseSpeciesStats.mFirstType || sPokemonTypesToStrings.at(type) == pokemon.mBaseSpeciesStats.mSecondType;
+}
+
 void LoadAndPopulatePokemonBaseStats
 (
     PokemonBaseStatsSingletonComponent& pokemonBaseStatsComponent

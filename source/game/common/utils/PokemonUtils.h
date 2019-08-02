@@ -139,6 +139,18 @@ const PokemonBaseStats& GetPokemonBaseStats
     const ecs::World& world
 );
 
+bool DoesPokemonHaveType
+(
+    const StringId type,
+    const Pokemon& pokemon
+);
+
+bool DoesPokemonHaveType
+(
+    const PokemonType type,
+    const Pokemon& pokemon
+);
+
 void LoadAndPopulatePokemonBaseStats
 (
     PokemonBaseStatsSingletonComponent& pokemonBaseStatsComponent
