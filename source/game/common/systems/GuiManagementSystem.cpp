@@ -140,13 +140,13 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
         }
     }
     else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
-    {
+    {        
         if
-            (
-                inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED ||
-                inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::TAPPED
-            )
-        {
+        (
+            IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
+            IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)        
+        )
+        {            
             DestroyActiveTextbox(mWorld);
             guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
             guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
@@ -156,15 +156,15 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
 
 void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityId, const float dt) const
 {
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
+    auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
     
     if
     (
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::PRESSED ||
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::PRESSED
+        IsActionTypeKeyPressed(VirtualActionType::A_BUTTON, inputStateComponent) ||        
+        IsActionTypeKeyPressed(VirtualActionType::B_BUTTON, inputStateComponent)        
     )
-    {
+    {        
         guiStateComponent.mActiveChatboxTimer->Update(2.0f * dt);
     }
     else
@@ -220,15 +220,15 @@ void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityI
 
 void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const
 {
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    auto& guiStateComponent         = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
     if
     (
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED ||
-        inputStateComponent.mCurrentInputState.at(VirtualActionType::B_BUTTON) == VirtualActionInputState::TAPPED
+        IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
+        IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)        
     )
-    {
+    {        
         guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(CHATBOX_SCROLL_ANIM_COOLDOWN);
         
         switch (guiStateComponent.mActiveChatboxContentState)

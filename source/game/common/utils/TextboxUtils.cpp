@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 CHATBOX_POSITION                                = glm::vec3(0.0f, -0.6701f, 0.0f);
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION           = glm::vec3(0.1375f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
@@ -231,7 +230,8 @@ ecs::EntityId CreateTextboxWithDimensions
 
 ecs::EntityId CreateChatbox
 (
-    ecs::World& world
+    ecs::World& world,
+    const glm::vec3& position /* CHATBOX_POSITION */
 )
 {
     return CreateTextboxWithDimensions
@@ -239,9 +239,9 @@ ecs::EntityId CreateChatbox
         TextboxType::CHATBOX,
         CHATBOX_COLS, 
         CHATBOX_ROWS, 
-        CHATBOX_POSITION.x, 
-        CHATBOX_POSITION.y,
-        CHATBOX_POSITION.z, 
+        position.x,
+        position.y,
+        position.z,
         world
     );
 }
