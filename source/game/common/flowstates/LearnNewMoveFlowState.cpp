@@ -62,14 +62,18 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 
 void LearnNewMoveFlowState::VUpdate(const float)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        {
+            encounterStateComponent.mEncounterJustFinished = true;
+        }
+        else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
         {
             if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
             {
