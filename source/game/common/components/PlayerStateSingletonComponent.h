@@ -31,9 +31,10 @@ public:
     int mPokeDollarCredits             = 0;
     int mLastOverworldLevelOccupiedRow = 0;
     int mLastOverworldLevelOccupiedCol = 0;
-    int mLeveledUpPokemonRosterIndex   = 0;
+    int mLeveledUpPokemonRosterIndex   = -1;
+    int mTrainerId                     = 0;
     Direction mLastOverworldDirection  = Direction::SOUTH;
-    short mTrainerId                   = 0;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,8 @@ struct Pokemon;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 CHATBOX_POSITION = glm::vec3(0.0f, -0.6701f, 0.0f);
+inline const glm::vec3 CHATBOX_POSITION                      = glm::vec3(0.0f, -0.6701f, 0.0f);
+inline const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION = glm::vec3(0.1375f, -0.6701f, -0.2f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +101,8 @@ ecs::EntityId CreateEncounterFightMenuTextbox
 (
     const PokemonMoveSet& moveset,
     const int lastSelectedMoveIndex,
-    ecs::World& world
+    ecs::World& world,
+    const glm::vec3& position = ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION
 );
 
 ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox

@@ -243,12 +243,25 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("PIKACHU"),
+                            StringId("RATTATA"),
                             true, //TODO: to false
-                            4 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                            18 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
                             mWorld
                         )
                     );
+                    
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                     CreatePokemon
+                        (
+                      StringId("PIKACHU"),
+                      true, //TODO: to false
+                      15 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                      mWorld
+                      )
+                    );
+                    
+                    encounterStateComponent.mOpponentPokemonRoster[0]->mHp = 1;
                     
                     return;
                 }

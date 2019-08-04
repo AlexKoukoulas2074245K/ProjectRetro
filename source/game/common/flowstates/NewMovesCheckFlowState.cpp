@@ -13,6 +13,7 @@
 #include "LearnNewMoveFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
+#include "FullMovesetIntroTextFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -47,13 +48,14 @@ void NewMovesCheckFlowState::VUpdate(const float)
 { 
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
 
     // No new moves to be learned
     if (activePlayerPokemon.mMoveToBeLearned == StringId())
     {
+        playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
         if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
             if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
@@ -78,7 +80,7 @@ void NewMovesCheckFlowState::VUpdate(const float)
         // Not enough space for new move
         if (firstUnusedIndex == 4)
         {
-            //CompleteAndTransitionTo<DeleteMoveToInsertNewOneFlowState>();
+            CompleteAndTransitionTo<FullMovesetIntroTextFlowState>();
 			// AAAAAAAAA is
 			// trying to learn
 			// Quick Attack!
@@ -124,6 +126,7 @@ void NewMovesCheckFlowState::VUpdate(const float)
         }
         else
         {
+            playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
             activePlayerPokemon.mMovesetIndexForNewMove = firstUnusedIndex;
             CompleteAndTransitionTo<LearnNewMoveFlowState>();
         }

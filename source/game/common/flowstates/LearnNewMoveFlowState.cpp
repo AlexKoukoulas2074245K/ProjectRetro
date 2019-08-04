@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "LearnNewMoveFlowState.h"
+#include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
@@ -26,9 +27,12 @@
 LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
-    const auto& moveStats            = GetMoveStats(activePlayerPokemon.mMoveToBeLearned, world);
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
+    const auto& moveStats         = GetMoveStats(activePlayerPokemon.mMoveToBeLearned, world);
+    
+    playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
     
     activePlayerPokemon.mMoveSet[activePlayerPokemon.mMovesetIndexForNewMove] = std::make_unique<PokemonMoveStats>
     (
@@ -40,7 +44,12 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
         moveStats.mTotalPowerPoints
     );
     
-    DestroyActiveTextbox(mWorld);
+    activePlayerPokemon.mMoveToBeLearned = StringId();
+    
+    if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+    {
+        DestroyActiveTextbox(mWorld);
+    }
     
     const auto mainChatboxEntityId = CreateChatbox(world);
     QueueDialogForChatbox
@@ -53,10 +62,28 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 
 void LearnNewMoveFlowState::VUpdate(const float)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+        playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
+        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+        {
+            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            {
+                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+            }
+            else
+            {
+                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+            }
+        }
+        else
+        {
+            //TODO: Continue with overworld
+        }
     }
 }
 

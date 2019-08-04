@@ -162,9 +162,10 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
 
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
-    playerStateComponent->mTrainerId = static_cast<short>(math::RandomInt(0, 65535));
+    playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");    
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), false, 10, mWorld));
+    
     playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");        
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 

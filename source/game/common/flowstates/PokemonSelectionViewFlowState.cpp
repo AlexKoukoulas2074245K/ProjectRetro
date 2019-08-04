@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MainMenuEncounterFlowState.h"
+#include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
 #include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
@@ -178,13 +179,26 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
-        if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
+        auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+        const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+        
+        if
+        (
+            pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED ||
+            activePlayerPokemon.mHp > 0
+        )
         {
             DestroyPokemonSelectionView();
 
             if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ENCOUNTER_FROM_MAIN_MENU)
             {
                 CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+            }
+            else if (activePlayerPokemon.mHp > 0)
+            {
+                encounterStateComponent.mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
+                CompleteAndTransitionTo<OpponentTrainerPokemonSummonTextEncounterFlowState>();
             }
             // From Overworld
             else
@@ -453,14 +467,18 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             mWorld
         );
         
-        WriteTextAtTextboxCoords
-        (
-            pokemonSelectionViewTextboxEntityId,
-            GetFormattedPokemonStatus(pokemon.mHp, pokemon.mStatus),
-            17,
-            i * 2,
-            mWorld
-        );
+        if (pokemon.mStatus != PokemonStatus::NORMAL || pokemon.mHp <= 0)
+        {
+            WriteTextAtTextboxCoords
+            (
+                pokemonSelectionViewTextboxEntityId,
+                GetFormattedPokemonStatus(pokemon.mHp, pokemon.mStatus),
+                17,
+                i * 2,
+                mWorld
+            );
+        }
+        
         
         // Write pokemon's dead status or not
         if (pokemon.mHp <= 0)

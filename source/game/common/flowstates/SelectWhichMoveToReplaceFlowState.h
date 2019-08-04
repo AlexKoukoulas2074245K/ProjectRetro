@@ -1,16 +1,16 @@
 //
-//  NextOpponentPokemonCheckEncounterFlowState.h
+//  SelectWhichMoveToReplaceFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 30/07/2019.
+//  Created by Alex Koukoulas on 04/08/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NextOpponentPokemonCheckEncounterFlowState_h
-#define NextOpponentPokemonCheckEncounterFlowState_h
+#ifndef SelectWhichMoveToReplaceFlowState_h
+#define SelectWhichMoveToReplaceFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -23,26 +23,21 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class NextOpponentPokemonCheckEncounterFlowState final: public BaseFlowState
+class SelectWhichMoveToReplaceFlowState final: public BaseFlowState
 {
 public:
-    NextOpponentPokemonCheckEncounterFlowState(ecs::World&);
+    SelectWhichMoveToReplaceFlowState(ecs::World&);
     
-    void VUpdate(const float dt) override;
-    
-private:
-    void CreateOpponentRosterDisplay() const;
-    void TransitionToPokemonSelectionView();
-    void TransitionToNextOpponentPokemonState();
+    void VUpdate(const float dt);
 
-    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_POSITION;
-    static const glm::vec3 OPPONENT_ROSTER_DISPLAY_SCALE;
-    static const glm::vec3 OPPONENT_INFO_TEXTBOX_POSITION;
-    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
+private:
+    void TransitionToAbandonLearningNewMoveQuestion();
+    
+    static const glm::vec3 MOVES_TEXTBOX_POSITION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* NextOpponentPokemonCheckEncounterFlowState_h */
+#endif /* SelectWhichMoveToReplaceFlowState_h */

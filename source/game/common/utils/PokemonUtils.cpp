@@ -194,6 +194,23 @@ size_t GetFirstNonFaintedPokemonIndex
     return pokemonRoster.size();
 }
 
+size_t GetNumberOfNonFaintedPokemonInParty
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+)
+{
+    auto count = 0U;
+    for (const auto& pokemon: pokemonRoster)
+    {
+        if (pokemon->mHp > 0)
+        {
+            count++;
+        }
+    }
+    
+    return count;
+}
+
 size_t GetPokemonRosterIndex
 (
     const Pokemon& pokemon,

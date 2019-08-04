@@ -25,6 +25,15 @@
         "effect": "ED-2"
     },
 
+    "HYPER_FANG":
+    {
+	"type": "NORMAL",
+        "power": 80,
+        "accuracy": 229,
+        "pp": 15,
+        "effect": "10%FLINCH"
+    },
+
     "TAIL_WHIP":
     {
         "type": "NORMAL",

@@ -30,8 +30,7 @@
 const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_ROSTER_DISPLAY_POSITION = glm::vec3(-0.32f, 0.7f, 0.4f);
 const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_ROSTER_DISPLAY_SCALE    = glm::vec3(1.04f, 1.04f, 1.0f);
 const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::OPPONENT_INFO_TEXTBOX_POSITION   = glm::vec3(-0.2085f, 0.796f, 0.35f);
-
-glm::vec3 NextOpponentPokemonCheckEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(-0.481498629f, -0.058000f, -0.1f);
+const glm::vec3 NextOpponentPokemonCheckEncounterFlowState::YES_NO_TEXTBOX_POSITION          = glm::vec3(-0.481498629f, -0.058000f, -0.1f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -43,15 +42,20 @@ NextOpponentPokemonCheckEncounterFlowState::NextOpponentPokemonCheckEncounterFlo
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     encounterStateComponent.mActiveOpponentPokemonRosterIndex = GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster);
 
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& nextOpponentPokemon     = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& nextOpponentPokemon  = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
         DestroyActiveTextbox(mWorld);
     }
 
+    if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) <= 1)
+    {
+        return;
+    }
+    
     CreateOpponentRosterDisplay();
 
     const auto mainChatboxEntityId = CreateChatbox(world);
@@ -67,6 +71,16 @@ NextOpponentPokemonCheckEncounterFlowState::NextOpponentPokemonCheckEncounterFlo
 
 void NextOpponentPokemonCheckEncounterFlowState::VUpdate(const float)
 {
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) <= 1)
+    {
+        encounterStateComponent.mOpponentPendingSummoning = true;
+        CompleteAndTransitionTo<OpponentTrainerPokemonSummonTextEncounterFlowState>();
+        return;
+    }
+    
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)

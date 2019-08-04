@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
-static const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION           = glm::vec3(0.1375f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::vec3(0.0f, 0.0f, -0.8f);
 
@@ -353,7 +352,8 @@ ecs::EntityId CreateEncounterFightMenuTextbox
 (
     const PokemonMoveSet& moveset,
     const int lastSelectedMoveIndex,
-    ecs::World& world
+    ecs::World& world,
+    const glm::vec3& position /* ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION */
 )
 {
     const auto fightMenuTextboxEntityId = CreateTextboxWithDimensions
@@ -361,9 +361,9 @@ ecs::EntityId CreateEncounterFightMenuTextbox
         TextboxType::CURSORED_TEXTBOX,
         ENCOUNTER_FIGHT_MENU_TEXTBOX_COLS,
         ENCOUNTER_FIGHT_MENU_TEXTBOX_ROWS,
-        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.x,
-        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.y,
-        ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION.z,
+        position.x,
+        position.y,
+        position.z,
         world
     );
 

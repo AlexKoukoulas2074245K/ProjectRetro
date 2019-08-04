@@ -65,6 +65,11 @@ size_t GetFirstNonFaintedPokemonIndex
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
 );
 
+size_t GetNumberOfNonFaintedPokemonInParty
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
 size_t GetPokemonRosterIndex
 (
     const Pokemon&,
