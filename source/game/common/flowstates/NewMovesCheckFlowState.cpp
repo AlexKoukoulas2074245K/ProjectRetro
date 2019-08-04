@@ -72,7 +72,6 @@ void NewMovesCheckFlowState::VUpdate(const float)
             //TODO: Continue with overworld
         }
     }
-    //TODO: New move to be learned exists
     else
     {
         const auto firstUnusedIndex = FindFirstUnusedMoveIndex(activePlayerPokemon.mMoveSet);
@@ -81,48 +80,6 @@ void NewMovesCheckFlowState::VUpdate(const float)
         if (firstUnusedIndex == 4)
         {
             CompleteAndTransitionTo<FullMovesetIntroTextFlowState>();
-			// AAAAAAAAA is
-			// trying to learn
-			// Quick Attack!
-			
-			// But, AAAA
-			// can't learn more 
-			// than 4 moves!
-			
-			// Delete an older
-			// move to make room
-			// for Quick Attack?
-			
-			// YES-NO
-			
-			// (YES)
-			// Which move should 
-			// be forgotten?+FREEZE
-			// MOVE SELECTION ABOVE
-			// 1, 2 PAUSE and... Poof!+END
-			
-			// AAAAA forgot
-			// GROWL!
-			
-			// And...
-			
-			// AAAAA learned
-			// QUICK ATTACK!+END
-			
-			
-			// (NO)
-			// Abandon learning
-			// QUICK ATTACK?+FREEZE
-			
-			// YES-NO
-			
-			// (NO)
-			// AAAA is trying to learn...
-			
-			// (YES)
-			// AAAAAAAAA
-			// did not learn
-			// QUICK ATTACK!+END
         }
         else
         {

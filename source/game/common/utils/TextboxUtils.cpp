@@ -433,8 +433,6 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
     const auto powerPointsLeftString  = std::to_string(pokemonMove.mPowerPointsLeft);
     const auto totalPowerPointsString = std::to_string(pokemonMove.mTotalPowerPoints);
 
-    //TODO: change color when reaching low PP
-
     WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, powerPointsLeftString, 7 - powerPointsLeftString.size(), 3, world);
     WriteTextAtTextboxCoords(fightMenuMoveInfoTextboxEntityId, totalPowerPointsString, 10 - totalPowerPointsString.size(), 3, world);
 

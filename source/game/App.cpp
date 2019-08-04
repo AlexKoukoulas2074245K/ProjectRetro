@@ -165,7 +165,6 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");    
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), false, 10, mWorld));
-    
     playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");        
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 

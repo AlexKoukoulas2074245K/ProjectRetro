@@ -119,16 +119,29 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
 
 void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() const
 {
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activeLevelComponent    = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    const auto& levelModelComponent     = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     
+    auto& playerStateComponent              = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
     transitionAnimationStateComponent.mAnimationTimer           = std::make_unique<Timer>(ENCOUNTER_END_ANIMATION_STEP_DURATION);
     transitionAnimationStateComponent.mAnimationProgressionStep = -4;
     transitionAnimationStateComponent.mTransitionAnimationType  = TransitionAnimationType::ENCOUNTER_END;
+    
+    if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) == 0)
+    {
+        for (auto& pokemon: playerStateComponent.mPlayerPokemonRoster)
+        {
+            RestorePokemonStats(*pokemon);
+        }
+        
+        transitionAnimationStateComponent.mAnimationProgressionStep = 4;
+        playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
+        playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
+        playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
+    }
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
     encounterStateComponent.mEncounterJustFinished               = false;

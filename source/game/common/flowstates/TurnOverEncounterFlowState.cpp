@@ -68,7 +68,6 @@ void TurnOverEncounterFlowState::VUpdate(const float)
         }
         else
         {
-            //TODO: move PP check            
             auto& playerSelectedMove = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
             
             playerSelectedMove.mPowerPointsLeft--;

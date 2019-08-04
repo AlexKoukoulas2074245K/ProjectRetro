@@ -50,7 +50,6 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
         mWorld
     );
     
-    //TODO: select appropriate bar color
     encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
         static_cast<float>(activeOpponentPokemon.mHp)/activeOpponentPokemon.mMaxHp,

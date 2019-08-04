@@ -395,7 +395,6 @@ void EncounterShakeControllerSystem::RedrawOpponentStatusDisplay(const float dx)
         mWorld
     );
 
-    //TODO: select appropriate bar color
     encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
     (
         static_cast<float>(activeOpponentPokemon.mHp) / activeOpponentPokemon.mMaxHp,

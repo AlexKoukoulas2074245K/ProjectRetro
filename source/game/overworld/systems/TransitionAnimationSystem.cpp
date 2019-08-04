@@ -194,11 +194,19 @@ void TransitionAnimationSystem::UpdateEncounterEndTransitionAnimation(const floa
     {
         transitionAnimationStateComponent.mAnimationTimer->Reset();
         
-        if (++transitionAnimationStateComponent.mAnimationProgressionStep == 0)
+        if (transitionAnimationStateComponent.mAnimationProgressionStep == 0)
         {
             transitionAnimationStateComponent.mTransitionAnimationType      = TransitionAnimationType::WARP;
             transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
             transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
+        }
+        else if (transitionAnimationStateComponent.mAnimationProgressionStep < 0)
+        {
+            transitionAnimationStateComponent.mAnimationProgressionStep++;
+        }
+        else
+        {
+            transitionAnimationStateComponent.mAnimationProgressionStep--;
         }
     }
 }

@@ -250,17 +250,6 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                         )
                     );
                     
-                    encounterStateComponent.mOpponentPokemonRoster.push_back
-                    (
-                     CreatePokemon
-                        (
-                      StringId("PIKACHU"),
-                      true, //TODO: to false
-                      15 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
-                      mWorld
-                      )
-                    );
-                    
                     encounterStateComponent.mOpponentPokemonRoster[0]->mHp = 1;
                     
                     return;

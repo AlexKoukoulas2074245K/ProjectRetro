@@ -125,6 +125,11 @@ void AddToEvStat
     int& currentEvStat
 );
 
+void RestorePokemonStats
+(
+    Pokemon& pokemon
+);
+
 void LevelUpStats
 (
     const ecs::World& world,

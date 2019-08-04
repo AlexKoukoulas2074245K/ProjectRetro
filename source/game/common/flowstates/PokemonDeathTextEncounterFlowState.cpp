@@ -10,9 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "AwardExperienceEncounterFlowState.h"
+#include "OutOfUsablePokemonEncounterFlowState.h"
 #include "PokemonDeathTextEncounterFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "UseNextPokemonQuestionEncounterFlowState.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
@@ -30,9 +32,11 @@ PokemonDeathTextEncounterFlowState::PokemonDeathTextEncounterFlowState(ecs::Worl
 
 void PokemonDeathTextEncounterFlowState::VUpdate(const float)
 {
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& activeOpponentPokemon   = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
@@ -42,16 +46,23 @@ void PokemonDeathTextEncounterFlowState::VUpdate(const float)
         } 
         // Player's pokemon fainted
         else
-        { 
-            if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+        {
+            if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) == 0)
             {
-                auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-                pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
-                CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+                CompleteAndTransitionTo<OutOfUsablePokemonEncounterFlowState>();
             }
             else
             {
-                CompleteAndTransitionTo<UseNextPokemonQuestionEncounterFlowState>();
+                if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+                {
+                    auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+                    pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
+                    CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<UseNextPokemonQuestionEncounterFlowState>();
+                }
             }
         }
     }

@@ -322,6 +322,22 @@ void AddToEvStat
     currentEvStat = math::Min(currentEvStat + respectiveDefeatedPokemonBaseStat, 65535);
 }
 
+void RestorePokemonStats
+(
+    Pokemon& pokemon
+)
+{
+    pokemon.mHp     = pokemon.mMaxHp;
+    pokemon.mStatus = PokemonStatus::NORMAL;
+    
+    for (auto& move: pokemon.mMoveSet)
+    {
+        move->mPowerPointsLeft = move->mTotalPowerPoints;
+    }
+    
+    ResetPokemonEncounterModifierStages(pokemon);
+}
+
 void LevelUpStats
 (
     const ecs::World& world,

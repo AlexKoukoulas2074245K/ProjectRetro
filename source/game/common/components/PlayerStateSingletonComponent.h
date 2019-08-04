@@ -28,9 +28,12 @@ public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
     StringId mLastOverworldLevelName   = StringId();
     StringId mTrainerName              = StringId();
+    StringId mHomeLevelName            = StringId("pallet");
     int mPokeDollarCredits             = 0;
     int mLastOverworldLevelOccupiedRow = 0;
     int mLastOverworldLevelOccupiedCol = 0;
+    int mHomeLevelOccupiedRow          = 17;
+    int mHomeLevelOccupiedCol          = 11;
     int mLeveledUpPokemonRosterIndex   = -1;
     int mTrainerId                     = 0;
     Direction mLastOverworldDirection  = Direction::SOUTH;

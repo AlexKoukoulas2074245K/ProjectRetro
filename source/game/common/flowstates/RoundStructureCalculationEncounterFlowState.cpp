@@ -60,7 +60,6 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
     }
     else
     {
-        //TODO: move PP check
         playerSelectedMove.mPowerPointsLeft--;
         encounterStateComponent.mLastMoveSelected = playerSelectedMove.mName;
     }
