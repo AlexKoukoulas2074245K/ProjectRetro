@@ -420,7 +420,7 @@ void LevelUpStats
         {
             if (pokemon.mLevel >= std::stoi(evolutionInfo.mEvolutionMethod.GetString()))
             {
-                auto evolution = CreatePokemon(evolutionInfo.mEvolutionTargetPokemonName, false, pokemon.mLevel, world, &pokemon);
+                pokemon.mEvolution = CreatePokemon(evolutionInfo.mEvolutionTargetPokemonName, false, pokemon.mLevel, world, &pokemon);
             }            
         }
     }
