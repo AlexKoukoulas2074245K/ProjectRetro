@@ -134,7 +134,7 @@ bool TextureLoader::HasTransparentPixels(SDL_Surface* const sdlSurface) const
         for (int x = 0; x < sdlSurface->w; ++x)
         {                                  
             auto pixel = pixels[y * sdlSurface->w + x];
-            if (pixel == 0)
+            if (pixel == 0x00 || pixel == 0xFFFFFF)
             {                
                 return true;
             }

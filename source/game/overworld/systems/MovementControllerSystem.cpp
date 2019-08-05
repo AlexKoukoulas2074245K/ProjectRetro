@@ -233,24 +233,43 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
+                    if (math::RandomSign() == 1)
+                    {
+                        encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+                        encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
+                        encounterStateComponent.mOpponentTrainerName = StringId("Gary");
+                        encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
+                        encounterStateComponent.mOpponentPokemonRoster.push_back
+                        (
+                            CreatePokemon
+                            (
+                                StringId("RATTATA"),
+                                true, //TODO: to false
+                                10 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                                mWorld
+                            )
+                        );
+                    }
+                    else
+                    {
+                        encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
+                        encounterStateComponent.mOpponentTrainerSpeciesName = StringId();
+                        encounterStateComponent.mOpponentTrainerName = StringId();
+                        encounterStateComponent.mOpponentTrainerDefeatedText = StringId();
+                        encounterStateComponent.mOpponentPokemonRoster.push_back
+                        (
+                            CreatePokemon
+                            (
+                                encounterInfo.mPokemonName,
+                                false, //TODO: to false
+                                encounterInfo.mPokemonLevel,
+                                mWorld
+                            )
+                        );
+                    }
                     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
-                    encounterStateComponent.mActiveEncounterType              = EncounterType::TRAINER;
-                    encounterStateComponent.mOpponentTrainerSpeciesName       = StringId("RIVAL_1");
-                    encounterStateComponent.mOpponentTrainerName              = StringId("Gary");
-                    encounterStateComponent.mOpponentTrainerDefeatedText      = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");                                        
-                    encounterStateComponent.mOpponentPokemonRoster.push_back
-                    (
-                        CreatePokemon
-                        (
-                            StringId("RATTATA"),
-                            true, //TODO: to false
-                            18 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
-                            mWorld
-                        )
-                    );
-                    
-                    encounterStateComponent.mOpponentPokemonRoster[0]->mHp = 1;
+                                                            
                     
                     return;
                 }
