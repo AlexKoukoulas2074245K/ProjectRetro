@@ -36,8 +36,14 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
     : BaseFlowState(world)
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& trainerInfo          = GetTrainerInfo(encounterStateComponent.mOpponentTrainerSpeciesName, mWorld);
+
+    if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+    {
+        DestroyActiveTextbox(mWorld);
+    }
 
     const auto mainChatboxEntityId = CreateChatbox(world);
     QueueDialogForChatbox

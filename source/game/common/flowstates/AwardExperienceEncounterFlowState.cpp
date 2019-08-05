@@ -36,7 +36,7 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
     if (activePlayerPokemon.mLevel < 100)
     {
         //TODO: account for multiple pokemon participating
-        const auto xpAwarded = CalculateXpGainFromBattle
+        const auto xpAwarded = 100 + CalculateXpGainFromBattle
         (
             encounterStateComponent.mActiveEncounterType == EncounterType::WILD,
             activeOpponentPokemon.mBaseSpeciesStats.mXpStat,

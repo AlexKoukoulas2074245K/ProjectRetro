@@ -40,9 +40,7 @@ TrainerBattleWonPayoutEncounterFlowState::TrainerBattleWonPayoutEncounterFlowSta
 
 void TrainerBattleWonPayoutEncounterFlowState::VUpdate(const float)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {        
         CompleteAndTransitionTo<EvolutionTextFlowState>();

@@ -300,7 +300,7 @@
           "ovimagetype": "BEAST",
           "type": [ { "name": "NORMAL"} ],
           "evolution": [ { "name": "RATICATE", "method": "20" } ],
-          "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 1, "movename": "TAIL_WHIP" }, { "level": 7, "movename": "QUICK_ATTACK" }, { "level": 14, "movename": "HYPER_FANG" }, { "level": 23, "movename": "FOCUS_ENERGY" }, { "level": 34, "movename": "SUPER_FANG" } ]
+          "moveset": [ { "level": 100, "movename": "TACKLE" }, { "level": 1, "movename": "TAIL_WHIP" }, { "level": 70, "movename": "QUICK_ATTACK" }, { "level": 140, "movename": "HYPER_FANG" }, { "level": 23, "movename": "FOCUS_ENERGY" }, { "level": 34, "movename": "SUPER_FANG" } ]
      },
 
      "RATICATE":
