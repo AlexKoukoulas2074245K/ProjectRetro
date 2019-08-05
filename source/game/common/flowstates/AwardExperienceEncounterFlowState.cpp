@@ -11,6 +11,7 @@
 
 #include "AwardExperienceEncounterFlowState.h"
 #include "AwardLevelFlowState.h"
+#include "EvolutionTextFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -99,7 +100,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
                 // 1 evo image, 1 pre
                 // 1 evo image, 1 pre
                 // 1 evo done
-                encounterStateComponent.mEncounterJustFinished = true;
+                CompleteAndTransitionTo<EvolutionTextFlowState>();
             }
             else
             {

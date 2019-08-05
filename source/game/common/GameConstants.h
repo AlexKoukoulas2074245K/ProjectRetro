@@ -202,6 +202,8 @@ struct Pokemon
     StringId mName;
     const PokemonBaseStats& mBaseSpeciesStats;    
     
+    std::unique_ptr<Pokemon> mEvolution;
+
     PokemonMoveSet mMoveSet;
     StringId mMoveToBeLearned;
     size_t mMovesetIndexForNewMove;

@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "EvolutionTextFlowState.h"
 #include "LearnNewMoveFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
@@ -71,7 +72,7 @@ void LearnNewMoveFlowState::VUpdate(const float)
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
         if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
         {
-            encounterStateComponent.mEncounterJustFinished = true;
+            CompleteAndTransitionTo<EvolutionTextFlowState>();
         }
         else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
         {

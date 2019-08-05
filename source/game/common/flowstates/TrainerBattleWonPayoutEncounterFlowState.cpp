@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "EvolutionTextFlowState.h"
 #include "TrainerBattleWonPayoutEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -44,7 +45,7 @@ void TrainerBattleWonPayoutEncounterFlowState::VUpdate(const float)
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {        
-        encounterStateComponent.mEncounterJustFinished = true;
+        CompleteAndTransitionTo<EvolutionTextFlowState>();
     }
 }
 

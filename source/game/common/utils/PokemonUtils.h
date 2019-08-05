@@ -41,7 +41,8 @@ std::unique_ptr<Pokemon> CreatePokemon
     const StringId pokemonName,
     const bool trainerOwned,
     const int pokemonLevel,
-    const ecs::World& world
+    const ecs::World& world,
+    const Pokemon* const pokemonToCopyIVsAndEVsFrom = nullptr
 );
 
 std::string GetFormattedPokemonIdString
@@ -59,6 +60,12 @@ bool HaveAllPokemonInRosterFainted
 (
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
 );
+
+size_t GetReadyToEvolvePokemonRosterIndex
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
 
 size_t GetFirstNonFaintedPokemonIndex
 (

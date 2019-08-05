@@ -20,6 +20,7 @@
 #include "../../resources/ResourceLoadingService.h"
 
 #include <cassert>
+#include <cctype>
 #include <json.hpp>
 #include <unordered_map>
 #include <vector>
@@ -40,7 +41,8 @@ std::unique_ptr<Pokemon> CreatePokemon
     const StringId pokemonName,
     const bool trainerOwned,
     const int pokemonLevel,
-    const ecs::World& world
+    const ecs::World& world,
+    const Pokemon* const pokemonToCopyIVsAndEVsFrom /* nullptr */
 )
 {
     const auto& baseSpeciesStats = GetPokemonBaseStats(pokemonName, world);
@@ -49,14 +51,15 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mLevel    = pokemonLevel;    
     pokemonInstance->mXpPoints = CalculatePokemonTotalExperienceAtLevel(pokemonName, pokemonLevel, world);    
 
+    pokemonInstance->mEvolution = nullptr;
+
     pokemonInstance->mMoveToBeLearned = StringId();
 
     pokemonInstance->mStatus = PokemonStatus::NORMAL;
-
-    // Calculate IVs
-    // https://bulbapedia.bulbagarden.net/wiki/Individual_values
+    
     if (trainerOwned)
     {
+        // http://wiki.pokemonspeedruns.com/index.php?title=Pok%C3%A9mon_Red/Blue/Yellow_Trainer_AI
         pokemonInstance->mAttackIv  = 9;
         pokemonInstance->mDefenseIv = 8;
         pokemonInstance->mSpeedIv   = 8;
@@ -64,28 +67,54 @@ std::unique_ptr<Pokemon> CreatePokemon
     }
     else
     {
-        pokemonInstance->mAttackIv  = math::RandomInt(0, 15);
-        pokemonInstance->mDefenseIv = math::RandomInt(0, 15);
-        pokemonInstance->mSpeedIv   = math::RandomInt(0, 15);
-        pokemonInstance->mSpecialIv = math::RandomInt(0, 15);
+        if (pokemonToCopyIVsAndEVsFrom != nullptr)
+        {
+            pokemonInstance->mAttackIv  = pokemonToCopyIVsAndEVsFrom->mAttackIv;
+            pokemonInstance->mDefenseIv = pokemonToCopyIVsAndEVsFrom->mDefenseIv;
+            pokemonInstance->mSpeedIv   = pokemonToCopyIVsAndEVsFrom->mSpeedIv;
+            pokemonInstance->mSpecialIv = pokemonToCopyIVsAndEVsFrom->mSpecialIv;
+        }
+        else
+        {
+            // Calculate IVs for stats other than hp
+            // https://bulbapedia.bulbagarden.net/wiki/Individual_values
+            pokemonInstance->mAttackIv  = math::RandomInt(0, 15);
+            pokemonInstance->mDefenseIv = math::RandomInt(0, 15);
+            pokemonInstance->mSpeedIv   = math::RandomInt(0, 15);
+            pokemonInstance->mSpecialIv = math::RandomInt(0, 15);
+        }        
     }
-    
+        
+    // Calculate Hp IVs
+    // https://bulbapedia.bulbagarden.net/wiki/Individual_values
     pokemonInstance->mHpIv =
         ((pokemonInstance->mAttackIv & 0x1)  << 3) |
         ((pokemonInstance->mDefenseIv & 0x1) << 2) |
         ((pokemonInstance->mSpeedIv & 0x1)   << 1) |
         ((pokemonInstance->mSpecialIv & 0x1  << 0));
 
-    // Reset EVs
-    pokemonInstance->mHpEv      = 0;
-    pokemonInstance->mAttackEv  = 0;
-    pokemonInstance->mDefenseEv = 0;
-    pokemonInstance->mSpeedEv   = 0;
-    pokemonInstance->mSpecialEv = 0;
+    if (pokemonToCopyIVsAndEVsFrom != nullptr)
+    {
+        // Reset EVs
+        pokemonInstance->mHpEv      = pokemonToCopyIVsAndEVsFrom->mHpEv;
+        pokemonInstance->mAttackEv  = pokemonToCopyIVsAndEVsFrom->mAttackEv;
+        pokemonInstance->mDefenseEv = pokemonToCopyIVsAndEVsFrom->mDefenseEv;
+        pokemonInstance->mSpeedEv   = pokemonToCopyIVsAndEVsFrom->mSpeedEv;
+        pokemonInstance->mSpecialEv = pokemonToCopyIVsAndEVsFrom->mSpecialEv;
+    }
+    else
+    {
+        // Reset EVs
+        pokemonInstance->mHpEv      = 0;
+        pokemonInstance->mAttackEv  = 0;
+        pokemonInstance->mDefenseEv = 0;
+        pokemonInstance->mSpeedEv   = 0;
+        pokemonInstance->mSpecialEv = 0;
+    }    
 
     // Calculate Hp Stat
-    pokemonInstance->mMaxHp  = CalculateHpStat(pokemonInstance->mLevel, baseSpeciesStats.mHp, pokemonInstance->mHpIv, pokemonInstance->mHpEv);
-    pokemonInstance->mHp     = pokemonInstance->mMaxHp;
+    pokemonInstance->mMaxHp = CalculateHpStat(pokemonInstance->mLevel, baseSpeciesStats.mHp, pokemonInstance->mHpIv, pokemonInstance->mHpEv);
+    pokemonInstance->mHp    = pokemonInstance->mMaxHp;
 
     // Calculate other stats
     pokemonInstance->mAttack  = CalculateStatOtherThanHp(pokemonInstance->mLevel, baseSpeciesStats.mAttack, pokemonInstance->mAttackIv, pokemonInstance->mAttackEv);
@@ -176,6 +205,23 @@ bool HaveAllPokemonInRosterFainted
     }
     
     return true;
+}
+
+
+size_t GetReadyToEvolvePokemonRosterIndex
+(
+    const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+)
+{
+    for (auto i = 0U; i < pokemonRoster.size(); ++i)
+    {
+        if (pokemonRoster[i]->mEvolution != nullptr)
+        {
+            return i;
+        }
+    }
+
+    return pokemonRoster.size();
 }
 
 size_t GetFirstNonFaintedPokemonIndex
@@ -367,6 +413,17 @@ void LevelUpStats
     pokemon.mDefense = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mDefense, pokemon.mDefenseIv, pokemon.mDefenseEv);
     pokemon.mSpeed   = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mSpeed, pokemon.mSpeedIv, pokemon.mSpeedEv);
     pokemon.mSpecial = CalculateStatOtherThanHp(pokemon.mLevel, pokemon.mBaseSpeciesStats.mSpecial, pokemon.mSpecialIv, pokemon.mSpecialEv);   
+
+    for (const auto& evolutionInfo : pokemon.mBaseSpeciesStats.mEvolutions)
+    {
+        if (std::isdigit(evolutionInfo.mEvolutionMethod.GetString().at(0)))
+        {
+            if (pokemon.mLevel >= std::stoi(evolutionInfo.mEvolutionMethod.GetString()))
+            {
+                auto evolution = CreatePokemon(evolutionInfo.mEvolutionTargetPokemonName, false, pokemon.mLevel, world, &pokemon);
+            }            
+        }
+    }
 }
 
 int CalculatePokemonTotalExperienceAtLevel
