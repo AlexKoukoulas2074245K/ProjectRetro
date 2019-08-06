@@ -42,12 +42,10 @@ void OutOfUsablePokemonEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent      = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent      = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& transitionAnimationComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         encounterStateComponent.mEncounterJustFinished = true;
-        transitionAnimationComponent.mBlackAndWhiteModeEnabled = false;
     }
 }
 

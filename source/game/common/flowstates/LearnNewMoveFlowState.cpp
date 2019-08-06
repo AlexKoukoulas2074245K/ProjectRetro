@@ -15,6 +15,7 @@
 #include "TrainerBattleWonEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/components/EvolutionAnimationStateSingletonComponent.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -64,13 +65,20 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 void LearnNewMoveFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        
+        if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
+        {
+            evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
+            encounterStateComponent.mEncounterJustFinished = true;
+        }
+        else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
         {
             CompleteAndTransitionTo<EvolutionTextFlowState>();
         }

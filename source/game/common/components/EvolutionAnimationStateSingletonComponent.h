@@ -45,7 +45,7 @@ public:
     std::unique_ptr<Timer> mEvolutionAnimationTimer = nullptr;
     int mEvolutionAnimationStepCounter              = 0;
     int mEvolutionAnimationRepeatCounter            = 0;
-    bool mHasCheckForEvolutionMovesCheckBeenDone    = false;
+    bool mNeedToCheckEvolutionNewMoves              = false;
 
 };
 

@@ -130,6 +130,7 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     transitionAnimationStateComponent.mAnimationTimer           = std::make_unique<Timer>(ENCOUNTER_END_ANIMATION_STEP_DURATION);
     transitionAnimationStateComponent.mAnimationProgressionStep = -4;
     transitionAnimationStateComponent.mTransitionAnimationType  = TransitionAnimationType::ENCOUNTER_END;
+    transitionAnimationStateComponent.mBlackAndWhiteModeEnabled = false;
     
     if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) == 0)
     {

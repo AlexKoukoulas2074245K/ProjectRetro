@@ -46,7 +46,7 @@ void EvolutionTextFlowState::VUpdate(const float)
     if (GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster) == playerStateComponent.mPlayerPokemonRoster.size())
     {
         auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
             encounterStateComponent.mEncounterJustFinished = true;
         }
@@ -55,11 +55,13 @@ void EvolutionTextFlowState::VUpdate(const float)
             //TODO: Continue with overworld
         }
     }
-
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+    else
     {
-        CompleteAndTransitionTo<EvolutionAnimationFlowState>();
+        const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+        if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+        {
+            CompleteAndTransitionTo<EvolutionAnimationFlowState>();
+        }
     }
 }
 

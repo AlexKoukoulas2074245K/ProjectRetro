@@ -14,6 +14,7 @@
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
 #include "../../common/components/CursorComponent.h"
+#include "../../common/components/EvolutionAnimationStateSingletonComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/PokemonUtils.h"
@@ -49,15 +50,22 @@ AbandonLearningNewMoveFlowState::AbandonLearningNewMoveFlowState(ecs::World& wor
 
 void AbandonLearningNewMoveFlowState::VUpdate(const float)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
     
     // Abandoned learning move text dismissed
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+        if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
+        {
+            evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
+            encounterStateComponent.mEncounterJustFinished = true;
+        }
+        else if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
             if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
             {

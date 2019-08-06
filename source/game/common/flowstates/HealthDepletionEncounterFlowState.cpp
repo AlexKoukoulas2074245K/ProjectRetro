@@ -17,6 +17,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/Logging.h"
+#include "../../common/utils/MathUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/utils/InputUtils.h"
@@ -143,7 +144,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
     WriteTextAtTextboxCoords
     (
         encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        std::to_string(integerDefendersHealth) + "/",
+        std::to_string(math::Max(0, integerDefendersHealth)) + "/",
         4 - static_cast<int>(std::to_string(integerDefendersHealth).size()),
         3,
         mWorld

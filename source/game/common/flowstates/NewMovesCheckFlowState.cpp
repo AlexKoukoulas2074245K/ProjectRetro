@@ -86,7 +86,6 @@ void NewMovesCheckFlowState::VUpdate(const float)
         }
         else
         {
-            playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
             activePlayerPokemon.mMovesetIndexForNewMove = firstUnusedIndex;
             CompleteAndTransitionTo<LearnNewMoveFlowState>();
         }

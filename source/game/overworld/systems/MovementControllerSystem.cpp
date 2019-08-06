@@ -243,9 +243,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                         (
                             CreatePokemon
                             (
-                                StringId("RATTATA"),
-                                true, //TODO: to false
-                                14 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                                StringId("EEVEE"),
+                                true,
+                                encounterInfo.mPokemonLevel,
                                 mWorld
                             )
                         );
@@ -260,18 +260,16 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                         (
                             CreatePokemon
                             (
-                                StringId("RATTATA"),
-                                false, //TODO: to false
-                                14 - (encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel),
+                                encounterInfo.mPokemonName,
+                                false,
+                                encounterInfo.mPokemonLevel,
                                 mWorld
                             )
                         );
                     }
 
-                    encounterStateComponent.mOpponentPokemonRoster.front()->mHp = 1;
                     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
-                                                            
                     
                     return;
                 }

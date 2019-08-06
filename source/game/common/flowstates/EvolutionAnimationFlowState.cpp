@@ -64,7 +64,7 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
 
             evolutionAnimationStateComponent.mOldPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
             evolutionAnimationStateComponent.mNewPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
-            evolutionAnimationStateComponent.mHasCheckForEvolutionMovesCheckBeenDone = false;
+            evolutionAnimationStateComponent.mNeedToCheckEvolutionNewMoves = true;
 
             playerStateComponent.mLeveledUpPokemonRosterIndex = pokemonReadyToEvolveIndex;
             CompleteAndTransitionTo<NewMovesCheckFlowState>();
