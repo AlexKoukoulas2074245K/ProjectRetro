@@ -12,6 +12,7 @@
 #include "EncounterStateControllerSystem.h"
 #include "../components/EncounterStateSingletonComponent.h"
 #include "../components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
+#include "../utils/EncounterSpriteUtils.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
@@ -152,43 +153,7 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     
     DestroyActiveTextbox(mWorld);
     
-    if (encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
-    {
-        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
-        
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId);
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
-    }
-    
-    if (encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId != ecs::NULL_ENTITY_ID)
-    {
-        DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
-    }        
-    
-    if (encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
-    {
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-    }
-    
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId);
-    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId);
-    
-    encounterStateComponent.mViewObjects.mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mLevelLeftEdgeEntityId              = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mLevelRightEdgeEntityId             = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId       = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId         = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId        = ecs::NULL_ENTITY_ID;
-    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId     = ecs::NULL_ENTITY_ID;
-    
+    DestroyEncounterSprites(mWorld);
     
     const auto newLevelEntityId        = LoadAndCreateLevelByName(playerStateComponent.mLastOverworldLevelName, mWorld);
     auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);

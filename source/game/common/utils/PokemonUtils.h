@@ -42,7 +42,7 @@ std::unique_ptr<Pokemon> CreatePokemon
     const bool trainerOwned,
     const int pokemonLevel,
     const ecs::World& world,
-    const Pokemon* const pokemonToCopyIVsAndEVsFrom = nullptr
+    const Pokemon* const priorEvolution = nullptr
 );
 
 std::string GetFormattedPokemonIdString

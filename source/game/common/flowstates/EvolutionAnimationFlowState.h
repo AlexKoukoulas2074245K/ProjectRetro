@@ -1,34 +1,48 @@
 //
-//  EvolutionTextEncounterFlowState.h
+//  EvolutionAnimationFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 05/08/2019.
+//  Created by Alex Koukoulas on 06/08/2019.
 //
 
-#ifndef EvolutionTextEncounterFlowState_h
-#define EvolutionTextEncounterFlowState_h
+#ifndef EvolutionAnimationFlowState_h
+#define EvolutionAnimationFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class EvolutionTextFlowState final: public BaseFlowState
+class EvolutionAnimationFlowState final: public BaseFlowState
 {
 public:
-    EvolutionTextFlowState(ecs::World&);
+    EvolutionAnimationFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
    
+private:
+    void ConfigureEvolutionAnimationState() const;
+    void ToggleVisibilityOfOldPokemonSprite(const bool visibility) const;
+    void ToggleVisibilityOfNewPokemonSprite(const bool visibility) const;
+
+    static const glm::vec3 POKEMON_SPRITE_POSITION;
+    static const glm::vec3 POKEMON_SPRITE_SCALE;
+
+    static const float POKEMON_CRY_DELAY;
+    static const float POKEMON_TRANSITION_STEP_DELAY;
+
+    static const int EVOLUTION_ANIMATION_STEP_COUNT;
+    static const int EVOLUTION_ANIMATION_REPEAT_COUNT;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* EvolutionTextEncounterFlowState_h */
+#endif /* EvolutionAnimationFlowState_h */

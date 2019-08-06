@@ -51,7 +51,6 @@ void NewMovesCheckFlowState::VUpdate(const float)
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
-
     // No new moves to be learned
     if (activePlayerPokemon.mMoveToBeLearned == StringId())
     {

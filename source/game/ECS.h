@@ -209,6 +209,16 @@ public:
     }
     
     template<class ComponentType>
+    inline bool HasSingletonComponent() const
+    {
+        static_assert(std::is_base_of<IComponent, ComponentType>::value,
+            "ComponentType does not derive from IComponent");
+
+        const auto componentTypeId = GetTypeHash<ComponentType>();
+        return mSingletonComponents.count(componentTypeId) != 0;
+    }
+
+    template<class ComponentType>
     inline ComponentType& GetSingletonComponent() const
     {
         static_assert(std::is_base_of<IComponent, ComponentType>::value,

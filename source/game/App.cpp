@@ -11,6 +11,7 @@
 
 #include "App.h"
 #include "common/components/DirectionComponent.h"
+#include "common/components/EvolutionAnimationStateSingletonComponent.h"
 #include "common/components/MoveStatsSingletonComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
@@ -160,6 +161,7 @@ void App::DummyInitialization()
 
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
+    mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
 
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);

@@ -42,7 +42,7 @@ std::unique_ptr<Pokemon> CreatePokemon
     const bool trainerOwned,
     const int pokemonLevel,
     const ecs::World& world,
-    const Pokemon* const pokemonToCopyIVsAndEVsFrom /* nullptr */
+    const Pokemon* const priorPokemonEvolvedFrom /* nullptr */
 )
 {
     const auto& baseSpeciesStats = GetPokemonBaseStats(pokemonName, world);
@@ -57,6 +57,11 @@ std::unique_ptr<Pokemon> CreatePokemon
 
     pokemonInstance->mStatus = PokemonStatus::NORMAL;
     
+    if (priorPokemonEvolvedFrom != nullptr)
+    {
+        pokemonInstance->mName = priorPokemonEvolvedFrom->mName;
+    }
+
     if (trainerOwned)
     {
         // http://wiki.pokemonspeedruns.com/index.php?title=Pok%C3%A9mon_Red/Blue/Yellow_Trainer_AI
@@ -67,12 +72,12 @@ std::unique_ptr<Pokemon> CreatePokemon
     }
     else
     {
-        if (pokemonToCopyIVsAndEVsFrom != nullptr)
+        if (priorPokemonEvolvedFrom != nullptr)
         {
-            pokemonInstance->mAttackIv  = pokemonToCopyIVsAndEVsFrom->mAttackIv;
-            pokemonInstance->mDefenseIv = pokemonToCopyIVsAndEVsFrom->mDefenseIv;
-            pokemonInstance->mSpeedIv   = pokemonToCopyIVsAndEVsFrom->mSpeedIv;
-            pokemonInstance->mSpecialIv = pokemonToCopyIVsAndEVsFrom->mSpecialIv;
+            pokemonInstance->mAttackIv  = priorPokemonEvolvedFrom->mAttackIv;
+            pokemonInstance->mDefenseIv = priorPokemonEvolvedFrom->mDefenseIv;
+            pokemonInstance->mSpeedIv   = priorPokemonEvolvedFrom->mSpeedIv;
+            pokemonInstance->mSpecialIv = priorPokemonEvolvedFrom->mSpecialIv;
         }
         else
         {
@@ -93,14 +98,14 @@ std::unique_ptr<Pokemon> CreatePokemon
         ((pokemonInstance->mSpeedIv & 0x1)   << 1) |
         ((pokemonInstance->mSpecialIv & 0x1  << 0));
 
-    if (pokemonToCopyIVsAndEVsFrom != nullptr)
+    if (priorPokemonEvolvedFrom != nullptr)
     {
         // Reset EVs
-        pokemonInstance->mHpEv      = pokemonToCopyIVsAndEVsFrom->mHpEv;
-        pokemonInstance->mAttackEv  = pokemonToCopyIVsAndEVsFrom->mAttackEv;
-        pokemonInstance->mDefenseEv = pokemonToCopyIVsAndEVsFrom->mDefenseEv;
-        pokemonInstance->mSpeedEv   = pokemonToCopyIVsAndEVsFrom->mSpeedEv;
-        pokemonInstance->mSpecialEv = pokemonToCopyIVsAndEVsFrom->mSpecialEv;
+        pokemonInstance->mHpEv      = priorPokemonEvolvedFrom->mHpEv;
+        pokemonInstance->mAttackEv  = priorPokemonEvolvedFrom->mAttackEv;
+        pokemonInstance->mDefenseEv = priorPokemonEvolvedFrom->mDefenseEv;
+        pokemonInstance->mSpeedEv   = priorPokemonEvolvedFrom->mSpeedEv;
+        pokemonInstance->mSpecialEv = priorPokemonEvolvedFrom->mSpecialEv;
     }
     else
     {
@@ -130,28 +135,54 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mAccuracyStage         = 0;
     pokemonInstance->mEvasionStage          = 0;
 
-    // Popuplate moveset
-    auto nextInsertedMoveIndex = 0U;
-    for (const auto& moveLearnInfo: baseSpeciesStats.mLearnset)
+    // Popuplate moveset from prior evolution
+    if (priorPokemonEvolvedFrom != nullptr)
     {
-        if (moveLearnInfo.mLevelLearned > pokemonLevel)
+        for (auto i = 0U; i < priorPokemonEvolvedFrom->mMoveSet.size(); ++i)
         {
-            continue;
+            if (priorPokemonEvolvedFrom->mMoveSet[i] == nullptr)
+                continue;
+
+            const auto& move = priorPokemonEvolvedFrom->mMoveSet[i];
+
+            pokemonInstance->mMoveSet[i] = std::make_unique<PokemonMoveStats>
+            (
+                move->mName,
+                move->mType,
+                move->mEffect,
+                move->mPower,
+                move->mAccuracy,
+                move->mTotalPowerPoints
+            );
+
+            pokemonInstance->mMoveSet[i]->mPowerPointsLeft = move->mPowerPointsLeft;
+        }        
+    }
+    // Popuplate moveset from base stats' move set
+    else
+    {
+        auto nextInsertedMoveIndex = 0U;
+        for (const auto& moveLearnInfo : baseSpeciesStats.mLearnset)
+        {
+            if (moveLearnInfo.mLevelLearned > pokemonLevel)
+            {
+                continue;
+            }
+
+            const auto& moveStats = GetMoveStats(moveLearnInfo.mMoveName, world);
+
+            pokemonInstance->mMoveSet[nextInsertedMoveIndex] = std::make_unique<PokemonMoveStats>
+            (
+                moveStats.mName,
+                moveStats.mType,
+                moveStats.mEffect,
+                moveStats.mPower,
+                moveStats.mAccuracy,
+                moveStats.mTotalPowerPoints
+            );
+
+            nextInsertedMoveIndex = (nextInsertedMoveIndex + 1) % 4;
         }
-
-        const auto& moveStats = GetMoveStats(moveLearnInfo.mMoveName, world);
-
-        pokemonInstance->mMoveSet[nextInsertedMoveIndex] = std::make_unique<PokemonMoveStats>
-        (
-            moveStats.mName,
-            moveStats.mType,
-            moveStats.mEffect,
-            moveStats.mPower,
-            moveStats.mAccuracy,
-            moveStats.mTotalPowerPoints
-        );
-
-        nextInsertedMoveIndex = (nextInsertedMoveIndex + 1) % 4;
     }
 
     return pokemonInstance;
@@ -376,9 +407,12 @@ void RestorePokemonStats
     pokemon.mHp     = pokemon.mMaxHp;
     pokemon.mStatus = PokemonStatus::NORMAL;
     
-    for (auto& move: pokemon.mMoveSet)
+    for (auto i = 0U; i < pokemon.mMoveSet.size(); ++i)
     {
-        move->mPowerPointsLeft = move->mTotalPowerPoints;
+        if (pokemon.mMoveSet[i] != nullptr)
+        {
+            pokemon.mMoveSet[i]->mPowerPointsLeft = pokemon.mMoveSet[i]->mTotalPowerPoints;
+        }        
     }
     
     ResetPokemonEncounterModifierStages(pokemon);

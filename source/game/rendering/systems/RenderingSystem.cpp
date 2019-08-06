@@ -312,6 +312,11 @@ void RenderingSystem::RenderEntityInternal
     PreviousRenderingStateSingletonComponent& previousRenderingStateComponent
 ) const
 {
+    if (!renderableComponent.mVisibility)
+    {
+        return;
+    }
+
     // Update Shader is necessary
     const ShaderResource* currentShader = nullptr;
     if (renderableComponent.mShaderNameId != previousRenderingStateComponent.previousShaderNameId)

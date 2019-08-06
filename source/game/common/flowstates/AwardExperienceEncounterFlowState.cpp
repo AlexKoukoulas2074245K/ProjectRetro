@@ -84,22 +84,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
         else
         {
             if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-            {
-                //Leveling flow:
-                // no evo image, 20 pre
-                // 1 evo image, 1 pre 18
-                // 1 evo image, 1 pre, 1 evo image, 16 pre
-                // 1 evo image, 1 pre, 1 evo image, 1 pre, 1 evo image, 14
-                // ...
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo image, 1 pre
-                // 1 evo done
+            {                
                 CompleteAndTransitionTo<EvolutionTextFlowState>();
             }
             else

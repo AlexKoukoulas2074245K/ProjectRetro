@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "EvolutionAnimationFlowState.h"
 #include "EvolutionTextFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -27,6 +28,12 @@ EvolutionTextFlowState::EvolutionTextFlowState(ecs::World& world)
     const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
     if (pokemonReadyToEvolveIndex != playerStateComponent.mPlayerPokemonRoster.size())
     {
+        const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+        if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+        {
+            DestroyActiveTextbox(mWorld);
+        }
+
         const auto& mainChatboxEntityId = CreateChatbox(mWorld);
         QueueDialogForChatbox(mainChatboxEntityId, "What? " + playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName.GetString() + "#is evolving!#+FREEZE", mWorld);
     }
@@ -52,7 +59,7 @@ void EvolutionTextFlowState::VUpdate(const float)
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        //CompleteAndTransitionTo<EvolutionAnimationFlowState>
+        CompleteAndTransitionTo<EvolutionAnimationFlowState>();
     }
 }
 
