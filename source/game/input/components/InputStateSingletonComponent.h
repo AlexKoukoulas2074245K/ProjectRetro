@@ -45,7 +45,8 @@ enum class VirtualActionType
     DEBUG_CAMERA_UP,
     DEBUG_CAMERA_DOWN,
     DEBUG_CAMERA_FORWARD,
-    DEBUG_CAMERA_BACKWARD
+    DEBUG_CAMERA_BACKWARD,
+    DEBUG_SPEED_UP
 };
 
 enum class VirtualActionInputState
@@ -66,14 +67,15 @@ public:
         { VirtualActionType::RIGHT_ARROW,                 VirtualActionInputState::RELEASED },
         { VirtualActionType::UP_ARROW,                    VirtualActionInputState::RELEASED },
         { VirtualActionType::DOWN_ARROW,                  VirtualActionInputState::RELEASED },
-        { VirtualActionType::A_BUTTON,                     VirtualActionInputState::RELEASED },
-        { VirtualActionType::B_BUTTON,                     VirtualActionInputState::RELEASED },
-        { VirtualActionType::START_BUTTON,                 VirtualActionInputState::RELEASED },
-        { VirtualActionType::SELECT_BUTTON,                VirtualActionInputState::RELEASED },
-        { VirtualActionType::DEBUG_CAMERA_UP,       VirtualActionInputState::RELEASED },
-        { VirtualActionType::DEBUG_CAMERA_DOWN,     VirtualActionInputState::RELEASED },
-        { VirtualActionType::DEBUG_CAMERA_FORWARD,  VirtualActionInputState::RELEASED },
-        { VirtualActionType::DEBUG_CAMERA_BACKWARD, VirtualActionInputState::RELEASED },
+        { VirtualActionType::A_BUTTON,                    VirtualActionInputState::RELEASED },
+        { VirtualActionType::B_BUTTON,                    VirtualActionInputState::RELEASED },
+        { VirtualActionType::START_BUTTON,                VirtualActionInputState::RELEASED },
+        { VirtualActionType::SELECT_BUTTON,               VirtualActionInputState::RELEASED },
+        { VirtualActionType::DEBUG_CAMERA_UP,             VirtualActionInputState::RELEASED },
+        { VirtualActionType::DEBUG_CAMERA_DOWN,           VirtualActionInputState::RELEASED },
+        { VirtualActionType::DEBUG_CAMERA_FORWARD,        VirtualActionInputState::RELEASED },
+        { VirtualActionType::DEBUG_CAMERA_BACKWARD,       VirtualActionInputState::RELEASED },
+        { VirtualActionType::DEBUG_SPEED_UP,              VirtualActionInputState::RELEASED },
     };
 
     std::unordered_map<SDL_Scancode, VirtualActionType> mKeybindings = 
@@ -90,6 +92,7 @@ public:
         { SDL_SCANCODE_E,         VirtualActionType::DEBUG_CAMERA_DOWN },
         { SDL_SCANCODE_W,         VirtualActionType::DEBUG_CAMERA_FORWARD },
         { SDL_SCANCODE_S,         VirtualActionType::DEBUG_CAMERA_BACKWARD },
+        { SDL_SCANCODE_SPACE,     VirtualActionType::DEBUG_SPEED_UP },
     };
 
     // Needed for tapped input checks 

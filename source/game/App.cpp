@@ -32,6 +32,7 @@
 #include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
 #include "input/systems/RawInputHandlingSystem.h"
+#include "input/utils/InputUtils.h"
 #include "rendering/components/AnimationTimerComponent.h"
 #include "rendering/components/RenderableComponent.h"
 #include "rendering/components/RenderingContextSingletonComponent.h"
@@ -100,8 +101,9 @@ void App::GameLoop()
     
     DummyInitialization();
 
-    const auto& windowComponent           = mWorld.GetSingletonComponent<WindowSingletonComponent>();
-    const auto& renderingContextComponent = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     while (!AppShouldQuit())
     {
@@ -126,9 +128,19 @@ void App::GameLoop()
             dtAccumulator = 0.0f;
         }
 
-        // Simulate world. Limit dt passed in to be at most 
-        // equivalent to running the game at 1 frame a second
+#ifndef NDEBUG
+        if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
+        {
+            mWorld.Update(math::Min(dt * 10, 1.0f));
+        }
+        else
+        {
+            mWorld.Update(math::Min(dt, 1.0f));
+        }
+#else
         mWorld.Update(math::Min(dt, 1.0f));
+#endif
+        
     }
 }
 
@@ -177,12 +189,6 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
     InitializePlayerBag(mWorld);
-    AddItemToBag(StringId("POTION"), mWorld, 1);
-    AddItemToBag(StringId("POK^_BALL"), mWorld, 5);
-    AddItemToBag(StringId("POTION"), mWorld, 2);
-    RemoveItemFromBag(StringId("POTION"), mWorld, 2);
-    RemoveItemFromBag(StringId("POTION"), mWorld, 1);
-    RemoveItemFromBag(StringId("POK^_BALL"), mWorld, 5);
 
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
