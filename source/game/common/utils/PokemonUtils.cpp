@@ -36,6 +36,17 @@ static const std::string POKEMON_XP_GROUPS_FILE_NAME = "xp_groups.json";
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+static int CalculateBallShakeCountBeforePokemonBreaksFree
+(
+    const StringId ballNameUsed,
+    const Pokemon& pokemon,
+    const int fVal
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
@@ -305,6 +316,76 @@ size_t GetPokemonRosterIndex
     return pokemonRoster.size();
 }
 
+CatchResult CalculateCatchResult
+(
+    const StringId ballNameUsed,
+    const Pokemon& pokemon
+)
+{
+    // https://bulbapedia.bulbagarden.net/wiki/Catch_rate
+
+    if (ballNameUsed == StringId("MASTER_BALL"))
+    {
+        return CatchResult(3, true);
+    }
+
+    auto rngN = math::RandomInt(0, 255);
+
+    if (ballNameUsed == StringId("GREAT_BALL"))
+    {
+        rngN = math::RandomInt(0, 200);
+    }
+    else if (ballNameUsed == StringId("ULTRA_BALL"))
+    {
+        rngN = math::RandomInt(0, 150);
+    }
+    else if (ballNameUsed == StringId("SAFARI_BALL"))
+    {
+        rngN = math::RandomInt(0, 150);
+    }
+
+    auto statusVar = 0;
+    if (pokemon.mStatus == PokemonStatus::ASLEEP || pokemon.mStatus == PokemonStatus::FROZEN)
+    {
+        statusVar = 25;
+    }
+    else if (pokemon.mStatus == PokemonStatus::PARALYZED || pokemon.mStatus == PokemonStatus::BURNED || pokemon.mStatus == PokemonStatus::POISONED)
+    {
+        statusVar = 12;
+    }
+
+    const auto rVal = rngN - statusVar;
+    if (rVal < 0)
+    {
+        return CatchResult(3, true);
+    }
+    
+    auto fVal = pokemon.mMaxHp * 255;
+    fVal /= (ballNameUsed == StringId("GREAT_BALL") ? 8 : 12);
+
+    const auto pokemonHpDivBy4 = pokemon.mHp / 4;
+    if (pokemonHpDivBy4 > 0)
+    {
+        fVal /= pokemonHpDivBy4;
+    }
+
+    fVal = math::Min(fVal, 255);
+    
+    if (pokemon.mBaseSpeciesStats.mCatchRate < rVal)
+    {
+        return CatchResult(CalculateBallShakeCountBeforePokemonBreaksFree(ballNameUsed, pokemon, fVal), false);
+    }
+
+    const auto rngM = math::RandomInt(0, 255);
+    if (rngM <= fVal)
+    {
+        return CatchResult(3, true);
+    }
+    else
+    {
+        return CatchResult(CalculateBallShakeCountBeforePokemonBreaksFree(ballNameUsed, pokemon, fVal), false);
+    }    
+}
 
 int CalculateXpGainFromBattle
 (
@@ -616,6 +697,68 @@ void LoadAndPopulatePokemonBaseStats
             catchRate, 
             overworldSprite
         )));
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+int CalculateBallShakeCountBeforePokemonBreaksFree
+(
+    const StringId ballNameUsed,
+    const Pokemon& pokemon,
+    const int fVal
+)
+{
+    // https://bulbapedia.bulbagarden.net/wiki/Catch_rate
+    auto dVal = static_cast<int>(pokemon.mBaseSpeciesStats.mCatchRate * 100 / 255.0f);
+
+    if (ballNameUsed == StringId("GREAT_BALL"))
+    {
+        dVal = static_cast<int>(pokemon.mBaseSpeciesStats.mCatchRate * 100 / 200.0f);
+    }
+    else if (ballNameUsed == StringId("ULTRA_BALL"))
+    {
+        dVal = static_cast<int>(pokemon.mBaseSpeciesStats.mCatchRate * 100 / 150.0f);
+    }
+    else if (ballNameUsed == StringId("SAFARI_BALL"))
+    {
+        dVal = static_cast<int>(pokemon.mBaseSpeciesStats.mCatchRate * 100 / 150.0f);
+    }
+
+    if (dVal >= 256)
+    {
+        return 3;
+    }
+    else
+    {
+        auto xVal = static_cast<int>(dVal * fVal / 255.0f);
+        if (pokemon.mStatus == PokemonStatus::ASLEEP || pokemon.mStatus == PokemonStatus::FROZEN)
+        {
+            xVal += 10;
+        }
+        else if (pokemon.mStatus == PokemonStatus::PARALYZED || pokemon.mStatus == PokemonStatus::BURNED || pokemon.mStatus == PokemonStatus::POISONED)
+        {
+            xVal += 5;
+        }
+
+        if (xVal < 10)
+        {
+            return 0;
+        }
+        else if (xVal < 30)
+        {
+            return 1;
+        }
+        else if (xVal < 70)
+        {
+            return 2;
+        }
+        else
+        {
+            return 3;
+        }
     }
 }
 

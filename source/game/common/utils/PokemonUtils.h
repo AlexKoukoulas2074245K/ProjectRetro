@@ -36,6 +36,26 @@ class PokemonBaseStatsSingletonComponent;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+struct CatchResult
+{    
+    CatchResult
+    (
+        const int numberOfBallShakes,
+        const bool wasCaught
+    )
+        : mNumberOfBallShakes(numberOfBallShakes)
+        , mWasCaught(wasCaught)
+    {
+    }
+
+    const int mNumberOfBallShakes;        
+    const bool mWasCaught;
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
@@ -81,6 +101,12 @@ size_t GetPokemonRosterIndex
 (
     const Pokemon&,
     const std::vector<std::unique_ptr<Pokemon>>& pokemonRoster
+);
+
+CatchResult CalculateCatchResult
+(
+    const StringId ballNameUsed,
+    const Pokemon& pokemon
 );
 
 int CalculateXpGainFromBattle
