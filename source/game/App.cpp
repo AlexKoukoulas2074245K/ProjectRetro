@@ -12,6 +12,7 @@
 #include "App.h"
 #include "common/components/DirectionComponent.h"
 #include "common/components/EvolutionAnimationStateSingletonComponent.h"
+#include "common/components/ItemStatsSingletonComponent.h"
 #include "common/components/MoveStatsSingletonComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
@@ -22,6 +23,7 @@
 #include "common/components/PokemonSelectionViewStateSingletonComponent.h"
 #include "common/components/TrainersInfoStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
+#include "common/utils/PokemonItemsUtils.h"
 #include "common/utils/PokemonMoveUtils.h"
 #include "common/utils/PokemonUtils.h"
 #include "common/utils/TrainerUtils.h"
@@ -159,6 +161,10 @@ void App::DummyInitialization()
     LoadAndPopulateMoveStats(*moveStatsComponent);
     mWorld.SetSingletonComponent<MoveStatsSingletonComponent>(std::move(moveStatsComponent));
 
+    auto itemStatsComponent = std::make_unique<ItemStatsSingletonComponent>();
+    LoadAndPopulateItemsStats(*itemStatsComponent);
+    mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
+
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
@@ -167,8 +173,16 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");    
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 6, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");        
+    playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
+
+    InitializePlayerBag(mWorld);
+    AddItemToBag(StringId("POTION"), mWorld, 1);
+    AddItemToBag(StringId("POK^_BALL"), mWorld, 5);
+    AddItemToBag(StringId("POTION"), mWorld, 2);
+    RemoveItemFromBag(StringId("POTION"), mWorld, 2);
+    RemoveItemFromBag(StringId("POTION"), mWorld, 1);
+    RemoveItemFromBag(StringId("POK^_BALL"), mWorld, 5);
 
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);

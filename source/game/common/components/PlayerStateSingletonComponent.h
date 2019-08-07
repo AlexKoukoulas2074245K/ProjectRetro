@@ -14,9 +14,30 @@
 
 #include "../../ECS.h"
 #include "../../common/GameConstants.h"
+#include "../../common/utils/StringUtils.h"
 
 #include <vector>
 #include <memory>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+struct BagItemEntry
+{
+    BagItemEntry
+    (
+        const StringId itemName,
+        const int initialQuantity = 1
+    )
+        : mItemName(itemName)
+        , mQuantity(initialQuantity)
+    {
+    }
+
+    StringId mItemName;
+    int mQuantity;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -26,9 +47,13 @@ class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
+    std::vector<BagItemEntry> mPlayerBag;
+    std::vector<StringId> mBadgeNamesOwned;
+
     StringId mLastOverworldLevelName   = StringId();
     StringId mTrainerName              = StringId();
     StringId mHomeLevelName            = StringId("pallet");
+
     int mPokeDollarCredits             = 0;
     int mLastOverworldLevelOccupiedRow = 0;
     int mLastOverworldLevelOccupiedCol = 0;
@@ -36,8 +61,8 @@ public:
     int mHomeLevelOccupiedCol          = 11;
     int mLeveledUpPokemonRosterIndex   = -1;
     int mTrainerId                     = 0;
-    Direction mLastOverworldDirection  = Direction::SOUTH;
-    
+
+    Direction mLastOverworldDirection  = Direction::SOUTH;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

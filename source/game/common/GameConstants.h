@@ -47,6 +47,11 @@ enum class CharacterMovementType
     DYNAMIC, STATIONARY, STATIC
 };
 
+enum class ItemUsageType
+{
+    UNUSABLE, OVERWORLD, BATTLE, ANYWHERE
+};
+
 enum class PokemonStatus
 {
     NORMAL, PARALYZED, POISONED, CONFUSED, FROZEN, ASLEEP, BURNED
@@ -87,6 +92,31 @@ const std::unordered_map<PokemonType, StringId> sPokemonTypesToStrings =
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+struct ItemStats
+{
+    ItemStats
+    (
+        const StringId name,
+        const StringId effect,
+        const int price,
+        const ItemUsageType usageType,
+        const bool unique
+    )
+        : mName(name)
+        , mEffect(effect)
+        , mPrice(price)
+        , mUsageType(usageType)
+        , mUnique(unique)
+    {
+    }
+
+    const StringId mName;
+    const StringId mEffect;
+    const int mPrice;
+    const ItemUsageType mUsageType;
+    const bool mUnique;
+};
 
 struct PokemonMoveStats
 {

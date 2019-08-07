@@ -1,0 +1,129 @@
+{
+	"CANCEL":
+	{
+		"usage": 2,
+        "unique": true,
+        "effect": "",
+        "bprice": 0
+	},
+	
+    "POKE_BALL": 
+    {
+        "usage": 1,
+        "unique": false,
+        "effect": "BALL",
+        "bprice": 100 
+    },
+
+    "GREAT_BALL": 
+    {
+        "usage": 1,
+        "unique": false,
+        "effect": "BALL",
+        "bprice": 300
+    },
+
+    "POTION": 
+    {
+        "usage": 2,
+        "unique": false,
+        "effect": "20HP",
+        "bprice": 150
+    },
+
+    "SUPER_POTION": 
+    {
+        "usage": 2,
+        "unique": false,
+        "effect": "50HP",
+        "bprice": 350
+    },
+ 
+    "AWAKENING": 
+    {   
+        "usage": 2,
+        "unique": false,
+        "effect": "SLPH",
+        "bprice": 125
+    },
+
+    "MOON_STONE": 
+    {
+        "usage": 0,
+        "unique": false,
+        "effect": "#",
+        "bprice": 0
+    },
+
+    "ANTIDOTE": 
+    {
+        "usage": 2,
+        "unique": false,
+        "effect": "PSNH",
+        "bprice": 50
+    },
+
+    "BURN_HEAL": 
+    {
+        "usage": 2,
+        "unique": false,
+        "effect": "BRNH",
+        "bprice": 125
+    },
+
+    "PARALYZ_HEAL": 
+    {
+        "usage": 2,
+        "unique": false,
+        "effect": "PRZH",
+        "bprice": 100
+    },
+
+    "ESCAPE_ROPE": 
+    {
+        "usage": 0,
+        "unique": false,
+        "effect": "#",
+        "bprice": 225
+    },
+
+    "REPEL": 
+    {
+        "usage": 0,
+        "unique": false,
+        "effect": "#",
+        "bprice": 175
+    },
+
+    "NUGGET": 
+    {
+        "usage": -1,
+        "unique": false,
+        "effect": "#",
+        "bprice": 4900
+    },
+
+    "FOSSIL": 
+    {
+        "usage": -1,
+        "unique": true,
+        "effect": "#",
+        "bprice": 0
+    },
+
+    "OLD_AMBER": 
+    {
+        "usage": -1,
+        "unique": true,
+        "effect": "#",
+        "bprice": 0
+    },
+
+    "BOULDERBADGE": 
+    {
+        "usage": -1,
+        "unique": true,
+        "effect": "BADGE",
+        "bprice": 0
+    }
+}
