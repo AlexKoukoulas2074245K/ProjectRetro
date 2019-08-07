@@ -11,6 +11,7 @@
 
 #include "MainMenuEncounterFlowState.h"
 #include "FightMenuEncounterFlowState.h"
+#include "ItemMenuFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "RunAttemptEncounterFlowState.h"
 #include "../components/CursorComponent.h"
@@ -60,8 +61,7 @@ void MainMenuEncounterFlowState::VUpdate(const float)
         else if (cursorCol == 0 && cursorRow == 1)
         {
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::ITEM;
-            //TODO: create actual one
-            CompleteAndTransitionTo<FightMenuEncounterFlowState>();
+            CompleteAndTransitionTo<ItemMenuFlowState>();
         }
         else if (cursorCol == 1 && cursorRow == 1)
         {

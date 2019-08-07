@@ -13,6 +13,7 @@
 #include "../../ECS.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../components/ItemMenuStateComponent.h"
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -31,9 +32,13 @@ const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION = glm::vec3(0.1375f, -0.67
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::vec3(0.0f, 0.0f, -0.8f);
+static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                      = glm::vec3(0.1337f, 0.167f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
+
+static const int ITEM_MENU_TEXTBOX_COLS = 16;
+static const int ITEM_MENU_TEXTBOX_ROWS = 11;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
@@ -246,6 +251,52 @@ ecs::EntityId CreateChatbox
         position.z,
         world
     );
+}
+
+ecs::EntityId CreateItemMenu
+(
+    ecs::World& world    
+)
+{
+    const auto itemMenuTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        ITEM_MENU_TEXTBOX_COLS,
+        ITEM_MENU_TEXTBOX_ROWS,
+        ITEM_MENU_TEXTBOX_POSITION.x,
+        ITEM_MENU_TEXTBOX_POSITION.y,
+        ITEM_MENU_TEXTBOX_POSITION.z,
+        world
+    );
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 3;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        itemMenuTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(itemMenuTextboxEntityId, std::move(cursorComponent));
+    world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::make_unique<ItemMenuStateComponent>());
+
+    return itemMenuTextboxEntityId;
 }
 
 ecs::EntityId CreateYesNoTextbox

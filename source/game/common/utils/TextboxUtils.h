@@ -85,6 +85,11 @@ ecs::EntityId CreateChatbox
     const glm::vec3& position = CHATBOX_POSITION
 );
 
+ecs::EntityId CreateItemMenu
+(
+    ecs::World& world
+);
+
 ecs::EntityId CreateYesNoTextbox
 (
     ecs::World& world,
