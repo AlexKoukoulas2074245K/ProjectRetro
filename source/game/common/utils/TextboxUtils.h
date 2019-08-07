@@ -87,7 +87,10 @@ ecs::EntityId CreateChatbox
 
 ecs::EntityId CreateItemMenu
 (
-    ecs::World& world
+    ecs::World& world,
+    const size_t playerBagSize,
+    const int previousCursorRow = 0,
+    const int itemOffset = 0
 );
 
 ecs::EntityId CreateYesNoTextbox

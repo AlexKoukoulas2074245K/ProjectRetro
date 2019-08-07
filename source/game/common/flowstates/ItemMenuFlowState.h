@@ -32,7 +32,7 @@ public:
 
 private:
     void DisplayItemsInMenuForCurrentOffset() const;
-    
+    void SaveLastCursorRow() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

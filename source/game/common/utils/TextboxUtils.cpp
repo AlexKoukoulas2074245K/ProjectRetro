@@ -255,7 +255,10 @@ ecs::EntityId CreateChatbox
 
 ecs::EntityId CreateItemMenu
 (
-    ecs::World& world    
+    ecs::World& world,
+    const size_t playerBagSize,
+    const int previousCursorRow /* 0 */,
+    const int itemOffset /* 0 */
 )
 {
     const auto itemMenuTextboxEntityId = CreateTextboxWithDimensions
@@ -272,10 +275,10 @@ ecs::EntityId CreateItemMenu
     auto cursorComponent = std::make_unique<CursorComponent>();
 
     cursorComponent->mCursorCol = 0;
-    cursorComponent->mCursorRow = 0;
+    cursorComponent->mCursorRow = previousCursorRow;
 
-    cursorComponent->mCursorColCount = 1;
-    cursorComponent->mCursorRowCount = 3;
+    cursorComponent->mCursorColCount = 1;    
+    cursorComponent->mCursorRowCount = math::Min(static_cast<int>(playerBagSize), 3);
 
     cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
     cursorComponent->mCursorDisplayVerticalTileOffset = 2;
@@ -294,7 +297,11 @@ ecs::EntityId CreateItemMenu
     cursorComponent->mWarp = false;
 
     world.AddComponent<CursorComponent>(itemMenuTextboxEntityId, std::move(cursorComponent));
-    world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::make_unique<ItemMenuStateComponent>());
+
+    auto itemMenuStateComponent = std::make_unique<ItemMenuStateComponent>();
+    itemMenuStateComponent->mItemMenuOffsetFromStart = itemOffset;
+
+    world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::move(itemMenuStateComponent));    
 
     return itemMenuTextboxEntityId;
 }

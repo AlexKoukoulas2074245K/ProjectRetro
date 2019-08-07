@@ -26,6 +26,7 @@ class ItemMenuStateComponent final: public ecs::IComponent
 {
 public:
     int mItemMenuOffsetFromStart              = 0;
+    int mPreviousCursorRow                    = 0;
     bool mShouldDisplayIndicationForMoreItems = false;
 };
 

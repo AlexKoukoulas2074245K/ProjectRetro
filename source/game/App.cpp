@@ -189,6 +189,14 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
     InitializePlayerBag(mWorld);
+    AddItemToBag(StringId("POTION"), mWorld, 2);
+    AddItemToBag(StringId("POK^_BALL"), mWorld, 2);
+    AddItemToBag(StringId("GREAT_BALL"), mWorld, 2);    
+    AddItemToBag(StringId("GREAT_BALL"), mWorld, 2);
+    AddItemToBag(StringId("NUGGET"), mWorld, 2);
+    AddItemToBag(StringId("FOSSIL"), mWorld, 2);
+    AddItemToBag(StringId("OLD_AMBER"), mWorld, 2);
+    AddItemToBag(StringId("REPEL"), mWorld, 2);
 
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route1"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
