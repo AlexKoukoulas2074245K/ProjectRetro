@@ -27,6 +27,7 @@ class OverworldFlowStateSingletonComponent final: public ecs::IComponent
 {
 public:
     FlowStateManager mFlowStateManager;
+    bool mFlowHasJustFinished = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

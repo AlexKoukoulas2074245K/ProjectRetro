@@ -14,6 +14,7 @@
 #include "TooImportantToTossFlowState.h"
 #include "ItemUsageFlowState.h"
 #include "MainMenuEncounterFlowState.h"
+#include "MainMenuOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/ItemMenuStateComponent.h"
@@ -192,11 +193,10 @@ void ItemMenuFlowState::CancelItemMenu()
     if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
     {
         CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-        return;
     }
     else
     {
-        // Continue with overworld
+        CompleteAndTransitionTo<MainMenuOverworldFlowState>();
     }
 }
 

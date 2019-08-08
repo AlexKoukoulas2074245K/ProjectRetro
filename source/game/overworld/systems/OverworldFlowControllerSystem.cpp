@@ -25,7 +25,14 @@ OverworldFlowControllerSystem::OverworldFlowControllerSystem(ecs::World& world)
 void OverworldFlowControllerSystem::VUpdateAssociatedComponents(const float dt) const
 {
     auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
-    overworldFlowStateComponent.mFlowStateManager.Update(dt);
+    if (overworldFlowStateComponent.mFlowHasJustFinished)
+    {
+        overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
+    }
+    else
+    {
+        overworldFlowStateComponent.mFlowStateManager.Update(dt);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

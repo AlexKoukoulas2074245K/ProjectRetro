@@ -62,7 +62,10 @@ inline bool IsAnyOverworldFlowCurrentlyRunning(const ecs::World& world)
 template<class FlowStateType>
 inline void StartOverworldFlowState(ecs::World& world)
 {
-    world.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowStateManager.SetActiveFlowState(std::make_unique<FlowStateType>(world));
+    auto& overworldFlowStateComponent = world.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
+    
+    overworldFlowStateComponent.mFlowHasJustFinished = false;
+    overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<FlowStateType>(world));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
