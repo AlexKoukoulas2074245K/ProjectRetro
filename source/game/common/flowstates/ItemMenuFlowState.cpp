@@ -201,6 +201,7 @@ void ItemMenuFlowState::CancelItemMenu()
 
 void ItemMenuFlowState::TransitionToItemUsageFlow()
 {
+    SaveItemMenuState();
     CompleteAndTransitionTo<ItemUsageFlowState>();
 }
 

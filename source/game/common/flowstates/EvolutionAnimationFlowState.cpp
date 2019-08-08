@@ -55,8 +55,9 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
             auto& playerStateComponent           = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
             const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
             auto& pokemonReadyToEvolve           = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
-            
+            const auto pokemonReadyToEvolveHp    = pokemonReadyToEvolve.mHp;
             playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex] = std::move(pokemonReadyToEvolve.mEvolution);            
+            playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mHp = pokemonReadyToEvolveHp;
 
             DestroyActiveTextbox(mWorld);
             mWorld.DestroyEntity(evolutionAnimationStateComponent.mOldPokemonSpriteEntityId);
