@@ -63,7 +63,6 @@ protected:
 #endif
         
         mNextFlowState = std::make_unique<FlowStateType>(mWorld);
-
     }
 
     ecs::World& mWorld;

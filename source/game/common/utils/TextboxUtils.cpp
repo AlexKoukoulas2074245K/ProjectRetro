@@ -14,6 +14,7 @@
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/ItemMenuStateComponent.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -29,10 +30,12 @@
 const glm::vec3 CHATBOX_POSITION                      = glm::vec3(0.0f, -0.6701f, 0.0f);
 const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION = glm::vec3(0.1375f, -0.6701f, -0.2f);
 
-static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION            = glm::vec3(0.275f, -0.6701f, -0.2f);
-static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION = glm::vec3(-0.31f, -0.1801f, -0.4f);
-static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION          = glm::vec3(0.0f, 0.0f, -0.8f);
-static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                      = glm::vec3(0.1337f, 0.167f, -0.1f);
+static const glm::vec3 OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITH_POKEDEX    = glm::vec3(0.5f, 0.2f, 0.1f);
+static const glm::vec3 OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX = glm::vec3(0.5f, 0.3f, 0.1f);
+static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION                 = glm::vec3(0.275f, -0.6701f, -0.2f);
+static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION      = glm::vec3(-0.31f, -0.1801f, -0.4f);
+static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = glm::vec3(0.0f, 0.0f, -0.8f);
+static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -42,6 +45,12 @@ static const int ITEM_MENU_TEXTBOX_ROWS = 11;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
+
+static const int USE_TOSS_TEXTBOX_COLS = 7;
+static const int USE_TOSS_TEXTBOX_ROWS = 5;
+
+static const int OVERWORLD_MAIN_MENU_TEXTBOX_COLS_WITH_POKEDEX = 10;
+static const int OVERWORLD_MAIN_MENU_TEXTBOX_ROWS_WITH_POKEDEX = 16;
 
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_COLS  = 12;
 static const int ENCOUNTER_MAIN_MENU_TEXTBOX_ROWS  = 6;
@@ -312,7 +321,6 @@ ecs::EntityId CreateYesNoTextbox
     const glm::vec3& position
 )
 {
-
     const auto yesNoTextboxEntityId = CreateTextboxWithDimensions
     (
         TextboxType::CURSORED_TEXTBOX,
@@ -354,6 +362,125 @@ ecs::EntityId CreateYesNoTextbox
     world.AddComponent<CursorComponent>(yesNoTextboxEntityId, std::move(cursorComponent));
 
     return yesNoTextboxEntityId;
+}
+
+ecs::EntityId CreateUseTossTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+)
+{
+    const auto useTossTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        USE_TOSS_TEXTBOX_COLS,
+        USE_TOSS_TEXTBOX_ROWS,
+        position.x,
+        position.y,
+        position.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(useTossTextboxEntityId, "USE", 2, 1, world);
+    WriteTextAtTextboxCoords(useTossTextboxEntityId, "TOSS", 2, 3, world);
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 2;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 1;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        useTossTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(useTossTextboxEntityId, std::move(cursorComponent));
+
+    return useTossTextboxEntityId;
+}
+
+ecs::EntityId CreateOverworldMainMenuTextbox
+(
+    ecs::World& world,
+    const bool hasPokedex,
+    const int lastSelectedMenuItemRow /* 0 */
+)
+{
+    const auto overworldMenuTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        OVERWORLD_MAIN_MENU_TEXTBOX_COLS_WITH_POKEDEX,
+        hasPokedex ? OVERWORLD_MAIN_MENU_TEXTBOX_ROWS_WITH_POKEDEX : OVERWORLD_MAIN_MENU_TEXTBOX_ROWS_WITH_POKEDEX - 2,
+        hasPokedex ? OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITH_POKEDEX.x : OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX.x,
+        hasPokedex ? OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITH_POKEDEX.y : OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX.y,
+        hasPokedex ? OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITH_POKEDEX.z : OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX.z,
+        world
+    );
+
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+
+    if (hasPokedex)
+    {
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^DEX", 2, 2, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^MON", 2, 4, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "ITEM", 2, 6, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 2, 8, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "SAVE", 2, 10, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "OPTION", 2, 12, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "EXIT", 2, 14, world);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^MON", 2, 2, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "ITEM", 2, 4, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 2, 6, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "SAVE", 2, 8, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "OPTION", 2, 10, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "EXIT", 2, 12, world);
+    }
+    
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = lastSelectedMenuItemRow;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = hasPokedex ? 7 : 6;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        overworldMenuTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(overworldMenuTextboxEntityId, std::move(cursorComponent));
+
+    return overworldMenuTextboxEntityId;
 }
 
 ecs::EntityId CreateEncounterMainMenuTextbox

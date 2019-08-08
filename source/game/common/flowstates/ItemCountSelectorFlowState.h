@@ -1,16 +1,16 @@
 //
-//  ItemMenuFlowState.h
+//  ItemCountSelectorFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 07/08/2019.
+//  Created by Alex Koukoulas on 08/08/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ItemMenuFlowState_h
-#define ItemMenuFlowState_h
+#ifndef ItemCountSelectorFlowState_h
+#define ItemCountSelectorFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -23,30 +23,31 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class ItemMenuFlowState final: public BaseFlowState
+class ItemCountSelectorFlowState final: public BaseFlowState
 {
 public:
-    ItemMenuFlowState(ecs::World&);
+    ItemCountSelectorFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
 
 private:
-    void UpdateItemMenu();
-    void UpdateUseTossTextbox();
-    void CancelItemMenu();
-    void TransitionToItemUsageFlow();
-    void RedrawItemMenu() const;
-    void DisplayItemsInMenuForCurrentOffset() const;
-    void SaveLastFramesCursorRow() const;
-    void SaveItemMenuState() const;
+    void UpdateItemCountSelectorTextbox();
+    void UpdateYesNoTextbox();
+    void CancelYesNoTossItem();
+    void TransitionToTossItemsFlow();
+    void DrawSelectorCount() const;
 
-    static const glm::vec3 USE_TOSS_TEXTBOX_POSITION;
+    static const glm::vec3 ITEM_COUNT_SELECTOR_TEXTBOX_POSITION;
+    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
 
-    static const float TOO_IMPORTANT_TO_TOSS_CHATBOX_Z;
+    static const float IS_IT_OK_TO_TOSS_CHATBOX_Z;
+
+    static const int ITEM_COUNT_SELECTOR_COLS;
+    static const int ITEM_COUNT_SELECTOR_ROWS;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* ItemMenuFlowState_h */
+#endif /* ItemCountSelectorFlowState_h */

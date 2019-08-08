@@ -1,52 +1,49 @@
 //
-//  ItemMenuFlowState.h
+//  TooImportantToTossFlowState.cpp
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 07/08/2019.
+//  Created by Alex Koukoulas on 08/08/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ItemMenuFlowState_h
-#define ItemMenuFlowState_h
+#include "ItemMenuFlowState.h"
+#include "TooImportantToTossFlowState.h"
+#include "../components/GuiStateSingletonComponent.h"
+#include "../utils/TextboxUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "BaseFlowState.h"
-#include "../utils/MathUtils.h"
+const float TooImportantToTossFlowState::TOO_IMPORTANT_TO_TOSS_CHATBOX_Z = -0.3f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class ItemMenuFlowState final: public BaseFlowState
+TooImportantToTossFlowState::TooImportantToTossFlowState(ecs::World& world)
+    : BaseFlowState(world)
 {
-public:
-    ItemMenuFlowState(ecs::World&);
-    
-    void VUpdate(const float dt) override;
+    const auto chatboxEntityId = CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, TOO_IMPORTANT_TO_TOSS_CHATBOX_Z));
+    QueueDialogForChatbox(chatboxEntityId, "That's too impor-#tant to toss!#+END", mWorld);    
+}
 
-private:
-    void UpdateItemMenu();
-    void UpdateUseTossTextbox();
-    void CancelItemMenu();
-    void TransitionToItemUsageFlow();
-    void RedrawItemMenu() const;
-    void DisplayItemsInMenuForCurrentOffset() const;
-    void SaveLastFramesCursorRow() const;
-    void SaveItemMenuState() const;
+void TooImportantToTossFlowState::VUpdate(const float)
+{    
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
-    static const glm::vec3 USE_TOSS_TEXTBOX_POSITION;
-
-    static const float TOO_IMPORTANT_TO_TOSS_CHATBOX_Z;
-};
+    if (guiStateComponent.mActiveTextboxesStack.size() == 3)
+    {                
+        // Destroy Use/Toss Textbox
+        DestroyActiveTextbox(mWorld);
+        
+        CompleteAndTransitionTo<ItemMenuFlowState>();
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
-#endif /* ItemMenuFlowState_h */

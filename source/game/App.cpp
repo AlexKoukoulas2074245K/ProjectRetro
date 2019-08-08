@@ -48,6 +48,7 @@
 #include "overworld/systems/AnimatedFlowersAnimationSystem.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
+#include "overworld/systems/OverworldFlowControllerSystem.h"
 #include "overworld/systems/PlayerActionControllerSystem.h"
 #include "overworld/systems/SeaTilesAnimationSystem.h"
 #include "overworld/systems/TransitionAnimationSystem.h"
@@ -89,6 +90,7 @@ void App::CreateSystems()
     mWorld.AddSystem(std::make_unique<WarpConnectionsSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<EncounterShakeControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<EncounterStateControllerSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<OverworldFlowControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
     mWorld.AddSystem(std::move(renderingSystem));
 }

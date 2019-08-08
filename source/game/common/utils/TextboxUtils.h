@@ -99,6 +99,19 @@ ecs::EntityId CreateYesNoTextbox
     const glm::vec3& position
 );
 
+ecs::EntityId CreateUseTossTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+);
+
+ecs::EntityId CreateOverworldMainMenuTextbox
+(
+    ecs::World& world,
+    const bool hasPokedex,
+    const int lastSelectedMenuItemRow = 0
+);
+
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
     const MainMenuActionType actionTypeSelected,

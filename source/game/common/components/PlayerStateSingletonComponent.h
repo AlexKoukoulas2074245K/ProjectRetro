@@ -61,8 +61,12 @@ public:
     int mHomeLevelOccupiedCol          = 11;
     int mLeveledUpPokemonRosterIndex   = -1;
     int mTrainerId                     = 0;
-
+    int mPreviousItemMenuItemOffset    = 0;
+    int mPreviousItemMenuCursorRow     = 0;
+    int mPreviousMainMenuCursorRow     = 0;
+    int mQuantityOfItemsToToss         = 0;
     Direction mLastOverworldDirection  = Direction::SOUTH;    
+    bool mOwnsAPokedex                 = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

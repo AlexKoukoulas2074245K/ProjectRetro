@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../OverworldConstants.h"
+#include "../components/OverworldFlowStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/GameConstants.h"
 #include "../../ECS.h"
@@ -51,6 +52,17 @@ inline ecs::EntityId GetPlayerEntityId(const ecs::World& world)
     }
     
     return ecs::NULL_ENTITY_ID;
+}
+
+inline bool IsAnyOverworldFlowCurrentlyRunning(const ecs::World& world)
+{
+    return world.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowStateManager.HasActiveFlowState();
+}
+
+template<class FlowStateType>
+inline void StartOverworldFlowState(ecs::World& world)
+{
+    world.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowStateManager.SetActiveFlowState(std::make_unique<FlowStateType>(world));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
