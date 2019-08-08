@@ -179,8 +179,7 @@ void ItemMenuFlowState::UpdateUseTossTextbox()
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
-        DestroyActiveTextbox(mWorld);        
-        CreateUseTossTextbox(mWorld, USE_TOSS_TEXTBOX_POSITION);
+        DestroyActiveTextbox(mWorld);                
     }    
 }
 

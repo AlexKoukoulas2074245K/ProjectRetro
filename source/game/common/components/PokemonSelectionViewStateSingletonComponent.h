@@ -43,7 +43,7 @@ public:
     std::vector<std::array<ecs::EntityId, 3>> mPokemonSpriteEntityIds;
     ecs::EntityId mBackgroundEntityId                          = ecs::NULL_ENTITY_ID;    
     int mLastSelectedPokemonRosterIndex                        = 0;
-    PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED;
+    PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
     bool mPokemonHasBeenSelected                               = false;
     bool mNoWillToFightTextFlowActive                          = false;
 

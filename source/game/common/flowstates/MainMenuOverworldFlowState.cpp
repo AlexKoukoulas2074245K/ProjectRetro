@@ -9,11 +9,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "MainMenuOverworldFlowState.h"
 #include "ItemMenuFlowState.h"
+#include "MainMenuOverworldFlowState.h"
+#include "PokemonSelectionViewFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -37,18 +39,27 @@ MainMenuOverworldFlowState::MainMenuOverworldFlowState(ecs::World& world)
 
 void MainMenuOverworldFlowState::VUpdate(const float)
 {
-    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    
+    const auto& inputStateComponent          = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
         const auto mainMenuItem = GetCursorMainMenuItemFirstFourLetters();
-        if (StringStartsWith(mainMenuItem, "POK^DEX"))
+        if (StringStartsWith(mainMenuItem, "POK^DE"))
         {
             
         }
-        else if (StringStartsWith(mainMenuItem, "POK^MON"))
+        else if (StringStartsWith(mainMenuItem, "POK^MO"))
         {
-            
+            const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+            auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+            playerStateComponent.mPreviousMainMenuCursorRow = cursorComponent.mCursorRow;
+
+            // Destory main menu textbox
+            DestroyActiveTextbox(mWorld);
+                        
+            pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
+            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
         }
         else if (StringStartsWith(mainMenuItem, "ITEM"))
         {
@@ -58,7 +69,7 @@ void MainMenuOverworldFlowState::VUpdate(const float)
         {
             
         }
-        else if (StringStartsWith(mainMenuItem, "OPTION"))
+        else if (StringStartsWith(mainMenuItem, "OPTIO"))
         {
             
         }
@@ -83,6 +94,10 @@ void MainMenuOverworldFlowState::VUpdate(const float)
 
 void MainMenuOverworldFlowState::ExitOverworldMainMenu()
 {
+    const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+    auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    playerStateComponent.mPreviousMainMenuCursorRow = cursorComponent.mCursorRow;
+
     // Destroy main menu
     DestroyActiveTextbox(mWorld);
     

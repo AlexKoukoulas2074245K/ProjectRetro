@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "MainMenuEncounterFlowState.h"
+#include "MainMenuOverworldFlowState.h"
 #include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 #include "PlayerPokemonTextIntroEncounterFlowState.h"
 #include "PlayerPokemonWithdrawTextEncounterFlowState.h"
@@ -34,7 +35,6 @@
 
 #include <unordered_map>
 #include <utility>
-#include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,12 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
         const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         const auto& activePlayerPokemon  = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
         
-        if
+        if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
+        {
+            DestroyPokemonSelectionView();
+            CompleteAndTransitionTo<MainMenuOverworldFlowState>();
+        }
+        else if
         (
             pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED ||
             activePlayerPokemon.mHp > 0
@@ -199,12 +204,7 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
             {
                 encounterStateComponent.mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
                 CompleteAndTransitionTo<OpponentTrainerPokemonSummonTextEncounterFlowState>();
-            }
-            // From Overworld
-            else
-            {
-                // CompleteAndTransitionTo<MainMenuOverworldFlowState>();
-            }
+            }                       
         }        
     }
     else if 
@@ -338,8 +338,15 @@ void PokemonSelectionViewFlowState::CancelPokemonSelectionFlow()
 
     DestroyPokemonSelectionView();
 
-    CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-
+    if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
+    {
+        CompleteAndTransitionTo<MainMenuOverworldFlowState>();
+    }
+    else
+    {
+        CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+    }
+    
     pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
 }
 

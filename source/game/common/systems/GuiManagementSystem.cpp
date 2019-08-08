@@ -44,7 +44,6 @@ GuiManagementSystem::GuiManagementSystem(ecs::World& world)
 
 void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
 {    
-    auto& inputStateComponent        = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& activeEntities       = mWorld.GetActiveEntities();
     const auto activeTextboxEntityId = GetActiveTextboxEntityId(mWorld);
 
@@ -61,9 +60,7 @@ void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
                 case TextboxType::CURSORED_BARE_TEXTBOX: UpdateCursoredTextbox(entityId); break;
                 case TextboxType::BARE_TEXTBOX: break;
                 case TextboxType::GENERIC_TEXTBOX: break;
-            }
-            
-            inputStateComponent.mHasBeenConsumed = true;
+            }                        
         }
     }
 }
@@ -400,8 +397,7 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
 void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const
 {    
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    
-    inputStateComponent.mHasBeenConsumed = true;
+        
     if (IsActionTypeKeyTapped(VirtualActionType::LEFT_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::WEST);
