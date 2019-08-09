@@ -117,7 +117,7 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
 
 void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation()
 {
-    const auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     if (encounterStateComponent.mLastMoveSelected == StringId("TACKLE"))
     {
