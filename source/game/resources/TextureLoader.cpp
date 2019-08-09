@@ -64,9 +64,10 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
     }
     
     SDL_LockSurface(sdlSurface);
-    const auto hasTransparentPixels = HasTransparentPixels(sdlSurface);
+    const auto colorSet = ExtractColorSet(sdlSurface);
     SDL_UnlockSurface(sdlSurface);
 
+    const auto hasTransparentPixels = colorSet.count(0x00) != 0 || colorSet.count(0xFFFFFF) != 0;
     if (hasTransparentPixels)
     {
         Log(LogType::INFO, "%s: transparent texture", resourcePath.c_str());
@@ -119,27 +120,25 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
     
     SDL_FreeSurface(sdlSurface);
     
-    return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels));
+    return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels, colorSet));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-bool TextureLoader::HasTransparentPixels(SDL_Surface* const sdlSurface) const
+std::unordered_set<Uint32> TextureLoader::ExtractColorSet(SDL_Surface* const sdlSurface) const
 {    
+    std::unordered_set<Uint32> colorSet;
+    
     auto* pixels = (Uint32*)sdlSurface->pixels;
     for (int y = 0; y < sdlSurface->h; ++y)
     {
         for (int x = 0; x < sdlSurface->w; ++x)
         {                                  
-            auto pixel = pixels[y * sdlSurface->w + x];
-            if (pixel == 0x00 || pixel == 0xFFFFFF)
-            {                
-                return true;
-            }
+            colorSet.insert(pixels[y * sdlSurface->w + x]);            
         }
     }
 
-    return false;    
+    return colorSet;
 }

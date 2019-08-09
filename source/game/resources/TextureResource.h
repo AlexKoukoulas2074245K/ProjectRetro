@@ -18,6 +18,9 @@
 
 #include "IResource.h"
 
+#include <SDL_stdinc.h>
+#include <unordered_set>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -39,16 +42,24 @@ public:
     int GetWidth() const;
     int GetHeight() const;
     bool HasTransparentPixels() const;
-    
+    const std::unordered_set<Uint32> GetColorSet() const;
+
 private:
-    TextureResource(const int width, const int height, GLuint, bool hasTransparentPixels);
+    TextureResource
+    (
+        const int width, 
+        const int height,
+        GLuint glTextureId, 
+        bool hasTransparentPixels,
+        const std::unordered_set<Uint32>& colorSet
+    );
     
 private:
     const int mWidth;
     const int mHeight;
     const GLuint mGLTextureId;
     const bool mHasTransparentPixels;
-
+    const std::unordered_set<Uint32> mColorset;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
