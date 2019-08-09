@@ -18,8 +18,19 @@
 
 #include "CameraUtils.h"
 #include "../../common/GameConstants.h"
-#include "../../common/components/TransformComponent.h"
 #include "../../common/utils/MathUtils.h"
+
+#include <SDL_stdinc.h>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+using EntityId = long long;
+namespace ecs
+{
+    class World;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -29,26 +40,18 @@ bool IsMeshInsideCameraFrustum
 (
     const glm::vec3& meshPosition,
     const glm::vec3& meshScale,
-    const glm::vec3& meshDimensions, 
+    const glm::vec3& meshDimensions,
     const CameraFrustum& cameraFrustum
-)
-{    
-    const auto scaledMeshDimensions = meshDimensions * meshScale;
-    const auto frustumCheckSphereRadius = math::Max(scaledMeshDimensions.x, math::Max(scaledMeshDimensions.y, scaledMeshDimensions.z));
+);
 
-    for (auto i = 0U; i < 6U; ++i)
-    {
-        float dist = 
-            cameraFrustum[i].x * meshPosition.x +
-            cameraFrustum[i].y * meshPosition.y +
-            cameraFrustum[i].z * meshPosition.z +
-            cameraFrustum[i].w - frustumCheckSphereRadius;
+void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
+(
+    const ecs::EntityId entityToOverridePrimaryColors,
+    const ecs::EntityId entityToExtractPrimarColorsFrom,
+    const ecs::World& world
+);
 
-        if (dist > 0) return false;
-    }
-  
-    return true;
-}
+glm::vec4 Uint32ColorToVec4(const Uint32);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

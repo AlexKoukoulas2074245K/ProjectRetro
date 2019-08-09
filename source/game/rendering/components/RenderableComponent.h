@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/utils/MathUtils.h"
 #include "../../common/utils/StringUtils.h"
 
 #include <unordered_map>
@@ -46,13 +47,16 @@ class RenderableComponent final: public ecs::IComponent
 public:
     // This should be a map of vectors (animation name to meshes)
     std::unordered_map<StringId, std::vector<ResourceId>, StringIdHasher> mAnimationsToMeshes;
-    StringId mShaderNameId           = StringId();    
-    StringId mActiveAnimationNameId  = StringId();
-    size_t mActiveMeshIndex          = 0;
-    ResourceId mTextureResourceId    = 0;
-    RenderableLayer mRenderableLayer = RenderableLayer::DEFAULT;
-    bool mAffectedByPerspective      = true;    
-    bool mVisibility                 = true;
+    glm::vec4 mOverriddenLightColor        = glm::vec4();
+    glm::vec4 mOverriddenDarkColor         = glm::vec4();
+    StringId mShaderNameId                 = StringId();    
+    StringId mActiveAnimationNameId        = StringId();
+    size_t mActiveMeshIndex                = 0;
+    ResourceId mTextureResourceId          = 0;
+    RenderableLayer mRenderableLayer       = RenderableLayer::DEFAULT;
+    bool mAffectedByPerspective            = true;    
+    bool mVisibility                       = true;
+    bool mShouldOverrideDarkAndLightColor  = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

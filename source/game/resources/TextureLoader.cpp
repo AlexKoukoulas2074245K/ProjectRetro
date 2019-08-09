@@ -15,11 +15,14 @@
 #include "../common/utils/Logging.h"
 #include "../common/utils/OSMessageBox.h"
 #include "../rendering/opengl/Context.h"
+#include "../rendering/utils/RenderingUtils.h"
 
+#include <algorithm>
 #include <fstream>     // ifstream
 #include <SDL_image.h>
 #include <SDL.h>
 #include <iostream>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -120,16 +123,25 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
     
     SDL_FreeSurface(sdlSurface);
     
-    return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels, colorSet));
+    std::vector<Uint32> colorSetVec(colorSet.begin(), colorSet.end());
+    std::sort(colorSetVec.begin(), colorSetVec.end(), [](const Uint32 a, const Uint32 b) 
+    {
+        const auto vec4ColorA = Uint32ColorToVec4(a);
+        const auto vec4ColorB = Uint32ColorToVec4(b);
+
+        return vec4ColorA.x + vec4ColorA.y + vec4ColorA.z < vec4ColorB.x + vec4ColorB.y + vec4ColorB.z;
+    });
+
+    return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels, colorSetVec));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-std::unordered_set<Uint32> TextureLoader::ExtractColorSet(SDL_Surface* const sdlSurface) const
+std::set<Uint32> TextureLoader::ExtractColorSet(SDL_Surface* const sdlSurface) const
 {    
-    std::unordered_set<Uint32> colorSet;
+    std::set<Uint32> colorSet;
     
     auto* pixels = (Uint32*)sdlSurface->pixels;
     for (int y = 0; y < sdlSurface->h; ++y)

@@ -73,6 +73,11 @@ private:
     static const StringId TRANSITION_ANIMATION_STEP_UNIFORM_NAME;
     static const StringId BLACK_AND_WHITE_MODE_UNIFORM_NAME;
     static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;
+    static const StringId PRIMARY_LIGHT_COLOR_UNIFORM_NAME;
+    static const StringId PRIMARY_DARK_COLOR_UNIFORM_NAME;
+    static const StringId OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME;
+    static const StringId OVERRIDDEN_DARK_COLOR_UNIFORM_NAME;
+    static const StringId SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME;
     static const StringId GUI_SHADER_NAME;
 
     static const float TARGET_ASPECT_RATIO;

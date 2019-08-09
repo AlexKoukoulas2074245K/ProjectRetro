@@ -44,7 +44,7 @@ bool TextureResource::HasTransparentPixels() const
     return mHasTransparentPixels;
 }
 
-const std::unordered_set<Uint32> TextureResource::GetColorSet() const
+const std::vector<Uint32> TextureResource::GetColorSet() const
 {
     return mColorset;
 }
@@ -59,7 +59,7 @@ TextureResource::TextureResource
     const int height,
     GLuint glTextureId,
     bool hasTransparentPixels,
-    const std::unordered_set<Uint32>& colorSet
+    const std::vector<Uint32>& colorSet
 )
     : mWidth(width)
     , mHeight(height)

@@ -18,8 +18,8 @@
 #include "../utils/OSMessageBox.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
-#include "../../resources/ResourceLoadingService.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../rendering/utils/RenderingUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -73,19 +73,30 @@ void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt
             renderableComponent->mActiveAnimationNameId = StringId("default");
             renderableComponent->mShaderNameId          = StringId("gui");
             renderableComponent->mAffectedByPerspective = false;
-
+        
             const auto frameModelPath    = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
             auto& resourceLoadingService = ResourceLoadingService::GetInstance();
             renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
-
-            encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
-
+            
             auto transformComponent         = std::make_unique<TransformComponent>();
             transformComponent->mPosition.z = BATTLE_MOVE_ANIMATION_Z;
             transformComponent->mScale      = BATTLE_MOVE_SCALE;
 
             mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
             mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
+
+            // Change last frame of pokemon caught animation to reflect caught pokemon's color palette
+            if (encounterStateComponent.mWasPokemonCaught && encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() == 1)
+            {
+                OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
+                (
+                    encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId,
+                    encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId,
+                    mWorld
+                );
+            }
+
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
         }
         else
         {

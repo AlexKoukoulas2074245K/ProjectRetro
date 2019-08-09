@@ -12,8 +12,15 @@ uniform vec4 global_blue_color  = vec4(0.3450, 0.7215, 0.9725, 1.0);
 uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
 
 uniform vec4 current_level_color;
+uniform vec4 primary_light_color;
+uniform vec4 primary_dark_color;
+uniform vec4 overridden_light_color;
+uniform vec4 overridden_dark_color;
+
+uniform int should_override_primary_colors;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
+
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;
 
