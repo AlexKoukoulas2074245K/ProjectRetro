@@ -71,6 +71,10 @@ void ItemUsageFlowState::VUpdate(const float)
                 CompleteAndTransitionTo<BallUsageEncounterFlowState>();
             }
         }
+        else
+        {
+            assert(false);
+        }
     }
     else
     {

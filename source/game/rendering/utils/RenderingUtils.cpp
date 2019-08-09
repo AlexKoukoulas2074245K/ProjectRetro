@@ -71,6 +71,7 @@ void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
 
 glm::vec4 Uint32ColorToVec4(const Uint32 intColor)
 {
+#ifdef _WIN32
     return glm::vec4
     (
         ((intColor >> 0) & 0xFF) / 255.0f,
@@ -78,6 +79,15 @@ glm::vec4 Uint32ColorToVec4(const Uint32 intColor)
         ((intColor >> 16) & 0xFF) / 255.0f,
         ((intColor >> 24) & 0xFF) / 255.0f
     );
+#else
+    return glm::vec4
+    (
+        ((intColor >> 16) & 0xFF) / 255.0f,
+        ((intColor >> 8)  & 0xFF) / 255.0f,
+        ((intColor >> 0)  & 0xFF) / 255.0f,
+        ((intColor >> 24) & 0xFF) / 255.0f
+    );
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
