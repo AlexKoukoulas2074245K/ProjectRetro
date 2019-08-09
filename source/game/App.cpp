@@ -105,8 +105,11 @@ void App::GameLoop()
 
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    
+#ifndef NDEBUG
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-
+#endif
+    
     while (!AppShouldQuit())
     {
         // Calculate frame delta
@@ -186,6 +189,7 @@ void App::DummyInitialization()
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("ONIX"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
