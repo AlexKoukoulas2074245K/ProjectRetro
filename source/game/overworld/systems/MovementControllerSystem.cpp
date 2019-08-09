@@ -235,7 +235,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     if (math::RandomSign() == 1)
                     {
-                        encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+                        encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
                         encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
                         encounterStateComponent.mOpponentTrainerName = StringId("Gary");
                         encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");

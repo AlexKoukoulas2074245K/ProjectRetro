@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BallAnimationEncounterFlowState.h"
-#include "TurnOverEncounterFlowState.h"
+#include "BallUsageResultTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/Timer.h"
@@ -43,68 +43,54 @@ BallAnimationEncounterFlowState::BallAnimationEncounterFlowState(ecs::World& wor
 }
 
 void BallAnimationEncounterFlowState::VUpdate(const float dt)
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+{    
+    UpdateCatchAttemptAnimation(dt);    
+}
 
-    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
+void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt)
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+    if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
     {
-        if (encounterStateComponent.mWasPokemonCaught)
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
+
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
         {
-            // CompleteAndTransitionTo<PokemonDescriptionPanel>();
+            if (encounterStateComponent.mWasPokemonCaught == false || encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() != 0)
+            {            
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+                encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+            }            
+        }
+
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() > 0)
+        {
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = mWorld.CreateEntity();
+
+            auto renderableComponent                    = std::make_unique<RenderableComponent>();
+            renderableComponent->mTextureResourceId     = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
+            renderableComponent->mActiveAnimationNameId = StringId("default");
+            renderableComponent->mShaderNameId          = StringId("gui");
+            renderableComponent->mAffectedByPerspective = false;
+
+            const auto frameModelPath    = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
+            auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+            renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
+
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
+
+            auto transformComponent         = std::make_unique<TransformComponent>();
+            transformComponent->mPosition.z = BATTLE_MOVE_ANIMATION_Z;
+            transformComponent->mScale      = BATTLE_MOVE_SCALE;
+
+            mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
+            mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
         }
         else
         {
-            encounterStateComponent.mPlayerChangedPokemonFromMainMenu         = false;
-            encounterStateComponent.mIsOpponentsTurn                          = false;
-            encounterStateComponent.mTurnsCompleted                           = 0;
-            encounterStateComponent.mLastEncounterMainMenuActionSelected      = MainMenuActionType::ITEM;
-            encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-            CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+            CompleteAndTransitionTo<BallUsageResultTextEncounterFlowState>();
         }
-    }
-    else
-    {
-        UpdateCatchAttemptAnimation(dt);
-    }
-}
-
-void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt) const
-{
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
-    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
-    {
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
-        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
-    }
-
-    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() > 0)
-    {
-        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = mWorld.CreateEntity();
-
-        auto renderableComponent                    = std::make_unique<RenderableComponent>();
-        renderableComponent->mTextureResourceId     = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
-        renderableComponent->mActiveAnimationNameId = StringId("default");
-        renderableComponent->mShaderNameId          = StringId("gui");
-        renderableComponent->mAffectedByPerspective = false;
-
-        const auto frameModelPath    = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;
-        auto& resourceLoadingService = ResourceLoadingService::GetInstance();
-        renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
-
-        encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
-
-        auto transformComponent         = std::make_unique<TransformComponent>();
-        transformComponent->mPosition.z = BATTLE_MOVE_ANIMATION_Z;
-        transformComponent->mScale      = BATTLE_MOVE_SCALE;
-
-        mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
-        mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
-    }
-    else
-    {
-        DisplayCatchResultText();
     }
 }
 
@@ -153,45 +139,6 @@ void BallAnimationEncounterFlowState::LoadCatchAttemptFrames() const
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
-}
-
-void BallAnimationEncounterFlowState::DisplayCatchResultText() const
-{
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
-    // Destroy ball usage chatbox
-    DestroyActiveTextbox(mWorld);
-
-    const auto mainChatboxEntityId = CreateChatbox(mWorld);
-    std::string catchResultText = "";
-
-    if (encounterStateComponent.mWasPokemonCaught)
-    {
-        catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#@";
-        catchResultText += "New POK^DEX data#will be addded for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
-    }
-    else if (encounterStateComponent.mBallThrownShakeCount == -1)
-    {
-        catchResultText += "The trainer#blocked the BALL!#@Don't be a thief!#+END";
-    }
-    else if (encounterStateComponent.mBallThrownShakeCount == 0)
-    {
-        catchResultText += "You missed the#POK^MON!#+END";
-    }
-    else if (encounterStateComponent.mBallThrownShakeCount == 1)
-    {
-        catchResultText += "Darn! The POK^MON#broke free!#+END";
-    }
-    else if (encounterStateComponent.mBallThrownShakeCount == 2)
-    {
-        catchResultText += "Aww! It appeared#to be caught!";
-    }
-    else if (encounterStateComponent.mBallThrownShakeCount == 3)
-    {
-        catchResultText += "Shoot! It was so#close too!#+END";
-    }
-
-    QueueDialogForChatbox(mainChatboxEntityId, catchResultText, mWorld);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

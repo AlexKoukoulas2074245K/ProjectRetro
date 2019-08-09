@@ -49,6 +49,8 @@ void ItemUsageFlowState::VUpdate(const float)
 
     if (ItemCanBeUsed())
     {
+        RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
+
         if (selectedItemStats.mEffect == StringId("BALL"))
         {
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)

@@ -63,7 +63,7 @@ static const std::unordered_map<MainMenuActionType, std::pair<int, int>> sMainMe
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const float BALL_USAGE_ANIMATION_FRAME_DURATION  = 0.04f;
+static const float BALL_USAGE_ANIMATION_FRAME_DURATION  = 0.03f;
 static const float BATTLE_MOVE_ANIMATION_FRAME_DURATION = 0.05f;
 static const float BATTLE_SPECIAL_MOVE_ANIMATION_DELAY  = 0.15f;
 
