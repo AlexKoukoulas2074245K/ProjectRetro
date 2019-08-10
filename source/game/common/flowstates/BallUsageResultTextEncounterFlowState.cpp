@@ -11,6 +11,7 @@
 
 #include "BallUsageResultTextEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
+#include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -34,7 +35,15 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mWasPokemonCaught)
         {
-            // CompleteAndTransitionTo<PokemonDescriptionPanel>();
+            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+            
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+            encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+            
+            CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
         }
         else
         {
@@ -65,7 +74,9 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
     if (encounterStateComponent.mWasPokemonCaught)
     {
         catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#@";
-        catchResultText += "New POK^DEX data#will be addded for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
+        
+        // TODO: if already caught pokemon skip this line
+        catchResultText += "New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
     }
     else if (encounterStateComponent.mBallThrownShakeCount == -1)
     {

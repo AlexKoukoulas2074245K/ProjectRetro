@@ -94,6 +94,8 @@ void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt
                     encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId,
                     mWorld
                 );
+                
+                CompleteAndTransitionTo<BallUsageResultTextEncounterFlowState>();
             }
 
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
