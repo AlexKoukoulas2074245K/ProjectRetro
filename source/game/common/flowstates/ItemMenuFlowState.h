@@ -31,7 +31,7 @@ public:
     void VUpdate(const float dt) override;
 
 private:
-    void UpdateItemMenu();
+    void UpdateItemMenu(const float dt);
     void UpdateUseTossTextbox();
     void CancelItemMenu();
     void TransitionToItemUsageFlow();

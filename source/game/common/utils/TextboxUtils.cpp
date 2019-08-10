@@ -309,7 +309,6 @@ ecs::EntityId CreateItemMenu
 
     auto itemMenuStateComponent = std::make_unique<ItemMenuStateComponent>();
     itemMenuStateComponent->mItemMenuOffsetFromStart = itemOffset;
-
     world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::move(itemMenuStateComponent));    
 
     return itemMenuTextboxEntityId;

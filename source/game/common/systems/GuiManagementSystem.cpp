@@ -76,10 +76,11 @@ void GuiManagementSystem::InitializeGuiState() const
 {
     ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
 
-    auto guiStateSingletonComponent                  = std::make_unique<GuiStateSingletonComponent>();
-    guiStateSingletonComponent->mGlobalGuiTileWidth  = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
-    guiStateSingletonComponent->mGlobalGuiTileHeight = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
-    guiStateSingletonComponent->mActiveChatboxTimer  = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
+    auto guiStateSingletonComponent                   = std::make_unique<GuiStateSingletonComponent>();
+    guiStateSingletonComponent->mGlobalGuiTileWidth   = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
+    guiStateSingletonComponent->mGlobalGuiTileHeight  = GUI_TILE_DEFAULT_SIZE/GAME_TILE_SIZE;
+    guiStateSingletonComponent->mActiveChatboxTimer   = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
+    guiStateSingletonComponent->mMoreItemsCursorTimer = std::make_unique<Timer>(MORE_ITEMS_CURSOR_TIMER_DELAY);
     
     PopulateFontEntities(*guiStateSingletonComponent);
     

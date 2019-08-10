@@ -57,14 +57,14 @@ ItemMenuFlowState::ItemMenuFlowState(ecs::World& world)
     }    
 }
 
-void ItemMenuFlowState::VUpdate(const float)
+void ItemMenuFlowState::VUpdate(const float dt)
 {    
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
     // Item Menu is Active
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
-        UpdateItemMenu();
+        UpdateItemMenu(dt);
     }   
     // Use/Toss Menu is Active
     else if (guiStateComponent.mActiveTextboxesStack.size() == 3)
@@ -77,14 +77,36 @@ void ItemMenuFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void ItemMenuFlowState::UpdateItemMenu()
+void ItemMenuFlowState::UpdateItemMenu(const float dt)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto itemMenuEntityId      = GetActiveTextboxEntityId(mWorld);
     const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(itemMenuEntityId);
     auto& itemMenuStateComponent     = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
+    auto& guiStateComponent          = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
 
+    guiStateComponent.mMoreItemsCursorTimer->Update(dt);
+    if (guiStateComponent.mMoreItemsCursorTimer->HasTicked())
+    {
+        guiStateComponent.mMoreItemsCursorTimer->Reset();
+        
+        if (itemMenuStateComponent.mItemMenuOffsetFromStart + 4 < static_cast<int>(playerStateComponent.mPlayerBag.size()))
+        {
+            guiStateComponent.mShouldDisplayIndicationForMoreItems = !guiStateComponent.mShouldDisplayIndicationForMoreItems;
+            
+            if (guiStateComponent.mShouldDisplayIndicationForMoreItems)
+            {
+                WriteCharAtTextboxCoords(GetActiveTextboxEntityId(mWorld), '|', 14, 9, mWorld);
+            }
+            else
+            {
+                DeleteCharAtTextboxCoords(GetActiveTextboxEntityId(mWorld), 14, 9, mWorld);
+            }
+        }
+    }
+    
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
         const auto& itemBagEntry = playerStateComponent.mPlayerBag.at(itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow);
@@ -225,7 +247,7 @@ void ItemMenuFlowState::DisplayItemsInMenuForCurrentOffset() const
     const auto& itemMenuEntityId     = GetActiveTextboxEntityId(mWorld);
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& itemMenuComponent    = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);    
-
+    
     auto cursorRowIndex = 0U;
     for 
     (
