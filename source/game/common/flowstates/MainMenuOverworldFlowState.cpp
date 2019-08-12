@@ -15,6 +15,7 @@
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../components/PokedexStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/utils/InputUtils.h"
@@ -28,12 +29,12 @@
 MainMenuOverworldFlowState::MainMenuOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    
+    const auto& guiStateComponent     = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
     if (guiStateComponent.mActiveTextboxesStack.size() == 0)
     {
-        CreateOverworldMainMenuTextbox(world, playerStateComponent.mOwnsAPokedex, playerStateComponent.mPreviousMainMenuCursorRow);
+        CreateOverworldMainMenuTextbox(world, pokedexStateComponent.mPokedexUnlocked, playerStateComponent.mPreviousMainMenuCursorRow);
     }
 }
 

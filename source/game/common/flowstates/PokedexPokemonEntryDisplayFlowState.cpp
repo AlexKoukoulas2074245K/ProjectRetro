@@ -40,6 +40,7 @@ PokedexPokemonEntryDisplayFlowState::PokedexPokemonEntryDisplayFlowState(ecs::Wo
     auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
     pokedexStateComponent.mPokedexBackgroundSpriteEntityId = LoadAndCreatePokedexPokemonDataScreen(mWorld);
     pokedexStateComponent.mPokedexViewTimer                = std::make_unique<Timer>(POKEDEX_VIEW_TIMER_DURATION);
+    pokedexStateComponent.mCurrentPageViewType             = PokedexPageEntryType::LOCKED;
     DisplayLockedStatsText();
 }
 

@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
+#include "DeterminePokemonPlacementFlowState.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../../common/components/CursorComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -65,16 +67,16 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
         {
             if (cursorComponent.mCursorRow == 0)
             {
-                // TODO: Nickname Flow
+                //TODO: Nickname Flow
             }
             else
             {
-                ContinueToOverworld();
+                DestroyTextboxesAndTransition();
             }
         }
         else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
         {
-            ContinueToOverworld();
+            DestroyTextboxesAndTransition();
         }
     }
 }
@@ -83,31 +85,15 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void PokemonNicknameQuestionTextEncounterFlowState::ContinueToOverworld()
-{
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
+void PokemonNicknameQuestionTextEncounterFlowState::DestroyTextboxesAndTransition()
+{        
     // Destroy Yes/No textbox
     DestroyActiveTextbox(mWorld);
     
     // Destroy Nickname Chatbox
     DestroyActiveTextbox(mWorld);
     
-    // Destroy Last Frame of Pokemon Caught animation
-    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
-    {
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
-        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
-    }
-    
-    // Destroy Opponent pokemon sprite
-    if (encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
-    {
-        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-        encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
-    }
-    
-    encounterStateComponent.mEncounterJustFinished = true;
+    CompleteAndTransitionTo<DeterminePokemonPlacementFlowState>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

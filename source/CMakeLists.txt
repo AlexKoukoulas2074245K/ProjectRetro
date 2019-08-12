@@ -60,6 +60,7 @@ endif()
 # Enable highest warning levels + treated as errors
 if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 else(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 endif(MSVC)

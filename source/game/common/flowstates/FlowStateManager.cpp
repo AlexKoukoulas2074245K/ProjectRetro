@@ -43,7 +43,8 @@ void FlowStateManager::Update(const float dt)
     {
         mActiveFlowState->VUpdate(dt);
 
-        if (mActiveFlowState->mNextFlowState != nullptr)
+        // While instead of if to handle completion on construction
+        while (mActiveFlowState->mNextFlowState != nullptr)
         {
             SetActiveFlowState(std::move(mActiveFlowState->mNextFlowState));
         }

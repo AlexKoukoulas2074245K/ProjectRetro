@@ -66,7 +66,7 @@ public:
     int mPreviousMainMenuCursorRow     = 0;
     int mQuantityOfItemsToToss         = 0;
     Direction mLastOverworldDirection  = Direction::SOUTH;    
-    bool mOwnsAPokedex                 = true;
+    bool mBillInteractionCompleted     = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -35,7 +35,8 @@ const float STATIONARY_NPC_RESET_TIME      = 1.5f;
 
 static const StringId CANCEL_ITEM_NAME = StringId("CANCEL");
 
-static const int MAX_POKEMON_ID = 151;
+static const int MAX_ROSTER_SIZE = 6;
+static const int MAX_POKEMON_ID  = 151;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
