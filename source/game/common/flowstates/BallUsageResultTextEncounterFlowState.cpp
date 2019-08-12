@@ -38,8 +38,6 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mWasPokemonCaught)
         {
-            ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster.front()->mName, PokedexEntryType::OWNED, mWorld);
-
             if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
             {
                 // Destroy all encounter sprites
@@ -70,7 +68,9 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
                 encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
 
                 CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
-            }            
+            }
+            
+            ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster.front()->mName, PokedexEntryType::OWNED, mWorld);
         }
         else
         {

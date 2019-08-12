@@ -18,14 +18,17 @@
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 PokedexPokemonEntryDisplayFlowState::POKEMON_SPRITE_POSITION = glm::vec3(-0.4f, 0.49f, -0.8f);
+const glm::vec3 PokedexPokemonEntryDisplayFlowState::POKEMON_SPRITE_POSITION = glm::vec3(-0.4f, 0.5f, -0.8f);
 const glm::vec3 PokedexPokemonEntryDisplayFlowState::POKEMON_SPRITE_SCALE    = glm::vec3(-0.49f, 0.49f, 1.0f);
+
+const float PokedexPokemonEntryDisplayFlowState::CHATBOX_BLINKING_CURSOR_COOLDOWN = 0.7f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +65,7 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                     DisplayPokemonPokedexDescriptionForPage(0);
 
                     pokedexStateComponent.mCurrentPageViewType                    = PokedexPageEntryType::DETAILS_1;
-                    pokedexStateComponent.mPokedexViewTimer                       = std::make_unique<Timer>(DEFAULT_CHATBOX_CHAR_COOLDOWN);
+                    pokedexStateComponent.mPokedexViewTimer                       = std::make_unique<Timer>(CHATBOX_BLINKING_CURSOR_COOLDOWN);
                     pokedexStateComponent.mPokedexPokemonDescriptionCursorShowing = false;
                 }
 
@@ -80,7 +83,7 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                 IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
             )
             {
-                //CompleteAndTransitionTo<PokedexViewFlowState>();
+                //TODO: CompleteAndTransitionTo<PokedexViewFlowState>();
             }
         } break;
 
@@ -91,6 +94,15 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
             {
                 pokedexStateComponent.mPokedexViewTimer->Reset();
                 pokedexStateComponent.mPokedexPokemonDescriptionCursorShowing = !pokedexStateComponent.mPokedexPokemonDescriptionCursorShowing;
+                
+                if (pokedexStateComponent.mPokedexPokemonDescriptionCursorShowing)
+                {
+                    WriteCharAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, '|', 18, 16, mWorld);
+                }
+                else
+                {
+                    DeleteCharAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, 18, 16, mWorld);
+                }
             }
 
             if
@@ -101,6 +113,8 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
             {
                 DisplayPokemonPokedexDescriptionForPage(1);
                 pokedexStateComponent.mCurrentPageViewType = PokedexPageEntryType::DETAILS_2;
+                pokedexStateComponent.mPokedexPokemonDescriptionCursorShowing = false;
+                DeleteCharAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, 18, 16, mWorld);
             }
         } break;
 
@@ -112,7 +126,17 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                 IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
             )
             {
-
+                const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+                if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
+                {
+                    //TODO: CompleteAndTransitionTo<PokedexViewFlowState>();
+                }
+                else
+                {
+                    DestroyPokedexPokemonEntryDisplay();
+                    CreateChatbox(mWorld);
+                    CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
+                }
             }
         }
     }
@@ -136,7 +160,7 @@ void PokedexPokemonEntryDisplayFlowState::DisplayLockedStatsText() const
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, "?", 14, 8, mWorld);
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, "?", 15, 8, mWorld);
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, "?", 16, 8, mWorld);
-    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, GetFormattedPokemonIdString(pokemonBaseStats.mId), 3, 8, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, GetFormattedPokemonIdString(pokemonBaseStats.mId), 4, 8, mWorld);
 }
 
 void PokedexPokemonEntryDisplayFlowState::DisplayPokemonBodyStatsText() const
@@ -188,9 +212,9 @@ void PokedexPokemonEntryDisplayFlowState::DisplayPokemonPokedexDescriptionForPag
     for (const auto& word: descriptionTextSplitBySpace)
     {
         lineCharacterCounter += word.size() + 1; // + 1 for the trailing space character
-        if (lineCharacterCounter > 18)
+        if (lineCharacterCounter > LINE_CHARACTERS_CAPACITY)
         {
-            lineCharacterCounter = 0;
+            lineCharacterCounter = word.size() + 1;
             if (++lineCounter >= 3)
             {
                 lineCounter = 0;
@@ -208,9 +232,26 @@ void PokedexPokemonEntryDisplayFlowState::DisplayPokemonPokedexDescriptionForPag
         }
     }
 
+    DeleteTextAtTextboxRow(pokedexStateComponent.mPokedexInfoTextboxEntityId, 11, mWorld);
+    DeleteTextAtTextboxRow(pokedexStateComponent.mPokedexInfoTextboxEntityId, 13, mWorld);
+    DeleteTextAtTextboxRow(pokedexStateComponent.mPokedexInfoTextboxEntityId, 15, mWorld);
+    
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, page[0], 1, 11, mWorld);
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, page[1], 1, 13, mWorld);
     WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexInfoTextboxEntityId, page[2], 1, 15, mWorld);
+}
+
+void PokedexPokemonEntryDisplayFlowState::DestroyPokedexPokemonEntryDisplay() const
+{
+    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+    
+    mWorld.DestroyEntity(pokedexStateComponent.mPokemonSpriteEntityId);
+    mWorld.DestroyEntity(pokedexStateComponent.mPokedexBackgroundSpriteEntityId);
+    DestroyGenericOrBareTextbox(pokedexStateComponent.mPokedexInfoTextboxEntityId, mWorld);
+    
+    pokedexStateComponent.mPokemonSpriteEntityId           = ecs::NULL_ENTITY_ID;
+    pokedexStateComponent.mPokedexBackgroundSpriteEntityId = ecs::NULL_ENTITY_ID;
+    pokedexStateComponent.mPokedexInfoTextboxEntityId      = ecs::NULL_ENTITY_ID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -35,10 +35,12 @@ private:
     void DisplayPokemonBodyStatsText() const;
     void DisplayPokemonSprite() const;
     void DisplayPokemonPokedexDescriptionForPage(const int requestedPageNumber) const;
+    void DestroyPokedexPokemonEntryDisplay() const;
     
     static const glm::vec3 POKEMON_SPRITE_POSITION;
     static const glm::vec3 POKEMON_SPRITE_SCALE;
 
+    static const float CHATBOX_BLINKING_CURSOR_COOLDOWN;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

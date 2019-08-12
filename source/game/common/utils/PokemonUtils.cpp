@@ -582,7 +582,7 @@ PokedexEntryType GetPokedexEntryTypeForPokemon
     const auto& baseStats             = GetPokemonBaseStats(pokemonName, world);
     const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
 
-    return pokedexStateComponent.mPokedexEntries[baseStats.mId];
+    return pokedexStateComponent.mPokedexEntries[baseStats.mId - 1];
 }
 
 bool DoesPokemonHaveType
