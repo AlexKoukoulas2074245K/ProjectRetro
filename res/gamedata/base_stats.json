@@ -13,7 +13,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "IVYSAUR", "method": "16" } ],
           "moveset": null,
-	  "text": "It can go for days without eating a single morsel. In the bulb on its back, it stores energy."
+		  "text": "It can go for days without eating a single morsel. In the bulb on its back, it stores energy.",
+		  "dextype": "SEED",
+		  "body": "2 04 16" 
      },
 
      "IVYSAUR":
@@ -30,7 +32,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "VENUSAR", "method": "32" } ],
           "moveset": null,
-	  "text": "The bulb on its back grows by drawing energy. It gives off an aroma when it is ready to bloom."
+	      "text": "The bulb on its back grows by drawing energy. It gives off an aroma when it is ready to  bloom.",
+		  "dextype": "SEED",
+		  "body": "3 03 29" 
      },
 
      "VENUSAUR":
@@ -47,7 +51,10 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "The flower on its back catches the sun's rays. The sunlight is then absorbed and used for energy."
+	      "text": "The flower on its back catches the sun's rays. The sunlight is then absorbed and used for energy.",
+		  "dextype": "SEED",
+		  "body": "6 07 221" 
+		  
      },
 
      "CHARMANDER":
@@ -64,7 +71,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "CHARMELEON", "method": "16" } ],
           "moveset": null,
-	  "text": "The flame at the tip of its tail makes a sound as it burns. You can only hear it in quiet places."
+	      "text": "The flame at the tip of its tail makes a sound as it burns. You can only hear it in quiet places.",
+		  "dextype": "LIZARD",
+		  "body": "2 00 19" 
      },
 
      "CHARMELEON":
@@ -81,7 +90,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "CHARIZARD", "method": "36" } ],
           "moveset": null,
-	  "text": "Tough fights could excite this Pokémon. When excited, it may blow out bluish-white flames."
+	      "text": "Tough fights could excite this Pokémon. When excited, it may blow out bluish-white flames."
+		  "dextype": "FLAME",
+		  "body": "3 07 42" 
      },
 
      "CHARIZARD":
@@ -98,7 +109,10 @@
           "type": [ { "name": "FIRE"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "When expelling a blast of super hot fire, the red flame at the tip of its tail burns more intensely."
+	      "text": "When expelling a blast of super hot fire, the red flame at the tip of its tail burns more intensely.",
+		  "dextype": "FLAME",
+		  "body": "5 07 200" 		  
+		  
      },
 
      "SQUIRTLE":
@@ -115,7 +129,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "WARTORTLE", "method": "16" } ],
           "moveset": null,
-  	  "text": "Shoots water at prey while in the water. Withdraws into its shell when in danger."
+  	      "text": "Shoots water at prey while in the water. Withdraws into its shell when in danger.",
+		  "dextype": "TINY TURTLE",
+		  "body": "1 08 20" 
      },
 
      "WARTORTLE":
@@ -132,7 +148,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "BLASTOISE", "method": "36" } ],
           "moveset": null,
-	  "text": "When tapped, this Pokémon will pull in its head, but its tail will still stick out a little bit."
+	      "text": "When tapped, this Pokémon will pull in its head, but its tail will still stick out a little bit.",
+		  "dextype": "TURTLE",
+		  "body": "3 03 50" 
      },
 
      "BLASTOISE":
@@ -149,7 +167,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,
- 	  "text": "Once it takes aim at its enemy, it blasts out water with even more force than a fire hose."
+ 	      "text": "Once it takes aim at its enemy, it blasts out water with even more force than a fire hose.",
+		  "dextype": "SHELLFISH",
+		  "body": "5 03 189" 
      },
 
      "CATERPIE":
@@ -166,7 +186,9 @@
           "type": [ { "name": "BUG"} ],
           "evolution": [ { "name": "METAPOD", "method": "7" } ],
           "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 1, "movename": "STRING_SHOT" } ],
-	  "text": "If you touch the feeler on top of its head, it will release a horrible stink to protect itself."
+	      "text": "If you touch the feeler on top of its head, it will release a horrible stink to protect itself.",
+		  "dextype": "WORM",
+		  "body": "1 00 6" 
      },
 
      "METAPOD":
@@ -183,7 +205,9 @@
           "type": [ { "name": "BUG"} ],
           "evolution": [ { "name": "BUTTERFREE", "method": "10" } ],
           "moveset": [ { "level": 1, "movename": "HARDEN" }, { "level": 7, "movename": "HARDEN" } ],
-	  "text": "Hardens its shell to protect itself. However, a large impact may cause it to pop out of its shell."
+	      "text": "Hardens its shell to protect itself. However, a large impact may cause it to pop out of its shell.",
+		  "dextype": "COCOON",
+		  "body": "2 04 22" 
      },
 
      "BUTTERFREE":
@@ -200,7 +224,9 @@
           "type": [ { "name": "BUG"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": [ { "level": 1, "movename": "CONFUSION" }, { "level": 10, "movename": "CONFUSION" } ],
-	  "text": "Its wings, covered with poisonous powders, repel water. This allows it to fly in the rain."
+	      "text": "Its wings, covered with poisonous powders, repel water. This allows it to fly in the rain.",
+		  "dextype": "BUTTERFLY",
+		  "body": "3 07 71" 
      },
 
      "WEEDLE":
@@ -217,7 +243,9 @@
           "type": [ { "name": "BUG"}, { "name": "POISON" } ],
           "evolution": [ { "name": "KAKUNA", "method": "7" } ],
           "moveset": null,
-	  "text": "Beware of the sharp stinger on its head. It hides in grass and bushes where it eats leaves."
+	      "text": "Beware of the sharp stinger on its head. It hides in grass and bushes where it eats leaves.",
+		  "dextype": "HAIRY BUG",
+		  "body": "1 00 7" 
      },
 
      "KAKUNA":
@@ -234,7 +262,9 @@
           "type": [ { "name": "BUG"}, { "name": "POISON" } ],
           "evolution": [ { "name": "BEEDRILL", "method": "10" } ],
           "moveset": null,
-	  "text": "Able to move only slightly. When endangered, it may stick out its stinger and poison its enemy."
+	      "text": "Able to move only slightly. When endangered, it may stick out its stinger and poison its enemy.",
+		  "dextype": "COCOON",
+		  "body": "2 00 22" 
      },
 
      "BEEDRILL":
@@ -251,7 +281,9 @@
           "type": [ { "name": "BUG"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "It has 3 poisonous stingers on its forelegs and its tail. They are used to jab its enemy repeatedly."
+	      "text": "It has 3 poisonous stingers on its forelegs and its tail. They are used to jab its enemy repeatedly.",
+		  "dextype": "POISON BEE",
+		  "body": "3 03 65" 
      },
 
      "PIDGEY":
@@ -268,7 +300,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": [ { "name": "PIDGEOTTO", "method": "18" } ],
           "moveset": [ { "level": 1, "movename": "GUST" }, { "level": 1, "movename": "SAND-ATTACK" }, { "level": 12, "movename": "QUICK_ATTACK" }, { "level": 19, "movename": "WHIRLWIND" }, { "level": 28, "movename": "WING_ATTACK" }, { "level": 36, "movename": "AGILITY" }, { "level": 44, "movename": "MIRROR_MOVE" } ],
-	  "text": "Very docile. If attacked, it will often kick up sand to protect itself rather than fight back."
+	      "text": "Very docile. If attacked, it will often kick up sand to protect itself rather than fight back.",
+		  "dextype": "TINY BIRD",
+		  "body": "1 00 4" 
      },
 
      "PIDGEOTTO":
@@ -285,7 +319,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": [ { "name": "PIDGEOT", "method": "36" } ],
           "moveset": [ { "level": 1, "movename": "GUST" }, { "level": 1, "movename": "SAND-ATTACK" }, { "level": 5, "movename": "SAND-ATTACK" }, { "level": 12, "movename": "QUICK_ATTACK" }, { "level": 21, "movename": "WHIRLWIND" }, { "level": 31, "movename": "WING_ATTACK" }, { "level": 40, "movename": "AGILITY" }, { "level": 49, "movename": "MIRROR_MOVE" } ],
-	  "text": "This Pokémon is full of vitality. It constantly flies around its large territory in search of prey."
+	      "text": "This Pokémon is full of vitality. It constantly flies around its large territory in search of prey.",
+		  "dextype": "BIRD",
+		  "body": "3 07 66" 
      },
 
      "PIDGEOT":
@@ -302,7 +338,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "This Pokémon flies at Mach 2 speed, seeking prey. Its large talons are feared as wicked weapons."
+	      "text": "This Pokémon flies at Mach 2 speed, seeking prey. Its large talons are feared as wicked weapons.",
+		  "dextype": "BIRD",
+		  "body": "4 11 87" 
      },
 
      "RATTATA":
@@ -319,7 +357,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": [ { "name": "RATICATE", "method": "20" } ],
           "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 1, "movename": "TAIL_WHIP" }, { "level": 7, "movename": "QUICK_ATTACK" }, { "level": 14, "movename": "HYPER_FANG" }, { "level": 23, "movename": "FOCUS_ENERGY" }, { "level": 34, "movename": "SUPER_FANG" } ],
-	  "text": "Will chew on anything with its fangs. If you see one, it is certain that 40 more live in the area."
+	      "text": "Will chew on anything with its fangs. If you see one, it is certain that 40 more live in the area.",
+		  "dextype": "MOUSE",
+		  "body": "1 00 8" 
      },
 
      "RATICATE":
@@ -336,7 +376,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its hind feet are webbed. They act as flippers, so it can swim in rivers and hunt for prey."
+	      "text": "Its hind feet are webbed. They act as flippers, so it can swim in rivers and hunt for prey.",
+		  "dextype": "MOUSE",
+		  "body": "2 04 41" 
      },
 
      "SPEAROW":
@@ -353,7 +395,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": [ { "name": "FEAROW", "method": "20" } ],
           "moveset": [ { "level": 1, "movename": "PECK" }, { "level": 1, "movename": "GROWL" }, { "level": 9, "movename": "LEER" }, { "level": 15, "movename": "FURY_ATTACK" }, { "level": 22, "movename": "MIRROR_MOVE" }, { "level": 29, "movename": "DRILL_PECK" }, { "level": 36, "movename": "AGILITY" } ],
-	  "text": "Inept at flying high. However, it can fly around very fast to protect its territory."
+	      "text": "Inept at flying high. However, it can fly around very fast to protect its territory.",
+		  "dextype": "TINY BIRD",
+		  "body": "1 00 4" 
      },
 
      "FEAROW":
@@ -370,7 +414,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A Pokémon that dates back many years. If it senses danger, it flies high and away, instantly."
+	      "text": "A Pokémon that dates back many years. If it senses danger, it flies high and away, instantly.",
+		  "dextype": "BEAK",
+		  "body": "3 11 84" 
      },
 
      "EKANS":
@@ -387,7 +433,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "ARBOK", "method": "22" } ],
           "moveset": null,
-	  "text": "The older it gets, the longer it grows. At night, it wraps its long body around tree branches to rest."
+	      "text": "The older it gets, the longer it grows. At night, it wraps its long body around tree branches to rest.",
+		  "dextype": "SNAKE",
+		  "body": "6 07 15" 
      },
 
      "ARBOK":
@@ -404,7 +452,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "The frightening patterns on its belly have been studied. Six variations have been confirmed."
+	      "text": "The frightening patterns on its belly have been studied. Six variations have been confirmed.",
+		  "dextype": "SEED",
+		  "body": "11 06 143" 
      },
 
      "PIKACHU":
@@ -421,7 +471,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": [ { "level": 1, "movename": "THUNDERSHOCK" }, { "level": 1, "movename": "GROWL" }, { "level": 6, "movename": "TAIL_WHIP" }, { "level": 8, "movename": "THUNDER_WAVE" }, { "level": 11, "movename": "QUICK_ATTACK" }, { "level": 15, "movename": "DOUBLE_TEAM" }, { "level": 20, "movename": "SLAM" }, { "level": 26, "movename": "THUNDERBOLT" }, { "level": 33, "movename": "AGILITY" }, { "level": 41, "movename": "THUNDER" }, { "level": 50, "movename": "LIGHT_SCREEN" } ],
-	  "text": "It keeps its tail raised to monitor its surroundings. If you yank its tail, it will try to bite you."
+	      "text": "It keeps its tail raised to monitor its surroundings. If you yank its tail, it will try to bite you.",
+		  "dextype": "MOUSE",
+		  "body": "1 04 13" 
      },
 
      "RAICHU":
@@ -438,7 +490,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "When electricity builds up inside its body, it becomes feisty. It also glows in the dark."
+	      "text": "When electricity builds up inside its body, it becomes feisty. It also glows in the# dark."
+		  "dextype": "MOUSE",
+		  "body": "2 07 66" 
      },
 
      "SANDSHREW":
@@ -455,7 +509,9 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": [ { "name": "SANDSLASH", "method": "22" } ],
           "moveset": [ { "level": 1, "movename": "SCRATCH" }, { "level": 10, "movename": "SAND-ATTACK" } ],
-	  "text": "Its body is dry. When it gets cold at night, its hide is said to become coated with a fine dew."
+	      "text": "Its body is dry. When it gets cold at night, its hide is said to become coated with a fine dew.",
+		  "dextype": "MOUSE",
+		  "body": "2 00 26" 
      },
 
      "SANDSLASH":
@@ -472,7 +528,9 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": null,
           "moveset": null,	
-	  "text": "It is skilled at slashing enemies with its claws. If broken, they start to grow back in a day."
+	      "text": "It is skilled at slashing enemies with its claws. If broken, they start to grow back in a day.",
+		  "dextype": "MOUSE",
+		  "body": "3 03 65" 
      },
 
      "NIDORAN]":
@@ -489,7 +547,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDORINA", "method": "16" } ],
           "moveset": [ { "level": 1, "movename": "GROWL" }, { "level": 1, "movename": "TACKLE" }, { "level": 12, "movename": "DOUBLE_KICK" }, { "level": 17, "movename": "POISON_STING" }, { "level": 23, "movename": "TAIL_WHIP" }, { "level": 30, "movename": "BITE" }, { "level": 38, "movename": "FURY_SWIPES" } ],
-	  "text": "A mild-mannered Pokémon that does not like to fight. Beware, its small horns secrete venom."
+	      "text": "A mild-mannered Pokémon that does not like to fight. Beware, its small horns secrete venom.",
+		  "dextype": "POISON PIN",
+		  "body": "1 04 15" 
      },
 
      "NIDORINA":
@@ -506,7 +566,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDOQUEEN", "method": "MOON_STONE" } ],
           "moveset": null,
-	  "text": "When resting deep in its burrow, its thorns always retract. This is proof that it is relaxed."
+		  "text": "When resting deep in its burrow, its thorns always retract. This is proof that it is relaxed.",
+		  "dextype": "POISON PIN",
+		  "body": "2 07 44" 
      },
 
      "NIDOQUEEN":
@@ -523,7 +585,10 @@
           "type": [ { "name": "POISON"}, { "name": "GROUND" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Tough scales cover the sturdy body of this Pokémon. It appears that the scales grow in cycles."
+	      "text": "Tough scales cover the sturdy body of this Pokémon. It appears that the scales grow in cycles.",
+		  "dextype": "DRILL",
+		  "body": "4 03 132" 
+		  
      },
 
      "NIDORAN[":
@@ -540,7 +605,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDORINO", "method": "16" } ],
           "moveset": [ { "level": 1, "movename": "GROWL" }, { "level": 1, "movename": "TACKLE" }, { "level": 8, "movename": "HORN_ATTACK" }, { "level": 12, "movename": "DOUBLE_KICK" }, { "level": 17, "movename": "POISON_STING" }, { "level": 22, "movename": "FOCUS_ENERGY" }, { "level": 30, "movename": "FURY_ATTACK" }, { "level": 38, "movename": "HORN_DRILL" } ],
-	  "text": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting."
+	      "text": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting.",
+		  "dextype": "POISON PIN",
+		  "body": "1 08 20" 
      },
 
      "NIDORINO":
@@ -557,7 +624,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDOKING", "method": "MOON_STONE" } ],
           "moveset": null,
-	  "text": "Its horns contain venom. If they are stabbed into an enemy, the impact makes the poison leak out."
+	      "text": "Its horns contain venom. If they are stabbed into an enemy, the impact makes the poison leak out.",
+		  "dextype": "POISON PIN",
+		  "body": "2 11 43" 
      },
 
      "NIDOKING":
@@ -574,7 +643,9 @@
           "type": [ { "name": "POISON"}, { "name": "GROUND" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its steel-like hide adds to its powerful tackle. Its horns are so hard, they can pierce a diamond."
+	      "text": "Its steel-like hide adds to its powerful tackle. Its horns are so hard, they can pierce a diamond.",
+		  "dextype": "DRILL",
+		  "body": "4 07 137" 
      },
 
      "CLEFAIRY":
@@ -591,7 +662,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": [ { "name": "CLEFABLE", "method": "MOON_STONE" } ],
           "moveset": null,
-	  "text": "Adored for their cute looks and playfulness. They are thought to be rare, as they do not appear often."
+	      "text": "Adored for their cute looks and playfulness. They are thought to be rare, as they do not appear often.",
+		  "dextype": "FAIRY",
+		  "body": "2 00 17" 
      },
 
      "CLEFABLE":
@@ -608,7 +681,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "They appear to be very protective of their own world. It is a kind of fairy, rarely seen by people."
+	      "text": "They appear to be very protective of their own world. It is a kind of fairy, rarely seen by people.",
+		  "dextype": "FAIRY",
+		  "body": "4 03 88" 
      },
 
      "VULPIX":
@@ -625,7 +700,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "NINETALES", "method": "FIRE_STONE" } ],
           "moveset": null,
-	  "text": "Both its fur and its tails are beautiful. As it grows, the tails split and form more tails."
+	      "text": "Both its fur and its tails are beautiful. As it grows, the tails split and form more tails.",		  
+		  "dextype": "FOX",
+		  "body": "2 00 22" 
      },
 
      "NINETALES":
@@ -642,7 +719,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "According to an enduring legend, 9 noble saints were united and reincarnated as this Pokémon."
+	      "text": "According to an enduring legend, 9 noble saints were united and reincarnated as this Pokémon.",		  
+		  "dextype": "FOX",
+		  "body": "3 07 44" 
      },
 
      "JIGGLYPUFF":
@@ -659,7 +738,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": [ { "name": "WIGGLTUFF", "method": "MOON_STONE" } ],
           "moveset": null,
-	  "text": "Uses its alluring eyes to enrapture its foe. It then sings a pleasing melody that lulls the foe to sleep."
+	      "text": "Uses its alluring eyes to enrapture its foe. It then sings a pleasing melody that lulls the foe to sleep.",		  
+		  "dextype": "BALLOON",
+		  "body": "1 08 12" 
      },
 
      "WIGGLYTUFF":
@@ -676,7 +757,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its body is full of elasticity. By inhaling deeply, it can continue to inflate itself without limit."
+	      "text": "Its body is full of elasticity. By inhaling deeply, it can continue to inflate itself without limit.",
+		  "dextype": "BALLOON",
+		  "body": "3 03 27" 
      },
 
      "ZUBAT":
@@ -693,7 +776,9 @@
           "type": [ { "name": "POISON"}, { "name": "FLYING" } ],
           "evolution": [ { "name": "GOLBAT", "method": "22" } ],
           "moveset": null,
-	  "text": "Emits ultrasonic cries while it flies. They act as a sonar used to check for objects in its way."
+	      "text": "Emits ultrasonic cries while it flies. They act as a sonar used to check for objects in its way.",		  
+		  "dextype": "BAT",
+		  "body": "2 07 17" 
      },
 
      "GOLBAT":
@@ -710,7 +795,9 @@
           "type": [ { "name": "POISON"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,	
-          "text": "It attacks in a stealthy manner, without warning. Its sharp fangs are used to bite and suck blood."
+          "text": "It attacks in a stealthy manner, without warning. Its sharp fangs are used to bite and suck blood.",		  
+		  "dextype": "BAT",
+		  "body": "5 03 121" 
      },
 
      "ODDISH":
@@ -727,7 +814,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "GLOOM", "method": "21" } ],
           "moveset": null,
-	  "text": "It may be mistaken for a clump of weeds. If you try to yank it out of the ground, it shrieks horribly."
+	      "text": "It may be mistaken for a clump of weeds. If you try to yank it out of the ground, it shrieks horribly.",		  
+		  "dextype": "WEED",
+		  "body": "1 08 12" 
      },
 
      "GLOOM":
@@ -744,7 +833,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "VILEPLUME", "method": "LEAF_STONE" } ],
           "moveset": null,
-	  "text": "Smells incredibly foul! However, around 1 out of 1,000 people enjoy sniffing its nose-bending stink."
+	      "text": "Smells incredibly foul! However, around 1 out of 1,000 people enjoy sniffing its nose-bending stink.",
+		  "dextype": "WEED",
+		  "body": "2 07 19" 
      },
 
      "VILEPLUME":
@@ -761,7 +852,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Flaps its broad flower petals to scatter its poisonous pollen. The flapping sound is very loud."
+	      "text": "Flaps its broad flower petals to scatter its poisonous pollen. The flapping sound is very loud.",
+		  "dextype": "FLOWER",
+		  "body": "3 11 41" 
      },
 
      "PARAS":
@@ -778,7 +871,9 @@
           "type": [ { "name": "BUG"}, { "name": "GRASS" } ],
           "evolution": [ { "name": "PARASECT", "method": "24" } ],
           "moveset": null,
-  	  "text": "Burrows under the ground to gnaw on tree roots. The mushrooms on its back absorb most of the nutrition."
+  	      "text": "Burrows under the ground to gnaw on tree roots. The mushrooms on its back absorb most of the nutrition.",
+		  "dextype": "MUSHROOM",
+		  "body": "1 00 12" 
      },
 
      "PARASECT":
@@ -795,7 +890,9 @@
           "type": [ { "name": "BUG"}, { "name": "GRASS" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "The bug host is drained of energy by the mushrooms on its back. They appear to do all the thinking."
+	      "text": "The bug host is drained of energy by the mushrooms on its back. They appear to do all the thinking.",		  
+		  "dextype": "MUSHROOM",
+		  "body": "3 03 65" 
      },
 
      "VENONAT":
@@ -812,7 +909,9 @@
           "type": [ { "name": "BUG"}, { "name": "POISON" } ],
           "evolution": [ { "name": "VENOMOTH", "method": "31" } ],
           "moveset": null,
-	  "text": "Its large eyes act as radars. In a bright place, you can see that they are clusters of many tiny eyes."
+	      "text": "Its large eyes act as radars. In a bright place, you can see that they are clusters of many tiny eyes.",
+		  "dextype": "INSECT",
+		  "body": "3 03 66" 
      },
 
      "VENOMOTH":
@@ -829,7 +928,9 @@
           "type": [ { "name": "BUG"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "The powdery scales on its wings are hard to remove. They also contain poison that leaks out on contact."
+	      "text": "The powdery scales on its wings are hard to remove. They also contain poison that leaks out on contact.",
+		  "dextype": "POISON MOTH",
+		  "body": "4 11 28" 
      },
 
      "DIGLETT":
@@ -846,7 +947,9 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": [ { "name": "DUGTRIO", "method": "26" } ],
           "moveset": [ { "level": 1, "movename": "SCRATCH" }, { "level": 15, "movename": "GROWL" } ],
-	  "text": "It prefers dark places. It spends most of its time underground, though it may pop up in caves."
+	      "text": "It prefers dark places. It spends most of its time underground, though it may pop up in caves.",
+		  "dextype": "MOLE",
+		  "body": "0 08 2" 
      },
 
      "DUGTRIO":
@@ -863,7 +966,10 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "A team of triplets that can burrow over 60 MPH. Due to this, some people think it's an earthquake."
+	      "text": "A team of triplets that can burrow over 60 MPH. Due to this, some people think it's an earthquake.",
+		  "dextype": "MOLE",
+		  "body": "2 04 73" 
+		  
      },
 
      "MEOWTH":
@@ -880,7 +986,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": [ { "name": "PERSIAN", "method": "28" } ],
           "moveset": null,
-	  "text": "Appears to be more active at night. It loves round and shiny things. It can't stop from picking them up."
+	      "text": "Appears to be more active at night. It loves round and shiny things. It can't stop from picking them up.",
+		  "dextype": "SCRATCH CAT",
+		  "body": "1 04 9" 
      },
 
      "PERSIAN":
@@ -897,7 +1005,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "The gem in its forehead glows on its own! It walks with all the grace and elegance of a proud queen."
+	      "text": "The gem in its forehead glows on its own! It walks with all the grace and elegance of a proud queen.",
+		  "dextype": "CLASSY CAT",
+		  "body": "3 03 71" 
      },
 
      "PSYDUCK":
@@ -914,7 +1024,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "GOLDUCK", "method": "33" } ],
           "moveset": null,
-	  "text": "Always tormented by headaches. It uses psychic powers, but it is not known if it intends to do so."
+	      "text": "Always tormented by headaches. It uses psychic powers, but it is not known if it intends to do so.",
+		  "dextype": "DUCK",
+		  "body": "2 07 43" 
      },
 
      "GOLDUCK":
@@ -931,7 +1043,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its slim and long limbs end in broad flippers. They are used for swimming gracefully in lakes."
+	      "text": "Its slim and long limbs end in broad flippers. They are used for swimming gracefully in lakes.",
+		  "dextype": "DUCK",
+		  "body": "5 07 169" 
      },
 
      "MANKEY":
@@ -948,7 +1062,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": [ { "name": "PRIMEAPE", "method": "28" } ],
           "moveset": [ { "level": 1, "movename": "SCRATCH" }, { "level": 1, "movename": "GROWL" }, { "level": 9, "movename": "LOW_KICK" }, { "level": 15, "movename": "KARATE_CHOP" }, { "level": 21, "movename": "FURY_SWIPES" }, { "level": 27, "movename": "FOCUS_ENERGY" }, { "level": 33, "movename": "SEISMIC_TOSS" }, { "level": 39, "movename": "THRASH" }, { "level": 45, "movename": "SCREECH" } ],
-	  "text": "An agile Pokémon that lives in trees. It angers easily and will not hesitate to attack anything."
+	      "text": "An agile Pokémon that lives in trees. It angers easily and will not hesitate to attack anything.",
+		  "dextype": "PIG MONKEY",
+		  "body": "1 08 62" 
      },
 
      "PRIMEAPE":
@@ -965,7 +1081,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "It stops being angry only when nobody else is around. To view this moment is very difficult."
+	      "text": "It stops being angry only when nobody else is around. To view this moment is very difficult.",
+		  "dextype": "PIG MONKEY",
+		  "body": "3 03 71" 
      },
 
      "GROWLITHE":
@@ -982,7 +1100,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "ARCANINE", "method": "FIRE_STONE" } ],
           "moveset": null,
-	  "text": "A Pokémon with a friendly nature. However, it will bark fiercely at anything invading its territory."
+	      "text": "A Pokémon with a friendly nature. However, it will bark fiercely at anything invading its territory.",
+		  "dextype": "PUPPY",
+		  "body": "2 04 42" 
      },
 
      "ARCANINE":
@@ -999,7 +1119,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "A legendary Pokémon in China. Many people are charmed by its grace and beauty while running."
+	      "text": "A legendary Pokémon in China. Many people are charmed by its grace and beauty while running.",
+		  "dextype": "LEGENDARY",
+		  "body": "6 03 342" 
      },
 
      "POLIWAG":
@@ -1016,7 +1138,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "POLIWHIRL", "method": "25" } ],
           "moveset": null,
-	  "text": "The direction of the spiral on the belly differs by area. It is more adept at swimming than walking."
+	      "text": "The direction of the spiral on the belly differs by area. It is more adept at swimming than walking.",
+		  "dextype": "TADPOLE",
+		  "body": "2 00 27" 
      },
 
      "POLIWHIRL":
@@ -1033,7 +1157,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "POLIWRATH", "method": "WATER_STONE" } ],
           "moveset": null,
-	  "text": "Under attack, it uses its belly spiral to put the foe to sleep. It then makes its escape."
+	      "text": "Under attack, it uses its belly spiral to put the foe to sleep. It then makes its escape.",
+		  "dextype": "TADPOLE",
+		  "body": "3 03 44" 
      },
 
      "POLIWRATH":
@@ -1050,7 +1176,9 @@
           "type": [ { "name": "WATER"}, { "name": "FIGHTING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Swims powerfully using all the muscles in its body. It can even overtake champion swimmers."
+	      "text": "Swims powerfully using all the muscles in its body. It can even overtake champion swimmers.",
+		  "dextype": "TADPOLE",
+		  "body": "4 03 119" 
      },
 
      "ABRA":
@@ -1067,7 +1195,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": [ { "name": "KADABRA", "method": "16" } ],
           "moveset": null,
-	  "text": "Sleeps 18 hours a day. If it senses danger, it will teleport itself to safety even as it sleeps."
+	      "text": "Sleeps 18 hours a day. If it senses danger, it will teleport itself to safety even as it sleeps.",
+		  "dextype": "PSI",
+		  "body": "2 11 43" 
      },
 
      "KADABRA":
@@ -1084,7 +1214,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": [ { "name": "ALAKAZAM", "method": "40" } ],
           "moveset": null,
-	  "text": "Many odd things happen if this Pokémon is close by. For example, it makes clocks run backwards."
+	      "text": "Many odd things happen if this Pokémon is close by. For example, it makes clocks run backwards.",
+		  "dextype": "PSI",
+		  "body": "4 03 125" 
      },
 
      "ALAKAZAM":
@@ -1101,7 +1233,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "A Pokémon that can memorize anything. It never forgets what it learns—that's why this Pokémon is smart."
+	      "text": "A Pokémon that can memorize anything. It never forgets what it learns—that's why this Pokémon is smart.",
+		  "dextype": "PSI",
+		  "body": "4 11 105" 
      },
 
      "MACHOP":
@@ -1118,7 +1252,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": [ { "name": "MACHOKE", "method": "28" } ],
           "moveset": null,
-	  "text": "Very powerful in spite of its small size. Its mastery of many types of martial arts makes it very tough."
+	      "text": "Very powerful in spite of its small size. Its mastery of many types of martial arts makes it very tough.",
+		  "dextype": "SUPERPOWER",
+		  "body": "2 07 43" 
      },
 
      "MACHOKE":
@@ -1135,7 +1271,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": [ { "name": "MACHAMP", "method": "40" } ],
           "moveset": null,
-	  "text": "The belt around its waist holds back its energy. Without it, this Pokémon would be unstoppable."
+	      "text": "The belt around its waist holds back its energy. Without it, this Pokémon would be unstoppable.",
+		  "dextype": "SUPERPOWER",
+		  "body": "4 11 155" 
      },
 
      "MACHAMP":
@@ -1152,7 +1290,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "One arm alone can move mountains. Using all four arms, this Pokémon fires off awesome punches."
+	      "text": "One arm alone can move mountains. Using all four arms, this Pokémon fires off awesome punches.",
+		  "dextype": "SUPERPOWER",
+		  "body": "5 03 287" 
      },
 
      "BELLSPROUT":
@@ -1169,7 +1309,10 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "WEEPINBELL", "method": "21" } ],
           "moveset": null,
-	  "text": "Prefers hot and humid places. It ensnares tiny insects with its vines and devours them."
+	      "text": "Prefers hot and humid places. It ensnares tiny insects with its vines and devours them.",		  
+		  "dextype": "FLOWER",
+		  "body": "2 04 9" 
+
      },
 
      "WEEPINBELL":
@@ -1186,7 +1329,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": [ { "name": "VICTREEBEL", "method": "LEAF_STONE" } ],
           "moveset": null,
-	  "text": "When hungry, it swallows anything that moves. Its hapless prey is melted inside by strong acids."
+	      "text": "When hungry, it swallows anything that moves. Its hapless prey is melted inside by strong acids.",
+		  "dextype": "FLYCATCHER",
+		  "body": "3 03 14" 
      },
 
      "VICTREEBEL":
@@ -1203,7 +1348,9 @@
           "type": [ { "name": "GRASS"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Lures prey with the sweet aroma of honey. Swallowed whole, the prey is melted in a day, bones and all."
+	      "text": "Lures prey with the sweet aroma of honey. Swallowed whole, the prey is melted in a day, bones and all.",
+		  "dextype": "FLYCATCHER",
+		  "body": "5 07 34" 
      },
 
      "TENTACOOL":
@@ -1220,7 +1367,9 @@
           "type": [ { "name": "WATER"}, { "name": "POISON" } ],
           "evolution": [ { "name": "TENTACRUEL", "method": "30" } ],
           "moveset": null,
-	  "text": "It can sometimes be found all dry and shriveled up on a beach. Toss it back into the sea to revive it."
+	      "text": "It can sometimes be found all dry and shriveled up on a beach. Toss it back into the sea to revive it.",
+		  "dextype": "JELLYFISH",
+		  "body": "2 11 100" 
      },
 
      "TENTACRUEL":
@@ -1237,7 +1386,9 @@
           "type": [ { "name": "WATER"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-          "text": "Its 80 tentacles can stretch and contract freely. They wrap around prey and weaken it with poison."
+          "text": "Its 80 tentacles can stretch and contract freely. They wrap around prey and weaken it with poison.",
+		  "dextype": "JELLYFISH",
+		  "body": "5 03 121" 
      },
 
      "GEODUDE":
@@ -1254,7 +1405,9 @@
           "type": [ { "name": "ROCK"}, { "name": "GROUND" } ],
           "evolution": [ { "name": "GRAVELER", "method": "25" } ],
           "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 11, "movename": "DEFENSE_CURL" } ],
-	  "text": "Commonly found near mountain trails, etc. If you step on one by accident, it gets angry."
+	      "text": "Commonly found near mountain trails, etc. If you step on one by accident, it gets angry.",
+		  "dextype": "ROCK",
+		  "body": "1 04 44" 
      },
 
      "GRAVELER":
@@ -1271,7 +1424,9 @@
           "type": [ { "name": "ROCK"}, { "name": "GROUND" } ],
           "evolution": [ { "name": "GOLEM", "method": "40" } ],
           "moveset": null,
-	  "text": "Often seen rolling down mountain trails. Obstacles are just things to roll straight over, not avoid."
+	      "text": "Often seen rolling down mountain trails. Obstacles are just things to roll straight over, not avoid.",
+		  "dextype": "ROCK",
+		  "body": "3 03 231" 
      },
 
      "GOLEM":
@@ -1288,7 +1443,9 @@
           "type": [ { "name": "ROCK"}, { "name": "GROUND" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Once it sheds its skin, its body turns tender and whitish. Its hide hardens when it's exposed to air."
+	      "text": "Once it sheds its skin, its body turns tender and whitish. Its hide hardens when it's exposed to air.",
+		  "dextype": "MEGATON",
+		  "body": "4 07 661" 
      },
 
      "PONYTA":
@@ -1305,7 +1462,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "RAPIDASH", "method": "40" } ],
           "moveset": null,
-	  "text": "Capable of jumping incredibly high. Its hooves and sturdy legs absorb the impact of a hard landing."
+	      "text": "Capable of jumping incredibly high. Its hooves and sturdy legs absorb the impact of a hard landing.",
+		  "dextype": "FIRE HORSE",
+		  "body": "3 03 66" 
      },
 
      "RAPIDASH":
@@ -1322,7 +1481,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Just loves to run. If it sees something faster than itself, it will give chase at top speed."
+	      "text": "Just loves to run. If it sees something faster than itself, it will give chase at top speed.",
+		  "dextype": "FIRE HORSE",
+		  "body": "5 07 209" 
      },
 
      "SLOWPOKE":
@@ -1339,7 +1500,9 @@
           "type": [ { "name": "WATER"}, { "name": "PSYCHIC" } ],
           "evolution": [ { "name": "SLOWBRO", "method": "37" } ],
           "moveset": null,
- 	  "text": "Incredibly slow and sluggish. It is quite content to loll about without worrying about the time."
+ 	      "text": "Incredibly slow and sluggish. It is quite content to loll about without worrying about the time.",
+		  "dextype": "DOPEY",
+		  "body": "3 11 79" 
      },
 
      "SLOWBRO":
@@ -1356,7 +1519,9 @@
           "type": [ { "name": "WATER"}, { "name": "PSYCHIC" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Lives lazily by the sea. If the Shellder on its tail comes off, it becomes a Slowpoke again."
+	      "text": "Lives lazily by the sea. If the Shellder on its tail comes off, it becomes a Slowpoke again.",
+		  "dextype": "HERMIT CRAB",
+		  "body": "5 03 173" 
      },
 
      "MAGNEMITE":
@@ -1373,7 +1538,9 @@
           "type": [ { "name": "ELECTRIC"}, { "name": "STEEL" } ],
           "evolution": [ { "name": "MAGNETON", "method": "30" } ],
           "moveset": null,
-	  "text": "It is born with the ability to defy gravity. It floats in air on powerful electromagnetic waves."
+	      "text": "It is born with the ability to defy gravity. It floats in air on powerful electromagnetic waves.",
+		  "dextype": "MAGNET",
+		  "body": "1 00 13" 
      },
 
      "MAGNETON":
@@ -1390,7 +1557,9 @@
           "type": [ { "name": "ELECTRIC"}, { "name": "STEEL" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Generates strange radio signals. It raises the temperature by 3.6F degrees within 3,300 feet."
+	      "text": "Generates strange radio signals. It raises the temperature by 3.6F degrees within 3,300 feet.",
+		  "dextype": "MAGNET",
+		  "body": "3 03 132" 
      },
 
      "FARFETCH'D":
@@ -1407,7 +1576,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Lives where reedy plants grow. They are rarely seen, so it's thought their numbers are decreasing."
+	      "text": "Lives where reedy plants grow. They are rarely seen, so it's thought their numbers are decreasing.",
+		  "dextype": "WILD DUCK",
+		  "body": "2 07 33" 
      },
 
      "DODUO":
@@ -1424,7 +1595,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": [ { "name": "DODRIO", "method": "31" } ],
           "moveset": null,
-	  "text": "Its short wings make flying difficult. Instead, this Pokémon runs at high speed on developed legs."
+	      "text": "Its short wings make flying difficult. Instead, this Pokémon runs at high speed on developed legs.",
+		  "dextype": "TWIN BIRD",
+		  "body": "4 07 86" 
      },
 
      "DODRIO":
@@ -1441,7 +1614,9 @@
           "type": [ { "name": "NORMAL"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "One of Doduo's 2 heads splits to form a unique species. It runs close to 40 MPH in prairies."
+	      "text": "One of Doduo's 2 heads splits to form a unique species. It runs close to 40 MPH in prairies.",
+		  "dextype": "TRIPLE BIRD",
+		  "body": "5 11 188" 
      },
 
      "SEEL":
@@ -1458,7 +1633,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "DEWGONG", "method": "34" } ],
           "moveset": null,
-	  "text": "Loves freezing cold conditions. Relishes swimming in a frigid climate of around 14F degrees."
+	      "text": "Loves freezing cold conditions. Relishes swimming in a frigid climate of around 14F degrees.",
+		  "dextype": "SEA LION",
+		  "body": "3 07 198" 
      },
 
      "DEWGONG":
@@ -1475,7 +1652,9 @@
           "type": [ { "name": "WATER"}, { "name": "ICE" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its entire body is a snowy-white. Unharmed by even intense cold, it swims powerfully in icy waters."
+	      "text": "Its entire body is a snowy-white. Unharmed by even intense cold, it swims powerfully in icy waters.",
+		  "dextype": "SEA LION",
+		  "body": "5 07 265" 
      },
 
      "GRIMER":
@@ -1492,7 +1671,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "MUK", "method": "38" } ],
           "moveset": null,
-	  "text": "Made of hardened sludge. It smells too putrid to touch. Even weeds won't grow in its path."
+	      "text": "Made of hardened sludge. It smells too putrid to touch. Even weeds won't grow in its path.",
+		  "dextype": "SLUDGE",
+		  "body": "2 11 93" 
      },
 
      "MUK":
@@ -1509,7 +1690,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Smells so awful, it can cause fainting. Through degeneration, it lost its sense of smell."
+	      "text": "Smells so awful, it can cause fainting. Through degeneration, it lost its sense of smell.",
+		  "dextype": "SLUDGE",
+		  "body": "3 11 66" 
      },
 
      "SHELLDER":
@@ -1526,7 +1709,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "CLOYSTER", "method": "WATER_STONE" } ],
           "moveset": null,
-	  "text": "The shell can withstand any attack. However, when it is open, the tender body is exposed."
+	      "text": "The shell can withstand any attack. However, when it is open, the tender body is exposed.",
+		  "dextype": "BIVALVE",
+		  "body": "1 00 9" 
      },
 
      "CLOYSTER":
@@ -1543,7 +1728,9 @@
           "type": [ { "name": "WATER"}, { "name": "ICE" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "For protection, it uses its harder-than-diamonds shell. It also shoots spikes from the shell."
+	      "text": "For protection, it uses its harder-than-diamonds shell. It also shoots spikes from the shell.",
+		  "dextype": "BIVALVE",
+		  "body": "4 11 292" 
      },
 
      "GASTLY":
@@ -1560,7 +1747,9 @@
           "type": [ { "name": "GHOST"}, { "name": "POISON" } ],
           "evolution": [ { "name": "HAUNTER", "method": "25" } ],
           "moveset": null,
-	  "text": "Said to appear in decrepit, deserted buildings. It has no real shape as it appears to be made of a gas."
+	      "text": "Said to appear in decrepit, deserted buildings. It has no real shape as it appears to be made of a gas.",
+		  "dextype": "GAS",
+		  "body": "4 03 0" 
      },
 
      "HAUNTER":
@@ -1577,7 +1766,9 @@
           "type": [ { "name": "GHOST"}, { "name": "POISON" } ],
           "evolution": [ { "name": "GENGAR", "method": "40" } ],
           "moveset": null,
-	  "text": "By licking, it saps the victim's life. It causes shaking that won't stop until the victim's demise."
+	      "text": "By licking, it saps the victim's life. It causes shaking that won't stop until the victim's demise.",
+		  "dextype": "GAS",
+		  "body": "5 03 0" 
      },
 
      "GENGAR":
@@ -1594,7 +1785,9 @@
           "type": [ { "name": "GHOST"}, { "name": "POISON" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A Gengar is close by if you feel a sudden chill. It may be trying to lay a curse on you."
+	      "text": "A Gengar is close by if you feel a sudden chill. It may be trying to lay a curse on you.",
+		  "dextype": "SHADOW",
+		  "body": "4 11 89" 
      },
 
      "ONIX":
@@ -1611,7 +1804,9 @@
           "type": [ { "name": "ROCK"}, { "name": "GROUND" } ],
           "evolution": null,
           "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 1, "movename": "SCREECH" }, { "level": 15, "movename": "BIND" }, { "level": 19, "movename": "ROCK_THROW" }, { "level": 25, "movename": "RAGE" }, { "level": 33, "movename": "SLAM" }, { "level": 43, "movename": "HARDEN" } ],
-	  "text": "Burrows at high speed in search of food. The tunnels it leaves are used as homes by Diglett."
+	      "text": "Burrows at high speed in search of food. The tunnels it leaves are used as homes by Diglett.",
+		  "dextype": "ROCK SNAKE",
+		  "body": "28 10 463" 
      },
 
      "DROWZEE":
@@ -1628,7 +1823,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": [ { "name": "HYPNO", "method": "26" } ],
           "moveset": null,
-	  "text": "If you sleep by it all the time, it will sometimes show you dreams it has eaten in the past."
+	      "text": "If you sleep by it all the time, it will sometimes show you dreams it has eaten in the past.",
+		  "dextype": "HYPNOSIS",
+		  "body": "3 03 71" 
      },
 
      "HYPNO":
@@ -1645,7 +1842,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Avoid eye contact if you come across one. It will try to put you to sleep by using its pendulum."
+	      "text": "Avoid eye contact if you come across one. It will try to put you to sleep by using its pendulum.",
+		  "dextype": "HYPNOSIS",
+		  "body": "5 03 167" 
      },
 
      "KRABBY":
@@ -1662,7 +1861,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "KINGLER", "method": "28" } ],
           "moveset": null,
-	  "text": "Its pincers are superb weapons. They sometimes break off during battle, but they grow back fast."
+	      "text": "Its pincers are superb weapons. They sometimes break off during battle, but they grow back fast.",
+		  "dextype": "RIVER CRAB",
+		  "body": "1 04 14" 
      },
 
      "KINGLER":
@@ -1679,7 +1880,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "One claw grew massively and as hard as steel. It has 10,000-HP strength. However, it is too heavy."
+	      "text": "One claw grew massively and as hard as steel. It has 10,000-HP strength. However, it is too heavy.",
+		  "dextype": "PINCER",
+		  "body": "4 03 132" 
      },
 
      "VOLTORB":
@@ -1696,7 +1899,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": [ { "name": "ELECTRODE", "method": "30" } ],
           "moveset": null,
-	  "text": "It is said to camouflage itself as a Poké Ball. It will self-destruct with very little stimulus."
+	      "text": "It is said to camouflage itself as a Poké Ball. It will self-destruct with very little stimulus.",
+		  "dextype": "BALL",
+		  "body": "1 08 23" 
      },
 
      "ELECTRODE":
@@ -1713,7 +1918,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Stores electrical energy inside its body. Even the slightest shock could trigger a huge explosion."
+	      "text": "Stores electrical energy inside its body. Even the slightest shock could trigger a huge explosion.",
+		  "dextype": "BALL",
+		  "body": "3 11 147" 
      },
 
      "EXEGGCUTE":
@@ -1730,7 +1937,9 @@
           "type": [ { "name": "GRASS"}, { "name": "PSYCHIC" } ],
           "evolution": [ { "name": "EXEGGUTOR", "method": "LEAF_STONE" } ],
           "moveset": null,
-	  "text": "The heads attract each other and spin around. There must be 6 heads for it to maintain balance."
+	      "text": "The heads attract each other and spin around. There must be 6 heads for it to maintain balance.",
+		  "dextype": "EGG",
+		  "body": "1 04 6" 
      },
 
      "EXEGGUTOR":
@@ -1747,7 +1956,9 @@
           "type": [ { "name": "GRASS"}, { "name": "PSYCHIC" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its cries are very noisy. This is because each of the three heads thinks about whatever it likes."
+	      "text": "Its cries are very noisy. This is because each of the three heads thinks about whatever it likes.",
+		  "dextype": "COCONUT",
+		  "body": "6 07 265" 
      },
 
      "CUBONE":
@@ -1764,7 +1975,9 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": [ { "name": "MAROWAK", "method": "28" } ],
           "moveset": null,
-	  "text": "Wears the skull of its deceased mother. Its cries echo inside the skull and come out as a sad melody."
+	      "text": "Wears the skull of its deceased mother. Its cries echo inside the skull and come out as a sad melody.",
+		  "dextype": "LONELY",
+		  "body": "1 04 14" 
      },
 
      "MAROWAK":
@@ -1781,7 +1994,9 @@
           "type": [ { "name": "GROUND"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Small and weak, this Pokémon is adept with its Bone Club. It has grown more vicious over the ages."
+	      "text": "Small and weak, this Pokémon is adept with its Bone Club. It has grown more vicious over the ages.",
+		  "dextype": "BONE KEEPER",
+		  "body": "3 03 99" 
      },
 
      "HITMONLEE":
@@ -1798,7 +2013,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "When kicking, the sole of its foot turns as hard as a diamond on impact and destroys its enemy."
+	      "text": "When kicking, the sole of its foot turns as hard as a diamond on impact and destroys its enemy.",
+		  "dextype": "KICKING",
+		  "body": "4 11 110" 
      },
 
      "HITMONCHAN":
@@ -1815,7 +2032,9 @@
           "type": [ { "name": "FIGHTING"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Punches in corkscrew fashion. It can punch its way through a concrete wall in the same way as a drill."
+	      "text": "Punches in corkscrew fashion. It can punch its way through a concrete wall in the same way as a drill.",
+		  "dextype": "PUNCHING",
+		  "body": "4 07 111" 
      },
 
      "LICKITUNG":
@@ -1832,7 +2051,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its tongue spans almost 7 feet and moves more freely than its forelegs. Its licks can cause paralysis."
+	      "text": "Its tongue spans almost 7 feet and moves more freely than its forelegs. Its licks can cause paralysis.",
+		  "dextype": "LICKING",
+		  "body": "3 11 144" 
      },
 
      "KOFFING":
@@ -1849,7 +2070,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "WEEZING", "method": "35" } ],
           "moveset": null,
-	  "text": "In hot places, its internal gases could expand and explode without any warning. Be very careful!"
+	      "text": "In hot places, its internal gases could expand and explode without any warning. Be very careful!",
+		  "dextype": "POISON GAS",
+		  "body": "2 00 2" 
      },
 
      "WEEZING":
@@ -1866,7 +2089,9 @@
           "type": [ { "name": "POISON"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "It lives and grows by absorbing dust, germs, and poison gases that are contained in toxic waste and garbage."
+	      "text": "It lives and grows by absorbing dust, germs, and poison gases that are contained in toxic waste and garbage.",
+		  "dextype": "POISON GAS",
+		  "body": "3 11 21" 
      },
 
      "RHYHORN":
@@ -1883,7 +2108,9 @@
           "type": [ { "name": "GROUND"}, { "name": "ROCK" } ],
           "evolution": [ { "name": "RHYDON", "method": "42" } ],
           "moveset": null,
-	  "text": "A Pokémon with a one-track mind. Once it charges, it won't stop running until it falls asleep."
+	      "text": "A Pokémon with a one-track mind. Once it charges, it won't stop running until it falls asleep.",
+		  "dextype": "SPIKES",
+		  "body": "3 03 254" 
      },
 
      "RHYDON":
@@ -1900,7 +2127,9 @@
           "type": [ { "name": "GROUND"}, { "name": "ROCK" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Walks on its hind legs. Shows signs of intelligence. Its armor-like hide even repels molten lava."
+	      "text": "Walks on its hind legs. Shows signs of intelligence. Its armor-like hide even repels molten lava.",
+		  "dextype": "DRILL",
+		  "body": "6 03 265" 
      },
 
      "CHANSEY":
@@ -1917,7 +2146,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-  	  "text": "A gentle and kind-hearted Pokémon that shares its nutritious eggs if it sees an injured Pokémon."
+  	      "text": "A gentle and kind-hearted Pokémon that shares its nutritious eggs if it sees an injured Pokémon.",
+		  "dextype": "EGG",
+		  "body": "3 07 76" 
      },
 
      "TANGELA":
@@ -1934,7 +2165,9 @@
           "type": [ { "name": "GRASS"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its identity is obscured by masses of thick, blue vines. The vines are said to never stop growing."
+	      "text": "Its identity is obscured by masses of thick, blue vines. The vines are said to never stop growing.",
+		  "dextype": "VINE",
+		  "body": "3 03 77" 
      },
 
      "KANGASKHAN":
@@ -1951,7 +2184,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Raises its young in its belly pouch. Won't run from any fight to keep its young protected."
+	      "text": "Raises its young in its belly pouch. Won't run from any fight to keep its young protected.",
+		  "dextype": "PARENT",
+		  "body": "7 03 176" 
      },
 
      "HORSEA":
@@ -1968,7 +2203,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "SEADRA", "method": "32" } ],
           "moveset": null,
-	  "text": "If it senses any danger, it will vigorously spray water or a special type of ink from its mouth."
+	      "text": "If it senses any danger, it will vigorously spray water or a special type of ink from its mouth.",
+		  "dextype": "DRAGON",
+		  "body": "1 04 18" 
      },
 
      "SEADRA":
@@ -1985,7 +2222,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,	
- 	  "text": "Touching the back fin causes numbness. It hooks its tail to coral to stay in place while sleeping."
+ 	      "text": "Touching the back fin causes numbness. It hooks its tail to coral to stay in place while sleeping.",
+		  "dextype": "DRAGON",
+		  "body": "3 11 55" 
      },
 
      "GOLDEEN":
@@ -2002,7 +2241,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "SEAKING", "method": "33" } ],
           "moveset": null,
-	  "text": "When it is time for them to lay eggs, they can be seen swimming up rivers and falls in large groups."
+	      "text": "When it is time for them to lay eggs, they can be seen swimming up rivers and falls in large groups.",
+		  "dextype": "GOLDFISH",
+		  "body": "2 00 33" 
      },
 
      "SEAKING":
@@ -2019,7 +2260,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "It is the male's job to make a nest by carving out boulders in a stream using the horn on its head."
+	      "text": "It is the male's job to make a nest by carving out boulders in a stream using the horn on its head.",
+	      "dextype": "GOLDFISH",
+		  "body": "4 03 86" 
      },
 
      "STARYU":
@@ -2036,7 +2279,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "STARMIE", "method": "WATER_STONE" } ],
           "moveset": null,
-	  "text": "As long as the center section is unharmed, it can grow back fully even if it is chopped to bits."
+	      "text": "As long as the center section is unharmed, it can grow back fully even if it is chopped to bits.",
+	      "dextype": "STAR SHAPE",
+		  "body": "2 07 76" 
      },
 
      "STARMIE":
@@ -2053,7 +2298,9 @@
           "type": [ { "name": "WATER"}, { "name": "PSYCHIC" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "The center section is named the core. People think it is communicating when it glows in 7 colors."
+	      "text": "The center section is named the core. People think it is communicating when it glows in 7 colors.",
+	      "dextype": "MYSTERIOUS",
+		  "body": "3 07 176" 
      },
 
      "MR.MIME":
@@ -2070,7 +2317,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Always practices its pantomime act. It makes enemies believe something exists that really doesn't."
+	      "text": "Always practices its pantomime act. It makes enemies believe something exists that really doesn't.",
+	      "dextype": "BARRIER",
+		  "body": "4 03 120" 
      },
 
      "SCYTHER":
@@ -2087,7 +2336,9 @@
           "type": [ { "name": "BUG"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Leaps out of tall grass and slices prey with its scythes. The movement looks like that of a ninja."
+	      "text": "Leaps out of tall grass and slices prey with its scythes. The movement looks like that of a ninja.",
+	      "dextype": "MANTIS",
+		  "body": "4 11 124" 
      },
 
      "JYNX":
@@ -2104,7 +2355,9 @@
           "type": [ { "name": "ICE"}, { "name": "PSYCHIC" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Appears to move to a rhythm of its own, as if it were dancing. It wiggles its hips as it walks."
+	      "text": "Appears to move to a rhythm of its own, as if it were dancing. It wiggles its hips as it walks.",
+	      "dextype": "HUMAN SHAPE",
+		  "body": "4 07 90" 
      },
 
      "ELECTABUZZ":
@@ -2121,7 +2374,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "If a major power outage occurs, it is certain that this Pokémon has eaten electricity at a power plant."
+	      "text": "If a major power outage occurs, it is certain that this Pokémon has eaten electricity at a power plant.",
+	      "dextype": "ELECTRIC",
+		  "body": "3 07 66" 
      },
 
      "MAGMAR":
@@ -2138,7 +2393,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Born in an active volcano. Its body is always cloaked in flames, so it looks like a big ball of fire."
+	      "text": "Born in an active volcano. Its body is always cloaked in flames, so it looks like a big ball of fire.",
+	      "dextype": "SPITFIRE",
+		  "body": "4 03 98" 
      },
 
      "PINSIR":
@@ -2155,7 +2412,9 @@
           "type": [ { "name": "BUG"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Grips its prey in its pincers and squeezes hard! It can't move if it's cold, so it lives in warm places."
+	      "text": "Grips its prey in its pincers and squeezes hard! It can't move if it's cold, so it lives in warm places.",
+	      "dextype": "STAG BEETLE",
+		  "body": "4 11 121" 
      },
 
      "TAUROS":
@@ -2172,7 +2431,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "A rowdy Pokémon with a lot of stamina. Once running, it won't stop until it hits something."
+	      "text": "A rowdy Pokémon with a lot of stamina. Once running, it won't stop until it hits something.",
+	      "dextype": "WILD BULL",
+		  "body": "4 07 195" 
      },
 
      "MAGIKARP":
@@ -2189,7 +2450,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": [ { "name": "GYARADOS", "method": "20" } ],
           "moveset": null,
-	  "text": "Famous for being very unreliable. It can be found swimming in seas, lakes, rivers and shallow puddles."
+	      "text": "Famous for being very unreliable. It can be found swimming in seas, lakes, rivers and shallow puddles.",
+	      "dextype": "FISH",
+		  "body": "2 11 22" 
      },
 
      "GYARADOS":
@@ -2206,7 +2469,9 @@
           "type": [ { "name": "WATER"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Brutally vicious and enormously destructive. Known for totally destroying cities in ancient times."
+	      "text": "Brutally vicious and enormously destructive. Known for totally destroying cities in ancient times.",
+	      "dextype": "ATROCIOUS",
+		  "body": "21 04 518" 
      },
 
      "LAPRAS":
@@ -2223,7 +2488,9 @@
           "type": [ { "name": "WATER"}, { "name": "ICE" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A gentle soul that can read the minds of people. It can ferry people across the sea on its back."
+	      "text": "A gentle soul that can read the minds of people. It can ferry people across the sea on its back.",
+	      "dextype": "TRANSPORT",
+		  "body": "8 02 485" 
      },
 
      "DITTO":
@@ -2240,7 +2507,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "When it spots an enemy, its body transforms into an almost perfect copy of its opponent."
+	      "text": "When it spots an enemy, its body transforms into an almost perfect copy of its opponent."		  
+	      "dextype": "TRANSFORM",
+		  "body": "1 00 9" 
      },
 
      "EEVEE":
@@ -2257,7 +2526,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": [ { "level": 1, "movename": "TACKLE" }, { "level": 1, "movename": "TAIL_WHIP" }, { "level": 8, "movename": "SAND-ATTACK" }, { "level": 16, "movename": "GROWL" }, { "level": 23, "movename": "QUICK_ATTACK" }, { "level": 30, "movename": "BITE" }, { "level": 36, "movename": "FOCUS_ENERGY" }, { "level": 42, "movename": "TAKE_DOWN" } ],
-	  "text": "Its genetic code is unstable, so it could evolve in a variety of ways. There are only a few alive."
+	      "text": "Its genetic code is unstable, so it could evolve in a variety of ways. There are only a few alive.",
+	      "dextype": "EVOLUTION",
+		  "body": "1 00 14" 
      },
 
      "VAPOREON":
@@ -2274,7 +2545,9 @@
           "type": [ { "name": "WATER"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its cell structure is similar to water molecules. It will melt away and become invisible in water."
+	      "text": "Its cell structure is similar to water molecules. It will melt away and become invisible in water.",
+	      "dextype": "BUBBLE JET",
+		  "body": "3 03 64" 
      },
 
      "JOLTEON":
@@ -2291,7 +2564,9 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "A sensitive Pokémon that easily becomes sad or angry. Every time its mood changes, it charges power."
+	      "text": "A sensitive Pokémon that easily becomes sad or angry. Every time its mood changes, it charges power.",
+	      "dextype": "LIGHTNING",
+		  "body": "2 07 54" 
      },
 
      "FLAREON":
@@ -2308,7 +2583,9 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "It has a flame chamber inside its body. It inhales, then blows out fire that is over 3,000F degrees."
+	      "text": "It has a flame chamber inside its body. It inhales, then blows out fire that is over 3,000F degrees.",
+	      "dextype": "FLAME",
+		  "body": "2 11 55" 
      },
 
      "PORYGON":
@@ -2325,7 +2602,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "The only Pokémon people anticipate can fly into space. None has managed the feat yet, however."
+	      "text": "The only Pokémon people anticipate can fly into space. None has managed the feat yet, however.",
+	      "dextype": "VIRTUAL",
+		  "body": "2 07 81" 
      },
 
      "OMANYTE":
@@ -2342,7 +2621,9 @@
           "type": [ { "name": "ROCK"}, { "name": "WATER" } ],
           "evolution": [ { "name": "OMASTAR", "method": "40" } ],
           "moveset": null,
-	  "text": "An ancient Pokémon that was recovered from a fossil. It swims by cleverly twisting its 10 tentacles about."
+	      "text": "An ancient Pokémon that was recovered from a fossil. It swims by cleverly twisting its 10 tentacles about.",
+	      "dextype": "SPIRAL",
+		  "body": "1 04 17" 
      },
 
      "OMASTAR":
@@ -2359,7 +2640,9 @@
           "type": [ { "name": "ROCK"}, { "name": "WATER" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "Sharp beaks ring its mouth. Its shell was too big for it to move freely, so it became extinct."
+	      "text": "Sharp beaks ring its mouth. Its shell was too big for it to move freely, so it became extinct.",
+	      "dextype": "SPIRAL",
+		  "body": "3 03 77" 
      },
 
      "KABUTO":
@@ -2376,7 +2659,9 @@
           "type": [ { "name": "ROCK"}, { "name": "WATER" } ],
           "evolution": [ { "name": "KABUTOPS", "method": "40" } ],
           "moveset": null,
-	  "text": "A Pokémon that was recovered from a fossil. It uses the eyes on its back while hiding on the sea floor."
+	      "text": "A Pokémon that was recovered from a fossil. It uses the eyes on its back while hiding on the sea floor.",
+	      "dextype": "SHELLFISH",
+		  "body": "1 08 25" 
      },
 
      "KABUTOPS":
@@ -2393,7 +2678,9 @@
           "type": [ { "name": "ROCK"}, { "name": "WATER" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A slim and fast swimmer. It slices its prey with its sharp sickles and drinks the body fluids."
+	      "text": "A slim and fast swimmer. It slices its prey with its sharp sickles and drinks the body fluids.",
+	      "dextype": "SHELLFISH",
+		  "body": "4 03 90" 
      },
 
      "AERODACTYL":
@@ -2410,7 +2697,9 @@
           "type": [ { "name": "ROCK"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
- 	  "text": "A savage Pokémon that died out in ancient times. It was resurrected using DNA taken from amber."
+ 	      "text": "A savage Pokémon that died out in ancient times. It was resurrected using DNA taken from amber.",
+	      "dextype": "FOSSIL",
+		  "body": "5 11 130" 
      },
 
      "SNORLAX":
@@ -2427,7 +2716,9 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Will eat anything, even if the food happens to be a little moldy. It never gets an upset stomach."
+	      "text": "Will eat anything, even if the food happens to be a little moldy. It never gets an upset stomach.",
+	      "dextype": "SLEEPING",
+		  "body": "6 11 1014" 
      },
 
      "ARTICUNO":
@@ -2444,7 +2735,9 @@
           "type": [ { "name": "ICE"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A legendary bird Pokémon. It freezes water that is contained in winter air and makes it snow."
+	      "text": "A legendary bird Pokémon. It freezes water that is contained in winter air and makes it snow.",
+	      "dextype": "FREEZE",
+		  "body": "5 07 122" 
      },
 
      "ZAPDOS":
@@ -2461,7 +2754,9 @@
           "type": [ { "name": "ELECTRIC"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "This legendary bird Pokémon is said to appear when the sky turns dark and lightning showers down."
+	      "text": "This legendary bird Pokémon is said to appear when the sky turns dark and lightning showers down.",
+	      "dextype": "ELECTRIC",
+		  "body": "5 03 116" 
      },
 
      "MOLTRES":
@@ -2478,7 +2773,9 @@
           "type": [ { "name": "FIRE"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "A legendary bird Pokémon. As it flaps its blazing wings, even the night sky will turn red."
+	      "text": "A legendary bird Pokémon. As it flaps its blazing wings, even the night sky will turn red.",
+	      "dextype": "FLAME",
+		  "body": "6 07 132" 
      },
 
      "DRATINI":
@@ -2495,7 +2792,9 @@
           "type": [ { "name": "DRAGON"} ],
           "evolution": [ { "name": "DRAGONAIR", "method": "30" } ],
           "moveset": null,
-	  "text": "The existence of this mythical Pokémon was only recently confirmed by a fisherman who caught one."
+	      "text": "The existence of this mythical Pokémon was only recently confirmed by a fisherman who caught one.",
+	      "dextype": "DRAGON",
+		  "body": "5 11 7" 
      },
 
      "DRAGONAIR":
@@ -2512,7 +2811,9 @@
           "type": [ { "name": "DRAGON"} ],
           "evolution": [ { "name": "DRAGONITE", "method": "55" } ],
           "moveset": null,
-	  "text": "According to a witness, its body was surrounded by a strange aura that gave it a mystical look."
+	      "text": "According to a witness, its body was surrounded by a strange aura that gave it a mystical look.",
+	      "dextype": "DRAGON",
+		  "body": "13 01 36" 
      },
 
      "DRAGONITE":
@@ -2529,7 +2830,9 @@
           "type": [ { "name": "DRAGON"}, { "name": "FLYING" } ],
           "evolution": null,
           "moveset": null,
-	  "text": "It is said that this Pokémon lives somewhere in the sea and that it flies. However, it is only a rumor."
+	      "text": "It is said that this Pokémon lives somewhere in the sea and that it flies. However, it is only a rumor.",
+	      "dextype": "DRAGON",
+		  "body": "7 03 463" 
      },
 
      "MEWTWO":
@@ -2546,7 +2849,9 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "Its DNA is almost the same as Mew's. However, its size and disposition are vastly different."
+	      "text": "Its DNA is almost the same as Mew's. However, its size and disposition are vastly different.",
+	      "dextype": "GENETIC",
+		  "body": "6 07 269" 
      },
 
      "MEW":
@@ -2563,6 +2868,8 @@
           "type": [ { "name": "PSYCHIC"} ],
           "evolution": null,
           "moveset": null,
-	  "text": "When viewed through a microscope, this Pokémon's short, fine, delicate hair can be seen."
+	      "text": "When viewed through a microscope, this Pokémon's short, fine, delicate hair can be seen.",
+	      "dextype": "NEW SPECIES",
+		  "body": "1 04 9" 
      }
 }
