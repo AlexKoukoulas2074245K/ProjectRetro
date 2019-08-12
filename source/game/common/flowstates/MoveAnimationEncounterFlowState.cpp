@@ -14,9 +14,13 @@
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/utils/FileUtils.h"
+#include "../../common/utils/TextboxUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
@@ -127,6 +131,10 @@ void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation()
     {
         UpdateTailWhipAnimation();
     }
+    else if (encounterStateComponent.mLastMoveSelected == StringId("LEER"))
+    {
+        UpdateLeerAnimation();
+    }
 }
 
 void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
@@ -181,6 +189,45 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
     else
     {
         CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateLeerAnimation()
+{
+    auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    //auto& activeLevelComponent     = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        {
+            transitionStateComponent.mDarkFlipProgressionStep = 1;
+            
+            //auto& encounterLevelRenderableComponent         = mWorld.GetComponent<RenderableComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+            //encounterLevelRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
+            
+            const auto& opponentPokemonTextboxInfoEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+            for (const auto& entityId: opponentPokemonTextboxInfoEntities)
+            {
+                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+                renderableComponent.mShaderNameId = StringId("dark_flip_hud");
+            }
+            
+            const auto& playerPokemonTextboxInfoEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+            for (const auto& entityId: playerPokemonTextboxInfoEntities)
+            {
+                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+                renderableComponent.mShaderNameId = StringId("dark_flip_hud");
+            }
+            
+            auto& opponentPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+            opponentPokemonStatusDisplayRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
+            
+            auto& playerPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+            playerPokemonStatusDisplayRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
+            
+        } break;
     }
 }
 

@@ -1061,7 +1061,7 @@
           "ovimagetype": "NORMAL",
           "type": [ { "name": "FIGHTING"} ],
           "evolution": [ { "name": "PRIMEAPE", "method": "28" } ],
-          "moveset": [ { "level": 1, "movename": "SCRATCH" }, { "level": 1, "movename": "GROWL" }, { "level": 9, "movename": "LOW_KICK" }, { "level": 15, "movename": "KARATE_CHOP" }, { "level": 21, "movename": "FURY_SWIPES" }, { "level": 27, "movename": "FOCUS_ENERGY" }, { "level": 33, "movename": "SEISMIC_TOSS" }, { "level": 39, "movename": "THRASH" }, { "level": 45, "movename": "SCREECH" } ],
+          "moveset": [ { "level": 1, "movename": "SCRATCH" }, { "level": 1, "movename": "LEER" }, { "level": 9, "movename": "LOW_KICK" }, { "level": 15, "movename": "KARATE_CHOP" }, { "level": 21, "movename": "FURY_SWIPES" }, { "level": 27, "movename": "FOCUS_ENERGY" }, { "level": 33, "movename": "SEISMIC_TOSS" }, { "level": 39, "movename": "THRASH" }, { "level": 45, "movename": "SCREECH" } ],
 	      "text": "An agile Pokémon that lives in trees. It angers easily and will not hesitate to attack anything.",
 		  "dextype": "PIG MONKEY",
 		  "body": "1 08 62" 

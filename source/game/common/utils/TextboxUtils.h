@@ -60,6 +60,12 @@ const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
     ecs::World& world
 );
 
+std::vector<ecs::EntityId> GetAllTextboxResidentComponents
+(
+    const ecs::EntityId textboxEntityId,
+    ecs::World& world
+);
+
 char GetCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,

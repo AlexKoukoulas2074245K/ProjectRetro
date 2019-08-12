@@ -157,6 +157,28 @@ const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
     return textboxComponent.mTextContent[textboxRow];
 }
 
+std::vector<ecs::EntityId> GetAllTextboxResidentComponents
+(
+    const ecs::EntityId textboxEntityId,
+    ecs::World& world
+)
+{
+    std::vector<ecs::EntityId> residentComponents;
+    for (const auto& entityId: world.GetActiveEntities())
+    {
+        if
+        (
+            world.HasComponent<TextboxResidentComponent>(entityId) &&
+            world.GetComponent<TextboxResidentComponent>(entityId).mTextboxParentEntityId == textboxEntityId
+        )
+        {
+            residentComponents.push_back(entityId);
+        }
+    }
+    
+    return residentComponents;
+}
+
 char GetCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,

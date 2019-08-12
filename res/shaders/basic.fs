@@ -20,6 +20,7 @@ uniform vec4 overridden_dark_color;
 uniform int should_override_primary_colors;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
+uniform int dark_flip_progression_step;
 
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;

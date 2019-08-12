@@ -29,6 +29,7 @@ private:
     void LoadMoveAnimationFrames() const;
     void UpdateSpeciallyHandledMoveAnimation();
     void UpdateNormalFrameBasedMoveAnimation();
+    void UpdateLeerAnimation();
     void UpdateTackleAnimation();
     void UpdateTailWhipAnimation();
 

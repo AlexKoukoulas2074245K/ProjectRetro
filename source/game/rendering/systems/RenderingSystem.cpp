@@ -48,6 +48,7 @@ const StringId RenderingSystem::WORLD_MARIX_UNIFORM_NAME                     = S
 const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME                      = StringId("view");
 const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME                = StringId("proj");
 const StringId RenderingSystem::TRANSITION_ANIMATION_STEP_UNIFORM_NAME       = StringId("transition_progression_step");
+const StringId RenderingSystem::DARK_FLIP_STEP_UNIFORM_NAME                  = StringId("dark_flip_progression_step");
 const StringId RenderingSystem::BLACK_AND_WHITE_MODE_UNIFORM_NAME            = StringId("black_and_white_mode");
 const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME             = StringId("current_level_color");
 const StringId RenderingSystem::PRIMARY_LIGHT_COLOR_UNIFORM_NAME             = StringId("primary_light_color");
@@ -390,7 +391,8 @@ void RenderingSystem::RenderEntityInternal
     // Set matrix uniforms
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME), renderableComponent.mShouldOverrideDarkAndLightColor ? 1 : 0));
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mAnimationProgressionStep));
-    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(BLACK_AND_WHITE_MODE_UNIFORM_NAME), transitionAnimationComponent.mBlackAndWhiteModeEnabled ? 1 : 0));    
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(DARK_FLIP_STEP_UNIFORM_NAME), transitionAnimationComponent.mDarkFlipProgressionStep));
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(BLACK_AND_WHITE_MODE_UNIFORM_NAME), transitionAnimationComponent.mBlackAndWhiteModeEnabled ? 1 : 0));
     GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(CURRENT_LEVEL_COLOR_UNIFORM_NAME), currentLevelColor.x, currentLevelColor.y, currentLevelColor.z, currentLevelColor.w));    
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));

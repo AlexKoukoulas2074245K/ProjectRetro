@@ -281,7 +281,8 @@ bool DoesMoveHaveSpeciallyHandledAnimation
 )
 {
     return moveName == StringId("TACKLE") ||
-           moveName == StringId("TAIL_WHIP");
+           moveName == StringId("TAIL_WHIP") ||
+           moveName == StringId("LEER");
 }
 
 int CalculateDamage

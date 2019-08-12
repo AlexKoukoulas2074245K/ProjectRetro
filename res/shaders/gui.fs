@@ -7,9 +7,10 @@ in vec2 uv_frag;
 uniform sampler2D tex;
 
 // Texture flipping booleans
-uniform vec4 global_white_color = vec4(0.9725, 0.9725, 0.9725, 1.0);
-uniform vec4 global_blue_color  = vec4(0.3450, 0.7215, 0.9725, 1.0);
-uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
+uniform vec4 global_white_color  = vec4(0.9725, 0.9725, 0.9725, 1.0);
+uniform vec4 global_blue_color   = vec4(0.3450, 0.7215, 0.9725, 1.0);
+uniform vec4 global_black_color  = vec4(0.0941, 0.0941, 0.0941, 1.0);
+uniform vec4 global_yellow_color = vec4(0.9725, 0.9803, 0.0000, 1.0);
 
 uniform vec4 current_level_color;
 uniform vec4 primary_light_color;
@@ -20,6 +21,7 @@ uniform vec4 overridden_dark_color;
 uniform int should_override_primary_colors;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
+uniform int dark_flip_progression_step;
 
 uniform float global_x_offset;
 uniform float global_y_offset;
