@@ -144,6 +144,11 @@ ecs::EntityId CreatePokemonStatsDisplayTextbox
     ecs::World& world
 );
 
+ecs::EntityId CreatePokedexPokemonEntryDisplayTextbox
+(
+    ecs::World& world
+);
+
 void DestroyActiveTextbox
 (
     ecs::World& world

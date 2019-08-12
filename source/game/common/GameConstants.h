@@ -35,6 +35,8 @@ const float STATIONARY_NPC_RESET_TIME      = 1.5f;
 
 static const StringId CANCEL_ITEM_NAME = StringId("CANCEL");
 
+static const int MAX_POKEMON_ID = 151;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +175,9 @@ struct PokemonBaseStats
     (
         std::vector<EvolutionInfo>& evolutions,
         std::vector<MoveLearnInfo>& learnset,
+        const std::string& pokedexText,
+        const std::string& pokedexPokemonType,
+        const std::string& pokedexBodyStats,
         const StringId speciesName,
         const StringId firstType,
         const StringId secondType,
@@ -188,6 +193,9 @@ struct PokemonBaseStats
     )
         : mEvolutions(evolutions)
         , mLearnset(learnset)
+        , mPokedexText(pokedexText)
+        , mPokedexPokemonType(pokedexPokemonType)
+        , mPokedexBodyStats(pokedexBodyStats)
         , mSpeciesName(speciesName)
         , mFirstType(firstType)
         , mSecondType(secondType)
@@ -205,6 +213,9 @@ struct PokemonBaseStats
 
     const std::vector<EvolutionInfo> mEvolutions;
     const std::vector<MoveLearnInfo> mLearnset;
+    std::string mPokedexText;
+    std::string mPokedexPokemonType;
+    std::string mPokedexBodyStats;
     const StringId mSpeciesName;
     const StringId mFirstType;
     const StringId mSecondType;

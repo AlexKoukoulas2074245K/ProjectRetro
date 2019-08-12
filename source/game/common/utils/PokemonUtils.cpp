@@ -573,6 +573,18 @@ const PokemonBaseStats& GetPokemonBaseStats
     return pokemonBaseStatsComponent.mPokemonBaseStats.at(pokemonName);
 }
 
+PokedexEntryType GetPokedexEntryTypeForPokemon
+(
+    const StringId pokemonName,
+    const ecs::World& world
+)
+{
+    const auto& baseStats             = GetPokemonBaseStats(pokemonName, world);
+    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
+
+    return pokedexStateComponent.mPokedexEntries[baseStats.mId];
+}
+
 bool DoesPokemonHaveType
 (
     const StringId type,
@@ -683,7 +695,10 @@ void LoadAndPopulatePokemonBaseStats
         pokemonBaseStats.insert(std::make_pair(pokemonName, PokemonBaseStats
         (
             evolutions,
-            learnset,           
+            learnset,   
+            statsObject["text"].get<std::string>(),
+            statsObject["dextype"].get<std::string>(),
+            statsObject["body"].get<std::string>(),
             pokemonName,
             firstType, 
             secondType, 
@@ -698,6 +713,18 @@ void LoadAndPopulatePokemonBaseStats
             overworldSprite
         )));
     }
+}
+
+void ChangePokedexEntryForPokemon
+(
+    const StringId pokemonName,
+    const PokedexEntryType pokedexEntryType,
+    const ecs::World& world
+)
+{
+    const auto& baseStats       = GetPokemonBaseStats(pokemonName, world);
+    auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
+    pokedexStateComponent.mPokedexEntries[baseStats.mId - 1] = pokedexEntryType;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

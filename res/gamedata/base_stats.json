@@ -90,7 +90,7 @@
           "type": [ { "name": "FIRE"} ],
           "evolution": [ { "name": "CHARIZARD", "method": "36" } ],
           "moveset": null,
-	      "text": "Tough fights could excite this Pokémon. When excited, it may blow out bluish-white flames."
+	      "text": "Tough fights could excite this Pokémon. When excited, it may blow out bluish-white flames.",
 		  "dextype": "FLAME",
 		  "body": "3 07 42" 
      },
@@ -490,7 +490,7 @@
           "type": [ { "name": "ELECTRIC"} ],
           "evolution": null,
           "moveset": null,
-	      "text": "When electricity builds up inside its body, it becomes feisty. It also glows in the# dark."
+	      "text": "When electricity builds up inside its body, it becomes feisty. It also glows in the dark.",
 		  "dextype": "MOUSE",
 		  "body": "2 07 66" 
      },
@@ -2507,7 +2507,7 @@
           "type": [ { "name": "NORMAL"} ],
           "evolution": null,
           "moveset": null,
-	      "text": "When it spots an enemy, its body transforms into an almost perfect copy of its opponent."		  
+	      "text": "When it spots an enemy, its body transforms into an almost perfect copy of its opponent.",	  
 	      "dextype": "TRANSFORM",
 		  "body": "1 00 9" 
      },

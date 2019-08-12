@@ -18,6 +18,7 @@
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerStateSingletonComponent.h"
 #include "common/components/PlayerTagComponent.h"
+#include "common/components/PokedexStateSingletonComponent.h"
 #include "common/components/PokemonBaseStatsSingletonComponent.h"
 #include "common/components/PokemonStatsDisplayViewStateSingletonComponent.h"
 #include "common/components/PokemonSelectionViewStateSingletonComponent.h"
@@ -182,6 +183,11 @@ void App::DummyInitialization()
     LoadAndPopulateItemsStats(*itemStatsComponent);
     mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
 
+    auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();
+    pokedexStateComponent->mPokedexUnlocked = true;
+    pokedexStateComponent->mPokedexViewTimer = std::make_unique<Timer>(POKEDEX_VIEW_TIMER_DURATION);
+    mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
+
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
@@ -191,10 +197,17 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerName = StringId("TEST");
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("ONIX"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 6, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");
+    playerStateComponent->mPlayerPokemonRoster.front()->mName = StringId("AAAAAAAAAA");    
+    
+    for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
+    {
+        ChangePokedexEntryForPokemon(pokemonEntry->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);
+    }
+
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
     InitializePlayerBag(mWorld);
+
     AddItemToBag(StringId("POTION"), mWorld, 2);
     AddItemToBag(StringId("POK^_BALL"), mWorld, 2);
     AddItemToBag(StringId("GREAT_BALL"), mWorld, 2);    

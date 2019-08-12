@@ -35,6 +35,7 @@ static const glm::vec3 OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX = gl
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION                 = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION      = glm::vec3(-0.31f, -0.1801f, -0.4f);
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = glm::vec3(0.0f, 0.0f, -0.8f);
+static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.014f, 0.0f, -0.8f);
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
@@ -66,6 +67,9 @@ static const int POKEMON_MINI_STATS_DISPLAY_TEXTBOX_ROWS = 10;
 
 static const int POKEMON_STATS_DISPLAY_TEXTBOX_COLS = 20;
 static const int POKEMON_STATS_DISPLAY_TEXTBOX_ROWS = 18;
+
+static const int POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_COLS = 20;
+static const int POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_ROWS = 18;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -676,6 +680,23 @@ ecs::EntityId CreatePokemonStatsDisplayTextbox
         POKEMON_STATS_DISPLAY_TEXTBOX_POSITION.z,
         world
     );    
+}
+
+ecs::EntityId CreatePokedexPokemonEntryDisplayTextbox
+(
+    ecs::World& world
+)
+{
+    return CreateTextboxWithDimensions
+    (
+        TextboxType::BARE_TEXTBOX,
+        POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_COLS,
+        POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_ROWS,
+        POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION.x,
+        POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION.y,
+        POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION.z,
+        world
+    );
 }
 
 void DestroyActiveTextbox

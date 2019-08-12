@@ -11,10 +11,13 @@
 
 #include "BallUsageResultTextEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
+#include "PokedexPokemonEntryDisplayFlowState.h"
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,15 +38,39 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mWasPokemonCaught)
         {
-            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
-            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
-            
-            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
-            encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
-            encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
-            
-            CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
+            ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster.front()->mName, PokedexEntryType::OWNED, mWorld);
+
+            if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
+            {
+                // Destroy all encounter sprites
+                DestroyEncounterSprites(mWorld);
+
+                // Destroy main chatbox
+                DestroyActiveTextbox(mWorld);
+
+                // Destroy Last Frame of Pokemon Caught animation
+                if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+                {
+                    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+                    encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+                }
+
+                auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+                pokedexStateComponent.mSelectedPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName;
+                CompleteAndTransitionTo<PokedexPokemonEntryDisplayFlowState>();
+            }
+            else
+            {
+                DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+
+                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+                encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
+                encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
+
+                CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
+            }            
         }
         else
         {
@@ -73,10 +100,16 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
 
     if (encounterStateComponent.mWasPokemonCaught)
     {
-        catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#@";
-        
-        // TODO: if already caught pokemon skip this line
-        catchResultText += "New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
+        catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#";
+                
+        if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
+        {
+            catchResultText += "@New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
+        }
+        else
+        {
+            catchResultText += "+END";
+        }        
     }
     else if (encounterStateComponent.mBallThrownShakeCount == -1)
     {
