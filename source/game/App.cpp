@@ -184,8 +184,7 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
 
     auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();
-    pokedexStateComponent->mPokedexUnlocked = true;
-    pokedexStateComponent->mPokedexViewTimer = std::make_unique<Timer>(POKEDEX_VIEW_TIMER_DURATION);
+    pokedexStateComponent->mPokedexUnlocked = true;    
     mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
 
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());

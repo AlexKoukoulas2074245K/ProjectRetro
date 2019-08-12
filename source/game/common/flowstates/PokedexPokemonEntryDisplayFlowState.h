@@ -34,7 +34,7 @@ private:
     void DisplayLockedStatsText() const;
     void DisplayPokemonBodyStatsText() const;
     void DisplayPokemonSprite() const;
-    void DisplayPokemonPokedexDescriptionForPage(const int pageNumber) const;
+    void DisplayPokemonPokedexDescriptionForPage(const int requestedPageNumber) const;
     
     static const glm::vec3 POKEMON_SPRITE_POSITION;
     static const glm::vec3 POKEMON_SPRITE_SCALE;
