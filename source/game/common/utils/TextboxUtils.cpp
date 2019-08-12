@@ -35,7 +35,7 @@ static const glm::vec3 OVERWORLD_MAIN_MENU_TEXTBOX_POSITION_WITHOUT_POKEDEX = gl
 static const glm::vec3 ENCOUNTER_MAIN_MENU_TEXTBOX_POSITION                 = glm::vec3(0.275f, -0.6701f, -0.2f);
 static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION      = glm::vec3(-0.31f, -0.1801f, -0.4f);
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = glm::vec3(0.0f, 0.0f, -0.8f);
-static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.014f, 0.0f, -0.8f);
+static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.005f, 0.0f, -0.8f);
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
