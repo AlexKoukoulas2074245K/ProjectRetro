@@ -28,9 +28,11 @@ public:
 
 private:
     void LoadMoveAnimationFrames() const;
+    void PrepareAllGuiSpritesForWhiteFlip() const;
     void UpdateSpeciallyHandledMoveAnimation();
     void UpdateNormalFrameBasedMoveAnimation();
     void UpdateLeerAnimation();
+    void UpdateHardenAnimation();
     void UpdateTackleAnimation();
     void UpdateTailWhipAnimation();
 

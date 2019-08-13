@@ -49,6 +49,7 @@ const StringId RenderingSystem::VIEW_MARIX_UNIFORM_NAME                      = S
 const StringId RenderingSystem::PROJECTION_MARIX_UNIFORM_NAME                = StringId("proj");
 const StringId RenderingSystem::TRANSITION_ANIMATION_STEP_UNIFORM_NAME       = StringId("transition_progression_step");
 const StringId RenderingSystem::DARK_FLIP_STEP_UNIFORM_NAME                  = StringId("dark_flip_progression_step");
+const StringId RenderingSystem::WHITE_FLIP_STEP_UNIFORM_NAME                 = StringId("white_flip_progression_step");
 const StringId RenderingSystem::BLACK_AND_WHITE_MODE_UNIFORM_NAME            = StringId("black_and_white_mode");
 const StringId RenderingSystem::CURRENT_LEVEL_COLOR_UNIFORM_NAME             = StringId("current_level_color");
 const StringId RenderingSystem::PRIMARY_LIGHT_COLOR_UNIFORM_NAME             = StringId("primary_light_color");
@@ -59,7 +60,7 @@ const StringId RenderingSystem::SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME = S
 
 const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS =
 {
-    StringId("gui"), StringId("dark_flip_hud_special_case")
+    StringId("gui"), StringId("dark_flip_hud_special_case"), StringId("gui_unaffected_by_white_flip")
 };
 
 const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;
@@ -395,6 +396,7 @@ void RenderingSystem::RenderEntityInternal
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME), renderableComponent.mShouldOverrideDarkAndLightColor ? 1 : 0));
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(TRANSITION_ANIMATION_STEP_UNIFORM_NAME), transitionAnimationComponent.mAnimationProgressionStep));
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(DARK_FLIP_STEP_UNIFORM_NAME), transitionAnimationComponent.mDarkFlipProgressionStep));
+    GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(WHITE_FLIP_STEP_UNIFORM_NAME), transitionAnimationComponent.mWhiteFlipProgressionStep));
     GL_CHECK(glUniform1i(currentShader->GetUniformNamesToLocations().at(BLACK_AND_WHITE_MODE_UNIFORM_NAME), transitionAnimationComponent.mBlackAndWhiteModeEnabled ? 1 : 0));
     GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(CURRENT_LEVEL_COLOR_UNIFORM_NAME), currentLevelColor.x, currentLevelColor.y, currentLevelColor.z, currentLevelColor.w));    
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(WORLD_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&world));
@@ -408,13 +410,9 @@ void RenderingSystem::RenderEntityInternal
     const auto primaryDarkColorVec4  = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
 
     GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_LIGHT_COLOR_UNIFORM_NAME), primaryLightColorVec4.x, primaryLightColorVec4.y, primaryLightColorVec4.z, primaryLightColorVec4.w));
-    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_DARK_COLOR_UNIFORM_NAME), primaryDarkColorVec4.x, primaryDarkColorVec4.y, primaryDarkColorVec4.z, primaryDarkColorVec4.w));
-
-    if (renderableComponent.mShouldOverrideDarkAndLightColor)
-    {                        
-        GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenLightColor.x, renderableComponent.mOverriddenLightColor.y, renderableComponent.mOverriddenLightColor.z, renderableComponent.mOverriddenLightColor.w));
-        GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_DARK_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenDarkColor.x, renderableComponent.mOverriddenDarkColor.y, renderableComponent.mOverriddenDarkColor.z, renderableComponent.mOverriddenDarkColor.w));
-    }        
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_DARK_COLOR_UNIFORM_NAME), primaryDarkColorVec4.x, primaryDarkColorVec4.y, primaryDarkColorVec4.z, primaryDarkColorVec4.w));                         
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenLightColor.x, renderableComponent.mOverriddenLightColor.y, renderableComponent.mOverriddenLightColor.z, renderableComponent.mOverriddenLightColor.w));
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_DARK_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenDarkColor.x, renderableComponent.mOverriddenDarkColor.y, renderableComponent.mOverriddenDarkColor.z, renderableComponent.mOverriddenDarkColor.w));
 
     renderingContextComponent.mRenderedEntities++;
     

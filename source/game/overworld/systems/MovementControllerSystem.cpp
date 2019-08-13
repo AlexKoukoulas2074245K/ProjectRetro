@@ -233,40 +233,40 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
-                    if (math::RandomSign() == 1)
-                    {
-                        encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
-                        encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
-                        encounterStateComponent.mOpponentTrainerName = StringId("Gary");
-                        encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
-                        encounterStateComponent.mOpponentPokemonRoster.push_back
+                    encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+                    encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
+                    encounterStateComponent.mOpponentTrainerName = StringId("Gary");
+                    encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
                         (
-                            CreatePokemon
-                            (
-                                StringId("PIKACHU"),
-                                true,
-                                encounterInfo.mPokemonLevel,
-                                mWorld
-                            )
-                        );
-                    }
-                    else
-                    {
-                        encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
-                        encounterStateComponent.mOpponentTrainerSpeciesName = StringId();
-                        encounterStateComponent.mOpponentTrainerName = StringId();
-                        encounterStateComponent.mOpponentTrainerDefeatedText = StringId();
-                        encounterStateComponent.mOpponentPokemonRoster.push_back
+                            StringId("EEVEE"),
+                            true,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
                         (
-                            CreatePokemon
-                            (
-                                encounterInfo.mPokemonName,
-                                false,
-                                encounterInfo.mPokemonLevel,
-                                mWorld
-                            )
-                        );
-                    }
+                            StringId("MANKEY"),
+                            true,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
+                    encounterStateComponent.mOpponentPokemonRoster.push_back
+                    (
+                        CreatePokemon
+                        (
+                            StringId("ONIX"),
+                            true,
+                            encounterInfo.mPokemonLevel,
+                            mWorld
+                        )
+                    );
 
                     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;

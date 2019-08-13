@@ -7,9 +7,10 @@ in vec2 uv_frag;
 uniform sampler2D tex;
 
 // Texture flipping booleans
-uniform vec4 global_white_color = vec4(0.9725, 0.9725, 0.9725, 1.0);
-uniform vec4 global_blue_color  = vec4(0.3450, 0.7215, 0.9725, 1.0);
-uniform vec4 global_black_color = vec4(0.0941, 0.0941, 0.0941, 1.0);
+uniform vec4 global_white_color  = vec4(0.9725, 0.9725, 0.9725, 1.0);
+uniform vec4 global_blue_color   = vec4(0.3450, 0.7215, 0.9725, 1.0);
+uniform vec4 global_black_color  = vec4(0.0941, 0.0941, 0.0941, 1.0);
+uniform vec4 global_yellow_color = vec4(0.9725, 0.9803, 0.0000, 1.0);
 
 uniform vec4 current_level_color;
 uniform vec4 primary_light_color;
@@ -20,8 +21,11 @@ uniform vec4 overridden_dark_color;
 uniform int should_override_primary_colors;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
-uniform int white_flip_progression_step;
 uniform int dark_flip_progression_step;
+uniform int white_flip_progression_step;
+
+uniform float global_x_offset;
+uniform float global_y_offset;
 
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;
@@ -44,11 +48,11 @@ vec4 getBlackAndWhiteModeColor()
 
 vec4 getTransitionAnimationColor()
 {
-	if (transition_progression_step < -3)
-	{
-		return global_white_color;
-	}
-
+    if (transition_progression_step < -3)
+    {
+        return global_white_color;
+    }
+    
 	vec4 colorPool[4]; 
 	colorPool[0] = global_white_color;
 	colorPool[1] = current_level_color;
@@ -89,6 +93,62 @@ vec4 getPaletteColor()
     return current_level_color;
 }
 
+vec4 getDarkFlipStep1Color()
+{
+    if (distance(global_black_color, frag_color) < 0.1)
+    {
+        return global_yellow_color;
+    }
+    else if (distance(global_white_color, frag_color) < 0.1)
+    {
+        return global_black_color;
+    }
+    
+    return frag_color;
+}
+
+vec4 getDarkFlipStep2Color()
+{
+    if (distance(global_black_color, frag_color) < 0.1)
+    {
+        return global_white_color;
+    }
+    else if (distance(global_white_color, frag_color) < 0.1)
+    {
+        return global_black_color;
+    }
+    
+    return frag_color;
+}
+
+vec4 getDarkFlipStep3Color()
+{
+    return global_white_color;
+}
+
+vec4 getWhiteFlipStep1Color()
+{
+	if (distance(global_black_color, frag_color) < 0.1)
+	{
+		return overridden_light_color;
+	}
+	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return global_white_color;
+	}
+	else if (distance(primary_light_color, frag_color) < 0.1)
+	{
+		return overridden_dark_color;
+	}
+	
+	return global_white_color;
+}
+
+vec4 getWhiteFlipStep2Color()
+{
+	return global_white_color;
+}
+
 void main()
 {
     float finalUvX = uv_frag.x;
@@ -105,13 +165,36 @@ void main()
         {
             frag_color = getBlackAndWhiteModeColor();
         }
-        if (transition_progression_step != 0)
+        else if (transition_progression_step != 0)
         {
             frag_color = getTransitionAnimationColor();
         }
-		else
-        {
-            frag_color = getPaletteColor();
-        }
+		else if (dark_flip_progression_step != 0)
+		{
+			if (dark_flip_progression_step == 1)
+			{
+				frag_color = getDarkFlipStep1Color();
+			}
+			else if (dark_flip_progression_step == 2)
+			{
+				frag_color = getDarkFlipStep2Color();
+			}
+			else if (dark_flip_progression_step == 3)
+			{
+				frag_color = getDarkFlipStep3Color();
+			}
+		}
+
+		if (should_override_primary_colors != 0)
+		{			
+			if (distance(primary_light_color, frag_color) < 0.1)
+			{
+				frag_color = overridden_light_color;
+			}
+			else if (distance(primary_dark_color, frag_color) < 0.1)
+			{
+				frag_color = overridden_dark_color;
+			}
+		}
 	}	
 }

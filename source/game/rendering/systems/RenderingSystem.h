@@ -73,6 +73,7 @@ private:
     static const StringId PROJECTION_MARIX_UNIFORM_NAME;
     static const StringId TRANSITION_ANIMATION_STEP_UNIFORM_NAME;
     static const StringId DARK_FLIP_STEP_UNIFORM_NAME;
+    static const StringId WHITE_FLIP_STEP_UNIFORM_NAME;
     static const StringId BLACK_AND_WHITE_MODE_UNIFORM_NAME;
     static const StringId CURRENT_LEVEL_COLOR_UNIFORM_NAME;
     static const StringId PRIMARY_LIGHT_COLOR_UNIFORM_NAME;

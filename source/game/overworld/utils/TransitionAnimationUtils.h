@@ -39,7 +39,8 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
         if 
         (
             transitionStateAnimationComponent.mDarkFlipProgressionStep == 1 ||
-            transitionStateAnimationComponent.mDarkFlipProgressionStep == 2
+            transitionStateAnimationComponent.mDarkFlipProgressionStep == 2 ||
+            transitionStateAnimationComponent.mWhiteFlipProgressionStep == 2
         )
         {
             return colors::GLOBAL_BLACK_COLOR;

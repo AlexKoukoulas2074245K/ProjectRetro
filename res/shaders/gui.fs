@@ -22,6 +22,7 @@ uniform int should_override_primary_colors;
 uniform int transition_progression_step;
 uniform int black_and_white_mode;
 uniform int dark_flip_progression_step;
+uniform int white_flip_progression_step;
 
 uniform float global_x_offset;
 uniform float global_y_offset;
@@ -125,6 +126,43 @@ vec4 getDarkFlipStep3Color()
     return global_white_color;
 }
 
+vec4 getWhiteFlipStep1Color()
+{
+	if (distance(global_black_color, frag_color) < 0.1)
+	{
+		return overridden_light_color;
+	}
+	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return global_white_color;
+	}
+	else if (distance(primary_light_color, frag_color) < 0.1)
+	{
+		return overridden_dark_color;
+	}
+	
+	return global_white_color;
+}
+
+vec4 getWhiteFlipStep2Color()
+{
+	if (distance(global_black_color, frag_color) < 0.1)
+    {
+        return global_white_color;
+    }
+    else if (distance(global_white_color, frag_color) < 0.1)
+    {
+        return global_black_color;
+    }
+    
+    return frag_color;
+}
+
+vec4 getWhiteFlipStep3Color()
+{
+	return global_white_color;
+}
+
 void main()
 {
     float finalUvX = uv_frag.x;
@@ -160,7 +198,23 @@ void main()
 				frag_color = getDarkFlipStep3Color();
 			}
 		}
-		if (should_override_primary_colors != 0)
+		
+		if (white_flip_progression_step != 0)
+		{
+			if (white_flip_progression_step == 1)
+			{
+				frag_color = getWhiteFlipStep1Color();
+			}
+			else if (white_flip_progression_step == 2)
+			{
+				frag_color = getWhiteFlipStep2Color();
+			}
+			else if (white_flip_progression_step == 3)
+			{
+				frag_color = getWhiteFlipStep3Color();
+			}
+		}		
+		else if (should_override_primary_colors != 0)
 		{			
 			if (distance(primary_light_color, frag_color) < 0.1)
 			{
