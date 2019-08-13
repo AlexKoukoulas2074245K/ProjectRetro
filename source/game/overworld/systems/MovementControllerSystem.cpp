@@ -233,7 +233,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     
-                    encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD ;
                     encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
                     encounterStateComponent.mOpponentTrainerName = StringId("Gary");
                     encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");

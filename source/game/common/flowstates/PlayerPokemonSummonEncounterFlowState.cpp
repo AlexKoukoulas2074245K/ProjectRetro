@@ -183,6 +183,8 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     {
         LoadPokemonSummonBattleAnimation();
     }
+    
+    encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
 }
 
 void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)

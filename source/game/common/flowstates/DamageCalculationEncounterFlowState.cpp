@@ -76,6 +76,7 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& selectedMoveStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
 
+    encounterStateComponent.mNothingHappendFromMoveExecution = false;
     encounterStateComponent.mOutstandingFloatDamage = 0.0f;
     encounterStateComponent.mDefenderFloatHealth = static_cast<float>(defendingPokemon.mHp);
 
