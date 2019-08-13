@@ -38,13 +38,13 @@ vec4 getDarkFlipStep1Color()
 {
     if (distance(global_black_color, frag_color) < 0.1)
     {
-        return primary_dark_color;
+        return primary_light_color;
     }	
-	else if (distance(primary_light_color, frag_color) < 0.1)
-	{
-		return primary_light_color;
-	}
 	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return primary_dark_color;
+	}
+	else if (distance(primary_light_color, frag_color) < 0.1)
 	{
 		return global_black_color;
 	}
@@ -62,13 +62,13 @@ vec4 getDarkFlipStep2Color()
     {
         return global_white_color;
     }	
-	else if (distance(primary_light_color, frag_color) < 0.1)
-	{
-		return primary_dark_color;
-	}
 	else if (distance(primary_dark_color, frag_color) < 0.1)
 	{
 		return primary_light_color;
+	}
+	else if (distance(primary_light_color, frag_color) < 0.1)
+	{
+		return primary_dark_color;
 	}
     else if (distance(global_white_color, frag_color) < 0.1)
     {

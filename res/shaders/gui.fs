@@ -130,15 +130,15 @@ vec4 getWhiteFlipStep1Color()
 {
 	if (distance(global_black_color, frag_color) < 0.1)
 	{
-		return overridden_light_color;
-	}
-	else if (distance(primary_dark_color, frag_color) < 0.1)
-	{
-		return global_white_color;
+		return overridden_dark_color;
 	}
 	else if (distance(primary_light_color, frag_color) < 0.1)
 	{
-		return overridden_dark_color;
+		return global_white_color;
+	}
+	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return overridden_light_color;
 	}
 	
 	return global_white_color;
@@ -149,6 +149,14 @@ vec4 getWhiteFlipStep2Color()
 	if (distance(global_black_color, frag_color) < 0.1)
     {
         return global_white_color;
+    }
+    else if (distance(primary_dark_color, frag_color) < 0.1)
+    {
+        return primary_light_color;
+    }
+    else if (distance(primary_light_color, frag_color) < 0.1)
+    {
+        return primary_dark_color;
     }
     else if (distance(global_white_color, frag_color) < 0.1)
     {
