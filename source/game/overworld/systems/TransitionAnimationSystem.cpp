@@ -25,11 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string TransitionAnimationSystem::TRANSITION_ANIM_MODEL_FILE_NAME = "transition_anim_quad.obj";
-const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION         = 0.13f;
-const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION    = 0.035f;
-const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION    = 0.035f;
-const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                   = 3;
-const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT           = 3;
+const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION          = 0.13f;
+const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION     = 0.035f;
+const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION     = 0.03f;
+const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_END_DELAY_DURATION = 1.0f;
+const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                    = 3;
+const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT            = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +55,7 @@ void TransitionAnimationSystem::VUpdateAssociatedComponents(const float dt) cons
             case TransitionAnimationType::WARP: UpdateWarpTransitionAnimation(dt); break;
             case TransitionAnimationType::WILD_FLASH: UpdateWildFlashTransitionAnimation(dt); break;
             case TransitionAnimationType::ENCOUNTER: UpdateEncounterTransitionAnimation(dt); break;
+            case TransitionAnimationType::ENCOUNTER_INTRO_END_DELAY: UpdateEncounterIntroEndDelayAnimation(dt); break;
             case TransitionAnimationType::ENCOUNTER_END: UpdateEncounterEndTransitionAnimation(dt); break;
         }        
     }
@@ -144,13 +146,12 @@ void TransitionAnimationSystem::UpdateWildFlashTransitionAnimation(const float d
 void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float dt) const
 {
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
+
     transitionAnimationStateComponent.mAnimationTimer->Update(dt);
     if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
     {
         transitionAnimationStateComponent.mAnimationTimer->Reset();
-        if (transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity != ecs::NULL_ENTITY_ID)
+        if (transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity != ecs::NULL_ENTITY_ID && transitionAnimationStateComponent.mAnimFrameResourceIdQueue.size() > 0)
         {            
             mWorld.DestroyEntity(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity);
             transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = ecs::NULL_ENTITY_ID;
@@ -180,8 +181,32 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
         }
         else
         {
-            encounterStateComponent.mOverworldEncounterAnimationState = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
+            transitionAnimationStateComponent.mTransitionAnimationType = TransitionAnimationType::ENCOUNTER_INTRO_END_DELAY;
+            transitionAnimationStateComponent.mAnimationTimer          = std::make_unique<Timer>(ENCOUNTER_ANIMATION_END_DELAY_DURATION);
         }           
+    }
+}
+
+void TransitionAnimationSystem::UpdateEncounterIntroEndDelayAnimation(const float dt) const
+{
+    auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    transitionAnimationStateComponent.mAnimationTimer->Update(dt);
+    if (transitionAnimationStateComponent.mAnimationTimer->HasTicked())
+    {        
+        transitionAnimationStateComponent.mAnimationTimer->Reset();
+
+        if (transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity != ecs::NULL_ENTITY_ID)
+        {
+            mWorld.DestroyEntity(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity);
+            transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = ecs::NULL_ENTITY_ID;
+        }
+     
+        transitionAnimationStateComponent.mTransitionAnimationType      = TransitionAnimationType::WARP;
+        transitionAnimationStateComponent.mIsPlayingTransitionAnimation = false;
+        transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
+        encounterStateComponent.mOverworldEncounterAnimationState       = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
     }
 }
 

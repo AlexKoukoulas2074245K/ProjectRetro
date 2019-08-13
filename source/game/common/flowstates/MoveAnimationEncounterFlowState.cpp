@@ -29,7 +29,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
-const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME = "battle_animations/";
+const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
+
+const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("dark_flip_hud_special_case");
+const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                         = StringId("gui");
 
 const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z = -1.0f;
 
@@ -196,37 +199,56 @@ void MoveAnimationEncounterFlowState::UpdateLeerAnimation()
 {
     auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    //auto& activeLevelComponent     = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
     
     switch (encounterStateComponent.mSpecialMoveAnimationStep)
     {
-        case 0:
+        case 0:     
+        case 5:
+        case 10:
         {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
             transitionStateComponent.mDarkFlipProgressionStep = 1;
             
-            //auto& encounterLevelRenderableComponent         = mWorld.GetComponent<RenderableComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-            //encounterLevelRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
-            
-            const auto& opponentPokemonTextboxInfoEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
-            for (const auto& entityId: opponentPokemonTextboxInfoEntities)
-            {
-                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-                renderableComponent.mShaderNameId = StringId("dark_flip_hud");
-            }
-            
-            const auto& playerPokemonTextboxInfoEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
-            for (const auto& entityId: playerPokemonTextboxInfoEntities)
-            {
-                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-                renderableComponent.mShaderNameId = StringId("dark_flip_hud");
-            }
-            
-            auto& opponentPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-            opponentPokemonStatusDisplayRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
-            
-            auto& playerPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-            playerPokemonStatusDisplayRenderableComponent.mShaderNameId = StringId("dark_flip_hud");
-            
+            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+            // The active player, opponent and chatbox sprites during dark flip animations change their colors differently 
+            // from other HUD elements.
+            playerPokemonSpriteRenderableComponent.mShaderNameId   = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
+            opponentPokemonSpriteRenderableComponent.mShaderNameId = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
+
+        } break;
+
+        case 1:
+        case 2:
+        case 6:
+        case 7:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+            transitionStateComponent.mDarkFlipProgressionStep = 2;
+        } break;
+
+        case 3:
+        case 4:
+        case 8:
+        case 9:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+            transitionStateComponent.mDarkFlipProgressionStep = 3;
+        } break;
+
+        case 11:
+        {
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+            transitionStateComponent.mDarkFlipProgressionStep = 0;
+
+            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+            playerPokemonSpriteRenderableComponent.mShaderNameId   = DEFAULT_GUI_SHADER_NAME;
+            opponentPokemonSpriteRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+            encounterStateComponent.mSpecialMoveAnimationStep      = 0;
         } break;
     }
 }

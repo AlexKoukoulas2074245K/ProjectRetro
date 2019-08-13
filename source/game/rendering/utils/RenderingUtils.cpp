@@ -58,11 +58,8 @@ void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
     const auto& colorSet  = otherTextureResource.GetColorSet();
     const auto colorCount = static_cast<int>(colorSet.size());
 
-    const auto primaryLightColor = colorSet[math::Max(0, colorCount - 2)];
-    const auto primaryDarkColor  = colorSet[math::Max(0, colorCount - 3)];
-
-    const auto primaryLightColorVec4 = Uint32ColorToVec4(primaryLightColor);
-    const auto primaryDarkColorVec4 = Uint32ColorToVec4(primaryDarkColor);
+    const auto primaryLightColorVec4 = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+    const auto primaryDarkColorVec4  = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
 
     overridenRenderableComponent.mShouldOverrideDarkAndLightColor = true;
     overridenRenderableComponent.mOverriddenLightColor            = primaryLightColorVec4;

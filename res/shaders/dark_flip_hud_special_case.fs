@@ -37,14 +37,49 @@ vec4 getDarkFlipStep1Color()
 {
     if (distance(global_black_color, frag_color) < 0.1)
     {
-        return global_yellow_color;
-    }
+        return primary_dark_color;
+    }	
+	else if (distance(primary_light_color, frag_color) < 0.1)
+	{
+		return primary_light_color;
+	}
+	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return global_black_color;
+	}
     else if (distance(global_white_color, frag_color) < 0.1)
     {
         return global_black_color;
     }
     
     return frag_color;
+}
+
+vec4 getDarkFlipStep2Color()
+{
+	if (distance(global_black_color, frag_color) < 0.1)
+    {
+        return global_white_color;
+    }	
+	else if (distance(primary_light_color, frag_color) < 0.1)
+	{
+		return primary_dark_color;
+	}
+	else if (distance(primary_dark_color, frag_color) < 0.1)
+	{
+		return primary_light_color;
+	}
+    else if (distance(global_white_color, frag_color) < 0.1)
+    {
+        return global_black_color;
+    }
+    
+    return frag_color;
+}
+
+vec4 getDarkFlipStep3Color()
+{
+	return global_white_color;
 }
 
 void main()
@@ -63,5 +98,13 @@ void main()
         {
             frag_color = getDarkFlipStep1Color();
         }
+		else if (dark_flip_progression_step == 2)
+		{
+			frag_color = getDarkFlipStep2Color();
+		}
+		else if (dark_flip_progression_step == 3)
+		{
+			frag_color = getDarkFlipStep3Color();
+		}
 	}	
 }

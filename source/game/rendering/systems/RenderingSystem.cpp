@@ -57,7 +57,10 @@ const StringId RenderingSystem::OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME          = S
 const StringId RenderingSystem::OVERRIDDEN_DARK_COLOR_UNIFORM_NAME           = StringId("overridden_dark_color");
 const StringId RenderingSystem::SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME = StringId("should_override_primary_colors");
 
-const StringId RenderingSystem::GUI_SHADER_NAME = StringId("gui");
+const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS =
+{
+    StringId("gui"), StringId("dark_flip_hud_special_case")
+};
 
 const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;
 
@@ -103,7 +106,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
     
     // Set background color
     const auto& currentLevel    = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
-    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, currentLevel.mLevelName, transitionAnimationComponent.mAnimationProgressionStep);
+    const auto& backgroundColor = GetBackgroundColorBasedOnTransitionStep(currentLevel.mLevelColor, currentLevel.mLevelName, transitionAnimationComponent);
     GL_CHECK(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
     
     // Clear buffers
@@ -189,7 +192,7 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
             }
                 
             // Separate GUI entities to render them last
-            if (renderableComponent.mShaderNameId == GUI_SHADER_NAME)
+            if (GUI_SHADERS.count(renderableComponent.mShaderNameId) != 0)
             {
                 guiEntities.push_back(entityId);
                 continue;
@@ -398,19 +401,17 @@ void RenderingSystem::RenderEntityInternal
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(VIEW_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mViewMatrix));
     GL_CHECK(glUniformMatrix4fv(currentShader->GetUniformNamesToLocations().at(PROJECTION_MARIX_UNIFORM_NAME), 1, GL_FALSE, (GLfloat*)&cameraComponent.mProjectionMatrix));
 
+    const auto& colorSet = currentTexture->GetColorSet();
+    const auto colorCount = static_cast<int>(colorSet.size());
+    
+    const auto primaryLightColorVec4 = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+    const auto primaryDarkColorVec4  = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_LIGHT_COLOR_UNIFORM_NAME), primaryLightColorVec4.x, primaryLightColorVec4.y, primaryLightColorVec4.z, primaryLightColorVec4.w));
+    GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_DARK_COLOR_UNIFORM_NAME), primaryDarkColorVec4.x, primaryDarkColorVec4.y, primaryDarkColorVec4.z, primaryDarkColorVec4.w));
+
     if (renderableComponent.mShouldOverrideDarkAndLightColor)
-    {
-        const auto& colorSet = currentTexture->GetColorSet();
-        const auto colorCount = static_cast<int>(colorSet.size());
-
-        const auto primaryLightColor = colorSet[math::Max(0, colorCount - 2)];
-        const auto primaryDarkColor  = colorSet[math::Max(0, colorCount - 3)];
-
-        const auto primaryLightColorVec4 = Uint32ColorToVec4(primaryLightColor);
-        const auto primaryDarkColorVec4 = Uint32ColorToVec4(primaryDarkColor);       
-
-        GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_LIGHT_COLOR_UNIFORM_NAME), primaryLightColorVec4.x, primaryLightColorVec4.y, primaryLightColorVec4.z, primaryLightColorVec4.w));
-        GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(PRIMARY_DARK_COLOR_UNIFORM_NAME), primaryDarkColorVec4.x, primaryDarkColorVec4.y, primaryDarkColorVec4.z, primaryDarkColorVec4.w));
+    {                        
         GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenLightColor.x, renderableComponent.mOverriddenLightColor.y, renderableComponent.mOverriddenLightColor.z, renderableComponent.mOverriddenLightColor.w));
         GL_CHECK(glUniform4f(currentShader->GetUniformNamesToLocations().at(OVERRIDDEN_DARK_COLOR_UNIFORM_NAME), renderableComponent.mOverriddenDarkColor.x, renderableComponent.mOverriddenDarkColor.y, renderableComponent.mOverriddenDarkColor.z, renderableComponent.mOverriddenDarkColor.w));
     }        

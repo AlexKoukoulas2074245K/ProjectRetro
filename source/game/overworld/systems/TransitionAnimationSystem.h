@@ -36,12 +36,14 @@ private:
     static const float WARP_TRANSITION_STEP_DURATION;
     static const float WILD_FLASH_ANIMATION_STEP_DURATION;
     static const float ENCOUNTER_ANIMATION_FRAME_DURATION;
+    static const float ENCOUNTER_ANIMATION_END_DELAY_DURATION;
     static const int TRANSITION_STEP_COUNT;
     static const int WILD_FLASH_CYCLE_REPEAT_COUNT;
 
     void UpdateWarpTransitionAnimation(const float dt) const;
     void UpdateWildFlashTransitionAnimation(const float dt) const;
     void UpdateEncounterTransitionAnimation(const float dt) const;
+    void UpdateEncounterIntroEndDelayAnimation(const float dt) const;
     void UpdateEncounterEndTransitionAnimation(const float dt) const;
     void LoadEncounterSpecificAnimation() const;
     std::string SelectAppropriateBattleTransitionAnimation() const;

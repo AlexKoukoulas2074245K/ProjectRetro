@@ -21,7 +21,7 @@
 #include "../../ECS.h"
 #include "../../rendering/utils/Colors.h"
 #include "../../common/utils/StringUtils.h"
-
+#include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,11 +31,20 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
 (    
     const glm::vec4& currentLevelColor,
     const StringId currentLevelNameId,
-    const int transitionAnimationStep
+    const TransitionAnimationStateSingletonComponent& transitionStateAnimationComponent
 )
 {
     if (currentLevelNameId.GetString() == "battle")
     {
+        if 
+        (
+            transitionStateAnimationComponent.mDarkFlipProgressionStep == 1 ||
+            transitionStateAnimationComponent.mDarkFlipProgressionStep == 2
+        )
+        {
+            return colors::GLOBAL_BLACK_COLOR;
+        }
+
         return colors::GLOBAL_WHITE_COLOR;
     }
     
@@ -44,7 +53,7 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
         return colors::GLOBAL_BLACK_COLOR;
     }
 
-    switch (transitionAnimationStep)
+    switch (transitionStateAnimationComponent.mAnimationProgressionStep)
     {
         case -4:
         case -3:

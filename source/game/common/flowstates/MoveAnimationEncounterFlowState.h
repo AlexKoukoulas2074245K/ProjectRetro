@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,9 @@ private:
 
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
+
+    static const StringId DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+    static const StringId DEFAULT_GUI_SHADER_NAME;
 
     static const float BATTLE_MOVE_ANIMATION_Z;
 };

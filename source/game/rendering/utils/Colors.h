@@ -24,16 +24,17 @@
 
 namespace colors
 {
-    const glm::vec4 GLOBAL_WHITE_COLOR = glm::vec4(0.9725f, 0.9725f, 0.9725f, 1.0f);
-    const glm::vec4 GLOBAL_BLACK_COLOR = glm::vec4(0.0941f, 0.0941f, 0.0941f, 1.0f);
-    const glm::vec4 GLOBAL_BLUE_COLOR  = glm::vec4(0.3450f, 0.7215f, 0.9725f, 1.0f);
-    const glm::vec4 PALLET_COLOR       = glm::vec4(0.7215f, 0.5333f, 0.9725f, 1.0f);
-    const glm::vec4 VIRIDIAN_COLOR     = glm::vec4(0.5764f, 0.9725f, 0.1215f, 1.0f);
-    const glm::vec4 PEWTER_COLOR       = glm::vec4(0.5647f, 0.5647f, 0.4705f, 1.0f);
-    const glm::vec4 CAVE_COLOR         = glm::vec4(0.7215f, 0.2509f, 0.0000f, 1.0f);
-    const glm::vec4 CERULEAN_COLOR     = glm::vec4(0.1568f, 0.2509f, 0.9725f, 1.0f);
-    const glm::vec4 VERMILION_COLOR    = glm::vec4(0.9725f, 0.5960f, 0.0000f, 1.0f);
-    const glm::vec4 LAVENDER_COLOR     = glm::vec4(0.7843f, 0.1254f, 0.9725f, 1.0f);
+    const glm::vec4 GLOBAL_WHITE_COLOR  = glm::vec4(0.9725f, 0.9725f, 0.9725f, 1.0f);
+    const glm::vec4 GLOBAL_BLACK_COLOR  = glm::vec4(0.0941f, 0.0941f, 0.0941f, 1.0f);
+    const glm::vec4 GLOBAL_BLUE_COLOR   = glm::vec4(0.3450f, 0.7215f, 0.9725f, 1.0f);
+    const glm::vec4 GLOBAL_YELLOW_COLOR = glm::vec4(0.9725f, 0.9803f, 0.0000f, 1.0f);
+    const glm::vec4 PALLET_COLOR        = glm::vec4(0.7215f, 0.5333f, 0.9725f, 1.0f);
+    const glm::vec4 VIRIDIAN_COLOR      = glm::vec4(0.5764f, 0.9725f, 0.1215f, 1.0f);
+    const glm::vec4 PEWTER_COLOR        = glm::vec4(0.5647f, 0.5647f, 0.4705f, 1.0f);
+    const glm::vec4 CAVE_COLOR          = glm::vec4(0.7215f, 0.2509f, 0.0000f, 1.0f);
+    const glm::vec4 CERULEAN_COLOR      = glm::vec4(0.1568f, 0.2509f, 0.9725f, 1.0f);
+    const glm::vec4 VERMILION_COLOR     = glm::vec4(0.9725f, 0.5960f, 0.0000f, 1.0f);
+    const glm::vec4 LAVENDER_COLOR      = glm::vec4(0.7843f, 0.1254f, 0.9725f, 1.0f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
