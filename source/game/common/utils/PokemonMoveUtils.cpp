@@ -280,10 +280,12 @@ bool DoesMoveHaveSpeciallyHandledAnimation
     const StringId moveName
 )
 {
-    return moveName == StringId("TACKLE") ||
-           moveName == StringId("TAIL_WHIP") ||
-           moveName == StringId("LEER") ||
-           moveName == StringId("HARDEN");
+    return moveName == StringId("LEER")
+        || moveName == StringId("HARDEN")
+        || moveName == StringId("QUICK_ATTACK")
+        || moveName == StringId("TACKLE")
+        || moveName == StringId("TAIL_WHIP")
+        ;
 }
 
 int CalculateDamage

@@ -31,13 +31,19 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const glm::vec3 MoveAnimationEncounterFlowState::PLAYER_POKEMON_SPRITE_START_POSITION   = glm::vec3(-0.39f, 0.06f, 0.1f);
+const glm::vec3 MoveAnimationEncounterFlowState::PLAYER_POKEMON_SPRITE_END_POSITION     = glm::vec3(-1.0f, 0.06f, 0.1f);
+const glm::vec3 MoveAnimationEncounterFlowState::OPPONENT_POKEMON_SPRITE_START_POSITION = glm::vec3(0.38f, 0.61f, 0.3f);
+const glm::vec3 MoveAnimationEncounterFlowState::OPPONENT_POKEMON_SPRITE_END_POSITION   = glm::vec3(0.99f, 0.61f, 0.3f);
+
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
 
 const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("dark_flip_hud_special_case");
 const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                         = StringId("gui");
 
-const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z = -1.0f;
+const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED = 2.0f;
+const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z         = -1.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -69,20 +75,19 @@ void MoveAnimationEncounterFlowState::VUpdate(const float dt)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
-    if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
+    if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
     {
-        encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
-
-        if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
+        UpdateSpeciallyHandledMoveAnimation(dt);
+    }
+    else
+    {
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+        if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
         {
-            UpdateSpeciallyHandledMoveAnimation();
-        }
-        else
-        {
+            encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();        
             UpdateNormalFrameBasedMoveAnimation();
-        }       
-    }    
+        }        
+    }       
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -188,25 +193,39 @@ void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
     }
 }
 
-void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation()
+void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation(const float dt)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
-    if (encounterStateComponent.mLastMoveSelected == StringId("TACKLE"))
+        
+    // Self-time managed special attack animations
+    if (encounterStateComponent.mLastMoveSelected == StringId("QUICK_ATTACK"))
     {
-        UpdateTackleAnimation();
-    }    
-    else if (encounterStateComponent.mLastMoveSelected == StringId("TAIL_WHIP"))
-    {
-        UpdateTailWhipAnimation();
+        UpdateQuickAttackAnimation(dt);
     }
-    else if (encounterStateComponent.mLastMoveSelected == StringId("LEER"))
+    else
     {
-        UpdateLeerAnimation();
-    }
-    else if (encounterStateComponent.mLastMoveSelected == StringId("HARDEN"))
-    {
-        UpdateHardenAnimation();
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+        if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
+        {
+            encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
+
+            if (encounterStateComponent.mLastMoveSelected == StringId("HARDEN"))
+            {
+                UpdateHardenAnimation();
+            }
+            else if (encounterStateComponent.mLastMoveSelected == StringId("LEER"))
+            {
+                UpdateLeerAnimation();
+            }
+            else if (encounterStateComponent.mLastMoveSelected == StringId("TACKLE"))
+            {
+                UpdateTackleAnimation();
+            }
+            else if (encounterStateComponent.mLastMoveSelected == StringId("TAIL_WHIP"))
+            {
+                UpdateTailWhipAnimation();
+            }
+        }
     }
 }
 
@@ -262,60 +281,6 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
     else
     {
         CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
-    }
-}
-
-void MoveAnimationEncounterFlowState::UpdateLeerAnimation()
-{
-    auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    
-    switch (encounterStateComponent.mSpecialMoveAnimationStep)
-    {
-        case 0:
-        case 3:
-        case 6:
-        {
-            encounterStateComponent.mSpecialMoveAnimationStep++;
-            transitionStateComponent.mDarkFlipProgressionStep = 1;
-            
-            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-
-            // The active player, opponent and chatbox sprites during dark flip animations change their colors differently 
-            // from other HUD elements.
-            playerPokemonSpriteRenderableComponent.mShaderNameId   = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
-            opponentPokemonSpriteRenderableComponent.mShaderNameId = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
-
-        } break;
-
-        case 1:    
-        case 4:
-        {
-            encounterStateComponent.mSpecialMoveAnimationStep++;
-            transitionStateComponent.mDarkFlipProgressionStep = 2;
-        } break;
-
-        case 2:
-        case 5:
-        {
-            encounterStateComponent.mSpecialMoveAnimationStep++;
-            transitionStateComponent.mDarkFlipProgressionStep = 3;
-        } break;
-
-        case 7:
-        {
-            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
-            transitionStateComponent.mDarkFlipProgressionStep = 0;
-
-            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
-
-            playerPokemonSpriteRenderableComponent.mShaderNameId   = DEFAULT_GUI_SHADER_NAME;
-            opponentPokemonSpriteRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
-
-            encounterStateComponent.mSpecialMoveAnimationStep      = 0;
-        } break;
     }
 }
 
@@ -379,8 +344,131 @@ void MoveAnimationEncounterFlowState::UpdateHardenAnimation()
             encounterStateComponent.mSpecialMoveAnimationStep  = 0;
             CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
         } break;
-    }
+    }    
+}
+
+void MoveAnimationEncounterFlowState::UpdateLeerAnimation()
+{
+    auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        case 3:
+        case 6:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+            transitionStateComponent.mDarkFlipProgressionStep = 1;
+            
+            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+            // The active player, opponent and chatbox sprites during dark flip animations change their colors differently 
+            // from other HUD elements.
+            playerPokemonSpriteRenderableComponent.mShaderNameId   = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
+            opponentPokemonSpriteRenderableComponent.mShaderNameId = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;            
+
+        } break;
+
+        case 1:    
+        case 4:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+            transitionStateComponent.mDarkFlipProgressionStep = 2;
+        } break;
+
+        case 2:
+        case 5:
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+            transitionStateComponent.mDarkFlipProgressionStep = 3;
+        } break;
+
+        case 7:
+        {
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+            transitionStateComponent.mDarkFlipProgressionStep = 0;
+
+            auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+            auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+            playerPokemonSpriteRenderableComponent.mShaderNameId   = DEFAULT_GUI_SHADER_NAME;
+            opponentPokemonSpriteRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+            encounterStateComponent.mSpecialMoveAnimationStep      = 0;
+        } break;
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateQuickAttackAnimation(const float dt)
+{
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto attackingPokemonSpriteEntityId = encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId;
+    auto& attackerTransformComponent    = mWorld.GetComponent<TransformComponent>(attackingPokemonSpriteEntityId);
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        {
+            attackerTransformComponent.mPosition.x += 
+                encounterStateComponent.mIsOpponentsTurn ? 
+                SPRITE_MOVEMENT_ANIMATION_SPEED * dt :
+                -SPRITE_MOVEMENT_ANIMATION_SPEED * dt;
+
+            if 
+            (
+                encounterStateComponent.mIsOpponentsTurn && 
+                attackerTransformComponent.mPosition.x > OPPONENT_POKEMON_SPRITE_END_POSITION.x
+            )
+            {
+                attackerTransformComponent.mPosition.x = OPPONENT_POKEMON_SPRITE_END_POSITION.x;
+                encounterStateComponent.mSpecialMoveAnimationStep++;
+            }
+            else if 
+            (
+                encounterStateComponent.mIsOpponentsTurn == false &&
+                attackerTransformComponent.mPosition.x < PLAYER_POKEMON_SPRITE_END_POSITION.x
+            )
+            {
+                attackerTransformComponent.mPosition.x = PLAYER_POKEMON_SPRITE_END_POSITION.x;
+                encounterStateComponent.mSpecialMoveAnimationStep++;
+            }
+        } break;
+
+        case 1:
+        {
+            encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
+            if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
+            {
+                encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
+
+                UpdateNormalFrameBasedMoveAnimation();
+
+                if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() == 0)
+                {
+                    encounterStateComponent.mSpecialMoveAnimationStep++;
+                }
+            }
+            
+        } break;
+
+        case 2:
+        {
+            if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+            {
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+                encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+            }
+
+            attackerTransformComponent.mPosition.x = 
+                encounterStateComponent.mIsOpponentsTurn ? 
+                OPPONENT_POKEMON_SPRITE_START_POSITION.x : 
+                PLAYER_POKEMON_SPRITE_START_POSITION.x;
+
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+        } break;
+    }
 }
 
 void MoveAnimationEncounterFlowState::UpdateTackleAnimation()

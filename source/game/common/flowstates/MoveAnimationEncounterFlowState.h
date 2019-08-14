@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../utils/MathUtils.h"
 #include "../utils/StringUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -29,12 +30,18 @@ public:
 private:
     void LoadMoveAnimationFrames() const;
     void PrepareAllGuiSpritesForWhiteFlip() const;
-    void UpdateSpeciallyHandledMoveAnimation();
+    void UpdateSpeciallyHandledMoveAnimation(const float dt);
     void UpdateNormalFrameBasedMoveAnimation();
-    void UpdateLeerAnimation();
     void UpdateHardenAnimation();
+    void UpdateLeerAnimation();    
+    void UpdateQuickAttackAnimation(const float dt);
     void UpdateTackleAnimation();
     void UpdateTailWhipAnimation();
+
+    static const glm::vec3 PLAYER_POKEMON_SPRITE_START_POSITION;
+    static const glm::vec3 PLAYER_POKEMON_SPRITE_END_POSITION;
+    static const glm::vec3 OPPONENT_POKEMON_SPRITE_START_POSITION;
+    static const glm::vec3 OPPONENT_POKEMON_SPRITE_END_POSITION;
 
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
@@ -42,6 +49,7 @@ private:
     static const StringId DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
     static const StringId DEFAULT_GUI_SHADER_NAME;
 
+    static const float SPRITE_MOVEMENT_ANIMATION_SPEED;
     static const float BATTLE_MOVE_ANIMATION_Z;
 };
 
