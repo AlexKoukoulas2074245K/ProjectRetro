@@ -133,6 +133,7 @@ public:
     bool mAttackingPokemonIsFullyParalyzed                               = false;
     bool mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
     bool mWasPokemonCaught                                               = false;
+    bool mHasPokemonEvolvedInBattle                                      = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

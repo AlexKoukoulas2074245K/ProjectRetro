@@ -175,7 +175,11 @@ std::unique_ptr<Pokemon> CreatePokemon
         auto nextInsertedMoveIndex = 0U;
         for (const auto& moveLearnInfo : baseSpeciesStats.mLearnset)
         {
-            if (moveLearnInfo.mLevelLearned > pokemonLevel)
+            if 
+            (
+                moveLearnInfo.mLevelLearned > pokemonLevel || 
+                DoesMovesetHaveMove(moveLearnInfo.mMoveName, pokemonInstance->mMoveSet)
+            )
             {
                 continue;
             }

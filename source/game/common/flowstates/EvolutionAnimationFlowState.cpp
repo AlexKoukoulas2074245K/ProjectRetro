@@ -52,12 +52,27 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
     {
         case EvolutionAnimationState::NOT_STARTED: 
         {
+            auto& encounterStateComponent        = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
             auto& playerStateComponent           = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
             const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
             auto& pokemonReadyToEvolve           = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
-            const auto pokemonReadyToEvolveHp    = pokemonReadyToEvolve.mHp;
+            
+            const auto pokemonReadyToEvolveHp          = pokemonReadyToEvolve.mHp;
+            const auto pokemonReadyToEvolveName        = pokemonReadyToEvolve.mName;
+            const auto pokemonReadyToEvolveSpeciesName = pokemonReadyToEvolve.mBaseSpeciesStats.mSpeciesName;
+
             playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex] = std::move(pokemonReadyToEvolve.mEvolution);            
             playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mHp = pokemonReadyToEvolveHp;
+            
+            // i.e. if it has a nickname
+            if (pokemonReadyToEvolveName != pokemonReadyToEvolveSpeciesName)
+            {
+                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = pokemonReadyToEvolveName;
+            }
+            else
+            {
+                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mBaseSpeciesStats.mSpeciesName;
+            }
 
             DestroyActiveTextbox(mWorld);
             mWorld.DestroyEntity(evolutionAnimationStateComponent.mOldPokemonSpriteEntityId);
@@ -66,6 +81,11 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
             evolutionAnimationStateComponent.mOldPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
             evolutionAnimationStateComponent.mNewPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
             evolutionAnimationStateComponent.mNeedToCheckEvolutionNewMoves = true;
+            
+            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {
+                encounterStateComponent.mHasPokemonEvolvedInBattle = true;
+            }
 
             playerStateComponent.mLeveledUpPokemonRosterIndex = pokemonReadyToEvolveIndex;
             CompleteAndTransitionTo<NewMovesCheckFlowState>();

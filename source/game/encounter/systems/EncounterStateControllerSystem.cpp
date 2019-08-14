@@ -80,7 +80,7 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     const auto& levelModelComponent         = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     auto& playerStateComponent              = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
+
     const auto overworldPlayerEntityId           = GetPlayerEntityId(mWorld);
     const auto& overworldPlayerMovementComponent = mWorld.GetComponent<MovementStateComponent>(overworldPlayerEntityId);
     
@@ -98,11 +98,12 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     
     encounterStateComponent.mNumberOfEscapeAttempts              = 0;
     encounterStateComponent.mHasEscapeSucceeded                  = false;
+    encounterStateComponent.mHasPokemonEvolvedInBattle           = false;
     encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
     encounterStateComponent.mActivePlayerPokemonRosterIndex      = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
     encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
-    encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();
-    
+    encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();    
+
     // Reset all stat modifiers for all player's pokemon
     for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
     {

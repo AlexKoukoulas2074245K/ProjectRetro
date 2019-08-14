@@ -40,6 +40,12 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& trainerInfo          = GetTrainerInfo(encounterStateComponent.mOpponentTrainerSpeciesName, mWorld);
 
+    // Means that we have already been through this
+    if (encounterStateComponent.mHasPokemonEvolvedInBattle)
+    {
+        return;
+    }
+
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
         DestroyActiveTextbox(mWorld);
@@ -65,8 +71,14 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
 
 void TrainerBattleWonEncounterFlowState::VUpdate(const float dt)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    if (encounterStateComponent.mHasPokemonEvolvedInBattle)
+    {
+        encounterStateComponent.mEncounterJustFinished = true;
+        return;
+    }
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {                

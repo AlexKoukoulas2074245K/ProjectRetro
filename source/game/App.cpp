@@ -194,10 +194,10 @@ void App::DummyInitialization()
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 8, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CATERPIE"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), false, 6, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 190;
+    playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 170;
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
     {
         ChangePokedexEntryForPokemon(pokemonEntry->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);

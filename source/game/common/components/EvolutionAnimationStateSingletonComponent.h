@@ -46,7 +46,7 @@ public:
     int mEvolutionAnimationStepCounter              = 0;
     int mEvolutionAnimationRepeatCounter            = 0;
     bool mNeedToCheckEvolutionNewMoves              = false;
-
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
