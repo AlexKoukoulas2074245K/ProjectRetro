@@ -187,9 +187,10 @@ void main()
         {
             frag_color = getBlackAndWhiteModeColor();
         }
-        else if (transition_progression_step != 0)
+        else if (transition_progression_step != 0 && should_override_primary_colors != 0)
         {
             frag_color = getTransitionAnimationColor();
+			return;
         }
 		else if (dark_flip_progression_step != 0)
 		{

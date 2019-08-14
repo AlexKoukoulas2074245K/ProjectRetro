@@ -300,6 +300,12 @@ void MoveAnimationEncounterFlowState::UpdateConfusionAnimation()
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
 
+    auto& playerPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    
+    playerPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor   = true;
+    opponentPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+
     switch (encounterStateComponent.mSpecialMoveAnimationStep)
     {
         case 0:
