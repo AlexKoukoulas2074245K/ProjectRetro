@@ -241,9 +241,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("PIKACHU"),
+                            encounterInfo.mPokemonName,
                             false,
-                            17 - encounterInfo.mPokemonLevel,
+                            encounterInfo.mPokemonLevel,
                             mWorld
                         )
                     );
