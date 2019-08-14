@@ -151,7 +151,7 @@
 
     "LOW_KICK":
     {
-        "type": "NORMAL",
+        "type": "FIGHTING",
         "power": 50,
         "accuracy": 229,
         "pp": 20
