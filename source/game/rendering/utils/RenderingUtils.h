@@ -21,6 +21,7 @@
 #include "../../common/utils/MathUtils.h"
 
 #include <SDL_stdinc.h>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +50,13 @@ void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
     const ecs::EntityId entityToOverridePrimaryColors,
     const ecs::EntityId entityToExtractPrimarColorsFrom,
     const ecs::World& world
+);
+
+void GetPrimaryLightAndPrimaryDarkColorsFromSet
+(
+    const std::vector<Uint32>& colorSet,
+    glm::vec4& outPrimaryLightColor,
+    glm::vec4& outPrimaryDarkColor
 );
 
 glm::vec4 Uint32ColorToVec4(const Uint32);

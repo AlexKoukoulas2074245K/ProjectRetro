@@ -56,14 +56,35 @@ void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
     const auto& otherTextureResource    = ResourceLoadingService::GetInstance().GetResource<TextureResource>(otherRenderingComponent.mTextureResourceId);
 
     const auto& colorSet  = otherTextureResource.GetColorSet();
-    const auto colorCount = static_cast<int>(colorSet.size());
+    
+    glm::vec4 primaryLightColor, primaryDarkColor;
 
-    const auto primaryLightColorVec4 = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
-    const auto primaryDarkColorVec4  = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+    GetPrimaryLightAndPrimaryDarkColorsFromSet(colorSet, primaryLightColor, primaryDarkColor);
 
     overridenRenderableComponent.mShouldOverrideDarkAndLightColor = true;
-    overridenRenderableComponent.mOverriddenLightColor            = primaryLightColorVec4;
-    overridenRenderableComponent.mOverriddenDarkColor             = primaryDarkColorVec4;
+    overridenRenderableComponent.mOverriddenLightColor            = primaryLightColor;
+    overridenRenderableComponent.mOverriddenDarkColor             = primaryDarkColor;
+}
+
+void GetPrimaryLightAndPrimaryDarkColorsFromSet
+(
+    const std::vector<Uint32>& colorSet,
+    glm::vec4& outPrimaryLightColor,
+    glm::vec4& outPrimaryDarkColor
+)
+{
+    const auto colorCount = static_cast<int>(colorSet.size());
+
+    if (colorCount == 5)
+    {
+        outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+        outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 4)]);
+    }
+    else
+    {
+        outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+        outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+    }
 }
 
 glm::vec4 Uint32ColorToVec4(const Uint32 intColor)
