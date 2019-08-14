@@ -60,7 +60,7 @@ std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::strin
         vertexShaderInfoLog.clear();
         vertexShaderInfoLog.reserve(vertexShaderInfoLogLength);
         GL_CHECK(glGetShaderInfoLog(vertexShaderId, vertexShaderInfoLogLength, nullptr, &vertexShaderInfoLog[0]));
-        Log(LogType::INFO, "While compiling vertex shader %s:\n%s", resourcePathWithExtension.c_str(), vertexShaderInfoLog.c_str());
+        Log(LogType::INFO, "While compiling vertex shader %s%s:\n%s", resourcePath.c_str(), ".vs", vertexShaderInfoLog.c_str());
     }
     
     // Generate fragment shader id
@@ -81,7 +81,7 @@ std::unique_ptr<IResource> ShaderLoader::VCreateAndLoadResource(const std::strin
         fragmentShaderInfoLog.clear();
         fragmentShaderInfoLog.reserve(fragmentShaderInfoLogLength);
         GL_CHECK(glGetShaderInfoLog(fragmentShaderId, fragmentShaderInfoLogLength, nullptr, &fragmentShaderInfoLog[0]));
-        Log(LogType::INFO, "While compiling fragment shader %s:\n%s", resourcePathWithExtension.c_str(), fragmentShaderInfoLog.c_str());
+        Log(LogType::INFO, "While compiling fragment shader %s%s:\n%s", resourcePath.c_str(), ".fs", fragmentShaderInfoLog.c_str());
     }
 
     // Link shader program

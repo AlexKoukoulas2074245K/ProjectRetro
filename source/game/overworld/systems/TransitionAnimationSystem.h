@@ -31,10 +31,11 @@ public:
     
     void VUpdateAssociatedComponents(const float dt) const override;
    
+    static const float WILD_FLASH_ANIMATION_STEP_DURATION;
+
 private:
     static const std::string TRANSITION_ANIM_MODEL_FILE_NAME;
-    static const float WARP_TRANSITION_STEP_DURATION;
-    static const float WILD_FLASH_ANIMATION_STEP_DURATION;
+    static const float WARP_TRANSITION_STEP_DURATION;    
     static const float ENCOUNTER_ANIMATION_FRAME_DURATION;
     static const float ENCOUNTER_ANIMATION_END_DELAY_DURATION;
     static const int TRANSITION_STEP_COUNT;

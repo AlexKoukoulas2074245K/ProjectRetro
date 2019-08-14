@@ -32,6 +32,7 @@ private:
     void PrepareAllGuiSpritesForWhiteFlip() const;
     void UpdateSpeciallyHandledMoveAnimation(const float dt);
     void UpdateNormalFrameBasedMoveAnimation();
+    void UpdateConfusionAnimation();
     void UpdateHardenAnimation();
     void UpdateLeerAnimation();    
     void UpdateQuickAttackAnimation(const float dt);

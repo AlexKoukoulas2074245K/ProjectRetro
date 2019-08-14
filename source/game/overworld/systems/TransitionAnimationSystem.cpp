@@ -203,8 +203,8 @@ void TransitionAnimationSystem::UpdateEncounterIntroEndDelayAnimation(const floa
             transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = ecs::NULL_ENTITY_ID;
         }
                      
-        transitionAnimationStateComponent.mAnimationProgressionStep     = 0;
-        encounterStateComponent.mOverworldEncounterAnimationState       = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
+        transitionAnimationStateComponent.mAnimationProgressionStep = 0;
+        encounterStateComponent.mOverworldEncounterAnimationState   = OverworldEncounterAnimationState::ENCOUNTER_INTRO_ANIMATION_COMPLETE;
     }
 }
 

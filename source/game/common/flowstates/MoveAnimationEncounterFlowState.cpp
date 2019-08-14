@@ -20,6 +20,7 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
+#include "../../overworld/systems/TransitionAnimationSystem.h"
 #include "../../overworld/utils/LevelUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/Colors.h"
@@ -55,8 +56,14 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
-    {
-        encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_SPECIAL_MOVE_ANIMATION_DELAY);
+    {                
+        encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>
+        (
+            encounterStateComponent.mLastMoveSelected == StringId("CONFUSION") ? 
+            TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION : 
+            BATTLE_SPECIAL_MOVE_ANIMATION_DELAY
+        );
+
         encounterStateComponent.mSpecialMoveAnimationStep = 0;
 
         auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + BATTLE_ANIMATION_DIR_NAME + encounterStateComponent.mLastMoveSelected.GetString() + "/";
@@ -209,7 +216,11 @@ void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation(const 
         {
             encounterStateComponent.mViewObjects.mBattleAnimationTimer->Reset();
 
-            if (encounterStateComponent.mLastMoveSelected == StringId("HARDEN"))
+            if (encounterStateComponent.mLastMoveSelected == StringId("CONFUSION"))
+            {
+                UpdateConfusionAnimation();
+            }
+            else if (encounterStateComponent.mLastMoveSelected == StringId("HARDEN"))
             {
                 UpdateHardenAnimation();
             }
@@ -282,6 +293,87 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
     {
         CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
     }
+}
+
+void MoveAnimationEncounterFlowState::UpdateConfusionAnimation()
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        {            
+            transitionStateComponent.mAnimationProgressionStep = encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        {            
+            transitionStateComponent.mAnimationProgressionStep = 6 - encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+        
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        {
+            transitionStateComponent.mAnimationProgressionStep = -12 + encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21:
+        {
+            transitionStateComponent.mAnimationProgressionStep = 18 - encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
+        case 22:
+        case 23:
+        case 24:
+        case 25:
+        case 26:
+        case 27:
+        {
+            transitionStateComponent.mAnimationProgressionStep = -24 + encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
+        case 28:
+        case 29:
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+        {
+            transitionStateComponent.mAnimationProgressionStep = 30 - encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
+        case 34:
+        case 35:
+        case 36:
+        {
+            transitionStateComponent.mAnimationProgressionStep = -36 + encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        }
+    }              
 }
 
 void MoveAnimationEncounterFlowState::UpdateHardenAnimation()

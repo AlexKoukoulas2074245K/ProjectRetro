@@ -46,35 +46,6 @@ vec4 getBlackAndWhiteModeColor()
     }
 }
 
-vec4 getTransitionAnimationColor()
-{
-    if (transition_progression_step < -3)
-    {
-        return global_white_color;
-    }
-    
-	vec4 colorPool[4]; 
-	colorPool[0] = global_white_color;
-	colorPool[1] = current_level_color;
-	colorPool[2] = global_blue_color;
-	colorPool[3] = global_black_color;
-	
-	float whiteColorDistance        = distance(colorPool[0], frag_color);
-	float currentLevelColorDistance = distance(colorPool[1], frag_color);
-	float blueColorDistance         = distance(colorPool[2], frag_color);
-	float blackColorDistance        = distance(colorPool[3], frag_color);
-	
-	float smallestDistance = min(whiteColorDistance, min(currentLevelColorDistance, min(blueColorDistance, blackColorDistance)));
-	
-	int currentColorIndex = 0;
-	if (abs(smallestDistance - whiteColorDistance) < 0.01)             currentColorIndex = 0;
-	else if (abs(smallestDistance - currentLevelColorDistance) < 0.01) currentColorIndex = 1;
-	else if (abs(smallestDistance - blueColorDistance) < 0.01)         currentColorIndex = 2;
-	else                                                               currentColorIndex = 3;
-	
-	return colorPool[max(0, min((currentColorIndex + transition_progression_step), 3))];
-}
-
 vec4 getPaletteColor()
 {
     if (distance(global_black_color, frag_color) < 0.1)
@@ -169,6 +140,35 @@ vec4 getWhiteFlipStep2Color()
 vec4 getWhiteFlipStep3Color()
 {
 	return global_white_color;
+}
+
+vec4 getTransitionAnimationColor()
+{
+	if (transition_progression_step < -3)
+	{
+		return global_white_color;
+	}
+
+	vec4 colorPool[4]; 
+	colorPool[0] = global_white_color;
+	colorPool[1] = primary_light_color;
+	colorPool[2] = primary_dark_color;
+	colorPool[3] = global_black_color;
+	
+	float whiteColorDistance        = distance(colorPool[0], frag_color);
+	float primaryLightColorDistance = distance(colorPool[1], frag_color);
+	float primaryDarkColorDistance  = distance(colorPool[2], frag_color);
+	float blackColorDistance        = distance(colorPool[3], frag_color);
+	
+	float smallestDistance = min(whiteColorDistance, min(primaryLightColorDistance, min(primaryDarkColorDistance, blackColorDistance)));
+	
+	int currentColorIndex = 0;
+	if (abs(smallestDistance - whiteColorDistance) < 0.01)             currentColorIndex = 0;
+	else if (abs(smallestDistance - primaryLightColorDistance) < 0.01) currentColorIndex = 1;
+	else if (abs(smallestDistance - primaryDarkColorDistance) < 0.01)  currentColorIndex = 2;
+	else                                                               currentColorIndex = 3;
+	
+	return colorPool[max(0, min((currentColorIndex + transition_progression_step), 3))];
 }
 
 void main()
