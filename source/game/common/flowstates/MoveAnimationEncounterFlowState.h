@@ -29,6 +29,8 @@ public:
 
 private:
     void LoadMoveAnimationFrames() const;
+    void PrepareAllGuiSpritesForTransitionFlip() const;
+    void ResetAllGuiSpritesFromTransitionFlip() const;
     void PrepareAllGuiSpritesForWhiteFlip() const;
     void UpdateSpeciallyHandledMoveAnimation(const float dt);
     void UpdateNormalFrameBasedMoveAnimation();
@@ -48,6 +50,7 @@ private:
     static const std::string BATTLE_ANIMATION_DIR_NAME;
 
     static const StringId DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+    static const StringId TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
     static const StringId DEFAULT_GUI_SHADER_NAME;
 
     static const float SPRITE_MOVEMENT_ANIMATION_SPEED;

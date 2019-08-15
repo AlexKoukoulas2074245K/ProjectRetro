@@ -27,7 +27,7 @@
 const std::string TransitionAnimationSystem::TRANSITION_ANIM_MODEL_FILE_NAME = "transition_anim_quad.obj";
 const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION          = 0.13f;
 const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION     = 0.035f;
-const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION     = 0.04f;
+const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION     = 0.035f;
 const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_END_DELAY_DURATION = 1.0f;
 const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                    = 3;
 const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT            = 3;

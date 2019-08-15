@@ -60,7 +60,7 @@ const StringId RenderingSystem::SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME = S
 
 const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS =
 {
-    StringId("gui"), StringId("dark_flip_hud_special_case"), StringId("gui_unaffected_by_white_flip")
+    StringId("gui"), StringId("dark_flip_hud_special_case"), StringId("gui_unaffected_by_white_flip"), StringId("transition_flip_hud_special_case")
 };
 
 const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;

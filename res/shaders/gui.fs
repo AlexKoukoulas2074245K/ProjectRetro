@@ -151,23 +151,23 @@ vec4 getTransitionAnimationColor()
 
 	vec4 colorPool[4]; 
 	colorPool[0] = global_white_color;
-	colorPool[1] = primary_light_color;
-	colorPool[2] = primary_dark_color;
+	colorPool[1] = overridden_light_color;
+	colorPool[2] = overridden_dark_color;
 	colorPool[3] = global_black_color;
 	
-	float whiteColorDistance        = distance(colorPool[0], frag_color);
-	float primaryLightColorDistance = distance(colorPool[1], frag_color);
-	float primaryDarkColorDistance  = distance(colorPool[2], frag_color);
-	float blackColorDistance        = distance(colorPool[3], frag_color);
+	float whiteColorDistance           = distance(colorPool[0], frag_color);
+	float overriddenLightColorDistance = distance(colorPool[1], frag_color);
+	float overriddenDarkColorDistance  = distance(colorPool[2], frag_color);
+	float blackColorDistance           = distance(colorPool[3], frag_color);
 	
-	float smallestDistance = min(whiteColorDistance, min(primaryLightColorDistance, min(primaryDarkColorDistance, blackColorDistance)));
+	float smallestDistance = min(whiteColorDistance, min(overriddenLightColorDistance, min(overriddenDarkColorDistance, blackColorDistance)));
 	
 	int currentColorIndex = 0;
-	if (abs(smallestDistance - whiteColorDistance) < 0.01)             currentColorIndex = 0;
-	else if (abs(smallestDistance - primaryLightColorDistance) < 0.01) currentColorIndex = 1;
-	else if (abs(smallestDistance - primaryDarkColorDistance) < 0.01)  currentColorIndex = 2;
-	else                                                               currentColorIndex = 3;
-	
+	if (abs(smallestDistance - whiteColorDistance) < 0.01)                currentColorIndex = 0;
+	else if (abs(smallestDistance - overriddenLightColorDistance) < 0.01) currentColorIndex = 1;
+	else if (abs(smallestDistance - overriddenDarkColorDistance) < 0.01)  currentColorIndex = 2;
+	else                                                                  currentColorIndex = 3;
+	 
 	return colorPool[max(0, min((currentColorIndex + transition_progression_step), 3))];
 }
 

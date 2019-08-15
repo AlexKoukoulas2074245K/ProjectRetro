@@ -40,8 +40,9 @@ const glm::vec3 MoveAnimationEncounterFlowState::OPPONENT_POKEMON_SPRITE_END_POS
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
 
-const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("dark_flip_hud_special_case");
-const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                         = StringId("gui");
+const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME       = StringId("dark_flip_hud_special_case");
+const StringId MoveAnimationEncounterFlowState::TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("transition_flip_hud_special_case");
+const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                               = StringId("gui");
 
 const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED = 2.0f;
 const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z         = -1.0f;
@@ -143,6 +144,141 @@ void MoveAnimationEncounterFlowState::LoadMoveAnimationFrames() const
     }        
 }
 
+void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForTransitionFlip() const
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    auto& playerPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    const auto& playerTextureResource = ResourceLoadingService::GetInstance().GetResource<TextureResource>(playerPokemonSpriteRenderableComponent.mTextureResourceId);
+
+    glm::vec4 playerPrimaryLightColor, playerPrimaryDarkColor;
+    GetPrimaryLightAndPrimaryDarkColorsFromSet(playerTextureResource.GetColorSet(), playerPrimaryLightColor, playerPrimaryDarkColor);
+
+    playerPokemonSpriteRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+    playerPokemonSpriteRenderableComponent.mOverriddenDarkColor = playerPrimaryDarkColor;
+    playerPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+
+    auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    const auto& opponentTextureResource = ResourceLoadingService::GetInstance().GetResource<TextureResource>(opponentPokemonSpriteRenderableComponent.mTextureResourceId);
+
+    glm::vec4 opponentPrimaryLightColor, opponentPrimaryDarkColor;
+    GetPrimaryLightAndPrimaryDarkColorsFromSet(opponentTextureResource.GetColorSet(), opponentPrimaryLightColor, opponentPrimaryDarkColor);
+
+    opponentPokemonSpriteRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+    opponentPokemonSpriteRenderableComponent.mOverriddenDarkColor = opponentPrimaryDarkColor;
+    opponentPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+
+    const auto& mainChatboxEntities = GetAllTextboxResidentComponents(GetActiveTextboxEntityId(mWorld), mWorld);
+    for (const auto& entityId : mainChatboxEntities)
+    {
+        if (mWorld.HasComponent<RenderableComponent>(entityId))
+        {
+            auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+            renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+            renderableComponent.mOverriddenDarkColor = playerPrimaryDarkColor;
+            renderableComponent.mShouldOverrideDarkAndLightColor = true;
+            renderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+        }
+    }
+
+    const auto& playerPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+    for (const auto& entityId : playerPokemonInfoTextboxEntities)
+    {
+        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor = playerPrimaryDarkColor;
+        renderableComponent.mShouldOverrideDarkAndLightColor = true;
+        renderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+    }
+
+    auto& playerPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor = playerPrimaryDarkColor;
+    playerPokemonStatusDisplayRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+    playerPokemonStatusDisplayRenderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+
+    const auto& opponentPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+    for (const auto& entityId : opponentPokemonInfoTextboxEntities)
+    {
+        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor = opponentPrimaryDarkColor;
+        renderableComponent.mShouldOverrideDarkAndLightColor = true;
+        renderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+    }
+
+    auto& opponentPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor = opponentPrimaryDarkColor;
+    opponentPokemonStatusDisplayRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+    opponentPokemonStatusDisplayRenderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+
+    auto& opponentPokemonHealthBarRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+    opponentPokemonHealthBarRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+    opponentPokemonHealthBarRenderableComponent.mOverriddenDarkColor = opponentPrimaryDarkColor;
+    opponentPokemonHealthBarRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+    opponentPokemonHealthBarRenderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+
+    auto& playerPokemonHealthBarRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    playerPokemonHealthBarRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+    playerPokemonHealthBarRenderableComponent.mOverriddenDarkColor = playerPrimaryDarkColor;
+    playerPokemonHealthBarRenderableComponent.mShouldOverrideDarkAndLightColor = true;
+    playerPokemonHealthBarRenderableComponent.mShaderNameId = TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+}
+
+void MoveAnimationEncounterFlowState::ResetAllGuiSpritesFromTransitionFlip() const
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    auto& playerPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+    playerPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+
+    auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    opponentPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+
+    const auto& mainChatboxEntities = GetAllTextboxResidentComponents(GetActiveTextboxEntityId(mWorld), mWorld);
+    for (const auto& entityId : mainChatboxEntities)
+    {
+        if (mWorld.HasComponent<RenderableComponent>(entityId))
+        {
+            auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+            renderableComponent.mShouldOverrideDarkAndLightColor = false;
+        }
+    }
+
+    const auto& playerPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+    for (const auto& entityId : playerPokemonInfoTextboxEntities)
+    {
+        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mShouldOverrideDarkAndLightColor = false;
+        renderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+    }
+
+    auto& playerPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+    playerPokemonStatusDisplayRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+    playerPokemonStatusDisplayRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+    const auto& opponentPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
+    for (const auto& entityId : opponentPokemonInfoTextboxEntities)
+    {
+        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mShouldOverrideDarkAndLightColor = false;
+        renderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+    }
+
+    auto& opponentPokemonStatusDisplayRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+    opponentPokemonStatusDisplayRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+    opponentPokemonStatusDisplayRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+    auto& opponentPokemonHealthBarRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
+    opponentPokemonHealthBarRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+    opponentPokemonHealthBarRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+    auto& playerPokemonHealthBarRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+    playerPokemonHealthBarRenderableComponent.mShouldOverrideDarkAndLightColor = false;
+    playerPokemonHealthBarRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+}
+
 void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
 {    
     auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -153,8 +289,8 @@ void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
     glm::vec4 playerPrimaryLightColor, playerPrimaryDarkColor;
     GetPrimaryLightAndPrimaryDarkColorsFromSet(playerTextureResource.GetColorSet(), playerPrimaryLightColor, playerPrimaryDarkColor);
 
-    playerPokemonSpriteRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
-    playerPokemonSpriteRenderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;
+    playerPokemonSpriteRenderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
+    playerPokemonSpriteRenderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;    
 
     auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
     const auto& opponentTextureResource = ResourceLoadingService::GetInstance().GetResource<TextureResource>(opponentPokemonSpriteRenderableComponent.mTextureResourceId);
@@ -162,40 +298,38 @@ void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
     glm::vec4 opponentPrimaryLightColor, opponentPrimaryDarkColor;
     GetPrimaryLightAndPrimaryDarkColorsFromSet(opponentTextureResource.GetColorSet(), opponentPrimaryLightColor, opponentPrimaryDarkColor);
 
-    opponentPokemonSpriteRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
-    opponentPokemonSpriteRenderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor;
-
+    opponentPokemonSpriteRenderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
+    opponentPokemonSpriteRenderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;    
     const auto& playerPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
     for (const auto& entityId : playerPokemonInfoTextboxEntities)
     {
-        auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
-        renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
-        renderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;
+        auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;        
     }
-    auto& playerPokemonStatusDisplayRenderableComponent                 = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-    playerPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
-    playerPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;
+    auto& playerPokemonStatusDisplayRenderableComponent                            = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;    
 
     const auto& opponentPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
     for (const auto& entityId : opponentPokemonInfoTextboxEntities)
     {
-        auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
-        renderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
-        renderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor;
+        auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;        
     }
 
-    auto& opponentPokemonStatusDisplayRenderableComponent                 = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-    opponentPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
-    opponentPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor;
-
+    auto& opponentPokemonStatusDisplayRenderableComponent                            = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;    
     const auto& mainChatboxEntities = GetAllTextboxResidentComponents(GetActiveTextboxEntityId(mWorld), mWorld);
     for (const auto& entityId : mainChatboxEntities)
     {
         if (mWorld.HasComponent<RenderableComponent>(entityId))
         {
-            auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
-            renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
-            renderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;
+            auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
+            renderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
+            renderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;            
         }        
     }
 }
@@ -297,22 +431,23 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
 
 void MoveAnimationEncounterFlowState::UpdateConfusionAnimation()
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-
-    auto& playerPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
-    auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+    auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();    
     
-    playerPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor   = true;
-    opponentPokemonSpriteRenderableComponent.mShouldOverrideDarkAndLightColor = true;
-
     switch (encounterStateComponent.mSpecialMoveAnimationStep)
     {
         case 0:
+        {            
+            PrepareAllGuiSpritesForTransitionFlip();
+
+            transitionStateComponent.mAnimationProgressionStep = encounterStateComponent.mSpecialMoveAnimationStep;
+            ++encounterStateComponent.mSpecialMoveAnimationStep;
+        } break;
+
         case 1:
         case 2:
         case 3:
-        {            
+        {                     
             transitionStateComponent.mAnimationProgressionStep = encounterStateComponent.mSpecialMoveAnimationStep;
             ++encounterStateComponent.mSpecialMoveAnimationStep;
         } break;
@@ -378,7 +513,16 @@ void MoveAnimationEncounterFlowState::UpdateConfusionAnimation()
         {
             transitionStateComponent.mAnimationProgressionStep = -36 + encounterStateComponent.mSpecialMoveAnimationStep;
             ++encounterStateComponent.mSpecialMoveAnimationStep;
-        }
+        } break;
+
+        case 37:
+        {            
+            ResetAllGuiSpritesFromTransitionFlip();
+
+            transitionStateComponent.mAnimationProgressionStep = 0;
+            encounterStateComponent.mSpecialMoveAnimationStep  = 0;
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+        } break;
     }              
 }
 
