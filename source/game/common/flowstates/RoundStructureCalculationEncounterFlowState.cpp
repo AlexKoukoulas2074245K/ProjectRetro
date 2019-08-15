@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "RoundStructureCalculationEncounterFlowState.h"
-#include "DamageCalculationEncounterFlowState.h"
+#include "PreDamageCalculationChecksEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/PokemonMoveUtils.h"
@@ -67,7 +67,7 @@ RoundStructureCalculationEncounterFlowState::RoundStructureCalculationEncounterF
 
 void RoundStructureCalculationEncounterFlowState::VUpdate(const float)
 {        
-    CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
+    CompleteAndTransitionTo<PreDamageCalculationChecksEncounterFlowState>();       
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

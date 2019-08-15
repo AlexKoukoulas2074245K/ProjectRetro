@@ -185,7 +185,7 @@
         "power": 50,
         "accuracy": 255,
         "pp": 25,
-		"effect": "10%ECON"
+		"effect": "99%ECON"
     },
 
     "CONSTRICT":

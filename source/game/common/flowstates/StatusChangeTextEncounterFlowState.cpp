@@ -55,14 +55,14 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
     }
     else
     {
-        statusTextString = "Enemy " + activeOpponentPokemon.mName.GetString() + "'s";
+        statusTextString = "Enemy " + activeOpponentPokemon.mName.GetString();
     }
     
     switch (statusToChangeTo)
     {
         case PokemonStatus::PARALYZED:
         {
-            statusTextString += "#paralyzed! It may#not attack!#+END";
+            statusTextString += "'s#paralyzed! It may#not attack!#+END";
         } break;
         case PokemonStatus::POISONED:
         {
@@ -70,6 +70,9 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
         } break;
         case PokemonStatus::FROZEN:
         case PokemonStatus::CONFUSED:
+        {
+            statusTextString += "#became confused!#+END";
+        } break;
         case PokemonStatus::ASLEEP:
         case PokemonStatus::BURNED:
         {

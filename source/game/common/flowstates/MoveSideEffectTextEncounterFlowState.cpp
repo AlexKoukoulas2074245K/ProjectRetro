@@ -67,7 +67,11 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
 
     const auto& moveEffectString = selectedMoveStats.mEffect.GetString();    
 
-    if (StringEndsWith(moveEffectString, "EPAR"))
+    if 
+    (
+        StringEndsWith(moveEffectString, "EPAR") ||
+        StringEndsWith(moveEffectString, "ECON") 
+    )
     {
         return;
     }

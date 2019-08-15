@@ -12,7 +12,7 @@
 #include "TurnOverEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "PokemonDeathMovementEncounterFlowState.h"
-#include "DamageCalculationEncounterFlowState.h"
+#include "PreDamageCalculationChecksEncounterFlowState.h"
 #include "../utils/PokemonUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/MathUtils.h"
@@ -74,7 +74,8 @@ void TurnOverEncounterFlowState::VUpdate(const float)
             encounterStateComponent.mLastMoveSelected = playerSelectedMove.mName;
         }
         
-        CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
+
+        CompleteAndTransitionTo<PreDamageCalculationChecksEncounterFlowState>();
     }
 }
 

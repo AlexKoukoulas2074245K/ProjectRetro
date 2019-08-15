@@ -66,7 +66,14 @@ void StatusChangeShakeEncounterFlowState::DetermineStatusShakeSequence() const
     const auto& lastMoveUsedStats  = GetMoveStats(encounterComponent.mLastMoveSelected, mWorld);        
     auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();    
 
-    if (isMoveNonShake(lastMoveUsedStats.mName))
+    if 
+    (
+        isMoveNonShake(lastMoveUsedStats.mName) ||
+        (
+            encounterComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED ||
+            encounterComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED
+        )
+    )
     {
         return;
     }
