@@ -1,201 +1,29 @@
 {
-    "POUND":
+    "ABSORB":
     {
-        "type": "NORMAL",
+        "type": "GRASS",
+        "power": 20,
+        "accuracy": 255,
+        "pp": 25,
+        "effect": "User recovers half the HP inflicted on opponent."
+    },
+
+    "ACID":
+    {
+        "type": "POISON",
         "power": 40,
         "accuracy": 255,
-        "pp": 35
-    },
-
-    "LEER":
-    {
-	    "type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
         "pp": 30,
-        "effect": "ED-1"
+        "effect": "May lower opponent's Special Defense."
     },
 
-    "GROWL":
+    "ACID_ARMOR":
     {
-        "type": "NORMAL",
+        "type": "POISON",
         "power": 0,
         "accuracy": 255,
-        "pp": 40,
-        "effect": "EA-1"
-    },
-
-    "SCREECH":
-    {
-        "type": "NORMAL",
-        "power": 0,
-        "accuracy": 216,
-        "pp": 40,
-        "effect": "ED-2"
-    },
-
-    "HYPER_FANG":
-    {
-	    "type": "NORMAL",
-        "power": 80,
-        "accuracy": 229,
-        "pp": 15,
-        "effect": "10%FLINCH"
-    },
-
-    "TAIL_WHIP":
-    {
-        "type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 30,
-        "effect": "ED-1"
-    },
-
-    "SAND-ATTACK":
-    {
-        "type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 15,
-        "effect": "EH-1"
-    },
-	
-	"DOUBLE_TEAM":
-	{
-		"type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 15,
-        "effect": "PE+1"
-	},
-	
-	"LIGHT_SCREEN":
-	{
-		"type": "PSYCHIC",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 30,
-        "effect": "TODO"
-	},
-	
-	"FOCUS_ENERGY":
-	{
-		"type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 30,
-        "effect": "TODO"
-	},
-	
-	"TAKE_DOWN":
-	{
-		"type": "NORMAL",
-        "power": 90,
-        "accuracy": 216,
         "pp": 20,
-        "effect": "25%RECOIL"
-	},
-	
-	"THUNDER":
-	{
-		"type": "ELECTRIC",
-        "power": 110,
-        "accuracy": 255,
-        "pp": 25,
-		"effect": "10%FLINCH"
-	},
-	
-	"BITE":
-	{
-		"type": "ELECTRIC",
-        "power": 110,
-        "accuracy": 178,
-        "pp": 10,
-		"effect": "10%EFLI"
-	},
-	
-    "STRING_SHOT":
-    {
-        "type": "NORMAL",
-        "power": 0,
-        "accuracy": 242,
-        "pp": 40,
-        "effect": "ES-1"
-    },
-
-    "HARDEN":
-    {
-        "type": "NORMAL",
-        "power": 0,
-        "accuracy": 255,
-        "pp": 30,
-        "effect": "PD+1"
-    },
-
-    "CONFUSION":
-    {
-        "type": "PSYCHIC",
-        "power": 50,
-        "accuracy": 255,
-        "pp": 25,
-		"effect": "10%ECON"
-    },
-
-    "KARATE_CHOP":
-    {
-        "type": "NORMAL",
-        "power": 50,
-        "accuracy": 255,
-        "pp": 25
-    },
-
-    "LOW_KICK":
-    {
-        "type": "FIGHTING",
-        "power": 50,
-        "accuracy": 229,
-        "pp": 20
-    },
-
-    "MEGA_PUNCH":
-    {
-        "type": "NORMAL",
-        "power": 80,
-        "accuracy": 216,
-        "pp": 20
-    },
-
-    "SCRATCH":
-    {
-        "type": "NORMAL",
-        "power": 40,
-        "accuracy": 255,
-        "pp": 35
-    },
-
-    "VICEGRIP":
-    {
-        "type": "NORMAL",
-        "power": 55,
-        "accuracy": 255,
-        "pp": 30
-    },
-
-    "GUST":
-    {
-        "type": "NORMAL",
-        "power": 40,
-        "accuracy": 255,
-        "pp": 35
-    },
-
-    "WING_ATTACK":
-    {
-        "type": "FLYING",
-        "power": 35,
-        "accuracy": 255,
-        "pp": 35
+        "effect": "Sharply raises user's Defense."
     },
 
     "AGILITY":
@@ -207,85 +35,289 @@
         "effect": "PS+2"
     },
 
-    "THUNDER_WAVE":
+    "AMNESIA":
     {
-        "type": "ELECTRIC",
+        "type": "PSYCHIC",
         "power": 0,
         "accuracy": 255,
         "pp": 20,
-        "effect": "EPAR"
+        "effect": "Sharply raises user's Special Defense."
     },
 
-    "SLAM":
+    "AURORA_BEAM":
     {
-        "type": "NORMAL",
-        "power": 80,
-        "accuracy": 191,
-        "pp": 20
-    },
-
-    "VINE_WHIP":
-    {
-        "type": "GRASS",
-        "power": 35,
-        "accuracy": 255,
-        "pp": 10
-    },
-
-    "MEGA_KICK":
-    {
-        "type": "NORMAL",
-        "power": 120,
-        "accuracy": 191,
-        "pp": 5
-    },
-
-    "HORN_ATTACK":
-    {
-        "type": "NORMAL",
+        "type": "ICE",
         "power": 65,
         "accuracy": 255,
-        "pp": 25
+        "pp": 20,
+        "effect": "May lower opponent's Attack."
     },
 
-    "TACKLE":
+    "BARRAGE":
     {
         "type": "NORMAL",
-        "power": 35,
-        "accuracy": 242,
-        "pp": 35
+        "power": 15,
+        "accuracy": 216,
+        "pp": 20,
+        "effect": "Hits 2-5 times in one turn."
     },
 
-    "WATER_GUN":
+    "BARRIER":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Sharply raises user's Defense."
+    },
+
+    "BIDE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User takes damage for two turns then strikes back double."
+    },
+
+    "BIND":
+    {
+        "type": "NORMAL",
+        "power": 15,
+        "accuracy": 216,
+        "pp": 20,
+        "effect": "Traps opponent, damaging them for 4-5 turns."
+    },
+
+    "BITE":
+    {
+        "type": "DARK",
+        "power": 60,
+        "accuracy": 255,
+        "pp": 25,
+        "effect": "May cause flinching."
+    },
+
+    "BLIZZARD":
+    {
+        "type": "ICE",
+        "power": 110,
+        "accuracy": 178,
+        "pp": 5,
+        "effect": "May freeze opponent."
+    },
+
+    "BODY_SLAM":
+    {
+        "type": "NORMAL",
+        "power": 85,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "May paralyze opponent."
+    },
+
+    "BONE_CLUB":
+    {
+        "type": "GROUND",
+        "power": 65,
+        "accuracy": 216,
+        "pp": 20,
+        "effect": "May cause flinching."
+    },
+
+    "BONEMERANG":
+    {
+        "type": "GROUND",
+        "power": 50,
+        "accuracy": 229,
+        "pp": 10,
+        "effect": "Hits twice in one turn."
+    },
+
+    "BUBBLE":
     {
         "type": "WATER",
         "power": 40,
         "accuracy": 255,
-        "pp": 25
+        "pp": 30,
+        "effect": "May lower opponent's Speed."
     },
 
-    "HYDRO_PUMP":
+    "BUBBLE_BEAM":
     {
         "type": "WATER",
-        "power": 120,
-        "accuracy": 204,
-        "pp": 5
-    },
-
-    "SURF":
-    {
-        "type": "WATER",
-        "power": 95,
+        "power": 65,
         "accuracy": 255,
-        "pp": 15
+        "pp": 20,
+        "effect": "May lower opponent's Speed."
     },
 
-    "PECK":
+    "CLAMP":
     {
-        "type": "FLYING",
+        "type": "WATER",
         "power": 35,
+        "accuracy": 216,
+        "pp": 10,
+        "effect": "Traps opponent, damaging them for 4-5 turns."
+    },
+
+    "COMET_PUNCH":
+    {
+        "type": "NORMAL",
+        "power": 18,
+        "accuracy": 216,
+        "pp": 15,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "CONFUSE_RAY":
+    {
+        "type": "GHOST",
+        "power": 0,
         "accuracy": 255,
-        "pp": 35
+        "pp": 10,
+        "effect": "Confuses opponent."
+    },
+
+    "CONFUSION":
+    {
+        "type": "PSYCHIC",
+        "power": 50,
+        "accuracy": 255,
+        "pp": 25,
+		"effect": "10%ECON"
+    },
+
+    "CONSTRICT":
+    {
+        "type": "NORMAL",
+        "power": 10,
+        "accuracy": 255,
+        "pp": 35,
+        "effect": "May lower opponent's Speed by one stage."
+    },
+
+    "CONVERSION":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Changes user's type to that of its first move."
+    },
+
+    "COUNTER":
+    {
+        "type": "FIGHTING",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "When hit by a Physical Attack, user strikes back with 2x power."
+    },
+
+    "CRABHAMMER":
+    {
+        "type": "WATER",
+        "power": 90,
+        "accuracy": 216,
+        "pp": 10
+    },
+
+    "CUT":
+    {
+        "type": "NORMAL",
+        "power": 50,
+        "accuracy": 242,
+        "pp": 30
+    },
+
+    "DEFENSE_CURL":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "Raises user's Defense."
+    },
+
+    "DIG":
+    {
+        "type": "GROUND",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Digs underground on first turn, attacks on second. Can also escape from caves."
+    },
+
+    "DISABLE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Opponent can't use its last attack for a few turns."
+    },
+
+    "DIZZY_PUNCH":
+    {
+        "type": "NORMAL",
+        "power": 70,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "DOUBLE_KICK":
+    {
+        "type": "FIGHTING",
+        "power": 30,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Hits twice in one turn."
+    },
+
+    "DOUBLE_SLAP":
+    {
+        "type": "NORMAL",
+        "power": 15,
+        "accuracy": 216,
+        "pp": 10,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "DOUBLE_TEAM":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "Raises user's Evasiveness."
+    },
+
+    "DOUBLE-EDGE":
+    {
+        "type": "NORMAL",
+        "power": 120,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "User receives recoil damage."
+    },
+
+    "DRAGON_RAGE":
+    {
+        "type": "DRAGON",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Always inflicts 40 HP."
+    },
+
+    "DREAM_EATER":
+    {
+        "type": "PSYCHIC",
+        "power": 100,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "User recovers half the HP inflicted on a sleeping opponent."
     },
 
     "DRILL_PECK":
@@ -294,30 +326,6 @@
         "power": 80,
         "accuracy": 255,
         "pp": 20
-    },
-
-    "STRENGTH":
-    {
-        "type": "NORMAL",
-        "power": 80,
-        "accuracy": 255,
-        "pp": 15
-    },
-
-    "RAZOR_LEAF":
-    {
-        "type": "GRASS",
-        "power": 55,
-        "accuracy": 242,
-        "pp": 25
-    },
-
-    "ROCK_THROW":
-    {
-        "type": "ROCK",
-        "power": 50,
-        "accuracy": 165,
-        "pp": 15
     },
 
     "EARTHQUAKE":
@@ -336,60 +344,532 @@
         "pp": 10
     },
 
-    "WATERFALL":
+    "EMBER":
     {
-        "type": "WATER",
-        "power": 80,
+        "type": "FIRE",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 25,
+        "effect": "May burn opponent."
+    },
+
+    "EXPLOSION":
+    {
+        "type": "NORMAL",
+        "power": 250,
+        "accuracy": 255,
+        "pp": 5,
+        "effect": "User faints."
+    },
+
+    "FIRE_BLAST":
+    {
+        "type": "FIRE",
+        "power": 110,
+        "accuracy": 216,
+        "pp": 5,
+        "effect": "May burn opponent."
+    },
+
+    "FIRE_PUNCH":
+    {
+        "type": "FIRE",
+        "power": 75,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "May burn opponent."
+    },
+
+    "FIRE_SPIN":
+    {
+        "type": "FIRE",
+        "power": 35,
+        "accuracy": 216,
+        "pp": 15,
+        "effect": "Traps opponent, damaging them for 4-5 turns."
+    },
+
+    "FISSURE":
+    {
+        "type": "GROUND",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 5,
+        "effect": "One-Hit-KO, if it hits."
+    },
+
+    "FLAMETHROWER":
+    {
+        "type": "FIRE",
+        "power": 90,
         "accuracy": 255,
         "pp": 15
     },
 
-    "DIZZY_PUNCH":
+    "FLASH":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Lowers opponent's Accuracy."
+    },
+
+    "FLY":
+    {
+        "type": "FLYING",
+        "power": 90,
+        "accuracy": 242,
+        "pp": 15,
+        "effect": "Flies up on first turn, attacks on second turn."
+    },
+
+    "FOCUS_ENERGY":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Increases critical hit ratio."
+    },
+
+    "FURY_ATTACK":
+    {
+        "type": "NORMAL",
+        "power": 15,
+        "accuracy": 216,
+        "pp": 20,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "FURY_SWIPES":
+    {
+        "type": "NORMAL",
+        "power": 18,
+        "accuracy": 204,
+        "pp": 15,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "GLARE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Paralyzes opponent."
+    },
+
+    "GROWL":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "EA-1"
+    },
+
+    "GROWTH":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "Raises user's Attack and Special Attack."
+    },
+
+    "GUILLOTINE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 5,
+        "effect": "One-Hit-KO, if it hits."
+    },
+
+    "GUST":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "HARDEN":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "PD+1"
+    },
+
+    "HAZE":
+    {
+        "type": "ICE",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Resets all stat changes."
+    },
+
+    "HEADBUTT":
     {
         "type": "NORMAL",
         "power": 70,
         "accuracy": 255,
-        "pp": 10
+        "pp": 15,
+        "effect": "May cause flinching."
     },
 
-    "CRABHAMMER":
+    "HIGH_JUMP_KICK":
     {
-        "type": "WATER",
-        "power": 90,
-        "accuracy": 216,
-        "pp": 10
+        "type": "FIGHTING",
+        "power": 130,
+        "accuracy": 229,
+        "pp": 10,
+        "effect": "If it misses, the user loses half their HP."
     },
 
-    "STOMP":
+    "HORN_ATTACK":
     {
         "type": "NORMAL",
         "power": 65,
         "accuracy": 255,
-        "pp": 20
+        "pp": 25
     },
 
-    "ROCK_SLIDE":
-    {
-        "type": "ROCK",
-        "power": 75,
-        "accuracy": 229,
-        "pp": 10
-    },
-
-    "SLASH":
+    "HORN_DRILL":
     {
         "type": "NORMAL",
-        "power": 70,
+        "power": 0,
         "accuracy": 255,
+        "pp": 5,
+        "effect": "One-Hit-KO, if it hits."
+    },
+
+    "HYDRO_PUMP":
+    {
+        "type": "WATER",
+        "power": 120,
+        "accuracy": 204,
+        "pp": 5
+    },
+
+    "HYPER_BEAM":
+    {
+        "type": "NORMAL",
+        "power": 150,
+        "accuracy": 229,
+        "pp": 5
+    },
+
+    "HYPER_FANG":
+    {
+	    "type": "NORMAL",
+        "power": 80,
+        "accuracy": 229,
+        "pp": 15,
+        "effect": "10%FLINCH"
+    },
+
+    "HYPNOSIS":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 153,
+        "pp": 20,
+        "effect": "Puts opponent to sleep."
+    },
+
+    "ICE_BEAM":
+    {
+        "type": "ICE",
+        "power": 75,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "ICE_PUNCH":
+    {
+        "type": "ICE",
+        "power": 75,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "May freeze opponent."
+    },
+
+    "JUMP_KICK":
+    {
+        "type": "FIGHTING",
+        "power": 100,
+        "accuracy": 242,
+        "pp": 10,
+        "effect": "If it misses, the user loses half their HP."
+    },
+
+    "KARATE_CHOP":
+    {
+        "type": "NORMAL",
+        "power": 50,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "KINESIS":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 204,
+        "pp": 15,
+        "effect": "Lowers opponent's Accuracy."
+    },
+
+    "LEECH_LIFE":
+    {
+        "type": "BUG",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User recovers half the HP inflicted on opponent."
+    },
+
+    "LEECH_SEED":
+    {
+        "type": "GRASS",
+        "power": 0,
+        "accuracy": 229,
+        "pp": 10,
+        "effect": "Drains HP from opponent each turn."
+    },
+
+    "LEER":
+    {
+	    "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "ED-1"
+    },
+
+    "LICK":
+    {
+        "type": "GHOST",
+        "power": 10,
+        "accuracy": 255,
+        "pp": 10,
+		"effect": "TODO"
+	},
+	
+    "LIGHT_SCREEN":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Halves damage from Special attacks for 5 turns."
+    },
+
+    "LOVELY_KISS":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 191,
+        "pp": 10,
+        "effect": "Puts opponent to sleep."
+    },
+
+    "LOW_KICK":
+    {
+        "type": "FIGHTING",
+        "power": 50,
+        "accuracy": 229,
         "pp": 20
     },
 
-    "TRI_ATTACK":
+    "MEDITATE":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "Raises user's Attack."
+    },
+
+    "MEGA_DRAIN":
+    {
+        "type": "GRASS",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "User recovers half the HP inflicted on opponent."
+    },
+
+    "MEGA_KICK":
+    {
+        "type": "NORMAL",
+        "power": 120,
+        "accuracy": 191,
+        "pp": 5
+    },
+
+    "MEGA_PUNCH":
     {
         "type": "NORMAL",
         "power": 80,
+        "accuracy": 216,
+        "pp": 20
+    },
+
+    "METRONOME":
+    {
+        "type": "NORMAL",
+        "power": 0,
         "accuracy": 255,
-        "pp": 10
+        "pp": 10,
+        "effect": "User performs almost any move in the game at random."
+    },
+
+    "MIMIC":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Copies the opponent's last move."
+    },
+
+    "MINIMIZE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Sharply raises user's Evasiveness."
+    },
+
+    "MIRROR_MOVE":
+    {
+        "type": "FLYING",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "User performs the opponent's last move."
+    },
+
+    "MIST":
+    {
+        "type": "ICE",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "User's stats cannot be changed for a period of time."
+    },
+
+    "NIGHT_SHADE":
+    {
+        "type": "GHOST",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "Inflicts damage equal to user's level."
+    },
+
+    "PAY_DAY":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "A small amount of money is gained after the battle resolves."
+    },
+
+    "PECK":
+    {
+        "type": "FLYING",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "PETAL_DANCE":
+    {
+        "type": "GRASS",
+        "power": 120,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User attacks for 2-3 turns but then becomes confused."
+    },
+
+    "PIN_MISSILE":
+    {
+        "type": "BUG",
+        "power": 25,
+        "accuracy": 242,
+        "pp": 20,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "POISON_GAS":
+    {
+        "type": "POISON",
+        "power": 0,
+        "accuracy": 229,
+        "pp": 40,
+        "effect": "Poisons opponent."
+    },
+
+    "POISON_POWDER":
+    {
+        "type": "POISON",
+        "power": 0,
+        "accuracy": 191,
+        "pp": 35,
+        "effect": "Poisons opponent."
+    },
+
+    "POISON_STING":
+    {
+        "type": "POISON",
+        "power": 15,
+        "accuracy": 255,
+        "pp": 35,
+        "effect": "May poison the opponent."
+    },
+
+    "POUND":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "PSYBEAM":
+    {
+        "type": "PSYCHIC",
+        "power": 65,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "May confuse opponent."
+    },
+
+    "PSYCHIC":
+    {
+        "type": "PSYCHIC",
+        "power": 90,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "May lower opponent's Special Defense."
+    },
+
+    "PSYWAVE":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 204,
+        "pp": 15,
+        "effect": "Inflicts damage 50-150% of user's level."
     },
 
     "QUICK_ATTACK":
@@ -400,13 +880,462 @@
         "pp": 30
     },
 
-    "THUNDERSHOCK":
+    "RAGE":
+    {
+        "type": "NORMAL",
+        "power": 20,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Raises user's Attack when hit."
+    },
+
+    "RAZOR_LEAF":
+    {
+        "type": "GRASS",
+        "power": 55,
+        "accuracy": 242,
+        "pp": 25
+    },
+
+    "RAZOR_WIND":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Charges on first turn, attacks on second. High critical hit ratio."
+    },
+
+    "RECOVER":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User recovers half its max HP."
+    },
+
+    "REFLECT":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Halves damage from Physical attacks for 5 turns."
+    },
+
+    "REST":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User sleeps for 2 turns, but user is fully healed."
+    },
+
+    "ROAR":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "In battles, the opponent switches. In the wild, the POK^MON runs."
+    },
+
+    "ROCK_SLIDE":
+    {
+        "type": "ROCK",
+        "power": 75,
+        "accuracy": 229,
+        "pp": 10
+    },
+
+    "ROCK_THROW":
+    {
+        "type": "ROCK",
+        "power": 50,
+        "accuracy": 165,
+        "pp": 15
+    },
+
+    "ROLLING_KICK":
+    {
+        "type": "FIGHTING",
+        "power": 60,
+        "accuracy": 216,
+        "pp": 15,
+        "effect": "May cause flinching."
+    },
+
+    "SAND_ATTACK":
+    {
+        "type": "GROUND",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "Lowers opponent's Accuracy."
+    },
+
+    "SCRATCH":
+    {
+        "type": "NORMAL",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "SCREECH":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 216,
+        "pp": 40,
+        "effect": "ED-2"
+    },
+
+    "SEISMIC_TOSS":
+    {
+        "type": "FIGHTING",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Inflicts damage equal to user's level."
+    },
+
+    "SELF-DESTRUCT":
+    {
+        "type": "NORMAL",
+        "power": 200,
+        "accuracy": 255,
+        "pp": 5,
+        "effect": "User faints."
+    },
+
+    "SHARPEN":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "Raises user's Attack."
+    },
+
+    "SING":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 140,
+        "pp": 15,
+        "effect": "Puts opponent to sleep."
+    },
+
+    "SKULL_BASH":
+    {
+        "type": "NORMAL",
+        "power": 130,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Raises Defense on first turn, attacks on second."
+    },
+
+    "SKY_ATTACK":
+    {
+        "type": "FLYING",
+        "power": 140,
+        "accuracy": 229,
+        "pp": 5,
+        "effect": "Charges on first turn, attacks on second. May cause flinching."
+    },
+
+    "SLAM":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 191,
+        "pp": 20
+    },
+
+    "SLASH":
+    {
+        "type": "NORMAL",
+        "power": 70,
+        "accuracy": 255,
+        "pp": 20
+    },
+
+    "SLEEP_POWDER":
+    {
+        "type": "GRASS",
+        "power": 0,
+        "accuracy": 191,
+        "pp": 15,
+        "effect": "Puts opponent to sleep."
+    },
+
+    "SLUDGE":
+    {
+        "type": "POISON",
+        "power": 65,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "May poison opponent."
+    },
+
+    "SMOG":
+    {
+        "type": "POISON",
+        "power": 30,
+        "accuracy": 178,
+        "pp": 20,
+        "effect": "May poison opponent."
+    },
+
+    "SMOKESCREEN":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Lowers opponent's Accuracy."
+    },
+
+    "SOFT-BOILED":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User recovers half its max HP."
+    },
+
+    "SOLAR_BEAM":
+    {
+        "type": "GRASS",
+        "power": 120,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Charges on first turn, attacks on second."
+    },
+
+    "SONIC_BOOM":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 229,
+        "pp": 20,
+        "effect": "Always inflicts 20 HP."
+    },
+
+    "SPIKE_CANNON":
+    {
+        "type": "NORMAL",
+        "power": 20,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "Hits 2-5 times in one turn."
+    },
+
+    "SPLASH":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "Doesn't do ANYTHING."
+    },
+
+    "SPORE":
+    {
+        "type": "GRASS",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "Puts opponent to sleep."
+    },
+
+    "STOMP":
+    {
+        "type": "NORMAL",
+        "power": 65,
+        "accuracy": 255,
+        "pp": 20
+    },
+
+    "STRENGTH":
+    {
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "STRING_SHOT":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 242,
+        "pp": 40,
+        "effect": "ES-1"
+    },
+
+    "STRUGGLE":
+    {
+        "type": "NORMAL",
+        "power": 50,
+        "accuracy": 255,
+        "pp": -1,
+        "effect": "Only usable when all PP are gone. Hurts the user."
+    },
+
+    "STUN_SPORE":
+    {
+        "type": "GRASS",
+        "power": 0,
+        "accuracy": 191,
+        "pp": 30,
+        "effect": "Paralyzes opponent."
+    },
+
+    "SUBMISSION":
+    {
+        "type": "FIGHTING",
+        "power": 80,
+        "accuracy": 204,
+        "pp": 20,
+        "effect": "User receives recoil damage."
+    },
+
+    "SUBSTITUTE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "Uses HP to creates a decoy that takes hits."
+    },
+
+    "SUPER_FANG":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 229,
+        "pp": 10,
+        "effect": "Always takes off half of the opponent's HP."
+    },
+
+    "SUPERSONIC":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 140,
+        "pp": 20,
+        "effect": "Confuses opponent."
+    },
+
+    "SURF":
+    {
+        "type": "WATER",
+        "power": 95,
+        "accuracy": 255,
+        "pp": 15
+    },
+
+    "SWIFT":
+    {
+        "type": "NORMAL",
+        "power": 60,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Ignores Accuracy and Evasiveness."
+    },
+
+    "SWORDS_DANCE":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Sharply raises user's Attack."
+    },
+
+    "TACKLE":
+    {
+        "type": "NORMAL",
+        "power": 35,
+        "accuracy": 242,
+        "pp": 35
+    },
+
+    "TAIL_WHIP":
+    {
+        "type": "NORMAL",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 30,
+        "effect": "ED-1"
+    },
+
+    "TAKE_DOWN":
+    {
+        "type": "NORMAL",
+        "power": 90,
+        "accuracy": 216,
+        "pp": 20,
+        "effect": "User receives recoil damage."
+    },
+
+    "TELEPORT":
+    {
+        "type": "PSYCHIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Allows user to flee wild battles; also warps player to last POK^CENTER."
+    },
+
+    "THRASH":
+    {
+        "type": "NORMAL",
+        "power": 120,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User attacks for 2-3 turns but then becomes confused."
+    },
+
+    "THUNDER":
+    {
+        "type": "ELECTRIC",
+        "power": 110,
+        "accuracy": 178,
+        "pp": 10,
+        "effect": "May paralyze opponent."
+    },
+
+    "THUNDER_PUNCH":
+    {
+        "type": "ELECTRIC",
+        "power": 75,
+        "accuracy": 255,
+        "pp": 15,
+        "effect": "May paralyze opponent."
+    },
+
+    "THUNDER_SHOCK":
     {
         "type": "ELECTRIC",
         "power": 40,
         "accuracy": 255,
         "pp": 30,
-		"effect": "10%EPAR"
+        "effect": "May paralyze opponent."
+    },
+
+    "THUNDER_WAVE":
+    {
+        "type": "ELECTRIC",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "EPAR"
     },
 
     "THUNDERBOLT":
@@ -418,35 +1347,105 @@
 		"effect": "10%PAR"
     },
 
-    "ICE_BEAM":
+    "TOXIC":
     {
-        "type": "ICE",
-        "power": 75,
-        "accuracy": 255,
-        "pp": 15
+        "type": "POISON",
+        "power": 0,
+        "accuracy": 229,
+        "pp": 10,
+        "effect": "Badly poisons opponent."
     },
 
-    "HYPER_BEAM":
+    "TRANSFORM":
     {
         "type": "NORMAL",
-        "power": 150,
-        "accuracy": 229,
-        "pp": 5
+        "power": 0,
+        "accuracy": 255,
+        "pp": 10,
+        "effect": "User takes on the form and attacks of the opponent."
     },
 
-    "FLAMETHROWER":
+    "TRI_ATTACK":
     {
-        "type": "FIRE",
-        "power": 90,
+        "type": "NORMAL",
+        "power": 80,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "TWINEEDLE":
+    {
+        "type": "BUG",
+        "power": 25,
+        "accuracy": 255,
+        "pp": 20,
+        "effect": "Hits twice in one turn. May poison opponent."
+    },
+
+    "VICE_GRIP":
+    {
+        "type": "NORMAL",
+        "power": 55,
+        "accuracy": 255,
+        "pp": 30
+    },
+
+    "VINE_WHIP":
+    {
+        "type": "GRASS",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 10
+    },
+
+    "WATER_GUN":
+    {
+        "type": "WATER",
+        "power": 40,
+        "accuracy": 255,
+        "pp": 25
+    },
+
+    "WATERFALL":
+    {
+        "type": "WATER",
+        "power": 80,
         "accuracy": 255,
         "pp": 15
     },
 
-    "LICK":
+    "WHIRLWIND":
     {
-        "type": "GHOST",
-        "power": 10,
+        "type": "NORMAL",
+        "power": 0,
         "accuracy": 255,
-        "pp": 10,
-		"effect": "TODO"
-    }}
+        "pp": 20,
+        "effect": "In battles, the opponent switches. In the wild, the POK^MON runs."
+    },
+
+    "WING_ATTACK":
+    {
+        "type": "FLYING",
+        "power": 35,
+        "accuracy": 255,
+        "pp": 35
+    },
+
+    "WITHDRAW":
+    {
+        "type": "WATER",
+        "power": 0,
+        "accuracy": 255,
+        "pp": 40,
+        "effect": "Raises user's Defense."
+    },
+
+    "WRAP":
+    {
+        "type": "NORMAL",
+        "power": 15,
+        "accuracy": 229,
+        "pp": 20,
+        "effect": "Traps opponent, damaging them for 4-5 turns."
+    }
+}
