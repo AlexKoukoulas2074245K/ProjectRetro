@@ -274,23 +274,34 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
         {            
             const auto& moveEffectName = fullMoveEffectString.substr(3);
 
-            if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn)
+            if (moveEffectName == "EPAR")
             {
                 if (defendingPokemon.mStatus == PokemonStatus::NORMAL && DoesPokemonHaveType(PokemonType::ELECTRIC, defendingPokemon) == false)
                 {
-                    encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+                    if (encounterStateComponent.mIsOpponentsTurn)
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+                    }
+                    else
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+                    }
                 }
-            }                
-            else if (moveEffectName == "EPAR" && encounterStateComponent.mIsOpponentsTurn == false)
+            }                            
+            else if (moveEffectName == "ECON")
             {
-                if (defendingPokemon.mStatus == PokemonStatus::NORMAL && DoesPokemonHaveType(PokemonType::ELECTRIC, defendingPokemon) == false)
+                if (defendingPokemon.mStatus != PokemonStatus::CONFUSED)
                 {
-                    encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+                    if (encounterStateComponent.mIsOpponentsTurn)
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::CONFUSED;
+                    }
+                    else
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::CONFUSED;
+                    }
                 }
             }
-
-            // Thundershock 9 * x - 2, x + 2, Same for Ember
-            // Smog Rapid Long Player followed by Long player shakes
         }
     }
     else

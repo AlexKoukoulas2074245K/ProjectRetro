@@ -111,49 +111,55 @@ void StatusChangeTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon != PokemonStatus::NORMAL)
         {
-            DeleteTextAtTextboxRow
-            (
-                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-                1,
-                mWorld
-            );
-            
-            WriteTextAtTextboxCoords
-            (
-                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-                GetFormattedPokemonStatus(1, encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon),
-                4,
-                1,
-                mWorld
-            );
-            
-            playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mStatus =
-                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon;
-            encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+            if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon != PokemonStatus::CONFUSED)
+            {
+                DeleteTextAtTextboxRow
+                (
+                    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+                    1,
+                    mWorld
+                );
+
+                WriteTextAtTextboxCoords
+                (
+                    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+                    GetFormattedPokemonStatus(1, encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon),
+                    4,
+                    1,
+                    mWorld
+                );
+
+                playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mStatus =
+                    encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon;
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+            }            
         }
         else
         {
-            DeleteTextAtTextboxRow
-            (
-                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
-                1,
-                mWorld
-            );
-            
-            WriteTextAtTextboxCoords
-            (
-                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
-                GetFormattedPokemonStatus(1, encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon),
-                4,
-                1,
-                mWorld
-            );
-            
-            encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mStatus =
-                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon;
-            encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+            if (encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon != PokemonStatus::CONFUSED)
+            {
+                DeleteTextAtTextboxRow
+                (
+                    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                    1,
+                    mWorld
+                );
+
+                WriteTextAtTextboxCoords
+                (
+                    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                    GetFormattedPokemonStatus(1, encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon),
+                    4,
+                    1,
+                    mWorld
+                );
+
+                encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mStatus =
+                    encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon;
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+            }
         }
-        
+
         CompleteAndTransitionTo<TurnOverEncounterFlowState>();
     }
 }

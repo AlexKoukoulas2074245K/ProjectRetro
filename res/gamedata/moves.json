@@ -9,7 +9,7 @@
 
     "LEER":
     {
-	"type": "NORMAL",
+	    "type": "NORMAL",
         "power": 0,
         "accuracy": 255,
         "pp": 30,
@@ -36,7 +36,7 @@
 
     "HYPER_FANG":
     {
-	"type": "NORMAL",
+	    "type": "NORMAL",
         "power": 80,
         "accuracy": 229,
         "pp": 15,
@@ -112,7 +112,7 @@
         "power": 110,
         "accuracy": 178,
         "pp": 10,
-		"effect": "10%PAR"
+		"effect": "10%EFLI"
 	},
 	
     "STRING_SHOT":
@@ -138,7 +138,8 @@
         "type": "PSYCHIC",
         "power": 50,
         "accuracy": 255,
-        "pp": 25
+        "pp": 25,
+		"effect": "10%ECON"
     },
 
     "KARATE_CHOP":
