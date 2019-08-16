@@ -70,6 +70,10 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
             activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
         }
     }
+    
+    activePlayerPokemon.mHp   = math::Max(0, activePlayerPokemon.mHp);
+    activeOpponentPokemon.mHp = math::Max(0, activeOpponentPokemon.mHp);
+    
 }
 
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)
@@ -169,14 +173,32 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
         integerDefendersHealth = 1;
     }
     
-    WriteTextAtTextboxCoords
+    if
     (
-        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-        std::to_string(math::Max(0, integerDefendersHealth)) + "/",
-        4 - static_cast<int>(std::to_string(integerDefendersHealth).size()),
-        3,
-        mWorld
-    );
+         encounterStateComponent.mOutstandingFloatDamage <= 0.0f ||
+         encounterStateComponent.mDefenderFloatHealth <= 0.0f
+    )
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            std::to_string(activePlayerPokemon.mHp) + "/",
+            4 - static_cast<int>(std::to_string(integerDefendersHealth).size()),
+            3,
+            mWorld
+        );
+    }
+    else
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            std::to_string(math::Max(0, integerDefendersHealth)) + "/",
+            4 - static_cast<int>(std::to_string(integerDefendersHealth).size()),
+            3,
+            mWorld
+        );
+    }
 }
 
 void HealthDepletionEncounterFlowState::RefreshOpponentPokemonStats() const
@@ -186,12 +208,28 @@ void HealthDepletionEncounterFlowState::RefreshOpponentPokemonStats() const
 
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId);
 
-    encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+    if
     (
-        encounterStateComponent.mDefenderFloatHealth / activeOpponentPokemon.mMaxHp,
-        true,
-        mWorld
-    );
+         encounterStateComponent.mOutstandingFloatDamage <= 0.0f ||
+         encounterStateComponent.mDefenderFloatHealth <= 0.0f
+    )
+    {
+        encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+        (
+            static_cast<float>(activeOpponentPokemon.mHp) / activeOpponentPokemon.mMaxHp,
+            true,
+            mWorld
+        );
+    }
+    else
+    {
+        encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+        (
+            encounterStateComponent.mDefenderFloatHealth / activeOpponentPokemon.mMaxHp,
+            true,
+            mWorld
+        );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

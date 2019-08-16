@@ -33,7 +33,14 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
-    if (encounterStateComponent.mIsOpponentsTurn && encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd > 0)
+    if
+    (
+        encounterStateComponent.mIsOpponentsTurn &&
+        (
+            encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd > 0 ||
+            activeOpponentPokemon.mStatus == PokemonStatus::CONFUSED
+        )
+    )
     {
         if (--encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd < 0)
         {
@@ -50,7 +57,14 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
             CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
         }                                
     }    
-    else if (encounterStateComponent.mIsOpponentsTurn == false && encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd > 0)
+    else if
+    (
+        encounterStateComponent.mIsOpponentsTurn == false &&
+        (
+            encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd > 0 ||
+            activePlayerPokemon.mStatus == PokemonStatus::CONFUSED
+        )
+    )
     {
         if (--encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd < 0)
         {

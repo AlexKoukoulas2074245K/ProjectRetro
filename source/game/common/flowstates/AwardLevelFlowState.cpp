@@ -133,7 +133,7 @@ void AwardLevelFlowState::RefreshPokemonStats() const
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 5, 1, mWorld);
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 6, 1, mWorld);
     
-    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL)
+    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL || activePlayerPokemon.mStatus == PokemonStatus::CONFUSED)
     {
         WriteTextAtTextboxCoords
         (

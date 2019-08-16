@@ -75,7 +75,7 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
     
     // Write opponent pokemon level string
     const auto opponentPokemonLevel = activeOpponentPokemon.mLevel;
-    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL)
+    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL || activeOpponentPokemon.mStatus == PokemonStatus::CONFUSED)
     {
         WriteTextAtTextboxCoords
         (

@@ -474,7 +474,12 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             mWorld
         );
         
-        if (pokemon.mStatus != PokemonStatus::NORMAL || pokemon.mHp <= 0)
+        if
+        (
+            (pokemon.mStatus != PokemonStatus::NORMAL &&
+            pokemon.mStatus != PokemonStatus::CONFUSED) ||
+            pokemon.mHp <= 0
+        )
         {
             WriteTextAtTextboxCoords
             (

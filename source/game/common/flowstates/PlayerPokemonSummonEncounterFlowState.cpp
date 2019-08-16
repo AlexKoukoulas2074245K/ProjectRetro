@@ -133,7 +133,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     );
     
     // Write player's pokemon level
-    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL)
+    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL || activePlayerPokemon.mStatus == PokemonStatus::CONFUSED)
     {
         WriteTextAtTextboxCoords
         (

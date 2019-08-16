@@ -422,7 +422,7 @@ void EncounterShakeControllerSystem::RedrawOpponentStatusDisplay(const float dx)
 
     // Write opponent pokemon level string
     const auto opponentPokemonLevel = activeOpponentPokemon.mLevel;
-    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL)
+    if (activeOpponentPokemon.mStatus == PokemonStatus::NORMAL || activeOpponentPokemon.mStatus == PokemonStatus::CONFUSED)
     {
         WriteTextAtTextboxCoords(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, "=" + std::to_string(opponentPokemonLevel), 3, 1, mWorld);
     }
