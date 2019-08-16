@@ -30,6 +30,7 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    void RefreshHurtPokemonStats() const;
     void RefreshPlayerPokemonStats() const;
     void RefreshOpponentPokemonStats() const;
 

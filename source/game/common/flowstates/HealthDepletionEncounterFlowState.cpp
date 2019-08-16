@@ -41,7 +41,7 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
-    
+        
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
         encounterStateComponent.mOutstandingFloatDamage = 0.0f;
@@ -49,17 +49,32 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     
     if (encounterStateComponent.mIsOpponentsTurn)
     {
-        activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        {
+            activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        }
+        else
+        {
+            activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        }
+        
     }
     else
     {
-        activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        {
+            activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        }
+        else
+        {
+            activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        }
     }
 }
 
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)
 {
-    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
@@ -67,17 +82,10 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         return;
     }
 
-    encounterStateComponent.mDefenderFloatHealth -= DEPLETION_SPEED * dt;
+    encounterStateComponent.mDefenderFloatHealth    -= DEPLETION_SPEED * dt;
     encounterStateComponent.mOutstandingFloatDamage -= DEPLETION_SPEED * dt;
 
-    if (encounterStateComponent.mIsOpponentsTurn)
-    {
-        RefreshPlayerPokemonStats();
-    }
-    else
-    {
-        RefreshOpponentPokemonStats();
-    }
+    RefreshHurtPokemonStats();
 
     if 
     (
@@ -89,14 +97,7 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         encounterStateComponent.mOutstandingFloatDamage = 0.0f;
 
         // Make sure to not show negative damage
-        if (encounterStateComponent.mIsOpponentsTurn)
-        {
-            RefreshPlayerPokemonStats();
-        }
-        else
-        {
-            RefreshOpponentPokemonStats();
-        }
+        RefreshHurtPokemonStats();
 
         if (encounterStateComponent.mLastMoveCrit)
         {
@@ -113,6 +114,34 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void HealthDepletionEncounterFlowState::RefreshHurtPokemonStats() const
+{
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        {
+            RefreshPlayerPokemonStats();
+        }
+        else
+        {
+            RefreshOpponentPokemonStats();
+        }
+    }
+    else
+    {
+        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        {
+            RefreshOpponentPokemonStats();
+        }
+        else
+        {
+            RefreshPlayerPokemonStats();
+        }
+    }
+}
+
 void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -127,7 +156,6 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
         false,
         mWorld
     );
-
 
     // Write player's pokemon current hp
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 1, 3, mWorld);

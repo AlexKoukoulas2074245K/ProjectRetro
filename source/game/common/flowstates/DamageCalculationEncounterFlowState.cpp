@@ -294,11 +294,13 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
                 {
                     if (encounterStateComponent.mIsOpponentsTurn)
                     {
-                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::CONFUSED;
+                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon          = PokemonStatus::CONFUSED;
+                        encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd = math::RandomInt(1, 4);
                     }
                     else
                     {
-                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::CONFUSED;
+                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon          = PokemonStatus::CONFUSED;
+                        encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd = math::RandomInt(1, 4);
                     }
                 }
             }

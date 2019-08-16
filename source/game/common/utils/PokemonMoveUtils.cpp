@@ -314,6 +314,22 @@ int CalculateDamage
     return static_cast<int>(fractionResult * modifiers);
 }
 
+int CalculatePokemonHurtingItselfDamage
+(
+    const int pokemonLevel,
+    const int pokemonAttackingStat,
+    const int pokemonDefendingStat
+)
+{
+    // https://bulbapedia.bulbagarden.net/wiki/Status_condition#Confusion    
+    const auto innerFractionTerm = static_cast<int>((2 * pokemonLevel) / 5.0f) + 2;
+    const auto numeratorTerm     = static_cast<int>(innerFractionTerm * 40 * pokemonAttackingStat);
+    const auto denominatorTerm   = static_cast<int>(50 * pokemonDefendingStat);
+    const auto fractionResult    = static_cast<int>(numeratorTerm / static_cast<float>(denominatorTerm)) + 2;
+    const auto modifiers         = math::RandomInt(217, 255) / 255.0f;
+    return static_cast<int>(fractionResult * modifiers);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

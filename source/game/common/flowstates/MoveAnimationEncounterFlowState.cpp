@@ -36,6 +36,7 @@ const glm::vec3 MoveAnimationEncounterFlowState::PLAYER_POKEMON_SPRITE_START_POS
 const glm::vec3 MoveAnimationEncounterFlowState::PLAYER_POKEMON_SPRITE_END_POSITION     = glm::vec3(-1.0f, 0.06f, 0.1f);
 const glm::vec3 MoveAnimationEncounterFlowState::OPPONENT_POKEMON_SPRITE_START_POSITION = glm::vec3(0.38f, 0.61f, 0.3f);
 const glm::vec3 MoveAnimationEncounterFlowState::OPPONENT_POKEMON_SPRITE_END_POSITION   = glm::vec3(0.99f, 0.61f, 0.3f);
+const glm::vec3 MoveAnimationEncounterFlowState::BATTLE_ANIMATION_SCALE                 = glm::vec3(2.0f, 2.0f, 1.0f);
 
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string MoveAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
@@ -44,8 +45,9 @@ const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_C
 const StringId MoveAnimationEncounterFlowState::TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("transition_flip_hud_special_case");
 const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                               = StringId("gui");
 
-const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED = 2.0f;
-const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z         = -1.0f;
+const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED            = 2.0f;
+const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z                    = -1.0f;
+const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_ENEMY_Y_DISPLACEMENT = 0.55f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -409,15 +411,20 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
         // In case we loaded enemy specific frames, position and scale them normally
         if (testWhetherSeparateFoldersExistsResultFrames.size() > 0)
         {
-            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
-            transformComponent->mPosition.y = 0.0f;
+            transformComponent->mScale = BATTLE_ANIMATION_SCALE;
         }
         // Otherwise, position them normally for player moves, and flip them horizontally and position them appropriately 
         // for enemy ones
         else
         {
-            transformComponent->mScale = glm::vec3(encounterStateComponent.mIsOpponentsTurn ? -2.0f : 2.0f, 2.0f, 2.0f);
-            transformComponent->mPosition.y = encounterStateComponent.mIsOpponentsTurn ? -0.55f : 0.0f;
+            transformComponent->mScale = BATTLE_ANIMATION_SCALE;            
+
+            if (encounterStateComponent.mIsOpponentsTurn)
+            {
+                // Flip move animation horizontally
+                transformComponent->mScale.x    = -transformComponent->mScale.x;
+                transformComponent->mPosition.y = -BATTLE_MOVE_ANIMATION_ENEMY_Y_DISPLACEMENT;
+            }
         }
 
         mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));

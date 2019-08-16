@@ -25,7 +25,7 @@
 #include <glm/mat4x4.hpp>               // mat4
 #include <glm/gtc/matrix_transform.hpp> // mat helpers
 #include <glm/gtc/matrix_access.hpp>    // mat helpers
-#include <random>                       // srand, rand
+#include <random>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -244,23 +244,14 @@ inline float TweenValue(const float val, const std::function<float(const float)>
 ////////////////////////////////////////////////////////////////////////////////////
 
 // Computes a random int based on the min and max inclusive values provided
-static bool hasInitializedSeed = false;
 inline int RandomInt(const int min = 0, const int max = RAND_MAX)
-{
-    if (!hasInitializedSeed)
-    {
-        std::srand(static_cast<unsigned int>(time(nullptr)));
-        hasInitializedSeed = true;
-    }
-    
-    if (max == RAND_MAX)
-    {
-        return (std::rand() % (max - min)) + min;
-    }
-    else
-    {
-        return (std::rand() % (max - min + 1)) + min;
-    }
+{    
+    static std::random_device rd;
+    static std::mt19937 eng(rd());        
+
+    std::uniform_int_distribution<> distr(min, max);    
+
+    return distr(eng);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -270,12 +261,6 @@ inline int RandomInt(const int min = 0, const int max = RAND_MAX)
 // Computes a random float based on the min and max inclusive values provided
 inline float RandomFloat(const float min = 0.0f, const float max = 1.0f)
 {
-    if (!hasInitializedSeed)
-    {
-        std::srand(static_cast<unsigned int>(time(nullptr)));
-        hasInitializedSeed = true;
-    }
-
     return min + static_cast <float> (RandomInt()) / (static_cast <float> (RAND_MAX / (max - min)));
 }
 
@@ -286,7 +271,7 @@ inline float RandomFloat(const float min = 0.0f, const float max = 1.0f)
 // Computes a random sign, 1 or -1
 inline int RandomSign()
 {
-    return (RandomInt(0, 2)) ? 1 : -1;
+    return RandomInt(0, 1) == 0 ? -1 : 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

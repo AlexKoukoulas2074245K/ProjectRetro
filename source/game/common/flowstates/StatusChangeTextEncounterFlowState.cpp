@@ -25,8 +25,8 @@
 StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
@@ -41,7 +41,28 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
         return;
     }
 
-    
+    if
+    (
+        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon != PokemonStatus::NORMAL && 
+        activeOpponentPokemon.mStatus == encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon
+    )
+    {
+        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        return;
+    }
+
+    if
+    (
+        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon != PokemonStatus::NORMAL && 
+        activePlayerPokemon.mStatus == encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon
+    )
+    {
+        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        return;
+    }
+
     const auto statusToChangeTo =
         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon != PokemonStatus::NORMAL ?
         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon :

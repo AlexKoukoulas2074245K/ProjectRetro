@@ -39,10 +39,12 @@ private:
     static const glm::vec3 PLAYER_STATUS_DISPLAY_SCALE;
     static const glm::vec3 OPPONENT_POKEMON_DEATH_COVER_POSITION;
     static const glm::vec3 SPRITE_SCALE;
+    static const glm::vec3 POKEMON_SUMMON_ANIMATION_SCALE;
 
     static const std::string POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME;
     static const std::string POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME;
 
+    static const float POKEMON_SUMMON_ANIMATION_Z;
     static const float SPRITE_ANIMATION_SPEED;
 };
 

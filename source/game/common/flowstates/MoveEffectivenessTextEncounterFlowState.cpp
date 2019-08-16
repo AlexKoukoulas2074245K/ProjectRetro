@@ -43,9 +43,14 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
             *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]:
             *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
-    auto effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
-    
-    if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
+    auto effectivenessFactor = 1.0f;
+
+    if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+    {        
+        effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
+    }
+         
+    if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId() && encounterStateComponent.mDidConfusedPokemonHurtItself == false)
     {
         effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
     }

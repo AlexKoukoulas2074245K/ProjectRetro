@@ -32,26 +32,26 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
-    if (encounterStateComponent.mIsOpponentsTurn && encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED)
+    if (encounterStateComponent.mIsOpponentsTurn && encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd > 0)
     {
-        activeOpponentPokemon.mStatus = encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon;
-        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+        if (encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED)
+        {
+            encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+            activeOpponentPokemon.mStatus = PokemonStatus::CONFUSED;
+        }
+                
         CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
-    }
-    else if (encounterStateComponent.mIsOpponentsTurn && activeOpponentPokemon.mStatus == PokemonStatus::CONFUSED)
+    }    
+    else if (encounterStateComponent.mIsOpponentsTurn == false && encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd > 0)
     {
+        if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED)
+        {
+            encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+            activePlayerPokemon.mStatus = PokemonStatus::CONFUSED;
+        }
+
         CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
-    }
-    else if (encounterStateComponent.mIsOpponentsTurn == false && encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED)
-    {
-        activePlayerPokemon.mStatus = encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon;
-        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
-        CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
-    }
-    else if (encounterStateComponent.mIsOpponentsTurn == false && activePlayerPokemon.mStatus == PokemonStatus::CONFUSED)
-    {
-        CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
-    }
+    }   
     else
     {
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();

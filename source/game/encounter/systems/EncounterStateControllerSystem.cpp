@@ -14,6 +14,7 @@
 #include "../components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 #include "../utils/EncounterSpriteUtils.h"
 #include "../../common/components/DirectionComponent.h"
+#include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
 #include "../../common/utils/PokemonUtils.h"
@@ -96,12 +97,14 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     
     mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
     
-    encounterStateComponent.mNumberOfEscapeAttempts              = 0;
-    encounterStateComponent.mHasEscapeSucceeded                  = false;
-    encounterStateComponent.mHasPokemonEvolvedInBattle           = false;
-    encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
-    encounterStateComponent.mActivePlayerPokemonRosterIndex      = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
-    encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
+    encounterStateComponent.mNumberOfEscapeAttempts                             = 0;
+    encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd   = 0;
+    encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd = 0;
+    encounterStateComponent.mHasEscapeSucceeded                                 = false;
+    encounterStateComponent.mHasPokemonEvolvedInBattle                          = false;
+    encounterStateComponent.mOverworldEncounterAnimationState                   = OverworldEncounterAnimationState::NONE;
+    encounterStateComponent.mActivePlayerPokemonRosterIndex                     = GetFirstNonFaintedPokemonIndex(playerStateComponent.mPlayerPokemonRoster);
+    encounterStateComponent.mLastEncounterMainMenuActionSelected                = MainMenuActionType::FIGHT;
     encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap.clear();    
 
     // Reset all stat modifiers for all player's pokemon
@@ -113,7 +116,7 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
             encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap[i][j] = 0.0f;
         }
     }
-    
+        
     CreateChatbox(mWorld);
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
@@ -121,9 +124,9 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
 
 void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() const
 {
-    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();    
     const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-    
+
     auto& playerStateComponent              = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
@@ -152,8 +155,11 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     encounterStateComponent.mOverworldEncounterAnimationState    = OverworldEncounterAnimationState::NONE;
     encounterStateComponent.mOpponentPokemonRoster.clear();
     DestroyLevel(levelModelComponent.mLevelName, mWorld);
-    
-    DestroyActiveTextbox(mWorld);
+        
+    while (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
+    {
+        DestroyActiveTextbox(mWorld);
+    }    
     
     DestroyEncounterSprites(mWorld);
     

@@ -45,6 +45,7 @@ private:
     static const glm::vec3 PLAYER_POKEMON_SPRITE_END_POSITION;
     static const glm::vec3 OPPONENT_POKEMON_SPRITE_START_POSITION;
     static const glm::vec3 OPPONENT_POKEMON_SPRITE_END_POSITION;
+    static const glm::vec3 BATTLE_ANIMATION_SCALE;
 
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
@@ -55,6 +56,7 @@ private:
 
     static const float SPRITE_MOVEMENT_ANIMATION_SPEED;
     static const float BATTLE_MOVE_ANIMATION_Z;
+    static const float BATTLE_MOVE_ANIMATION_ENEMY_Y_DISPLACEMENT;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

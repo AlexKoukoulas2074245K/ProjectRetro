@@ -490,8 +490,12 @@ void RestorePokemonStats
 )
 {
     pokemon.mHp     = pokemon.mMaxHp;
-    pokemon.mStatus = PokemonStatus::NORMAL;
-    
+
+    if (pokemon.mStatus == PokemonStatus::CONFUSED)
+    {
+        pokemon.mStatus = PokemonStatus::NORMAL;
+    }
+        
     for (auto i = 0U; i < pokemon.mMoveSet.size(); ++i)
     {
         if (pokemon.mMoveSet[i] != nullptr)

@@ -187,7 +187,15 @@
         "pp": 25,
 		"effect": "99%ECON"
     },
-
+	
+	"CONFUSION_HURT_ITSELF":
+	{
+		"type": "NONE",
+        "power": 40,
+        "accuracy": 0,
+        "pp": 0
+	},
+	
     "CONSTRICT":
     {
         "type": "NORMAL",
@@ -967,7 +975,7 @@
         "effect": "May cause flinching."
     },
 
-    "SAND_ATTACK":
+    "SAND-ATTACK":
     {
         "type": "GROUND",
         "power": 0,

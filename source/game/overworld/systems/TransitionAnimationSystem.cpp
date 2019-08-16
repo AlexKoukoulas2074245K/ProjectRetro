@@ -24,11 +24,15 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const glm::vec3 TransitionAnimationSystem::TRANSITION_ANIMATION_SCALE = glm::vec3(2.0f, 2.0f, 1.0f);
+
 const std::string TransitionAnimationSystem::TRANSITION_ANIM_MODEL_FILE_NAME = "transition_anim_quad.obj";
+
 const float TransitionAnimationSystem::WARP_TRANSITION_STEP_DURATION          = 0.13f;
 const float TransitionAnimationSystem::WILD_FLASH_ANIMATION_STEP_DURATION     = 0.035f;
 const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_FRAME_DURATION     = 0.035f;
 const float TransitionAnimationSystem::ENCOUNTER_ANIMATION_END_DELAY_DURATION = 1.0f;
+
 const int TransitionAnimationSystem::TRANSITION_STEP_COUNT                    = 3;
 const int TransitionAnimationSystem::WILD_FLASH_CYCLE_REPEAT_COUNT            = 3;
 
@@ -161,20 +165,20 @@ void TransitionAnimationSystem::UpdateEncounterTransitionAnimation(const float d
         {
             transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity = mWorld.CreateEntity();
 
-            auto renderableComponent = std::make_unique<RenderableComponent>();
+            auto renderableComponent                    = std::make_unique<RenderableComponent>();
             renderableComponent->mTextureResourceId     = transitionAnimationStateComponent.mAnimFrameResourceIdQueue.front();
             renderableComponent->mActiveAnimationNameId = StringId("default");
             renderableComponent->mShaderNameId          = StringId("gui");
             renderableComponent->mAffectedByPerspective = false;
 
-            const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + TRANSITION_ANIM_MODEL_FILE_NAME;
+            const auto frameModelPath    = ResourceLoadingService::RES_MODELS_ROOT + TRANSITION_ANIM_MODEL_FILE_NAME;
             auto& resourceLoadingService = ResourceLoadingService::GetInstance();
             renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(frameModelPath));
 
             transitionAnimationStateComponent.mAnimFrameResourceIdQueue.pop();
 
-            auto transformComponent = std::make_unique<TransformComponent>();
-            transformComponent->mScale = glm::vec3(2.0f, 2.0f, 2.0f);
+            auto transformComponent    = std::make_unique<TransformComponent>();
+            transformComponent->mScale = TRANSITION_ANIMATION_SCALE;
 
             mWorld.AddComponent<RenderableComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(renderableComponent));
             mWorld.AddComponent<TransformComponent>(transitionAnimationStateComponent.mEncounterSpecificAnimFrameEntity, std::move(transformComponent));

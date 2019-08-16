@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/utils/MathUtils.h"
 
 #include <string>
 
@@ -33,14 +34,7 @@ public:
    
     static const float WILD_FLASH_ANIMATION_STEP_DURATION;
 
-private:
-    static const std::string TRANSITION_ANIM_MODEL_FILE_NAME;
-    static const float WARP_TRANSITION_STEP_DURATION;    
-    static const float ENCOUNTER_ANIMATION_FRAME_DURATION;
-    static const float ENCOUNTER_ANIMATION_END_DELAY_DURATION;
-    static const int TRANSITION_STEP_COUNT;
-    static const int WILD_FLASH_CYCLE_REPEAT_COUNT;
-
+private:    
     void UpdateWarpTransitionAnimation(const float dt) const;
     void UpdateWildFlashTransitionAnimation(const float dt) const;
     void UpdateEncounterTransitionAnimation(const float dt) const;
@@ -48,6 +42,17 @@ private:
     void UpdateEncounterEndTransitionAnimation(const float dt) const;
     void LoadEncounterSpecificAnimation() const;
     std::string SelectAppropriateBattleTransitionAnimation() const;
+
+    static const std::string TRANSITION_ANIM_MODEL_FILE_NAME;
+
+    static const glm::vec3 TRANSITION_ANIMATION_SCALE;
+
+    static const float WARP_TRANSITION_STEP_DURATION;
+    static const float ENCOUNTER_ANIMATION_FRAME_DURATION;
+    static const float ENCOUNTER_ANIMATION_END_DELAY_DURATION;
+
+    static const int TRANSITION_STEP_COUNT;
+    static const int WILD_FLASH_CYCLE_REPEAT_COUNT;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

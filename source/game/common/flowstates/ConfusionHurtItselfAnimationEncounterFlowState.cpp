@@ -1,48 +1,55 @@
 //
-//  ConfusionAnimationEncounterFlowState.cpp
+//  ConfusionHurtItselfAnimationEncounterFlowState.cpp
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 15/08/2019.
+//  Created by Alex Koukoulas on 16/08/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "ConfusionAnimationEncounterFlowState.h"
-#include "ConfusionCheckResultEncounterFlowState.h"
+#include "ConfusionHurtItselfAnimationEncounterFlowState.h"
+#include "HealthDepletionEncounterFlowState.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/FileUtils.h"
 #include "../utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../utils/PokemonMoveUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 ConfusionAnimationEncounterFlowState::CONFUSION_CHECK_ANIMATION_SCALE = glm::vec3(2.0f, 2.0f, 1.0f);
+const glm::vec3 ConfusionHurtItselfAnimationEncounterFlowState::POKEMON_HURT_ITSELF_ANIMATION_SCALE = glm::vec3(2.0f, 2.0f, 1.0f);
 
-const std::string ConfusionAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME     = "battle_anim_quad.obj";
-const std::string ConfusionAnimationEncounterFlowState::PLAYER_CONFUSION_CHECK_ANIMATION_DIR = "battle_animations/CONFUSION_CHECK/";
-const std::string ConfusionAnimationEncounterFlowState::ENEMY_CONFUSION_CHECK_ANIMATION_DIR  = "battle_animations/CONFUSION_CHECK_ENEMY/";
+const std::string ConfusionHurtItselfAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME         = "battle_anim_quad.obj";
+const std::string ConfusionHurtItselfAnimationEncounterFlowState::PLAYER_POKEMON_HURT_ITSELF_ANIMATION_DIR = "battle_animations/CONFUSION_HURT_ITSELF/";
+const std::string ConfusionHurtItselfAnimationEncounterFlowState::ENEMY_POKEMON_HURT_ITSELF_ANIMATION_DIR  = "battle_animations/CONFUSION_HURT_ITSELF_ENEMY/";
 
-const float ConfusionAnimationEncounterFlowState::CONFUSION_CHECK_ANIMATION_Z = -1.0f;
+const float ConfusionHurtItselfAnimationEncounterFlowState::POKEMON_HURT_ITSELF_ANIMATION_Z = -1.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ConfusionAnimationEncounterFlowState::ConfusionAnimationEncounterFlowState(ecs::World& world)
+ConfusionHurtItselfAnimationEncounterFlowState::ConfusionHurtItselfAnimationEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    LoadConfusionCheckAnimationFrames();
+    LoadPokemonHurtItselfAnimationFrames();
 }
 
-void ConfusionAnimationEncounterFlowState::VUpdate(const float dt)
+void ConfusionHurtItselfAnimationEncounterFlowState::VUpdate(const float dt)
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();   
+
+    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer->Update(dt);
     if (encounterStateComponent.mViewObjects.mBattleAnimationTimer->HasTicked())
@@ -72,36 +79,58 @@ void ConfusionAnimationEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
 
             auto transformComponent         = std::make_unique<TransformComponent>();
-            transformComponent->mPosition.z = CONFUSION_CHECK_ANIMATION_Z;
-            transformComponent->mScale      = CONFUSION_CHECK_ANIMATION_SCALE;
+            transformComponent->mPosition.z = POKEMON_HURT_ITSELF_ANIMATION_Z;
+            transformComponent->mScale      = POKEMON_HURT_ITSELF_ANIMATION_SCALE;
 
             mWorld.AddComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(renderableComponent));
             mWorld.AddComponent<TransformComponent>(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId, std::move(transformComponent));
         }
         else
         {
-            CompleteAndTransitionTo<ConfusionCheckResultEncounterFlowState>();
+            encounterStateComponent.mLastMoveSelected             = StringId("CONFUSION_HURT_ITSELF");
+            encounterStateComponent.mLastMoveCrit                 = false;            
+
+            if (encounterStateComponent.mIsOpponentsTurn)
+            { 
+                encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculatePokemonHurtingItselfDamage
+                (
+                    activeOpponentPokemon.mLevel,
+                    activeOpponentPokemon.mAttack,
+                    activeOpponentPokemon.mDefense
+                ));
+            }
+            else
+            {
+                encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculatePokemonHurtingItselfDamage
+                (
+                    activePlayerPokemon.mLevel, 
+                    activePlayerPokemon.mAttack, 
+                    activePlayerPokemon.mDefense
+                ));
+            }                        
+            
+            CompleteAndTransitionTo<HealthDepletionEncounterFlowState>();
         }
-    }    
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void ConfusionAnimationEncounterFlowState::LoadConfusionCheckAnimationFrames() const
+void ConfusionHurtItselfAnimationEncounterFlowState::LoadPokemonHurtItselfAnimationFrames() const
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    auto& resourceLoadingService  = ResourceLoadingService::GetInstance();
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_MOVE_ANIMATION_FRAME_DURATION);
 
-    auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT + 
-    (
-        encounterStateComponent.mIsOpponentsTurn ? 
-        ENEMY_CONFUSION_CHECK_ANIMATION_DIR : 
-        PLAYER_CONFUSION_CHECK_ANIMATION_DIR 
-    );
+    auto battleAnimationDirPath = ResourceLoadingService::RES_TEXTURES_ROOT +
+        (
+            encounterStateComponent.mIsOpponentsTurn ?
+            ENEMY_POKEMON_HURT_ITSELF_ANIMATION_DIR :
+            PLAYER_POKEMON_HURT_ITSELF_ANIMATION_DIR
+            );
 
     const auto& battleAnimFilenames = GetAllFilenamesInDirectory(battleAnimationDirPath);
     if (battleAnimFilenames.size() == 0)
