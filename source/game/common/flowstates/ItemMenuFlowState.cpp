@@ -109,6 +109,7 @@ void ItemMenuFlowState::UpdateItemMenu(const float dt)
     
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
+        SaveItemMenuState();
         const auto& itemBagEntry = playerStateComponent.mPlayerBag.at(itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow);
         if (itemBagEntry.mItemName == CANCEL_ITEM_NAME)
         {
@@ -116,8 +117,7 @@ void ItemMenuFlowState::UpdateItemMenu(const float dt)
             return;
         }
         else
-        {
-            SaveItemMenuState();
+        {            
             const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
@@ -222,8 +222,7 @@ void ItemMenuFlowState::CancelItemMenu()
 }
 
 void ItemMenuFlowState::TransitionToItemUsageFlow()
-{
-    SaveItemMenuState();
+{    
     CompleteAndTransitionTo<ItemUsageFlowState>();
 }
 

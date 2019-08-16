@@ -241,7 +241,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("BUTTERFREE"),
+                            encounterInfo.mPokemonName,
                             false,
                             encounterInfo.mPokemonLevel,
                             mWorld
