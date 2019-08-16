@@ -185,7 +185,7 @@
         "power": 50,
         "accuracy": 255,
         "pp": 25,
-		"effect": "99%ECON"
+		"effect": "10%ECON"
     },
 	
 	"CONFUSION_HURT_ITSELF":
