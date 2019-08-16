@@ -12,6 +12,7 @@
 #include "PreDamageCalculationChecksEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "PokemonConfusedTextEncounterFlowState.h"
+#include "PokemonSnappedOutOfConfusionEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -34,23 +35,37 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
 
     if (encounterStateComponent.mIsOpponentsTurn && encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd > 0)
     {
-        if (encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED)
+        if (--encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd < 0)
         {
-            encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
-            activeOpponentPokemon.mStatus = PokemonStatus::CONFUSED;
+            CompleteAndTransitionTo<PokemonSnappedOutOfConfusionEncounterFlowState>();
         }
-                
-        CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
+        else
+        {
+            if (encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+                activeOpponentPokemon.mStatus = PokemonStatus::CONFUSED;
+            }
+
+            CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
+        }                                
     }    
     else if (encounterStateComponent.mIsOpponentsTurn == false && encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd > 0)
     {
-        if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED)
+        if (--encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd < 0)
         {
-            encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
-            activePlayerPokemon.mStatus = PokemonStatus::CONFUSED;
+            CompleteAndTransitionTo<PokemonSnappedOutOfConfusionEncounterFlowState>();
         }
+        else
+        {
+            if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+                activePlayerPokemon.mStatus = PokemonStatus::CONFUSED;
+            }
 
-        CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
+            CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
+        }        
     }   
     else
     {
