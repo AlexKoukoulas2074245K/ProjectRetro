@@ -11,6 +11,7 @@
 
 #include "BallUsageResultTextEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
+#include "PoisonTickCheckEncounterFlowState.h"
 #include "PokedexPokemonEntryDisplayFlowState.h"
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -73,13 +74,9 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
             ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster.front()->mName, PokedexEntryType::OWNED, mWorld);
         }
         else
-        {
-            encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
-            encounterStateComponent.mIsOpponentsTurn = false;
-            encounterStateComponent.mTurnsCompleted = 0;
-            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::ITEM;
-            encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-            CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        {            
+            encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::ITEM;            
+            CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
         }
     }
 }

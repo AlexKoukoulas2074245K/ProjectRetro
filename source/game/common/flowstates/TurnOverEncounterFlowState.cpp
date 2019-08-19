@@ -34,6 +34,20 @@ void TurnOverEncounterFlowState::VUpdate(const float)
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
+    // The player has used an item (pokeball, potion, etc.) or tried to run so their turn is skipped
+    if
+    (
+        encounterStateComponent.mLastEncounterMainMenuActionSelected == MainMenuActionType::ITEM ||
+        encounterStateComponent.mLastEncounterMainMenuActionSelected == MainMenuActionType::RUN ||
+        encounterStateComponent.mLastEncounterMainMenuActionSelected == MainMenuActionType::POKEMON
+    )
+    {
+        encounterStateComponent.mPlayerChangedPokemonFromMainMenu         = false;
+        encounterStateComponent.mIsOpponentsTurn                          = false;
+        encounterStateComponent.mTurnsCompleted                           = 0;
+        encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
+    }    
+
     encounterStateComponent.mDidConfusedPokemonHurtItself = false;
     encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;    
     

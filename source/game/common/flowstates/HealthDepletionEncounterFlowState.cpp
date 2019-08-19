@@ -58,6 +58,7 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
             activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
         }
         
+        
     }
     else
     {

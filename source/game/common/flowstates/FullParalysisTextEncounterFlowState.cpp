@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "FullParalysisTextEncounterFlowState.h"
+#include "PoisonTickCheckEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
 #include "../utils/TextboxUtils.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -45,7 +46,7 @@ void FullParalysisTextEncounterFlowState::VUpdate(const float)
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
     }
 }
 

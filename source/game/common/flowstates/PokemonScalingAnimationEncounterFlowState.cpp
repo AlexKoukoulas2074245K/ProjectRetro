@@ -109,11 +109,7 @@ void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
 
         if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
         {
-            encounterStateComponent.mPlayerChangedPokemonFromMainMenu         = false;
-            encounterStateComponent.mIsOpponentsTurn                          = false;
-            encounterStateComponent.mTurnsCompleted                           = 0;
-            encounterStateComponent.mLastEncounterMainMenuActionSelected      = MainMenuActionType::FIGHT;
-            encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
+            encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;            
             CompleteAndTransitionTo<TurnOverEncounterFlowState>();
         }        
         else

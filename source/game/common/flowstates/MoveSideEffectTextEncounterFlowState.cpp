@@ -70,7 +70,8 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
     if 
     (
         StringEndsWith(moveEffectString, "EPAR") ||
-        StringEndsWith(moveEffectString, "ECON") 
+        StringEndsWith(moveEffectString, "ECON") ||
+        StringEndsWith(moveEffectString, "EPOI")
     )
     {
         return;

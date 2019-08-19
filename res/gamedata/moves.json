@@ -844,6 +844,14 @@
         "pp": 35,
         "effect": "May poison the opponent."
     },
+	
+	"POISON_TICK":
+    {
+        "type": "NONE",
+        "power": 0,
+        "accuracy": 0,
+        "pp": 0        
+    },
 
     "POUND":
     {
@@ -1271,7 +1279,8 @@
         "type": "NORMAL",
         "power": 35,
         "accuracy": 242,
-        "pp": 35
+        "pp": 35,
+		"effect": "99%EPOI"
     },
 
     "TAIL_WHIP":
@@ -1316,7 +1325,7 @@
         "power": 110,
         "accuracy": 178,
         "pp": 10,
-        "effect": "May paralyze opponent."
+        "effect": "10%EPAR"
     },
 
     "THUNDER_PUNCH":
@@ -1328,13 +1337,13 @@
         "effect": "May paralyze opponent."
     },
 
-    "THUNDER_SHOCK":
+    "THUNDERSHOCK":
     {
         "type": "ELECTRIC",
         "power": 40,
         "accuracy": 255,
         "pp": 30,
-        "effect": "May paralyze opponent."
+        "effect": "10%EPAR"
     },
 
     "THUNDER_WAVE":
@@ -1352,7 +1361,7 @@
         "power": 95,
         "accuracy": 255,
         "pp": 15,
-		"effect": "10%PAR"
+		"effect": "10%EPAR"
     },
 
     "TOXIC":

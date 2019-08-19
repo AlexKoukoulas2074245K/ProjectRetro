@@ -11,6 +11,7 @@
 
 #include "RunAttemptEncounterFlowState.h"
 #include "MainMenuEncounterFlowState.h"
+#include "PoisonTickCheckEncounterFlowState.h"
 #include "TurnOverEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -48,12 +49,8 @@ void RunAttemptEncounterFlowState::VUpdate(const float)
                 encounterStateComponent.mEncounterJustFinished = true;
             }
             else
-            {
-                encounterStateComponent.mIsOpponentsTurn = false;
-                encounterStateComponent.mTurnsCompleted = 0;
-                encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
-                encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
-                CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+            {                
+                CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
             }
         }
     }

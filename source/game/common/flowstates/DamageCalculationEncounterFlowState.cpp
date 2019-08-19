@@ -265,6 +265,31 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
             }
         }
     }
+    else if (fullMoveEffectString == "EPOI")
+    {
+        if (encounterStateComponent.mIsOpponentsTurn == true)
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::POISONED;
+            }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
+            }
+        }
+        else
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::POISONED;
+            }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
+            }
+        }
+    }
     else if (std::isdigit(fullMoveEffectString[0]))
     {
         const auto probability = std::stoi(fullMoveEffectString.substr(0, 2));
@@ -287,7 +312,21 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
                         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
                     }
                 }
-            }                            
+            }       
+            else if (moveEffectName == "EPOI")
+            {
+                if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+                {
+                    if (encounterStateComponent.mIsOpponentsTurn)
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::POISONED;
+                    }
+                    else
+                    {
+                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::POISONED;
+                    }
+                }
+            }
             else if (moveEffectName == "ECON")
             {
                 if (defendingPokemon.mStatus != PokemonStatus::CONFUSED)

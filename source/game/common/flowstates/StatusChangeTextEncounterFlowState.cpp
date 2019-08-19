@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "StatusChangeTextEncounterFlowState.h"
-#include "TurnOverEncounterFlowState.h"
+#include "PoisonTickCheckEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/OSMessageBox.h"
@@ -37,7 +37,7 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
         encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL
     )
     {
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
         return;
     }
 
@@ -48,7 +48,7 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
     )
     {
         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
         return;
     }
 
@@ -59,7 +59,7 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
     )
     {
         encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
         return;
     }
 
@@ -127,7 +127,7 @@ void StatusChangeTextEncounterFlowState::VUpdate(const float)
         encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL
     )
     {
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
         return;
     }
     
@@ -184,7 +184,7 @@ void StatusChangeTextEncounterFlowState::VUpdate(const float)
             }
         }
 
-        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
     }
 }
 
