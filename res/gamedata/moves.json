@@ -1279,8 +1279,7 @@
         "type": "NORMAL",
         "power": 35,
         "accuracy": 242,
-        "pp": 35,
-		"effect": "99%EPOI"
+        "pp": 35		
     },
 
     "TAIL_WHIP":
@@ -1289,7 +1288,7 @@
         "power": 0,
         "accuracy": 255,
         "pp": 30,
-        "effect": "EPOI"
+        "effect": "ED-1"
     },
 
     "TAKE_DOWN":
