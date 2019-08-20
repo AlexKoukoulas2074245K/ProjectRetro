@@ -44,7 +44,6 @@ void TurnOverEncounterFlowState::VUpdate(const float)
     {
         encounterStateComponent.mPlayerChangedPokemonFromMainMenu         = false;
         encounterStateComponent.mIsOpponentsTurn                          = false;
-        encounterStateComponent.mTurnsCompleted                           = 0;
         encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
     }    
     
@@ -67,8 +66,9 @@ void TurnOverEncounterFlowState::VUpdate(const float)
     }
     
     // Both player turns are over
-    if (++encounterStateComponent.mTurnsCompleted == 2)
+    if (++encounterStateComponent.mTurnsCompleted >= 2)
     {
+        encounterStateComponent.mTurnsCompleted = 0;
         CompleteAndTransitionTo<MainMenuEncounterFlowState>();
     }
     else

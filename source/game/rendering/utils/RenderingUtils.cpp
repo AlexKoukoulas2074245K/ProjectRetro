@@ -77,8 +77,8 @@ void GetPrimaryLightAndPrimaryDarkColorsFromSet
 
     if (colorCount == 5)
     {
-        outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
-        outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 4)]);
+        outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+        outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
     }
     else
     {

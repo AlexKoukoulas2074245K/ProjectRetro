@@ -198,7 +198,7 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
         (
             encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
             std::to_string(activePlayerPokemon.mHp) + "/",
-            4 - static_cast<int>(std::to_string(integerDefendersHealth).size()),
+            4 - static_cast<int>(std::to_string(activePlayerPokemon.mHp).size()),
             3,
             mWorld
         );

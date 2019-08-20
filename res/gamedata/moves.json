@@ -989,7 +989,7 @@
         "power": 0,
         "accuracy": 255,
         "pp": 15,
-        "effect": "Lowers opponent's Accuracy."
+        "effect": "EH-1"
     },
 
     "SCRATCH":
@@ -1289,7 +1289,7 @@
         "power": 0,
         "accuracy": 255,
         "pp": 30,
-        "effect": "ED-1"
+        "effect": "EPOI"
     },
 
     "TAKE_DOWN":

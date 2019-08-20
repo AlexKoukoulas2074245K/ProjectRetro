@@ -12,6 +12,7 @@
 #include "MoveEffectivenessTextEncounterFlowState.h"
 #include "MoveSideEffectTextEncounterFlowState.h"
 #include "PoisonTickCheckEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/MathUtils.h"
@@ -149,14 +150,11 @@ void MoveEffectivenessTextEncounterFlowState::TestHpAndTransition()
 
     if 
     (
-        encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME && 
-        (
-            activePlayerPokemon.mHp <= 0 ||
-            activeOpponentPokemon.mHp <= 0
-        )        
+        activePlayerPokemon.mHp <= 0 ||
+        activeOpponentPokemon.mHp <= 0
     )
     {
-        CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
     }
     else
     {

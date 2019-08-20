@@ -77,10 +77,10 @@ void EncounterStateControllerSystem::InitializeEncounterState() const
 
 void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() const
 {
-    const auto& activeLevelComponent        = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    const auto& levelModelComponent         = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-    auto& playerStateComponent              = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& encounterStateComponent           = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    auto& playerStateComponent       = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     const auto overworldPlayerEntityId           = GetPlayerEntityId(mWorld);
     const auto& overworldPlayerMovementComponent = mWorld.GetComponent<MovementStateComponent>(overworldPlayerEntityId);
@@ -110,7 +110,15 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     // Reset all stat modifiers for all player's pokemon
     for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
     {
-        ResetPokemonEncounterModifierStages(*playerStateComponent.mPlayerPokemonRoster[i]);
+        auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
+        
+        if (pokemon.mStatus == PokemonStatus::CONFUSED)
+        {
+            pokemon.mStatus = PokemonStatus::NORMAL;
+        }
+        
+        ResetPokemonEncounterModifierStages(pokemon);
+        
         for (auto j = 0U; j < encounterStateComponent.mOpponentPokemonRoster.size(); ++j)
         {
             encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap[i][j] = 0.0f;
