@@ -87,9 +87,11 @@ void ConfusionHurtItselfAnimationEncounterFlowState::VUpdate(const float dt)
         }
         else
         {
-            encounterStateComponent.mLastMoveSelected = CONFUSION_HURT_ITSELF_MOVE_NAME;
-            encounterStateComponent.mLastMoveCrit     = false;            
-
+            encounterStateComponent.mLastMoveSelected                = CONFUSION_HURT_ITSELF_MOVE_NAME;
+            encounterStateComponent.mLastMoveCrit                    = false;
+            encounterStateComponent.mMoveHadNoEffect                 = false;
+            encounterStateComponent.mNothingHappendFromMoveExecution = false;
+            
             if (encounterStateComponent.mIsOpponentsTurn)
             { 
                 encounterStateComponent.mDefenderFloatHealth = static_cast<float>(activeOpponentPokemon.mHp);
