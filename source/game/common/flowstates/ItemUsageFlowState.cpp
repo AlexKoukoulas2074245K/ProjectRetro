@@ -41,14 +41,19 @@ ItemUsageFlowState::ItemUsageFlowState(ecs::World& world)
 
 void ItemUsageFlowState::VUpdate(const float)
 {    
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& itemBagEntry            = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
-    const auto& selectedItemStats       = GetItemStats(itemBagEntry.mItemName, mWorld);
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& itemBagEntry         = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
+    const auto& selectedItemStats    = GetItemStats(itemBagEntry.mItemName, mWorld);
+    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (ItemCanBeUsed())
     {
+        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+        {
+            encounterStateComponent.mIsOpponentsTurn = false;
+        }
+
         RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
 
         if (selectedItemStats.mEffect == StringId("BALL"))

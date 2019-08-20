@@ -305,6 +305,7 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
 
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
+            encounterStateComponent.mIsOpponentsTurn = false;
             encounterStateComponent.mPlayerChangedPokemonFromMainMenu = true;
             DestroyActiveTextbox(mWorld);
             CompleteAndTransitionTo<PlayerPokemonWithdrawTextEncounterFlowState>();
