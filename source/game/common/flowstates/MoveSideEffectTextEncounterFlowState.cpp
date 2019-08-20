@@ -71,7 +71,8 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
     (
         StringEndsWith(moveEffectString, "EPAR") ||
         StringEndsWith(moveEffectString, "ECON") ||
-        StringEndsWith(moveEffectString, "EPOI")
+        StringEndsWith(moveEffectString, "EPOI") ||
+        StringEndsWith(moveEffectString, "ESLP")
     )
     {
         return;

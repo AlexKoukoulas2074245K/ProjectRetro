@@ -9,10 +9,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "PokemonJustWokeUpEncounterFlowState.h"
 #include "PreDamageCalculationChecksEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "PokemonConfusedTextEncounterFlowState.h"
 #include "PokemonSnappedOutOfConfusionEncounterFlowState.h"
+#include "PokemonFastAsleepTextEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -80,7 +82,55 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
 
             CompleteAndTransitionTo<PokemonConfusedTextEncounterFlowState>();
         }        
-    }   
+    }
+    else if
+    (
+        encounterStateComponent.mIsOpponentsTurn == false &&
+        (
+            activePlayerPokemon.mNumberOfRoundsUntilSleepEnds > 0 ||
+            activePlayerPokemon.mStatus == PokemonStatus::ASLEEP
+        )
+    )
+    {
+        if (--activePlayerPokemon.mNumberOfRoundsUntilSleepEnds < 0)
+        {
+            CompleteAndTransitionTo<PokemonJustWokeUpEncounterFlowState>();
+        }
+        else
+        {
+            if (encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::ASLEEP)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::NORMAL;
+                activePlayerPokemon.mStatus = PokemonStatus::ASLEEP;
+            }
+            
+            CompleteAndTransitionTo<PokemonFastAsleepTextEncounterFlowState>();
+        }
+    }
+    else if
+    (
+        encounterStateComponent.mIsOpponentsTurn &&
+        (
+            activeOpponentPokemon.mNumberOfRoundsUntilSleepEnds > 0 ||
+            activeOpponentPokemon.mStatus == PokemonStatus::ASLEEP
+        )
+    )
+    {
+        if (--activeOpponentPokemon.mNumberOfRoundsUntilSleepEnds < 0)
+        {
+            CompleteAndTransitionTo<PokemonJustWokeUpEncounterFlowState>();
+        }
+        else
+        {
+            if (encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::ASLEEP)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
+                activeOpponentPokemon.mStatus = PokemonStatus::ASLEEP;
+            }
+            
+            CompleteAndTransitionTo<PokemonFastAsleepTextEncounterFlowState>();
+        }
+    }
     else
     {
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();

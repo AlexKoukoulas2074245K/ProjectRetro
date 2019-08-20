@@ -103,6 +103,9 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
             statusTextString += "#became confused!#+END";
         } break;
         case PokemonStatus::ASLEEP:
+        {
+            statusTextString += "#fell asleep!#+END";
+        } break;
         case PokemonStatus::BURNED:
         {
             ShowMessageBox(MessageBoxType::WARNING, "Status text not handled", "Status: " + GetFormattedPokemonStatus(1, statusToChangeTo) + " not handled");

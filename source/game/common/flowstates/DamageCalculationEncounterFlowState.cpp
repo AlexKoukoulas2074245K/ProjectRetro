@@ -162,7 +162,8 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
         {
             if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
             {
-                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::ASLEEP;
+                defendingPokemon.mNumberOfRoundsUntilSleepEnds = math::RandomInt(1, 7);
             }
             else
             {
@@ -173,7 +174,8 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
         {
             if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
             {
-                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::ASLEEP;
+                defendingPokemon.mNumberOfRoundsUntilSleepEnds = math::RandomInt(1, 7);
             }
             else
             {

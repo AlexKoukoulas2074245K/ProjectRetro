@@ -69,6 +69,7 @@ std::unique_ptr<Pokemon> CreatePokemon
     pokemonInstance->mStatus = PokemonStatus::NORMAL;
     
     pokemonInstance->mNumberOfRoundsUntilConfusionEnds = 0;
+    pokemonInstance->mNumberOfRoundsUntilSleepEnds     = 0;
     
     if (priorPokemonEvolvedFrom != nullptr)
     {
@@ -493,7 +494,10 @@ void RestorePokemonStats
 {
     pokemon.mHp     = pokemon.mMaxHp;
     pokemon.mStatus = PokemonStatus::NORMAL;
-        
+    
+    pokemon.mNumberOfRoundsUntilSleepEnds     = 0;
+    pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
+    
     for (auto i = 0U; i < pokemon.mMoveSet.size(); ++i)
     {
         if (pokemon.mMoveSet[i] != nullptr)

@@ -258,6 +258,7 @@ struct Pokemon
     PokemonStatus mStatus;
 
     int mNumberOfRoundsUntilConfusionEnds;
+    int mNumberOfRoundsUntilSleepEnds;
     
     // Current/Max stats
     int mHp;      int mMaxHp;                 
