@@ -30,15 +30,15 @@ PokemonSnappedOutOfConfusionEncounterFlowState::PokemonSnappedOutOfConfusionEnco
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
     std::string snappedOutOfConfusionText = "";
-    if (encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd < 0)
+    if (activePlayerPokemon.mNumberOfRoundsUntilConfusionEnds < 0)
     {
-        encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd = 0;
+        activePlayerPokemon.mNumberOfRoundsUntilConfusionEnds = 0;
         activePlayerPokemon.mStatus = PokemonStatus::NORMAL;
         snappedOutOfConfusionText += activePlayerPokemon.mName.GetString();
     }
-    else if (encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd < 0)
+    else if (activeOpponentPokemon.mNumberOfRoundsUntilConfusionEnds < 0)
     {
-        encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd = 0;
+        activeOpponentPokemon.mNumberOfRoundsUntilConfusionEnds = 0;
         activeOpponentPokemon.mStatus = PokemonStatus::NORMAL;
         snappedOutOfConfusionText += "Enemy " + activeOpponentPokemon.mName.GetString();
     }

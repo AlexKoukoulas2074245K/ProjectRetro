@@ -98,8 +98,6 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
     
     encounterStateComponent.mNumberOfEscapeAttempts                             = 0;
-    encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd   = 0;
-    encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd = 0;
     encounterStateComponent.mHasEscapeSucceeded                                 = false;
     encounterStateComponent.mHasPokemonEvolvedInBattle                          = false;
     encounterStateComponent.mOverworldEncounterAnimationState                   = OverworldEncounterAnimationState::NONE;
@@ -111,6 +109,8 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     for (auto i = 0U; i < playerStateComponent.mPlayerPokemonRoster.size(); ++i)
     {
         auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
+        
+        pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
         
         if (pokemon.mStatus == PokemonStatus::CONFUSED)
         {

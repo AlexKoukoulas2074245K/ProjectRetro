@@ -119,8 +119,6 @@ public:
     int mTurnsCompleted                                                  = 0;
     int mNumberOfEscapeAttempts                                          = 0;
     int mBallThrownShakeCount                                            = 0;
-    int mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd                = 0;
-    int mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd              = 0;
     float mOutstandingFloatDamage                                        = 0.0f;
     float mDefenderFloatHealth                                           = 0.0f;   
     bool mLastMoveCrit                                                   = false;

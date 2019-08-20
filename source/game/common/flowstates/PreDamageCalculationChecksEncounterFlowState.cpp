@@ -37,12 +37,12 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
     (
         encounterStateComponent.mIsOpponentsTurn &&
         (
-            encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd > 0 ||
+            activeOpponentPokemon.mNumberOfRoundsUntilConfusionEnds > 0 ||
             activeOpponentPokemon.mStatus == PokemonStatus::CONFUSED
         )
     )
     {
-        if (--encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd < 0)
+        if (--activeOpponentPokemon.mNumberOfRoundsUntilConfusionEnds < 0)
         {
             CompleteAndTransitionTo<PokemonSnappedOutOfConfusionEncounterFlowState>();
         }
@@ -61,12 +61,12 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
     (
         encounterStateComponent.mIsOpponentsTurn == false &&
         (
-            encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd > 0 ||
+            activePlayerPokemon.mNumberOfRoundsUntilConfusionEnds > 0 ||
             activePlayerPokemon.mStatus == PokemonStatus::CONFUSED
         )
     )
     {
-        if (--encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd < 0)
+        if (--activePlayerPokemon.mNumberOfRoundsUntilConfusionEnds < 0)
         {
             CompleteAndTransitionTo<PokemonSnappedOutOfConfusionEncounterFlowState>();
         }

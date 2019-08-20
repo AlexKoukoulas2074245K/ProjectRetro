@@ -260,7 +260,8 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
 {    
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& selectedPokemon         = *mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
+    auto& playerStateComponent          = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& selectedPokemon         = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
     if (selectedPokemon.mHp <= 0 || pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex == encounterStateComponent.mActivePlayerPokemonRosterIndex)
     {
@@ -302,7 +303,14 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
     else
     {
         DestroyPokemonSelectionView();
-
+        
+        auto& currentlyActivePokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+        if (currentlyActivePokemon.mStatus == PokemonStatus::CONFUSED)
+        {
+            currentlyActivePokemon.mStatus                           = PokemonStatus::NORMAL;
+            currentlyActivePokemon.mNumberOfRoundsUntilConfusionEnds = 0;
+        }
+        
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
             encounterStateComponent.mIsOpponentsTurn = false;

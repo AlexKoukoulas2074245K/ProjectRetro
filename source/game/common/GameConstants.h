@@ -254,9 +254,11 @@ struct Pokemon
     
     int mLevel;
     int mXpPoints;
-
+    
     PokemonStatus mStatus;
 
+    int mNumberOfRoundsUntilConfusionEnds;
+    
     // Current/Max stats
     int mHp;      int mMaxHp;                 
     int mAttack;  int mAttackEncounterStage;  

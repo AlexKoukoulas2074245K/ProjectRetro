@@ -68,6 +68,8 @@ std::unique_ptr<Pokemon> CreatePokemon
 
     pokemonInstance->mStatus = PokemonStatus::NORMAL;
     
+    pokemonInstance->mNumberOfRoundsUntilConfusionEnds = 0;
+    
     if (priorPokemonEvolvedFrom != nullptr)
     {
         pokemonInstance->mName = priorPokemonEvolvedFrom->mName;

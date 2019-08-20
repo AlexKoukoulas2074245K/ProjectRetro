@@ -156,7 +156,32 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon   = PokemonStatus::NORMAL;
     encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
 
-    if (StringStartsWith(fullMoveEffectString, "EA"))
+    if (fullMoveEffectString == "ESLP")
+    {
+        if (encounterStateComponent.mIsOpponentsTurn == true)
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::PARALYZED;
+            }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
+            }
+        }
+        else
+        {
+            if (defendingPokemon.mStatus == PokemonStatus::NORMAL)
+            {
+                encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::PARALYZED;
+            }
+            else
+            {
+                encounterStateComponent.mMoveHadNoEffect = true;
+            }
+        }
+    }
+    else if (StringStartsWith(fullMoveEffectString, "EA"))
     {        
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mAttackEncounterStage))
         {
@@ -333,13 +358,13 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
                 {
                     if (encounterStateComponent.mIsOpponentsTurn)
                     {
-                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon          = PokemonStatus::CONFUSED;
-                        encounterStateComponent.mNumberOfRoundsLeftForPlayerPokemonConfusionToEnd = math::RandomInt(1, 1);
+                        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon = PokemonStatus::CONFUSED;
+                        defendingPokemon.mNumberOfRoundsUntilConfusionEnds               = math::RandomInt(1, 1);
                     }
                     else
                     {
-                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon          = PokemonStatus::CONFUSED;
-                        encounterStateComponent.mNumberOfRoundsLeftForOpponentPokemonConfusionToEnd = math::RandomInt(1, 1);
+                        encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::CONFUSED;
+                        defendingPokemon.mNumberOfRoundsUntilConfusionEnds                 = math::RandomInt(1, 1);
                     }
                 }
             }
