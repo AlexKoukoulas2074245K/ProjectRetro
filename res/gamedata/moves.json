@@ -822,9 +822,9 @@
     {
         "type": "POISON",
         "power": 0,
-        "accuracy": 229,
+        "accuracy": 140,
         "pp": 40,
-        "effect": "Poisons opponent."
+        "effect": "EPOI"
     },
 
     "POISON_POWDER":
@@ -1103,7 +1103,7 @@
         "power": 30,
         "accuracy": 178,
         "pp": 20,
-        "effect": "May poison opponent."
+        "effect": "40%EPOI"
     },
 
     "SMOKESCREEN":

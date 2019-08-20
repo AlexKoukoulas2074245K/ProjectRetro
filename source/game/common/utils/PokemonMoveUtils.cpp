@@ -144,8 +144,9 @@ bool isMoveNonShake
 {
     static const std::unordered_set<StringId, StringIdHasher> noShakeMoves =
     {
+        POISON_TICK_MOVE_NAME,
         StringId("THUNDER_WAVE"),
-        StringId("HARDEN")
+        StringId("HARDEN"),
     };
 
     return noShakeMoves.count(moveName) != 0;

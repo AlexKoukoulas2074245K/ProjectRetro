@@ -92,6 +92,7 @@ void ConfusionHurtItselfAnimationEncounterFlowState::VUpdate(const float dt)
 
             if (encounterStateComponent.mIsOpponentsTurn)
             { 
+                encounterStateComponent.mDefenderFloatHealth = static_cast<float>(activeOpponentPokemon.mHp);
                 encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculatePokemonHurtingItselfDamage
                 (
                     activeOpponentPokemon.mLevel,
@@ -101,6 +102,7 @@ void ConfusionHurtItselfAnimationEncounterFlowState::VUpdate(const float dt)
             }
             else
             {
+                encounterStateComponent.mDefenderFloatHealth = static_cast<float>(activePlayerPokemon.mHp);
                 encounterStateComponent.mOutstandingFloatDamage = static_cast<float>(CalculatePokemonHurtingItselfDamage
                 (
                     activePlayerPokemon.mLevel, 

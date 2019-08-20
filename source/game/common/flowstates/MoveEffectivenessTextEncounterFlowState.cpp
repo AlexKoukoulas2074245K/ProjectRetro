@@ -31,7 +31,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
     // This is in all cases 2, except for when a critical hit is achieved
-    if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+    while (guiStateComponent.mActiveTextboxesStack.size() > 1)
     {
         DestroyActiveTextbox(mWorld);
     }
@@ -45,15 +45,20 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     
     auto effectivenessFactor = 1.0f;
 
-    if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+    if 
+    (
+        encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+        encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+    )
     {        
         effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
+
+        if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
+        {
+            effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
+        }
     }
-         
-    if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId() && encounterStateComponent.mDidConfusedPokemonHurtItself == false)
-    {
-        effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
-    }
+    
     
     if (encounterStateComponent.mNothingHappendFromMoveExecution)
     {
@@ -136,16 +141,19 @@ void MoveEffectivenessTextEncounterFlowState::VUpdate(const float)
 
 void MoveEffectivenessTextEncounterFlowState::TestHpAndTransition()
 {
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
-    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
 
     if 
     (
-        activePlayerPokemon.mHp <= 0 ||
-        activeOpponentPokemon.mHp <= 0
+        encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME && 
+        (
+            activePlayerPokemon.mHp <= 0 ||
+            activeOpponentPokemon.mHp <= 0
+        )        
     )
     {
         CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();

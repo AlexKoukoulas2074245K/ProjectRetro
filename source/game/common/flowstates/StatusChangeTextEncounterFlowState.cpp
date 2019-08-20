@@ -12,11 +12,13 @@
 #include "StatusChangeTextEncounterFlowState.h"
 #include "PoisonTickCheckEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/OSMessageBox.h"
 #include "../utils/TextboxUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "TurnOverEncounterFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,10 +33,16 @@ StatusChangeTextEncounterFlowState::StatusChangeTextEncounterFlowState(ecs::Worl
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     
+    if (encounterStateComponent.mLastMoveSelected == POISON_TICK_MOVE_NAME)
+    {
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        return;
+    }
+
     if 
     (
         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::NORMAL &&
-        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL
+        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL        
     )
     {
         CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();
@@ -119,12 +127,17 @@ void StatusChangeTextEncounterFlowState::VUpdate(const float)
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    
-    
+      
+    if (encounterStateComponent.mLastMoveSelected == POISON_TICK_MOVE_NAME)
+    {
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        return;
+    }
+
     if
     (
         encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::NORMAL &&
-        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL
+        encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::NORMAL        
     )
     {
         CompleteAndTransitionTo<PoisonTickCheckEncounterFlowState>();

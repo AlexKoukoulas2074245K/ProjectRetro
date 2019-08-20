@@ -49,20 +49,26 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     
     if (encounterStateComponent.mIsOpponentsTurn)
     {
-        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
         {
             activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
         }
         else
         {
             activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-        }
-        
-        
+        }                
     }
     else
     {
-        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
         {
             activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
         }
@@ -125,7 +131,11 @@ void HealthDepletionEncounterFlowState::RefreshHurtPokemonStats() const
 
     if (encounterStateComponent.mIsOpponentsTurn)
     {
-        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
         {
             RefreshPlayerPokemonStats();
         }
@@ -136,7 +146,11 @@ void HealthDepletionEncounterFlowState::RefreshHurtPokemonStats() const
     }
     else
     {
-        if (encounterStateComponent.mDidConfusedPokemonHurtItself == false)
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
         {
             RefreshOpponentPokemonStats();
         }

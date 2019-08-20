@@ -47,8 +47,7 @@ void TurnOverEncounterFlowState::VUpdate(const float)
         encounterStateComponent.mTurnsCompleted                           = 0;
         encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
     }    
-
-    encounterStateComponent.mDidConfusedPokemonHurtItself = false;
+    
     encounterStateComponent.mIsOpponentsTurn = !encounterStateComponent.mIsOpponentsTurn;    
     
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
