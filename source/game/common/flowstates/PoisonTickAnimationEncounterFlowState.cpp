@@ -92,7 +92,7 @@ void PoisonTickAnimationEncounterFlowState::VUpdate(const float dt)
 
             // https://bulbapedia.bulbagarden.net/wiki/Poison_(status_condition)#Outside_of_battle
             encounterStateComponent.mOutstandingFloatDamage = ceil(attackingPokemon.mMaxHp / 16.0f);
-            encounterStateComponent.mDefenderFloatHealth    = static_cast<int>(attackingPokemon.mHp);
+            encounterStateComponent.mDefenderFloatHealth    = static_cast<float>(attackingPokemon.mHp);
 
             CompleteAndTransitionTo<HealthDepletionEncounterFlowState>();
         }

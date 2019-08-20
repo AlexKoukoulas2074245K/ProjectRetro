@@ -77,8 +77,28 @@ void GetPrimaryLightAndPrimaryDarkColorsFromSet
 
     if (colorCount == 5)
     {
+#ifdef _WIN32
+        const auto uint32Color = colorSet[colorCount - 1];
+        if 
+        (
+            ((uint32Color >> 0) & 0xFF) == 0xF8 && 
+            ((uint32Color >> 8) & 0xFF) == 0xF8 &&
+            ((uint32Color >> 16) & 0xFF) == 0xF8
+        )
+        {
+            outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+            outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+        }
+        else
+        {
+            outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 1)]);
+            outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
+        }
+        
+#else
         outPrimaryLightColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 2)]);
         outPrimaryDarkColor = Uint32ColorToVec4(colorSet[math::Max(0, colorCount - 3)]);
+#endif
     }
     else
     {

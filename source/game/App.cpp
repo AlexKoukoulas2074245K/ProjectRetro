@@ -194,7 +194,7 @@ void App::DummyInitialization()
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mTrainerName = StringId("TEST");    
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("METAPOD"), false, 6, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("MANKEY"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), false, 6, mWorld));
     playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 50;
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)

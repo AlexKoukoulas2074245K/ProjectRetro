@@ -129,7 +129,14 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
         const auto vec4ColorA = Uint32ColorToVec4(a);
         const auto vec4ColorB = Uint32ColorToVec4(b);
 
-        return vec4ColorA.x + vec4ColorA.y + vec4ColorA.z < vec4ColorB.x + vec4ColorB.y + vec4ColorB.z;        
+        if (math::Abs(vec4ColorA.w - vec4ColorB.w) > 0.01f)
+        {
+            return vec4ColorA.w < vec4ColorB.w;
+        }
+        else
+        {
+            return vec4ColorA.x + vec4ColorA.y + vec4ColorA.z < vec4ColorB.x + vec4ColorB.y + vec4ColorB.z;
+        }        
     });
 
     return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels, colorSetVec));
