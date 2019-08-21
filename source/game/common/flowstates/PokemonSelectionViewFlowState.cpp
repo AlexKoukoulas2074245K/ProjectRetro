@@ -46,7 +46,7 @@ const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FI
 const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_POSITION            = glm::vec3(0.0f, 0.0f, 0.01f);
 const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_SCALE               = glm::vec3(2.0f, 2.0f, 2.0f);
 const glm::vec3 PokemonSelectionViewFlowState::STATS_TEXTBOX_BASE_POSITION    = glm::vec3(0.0f, 0.885f, -0.3f);
-const glm::vec3 PokemonSelectionViewFlowState::OVERWORLD_SPRITE_BASE_POSITION = glm::vec3(-0.55f, 0.9f,-0.4f);
+const glm::vec3 PokemonSelectionViewFlowState::OVERWORLD_SPRITE_BASE_POSITION = glm::vec3(-0.55f, 0.89f,-0.4f);
 
 const float PokemonSelectionViewFlowState::SPRITE_ANIMATION_FRAME_DURATION_SLOW   = 0.32f;
 const float PokemonSelectionViewFlowState::SPRITE_ANIMATION_FRAME_DURATION_MEDIUM = 0.16f;
@@ -164,10 +164,12 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
         const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));                
         const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
         auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
+        auto& renderableComponent        = mWorld.GetComponent<RenderableComponent>(pokemonSpriteEntityId);
 
         animationTimerComponent.mAnimationTimer->Reset();
         animationTimerComponent.mAnimationTimer->Pause();
-        
+        renderableComponent.mActiveMeshIndex = 0;
+
         pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
         
         if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
@@ -238,8 +240,11 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
 
         const auto previousPokemonUnderCursorSpriteEntityId     = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[previousPokemonUnderCursorRosterIndex][0];
         auto& previousPokemonUnderCursorAnimationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(previousPokemonUnderCursorSpriteEntityId);
+        auto& previousPokemonUnderCursorRenderableComponent     = mWorld.GetComponent<RenderableComponent>(previousPokemonUnderCursorSpriteEntityId);
+
         previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Reset();
         previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Pause();
+        previousPokemonUnderCursorRenderableComponent.mActiveMeshIndex = 0;
 
         if (currentPokemonUnderCursor.mHp > 0)
         {
@@ -266,17 +271,28 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
             pokemonSelectionViewComponent.mSwapIndexAnimationTimer->Reset();
             if (pokemonSelectionViewComponent.mSwapAnimationStep++ > 2)
             {
-                auto originallySelectedPokemon = std::move(playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex]);
-                auto pokemonToSwapWith         = std::move(playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex]);
+                pokemonSelectionViewComponent.mSwapAnimationStep = 0;
+
+                if (pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex != pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex)
+                {
+                    auto originallySelectedPokemon = std::move(playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex]);
+                    auto pokemonToSwapWith = std::move(playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex]);
+
+                    playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex] = std::move(pokemonToSwapWith);
+                    playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex] = std::move(originallySelectedPokemon);
+                }
                 
-                playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex] = std::move(pokemonToSwapWith);
-                playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex]    = std::move(originallySelectedPokemon);
-                
-                // Destroy pokemon selection textbox
+                // Destroy invisible textbox
                 DestroyActiveTextbox(mWorld);
-                
-                // Destroy choose which pokemon to switch chatbox
+
+                // Destroy which pokemon to swap chatbox
                 DestroyActiveTextbox(mWorld);
+
+                CreateIndividualPokemonSprites();
+
+                CreatePokemonSelectionViewMainTextbox();
+
+                CreatePokemonStatsInvisibleTextbox();                
             }
             else
             {
@@ -291,17 +307,32 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][0]);
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][1]);
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][2]);
+
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][0] = ecs::NULL_ENTITY_ID;
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][1] = ecs::NULL_ENTITY_ID;
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex][2] = ecs::NULL_ENTITY_ID;
+                    
                 }
                 else if (pokemonSelectionViewComponent.mSwapAnimationStep == 3)
                 {
+                    // If a self-swap is requested, don't actually erase for a second time the pokemon's data in the selection view
+                    if (pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex == pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex)
+                    {
+                        return;
+                    }
+
                     const auto pokemonSelectionViewInfoTextboxEntityId = GetActiveTextboxEntityId(mWorld);
                     
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex * 2, mWorld);
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex * 2 + 1, mWorld);
-                    
+                                        
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][0]);
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][1]);
                     mWorld.DestroyEntity(pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][2]);
+
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][0] = ecs::NULL_ENTITY_ID;
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][1] = ecs::NULL_ENTITY_ID;
+                    pokemonSelectionViewComponent.mPokemonSpriteEntityIds[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex][2] = ecs::NULL_ENTITY_ID;
                 }
             }
         }
@@ -320,11 +351,11 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
             pokemonSelectionViewComponent.mIndexSwapFlowActive = false;
             pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
             
-            // Destroy which pokemon to swap textbox
+            // Destroy invisible textbox
             DestroyActiveTextbox(mWorld);
-            
-            // Destroy invisible
-            DestroyActiveTextbox(mWorld);
+
+            // Destroy which pokemon to swap chatbox
+            DestroyActiveTextbox(mWorld);                       
             
             CreatePokemonSelectionViewMainTextbox();
             
@@ -353,9 +384,12 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
             
             const auto previousPokemonUnderCursorSpriteEntityId     = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[previousPokemonUnderCursorRosterIndex][0];
             auto& previousPokemonUnderCursorAnimationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(previousPokemonUnderCursorSpriteEntityId);
+            auto& previousPokemonUnderCursorRenderableComponent     = mWorld.GetComponent<RenderableComponent>(previousPokemonUnderCursorSpriteEntityId);
+
             previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Reset();
             previousPokemonUnderCursorAnimationTimerComponent.mAnimationTimer->Pause();
-            
+            previousPokemonUnderCursorRenderableComponent.mActiveMeshIndex = 0;
+
             if (currentPokemonUnderCursor.mHp > 0)
             {
                 const auto pokemonSpriteEntityId = pokemonSelectionViewComponent.mPokemonSpriteEntityIds[cursorComponent.mCursorRow][0];
@@ -544,6 +578,17 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
 
     pokemonSelectionViewStateComponent.mIndexSwapFlowActive         = false;
     pokemonSelectionViewStateComponent.mNoWillToFightTextFlowActive = false;
+
+    for (auto i = 0U; i < pokemonSpriteEntityIds.size(); ++i)
+    {
+        for (auto j = 0U; j < 3U; ++j)
+        {
+            if (pokemonSpriteEntityIds[i][j] != ecs::NULL_ENTITY_ID)
+            {
+                mWorld.DestroyEntity(pokemonSpriteEntityIds[i][j]);
+            }
+        }        
+    }
 
     pokemonSpriteEntityIds.clear();
     pokemonSpriteEntityIds.resize(playerStateComponent.mPlayerPokemonRoster.size());
