@@ -22,6 +22,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+struct Pokemon;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 class HealthDepletionEncounterFlowState final: public BaseFlowState
 {
 public:
@@ -30,6 +36,8 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    Pokemon& GetDefendingPokemon() const;
+    float CalculateHealthDepletionSpeed() const;
     void RefreshHurtPokemonStats() const;
     void RefreshPlayerPokemonStats() const;
     void RefreshOpponentPokemonStats() const;
@@ -38,7 +46,7 @@ private:
     static const float PLAYER_EMPTY_HEALTHBAR_X;
     static const float OPPONENT_FULL_HEALTHBAR_X;
     static const float OPPONENT_EMPTY_HEALTHBAR_X;
-    static const float DEPLETION_SPEED;
+    
 };
 
 #endif /* HealthDepletionEncounterFlowState_h */

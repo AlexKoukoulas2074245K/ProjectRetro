@@ -283,7 +283,7 @@
         "effect": "Hits twice in one turn."
     },
 
-    "DOUBLE_SLAP":
+    "DOUBLESLAP":
     {
         "type": "NORMAL",
         "power": 15,

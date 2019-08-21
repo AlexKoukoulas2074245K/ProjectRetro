@@ -26,8 +26,8 @@
 const glm::vec3 FastAsleepAnimationEncounterFlowState::FAST_ASLEEP_ANIMATION_SCALE = glm::vec3(2.0f, 2.0f, 1.0f);
 
 const std::string FastAsleepAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
-const std::string FastAsleepAnimationEncounterFlowState::PLAYER_FAST_ASLEEP_ANIMATION_DIR = "battle_animations/CONFUSION_CHECK/";
-const std::string FastAsleepAnimationEncounterFlowState::ENEMY_FAST_ASLEEP_ANIMATION_DIR  = "battle_animations/CONFUSION_CHECK_ENEMY/";
+const std::string FastAsleepAnimationEncounterFlowState::PLAYER_FAST_ASLEEP_ANIMATION_DIR = "battle_animations/FAST_ASLEEP/";
+const std::string FastAsleepAnimationEncounterFlowState::ENEMY_FAST_ASLEEP_ANIMATION_DIR  = "battle_animations/FAST_ASLEEP_ENEMY/";
 
 const float FastAsleepAnimationEncounterFlowState::FAST_ASLEEP_ANIMATION_Z = -1.0f;
 

@@ -27,60 +27,20 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float HealthDepletionEncounterFlowState::DEPLETION_SPEED = 17.5f;
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
 HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
-    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
-        
     if (GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld).mPower == 0)
     {
         encounterStateComponent.mOutstandingFloatDamage = 0.0f;
     }
     
-    if (encounterStateComponent.mIsOpponentsTurn)
-    {
-        if
-        (
-            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
-            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
-        )
-        {
-            activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-        }
-        else
-        {
-            activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-        }                
-    }
-    else
-    {
-        if
-        (
-            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
-            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
-        )
-        {
-            activeOpponentPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-        }
-        else
-        {
-            activePlayerPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-        }
-    }
-    
-    activePlayerPokemon.mHp   = math::Max(0, activePlayerPokemon.mHp);
-    activeOpponentPokemon.mHp = math::Max(0, activeOpponentPokemon.mHp);
-    
+    auto& defendingPokemon = GetDefendingPokemon();
+
+    defendingPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+    defendingPokemon.mHp = math::Max(0, defendingPokemon.mHp);        
 }
 
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)
@@ -93,8 +53,10 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         return;
     }
 
-    encounterStateComponent.mDefenderFloatHealth    -= DEPLETION_SPEED * dt;
-    encounterStateComponent.mOutstandingFloatDamage -= DEPLETION_SPEED * dt;
+    const auto healthDepletionSpeed = CalculateHealthDepletionSpeed();
+
+    encounterStateComponent.mDefenderFloatHealth    -= healthDepletionSpeed * dt;
+    encounterStateComponent.mOutstandingFloatDamage -= healthDepletionSpeed * dt;
 
     RefreshHurtPokemonStats();
 
@@ -124,6 +86,53 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+Pokemon& HealthDepletionEncounterFlowState::GetDefendingPokemon() const
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
+        {
+            return *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+        }
+        else
+        {
+            return *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+        }                
+    }
+    else
+    {
+        if
+        (
+            encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
+            encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        )
+        {
+            return *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+        }
+        else
+        {
+            return *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+        }
+    }
+}
+
+float HealthDepletionEncounterFlowState::CalculateHealthDepletionSpeed() const
+{    
+    const auto& defendingPokemon = GetDefendingPokemon();
+
+    // Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
+    // based on the pokemon level
+    const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.5f, 3.0f, defendingPokemon.mLevel / 100.0f);
+    return defendingPokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
+}
 
 void HealthDepletionEncounterFlowState::RefreshHurtPokemonStats() const
 {

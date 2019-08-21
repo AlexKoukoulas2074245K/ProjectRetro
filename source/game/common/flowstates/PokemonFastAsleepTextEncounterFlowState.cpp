@@ -29,6 +29,10 @@ PokemonFastAsleepTextEncounterFlowState::PokemonFastAsleepTextEncounterFlowState
     const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
+    // Restore selected move pp
+    auto& playerSelectedMove = *activePlayerPokemon.mMoveSet[encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu];
+    playerSelectedMove.mPowerPointsLeft++;
+
     std::string asleepText = "";
     if (encounterStateComponent.mIsOpponentsTurn)
     {
