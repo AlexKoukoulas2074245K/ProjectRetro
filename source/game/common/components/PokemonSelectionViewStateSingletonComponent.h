@@ -47,11 +47,11 @@ public:
     ecs::EntityId mBackgroundEntityId                          = ecs::NULL_ENTITY_ID;    
     int mLastSelectedPokemonRosterIndex                        = 0;
     int mIndexSwapOriginPokemonCursorIndex                     = 0;
+    int mSwapAnimationStep                                     = 0;
     PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
     bool mPokemonHasBeenSelected                               = false;
     bool mNoWillToFightTextFlowActive                          = false;
     bool mIndexSwapFlowActive                                  = false;
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

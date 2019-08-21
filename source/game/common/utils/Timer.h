@@ -59,6 +59,11 @@ public:
         return mHasTicked;
     }
 
+    inline void SetTimerValue(const float value)
+    {
+        mTimeCounter = value;
+    }
+    
     inline void Pause()
     {
         mIsRunning = false;

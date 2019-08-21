@@ -991,7 +991,7 @@ void DeleteTextAtTextboxRow
 {
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     
-    for (size_t textboxCol = 1U; textboxCol < textboxComponent.mTextContent[textboxRow].size() - 1; ++textboxCol)
+    for (size_t textboxCol = 0U; textboxCol < textboxComponent.mTextContent[textboxRow].size(); ++textboxCol)
     {
         DeleteCharAtTextboxCoords(textboxEntityId, textboxCol, textboxRow, world);
     }

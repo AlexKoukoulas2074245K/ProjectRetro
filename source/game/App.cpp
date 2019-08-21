@@ -196,6 +196,9 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerName = StringId("TEST");    
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("CLEFAIRY"), false, 13, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), false, 6, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), false, 6, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("EEVEE"), false, 6, mWorld));
+    
     playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 50;
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
     {

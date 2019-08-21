@@ -58,7 +58,15 @@ void GuiManagementSystem::VUpdateAssociatedComponents(const float dt) const
             {
                 case TextboxType::CHATBOX: UpdateChatbox(entityId, dt); break;
                 case TextboxType::CURSORED_TEXTBOX: UpdateCursoredTextbox(entityId); break;
-                case TextboxType::CURSORED_BARE_TEXTBOX: UpdateCursoredTextbox(entityId); break;
+                case TextboxType::CURSORED_BARE_TEXTBOX:
+                {
+                    // We sanity check incase the cursor component has been externally removed
+                    // from the textbox
+                    if (mWorld.HasComponent<CursorComponent>(entityId))
+                    {
+                        UpdateCursoredTextbox(entityId);
+                    } break;
+                }
                 case TextboxType::BARE_TEXTBOX: break;
                 case TextboxType::GENERIC_TEXTBOX: break;
             }
