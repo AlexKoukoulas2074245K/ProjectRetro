@@ -17,8 +17,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../ECS.h"
+#include "../../common/utils/Timer.h"
 
 #include <array>
+#include <memory>
 #include <vector>
 #include <utility>
 
@@ -41,8 +43,10 @@ class PokemonSelectionViewStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::array<ecs::EntityId, 3>> mPokemonSpriteEntityIds;
+    std::unique_ptr<Timer> mSwapIndexAnimationTimer            = nullptr;
     ecs::EntityId mBackgroundEntityId                          = ecs::NULL_ENTITY_ID;    
     int mLastSelectedPokemonRosterIndex                        = 0;
+    int mIndexSwapOriginPokemonCursorIndex                     = 0;
     PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
     bool mPokemonHasBeenSelected                               = false;
     bool mNoWillToFightTextFlowActive                          = false;

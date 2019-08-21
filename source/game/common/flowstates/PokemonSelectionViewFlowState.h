@@ -68,6 +68,7 @@ private:
     static const float SPRITE_ANIMATION_FRAME_DURATION_SLOW;
     static const float SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;
     static const float SPRITE_ANIMATION_FRAME_DURATION_FAST;
+    static const float INDEX_SWAP_ENTRY_DELAY;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
