@@ -86,6 +86,10 @@ void PokemonSelectionViewFlowState::VUpdate(const float)
             pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
         }
     }
+    else if (pokemonSelectionViewComponent.mIndexSwapFlowActive)
+    {
+        PokemonSelectionViewIndexSwapFlow();
+    }
     else
     {
         if (pokemonSelectionViewComponent.mPokemonHasBeenSelected)
@@ -244,6 +248,26 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
     }    
 }
 
+void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow()
+{
+    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {
+        pokemonSelectionViewComponent.mIndexSwapFlowActive = false;
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
+    {
+        pokemonSelectionViewComponent.mIndexSwapFlowActive = false;
+    }
+    else if 
+    (
+        IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) ||
+        IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent)
+    )
+}
+
 void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
 {
     // Destroy pokemon selected textbox
@@ -334,8 +358,22 @@ void PokemonSelectionViewFlowState::SwitchPokemonFlow()
 }
 
 void PokemonSelectionViewFlowState::PokemonRosterIndexSwapFlow()
-{
+{    
+    // Destroy pokemon selection textbox
+    DestroyActiveTextbox(mWorld);
 
+    // Destroy pokemon stats textbox
+    DestroyActiveTextbox(mWorld);
+
+    // Destroy Choose a pokemon textbox
+    DestroyActiveTextbox(mWorld);
+
+    const auto mainChatboxEntityId = CreateChatbox(mWorld);
+    WriteTextAtTextboxCoords(mainChatboxEntityId, "Move POK^MON", 1, 2, mWorld);
+    WriteTextAtTextboxCoords(mainChatboxEntityId, "where?", 1, 4, mWorld);
+
+    // Recreate pokemon stats textbox
+    CreatePokemonStatsInvisibleTextbox();    
 }
 
 void PokemonSelectionViewFlowState::CancelPokemonSelectionFlow()
@@ -386,6 +424,7 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
         pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex
     );
 
+    pokemonSelectionViewStateComponent.mIndexSwapFlowActive         = false;
     pokemonSelectionViewStateComponent.mNoWillToFightTextFlowActive = false;
 
     pokemonSpriteEntityIds.clear();

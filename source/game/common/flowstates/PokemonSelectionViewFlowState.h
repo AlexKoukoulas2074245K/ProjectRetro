@@ -37,6 +37,7 @@ public:
 private:
     void PokemonSelectedFlow();
     void PokemonNotSelectedFlow();
+    void PokemonSelectionViewIndexSwapFlow();
     void DisplayPokemonDetailedStatsFlow();
     void SwitchPokemonFlow();
     void PokemonRosterIndexSwapFlow();

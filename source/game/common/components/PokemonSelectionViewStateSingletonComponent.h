@@ -46,6 +46,7 @@ public:
     PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
     bool mPokemonHasBeenSelected                               = false;
     bool mNoWillToFightTextFlowActive                          = false;
+    bool mIndexSwapFlowActive                                  = false;
 
 };
 
