@@ -254,7 +254,6 @@
     ],
     "level_npc_list":
     [
-        { "editor_col": 0, "editor_row": 0, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": -1, "atlas_row": -1 }
     ],
     "level_model_list":
     [
@@ -331,6 +330,6 @@
     ],
 	"level_npc_attributes":
     [
-		{ "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "dialog": "PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 0, "editor_row": 0, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": -1, "atlas_row": -1 }
+		{ "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "dialog": "PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 9, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": -1, "atlas_row": -1 }
 	]
 }
