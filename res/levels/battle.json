@@ -21,5 +21,8 @@
     ],
     "level_tile_traits":
     [
-    ]
+    ],
+	"level_npc_attributes":
+    [
+	]
 }
