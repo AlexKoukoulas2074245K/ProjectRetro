@@ -23,9 +23,10 @@
 OutOfUsablePokemonEncounterFlowState::OutOfUsablePokemonEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& playerStateComponent   = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& playerStateComponent         = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& transitionAnimationComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     
+    playerStateComponent.mPokeDollarCredits /= 2;
     transitionAnimationComponent.mBlackAndWhiteModeEnabled = true;
     
     const auto mainChatboxEntityId = CreateChatbox(mWorld);

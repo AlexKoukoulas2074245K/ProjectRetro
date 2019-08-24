@@ -204,7 +204,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
                 auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             }
-
+            // got, found, received (?) all add items
             QueueDialogForChatbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
             npcTimerComponent.mAnimationTimer->Reset();
