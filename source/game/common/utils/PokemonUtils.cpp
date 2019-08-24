@@ -50,8 +50,8 @@ static int CalculateBallShakeCountBeforePokemonBreaksFree
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
-    const bool trainerOwned,
     const int pokemonLevel,
+    const bool trainerOwned,
     const ecs::World& world,
     const Pokemon* const priorPokemonEvolvedFrom /* nullptr */
 )
@@ -545,7 +545,7 @@ void LevelUpStats
         {
             if (pokemon.mLevel >= std::stoi(evolutionInfo.mEvolutionMethod.GetString()))
             {
-                pokemon.mEvolution = CreatePokemon(evolutionInfo.mEvolutionTargetPokemonName, false, pokemon.mLevel, world, &pokemon);
+                pokemon.mEvolution = CreatePokemon(evolutionInfo.mEvolutionTargetPokemonName, pokemon.mLevel, false, world, &pokemon);
             }            
         }
     }

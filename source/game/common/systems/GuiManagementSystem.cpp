@@ -11,6 +11,7 @@
 
 #include "GuiManagementSystem.h"
 #include "../GameConstants.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxComponent.h"
@@ -149,13 +150,18 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
         }
     }
     else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
-    {        
+    {
         if
         (
             IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
             IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)        
         )
-        {            
+        {
+            if (DetectedItemReceivedText(textboxEntityId))
+            {
+                OnItemReceived(textboxEntityId);
+            }
+            
             DestroyActiveTextbox(mWorld);
             guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
             guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
@@ -246,17 +252,27 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
             {
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;
                 
-                if (DetectedKillSwitch(textboxEntityId))
+                if (DetectedItemReceivedText(textboxEntityId))
+                {
+                    OnItemReceived(textboxEntityId);
+                }
+                else if (DetectedKillSwitch(textboxEntityId))
                 {
                     DestroyActiveTextbox(mWorld);
                     guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
                     guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
                     return;
                 }
+                
             } break;
                 
             case ChatboxContentEndState::PARAGRAPH_END:
             {
+                if (DetectedItemReceivedText(textboxEntityId))
+                {
+                    OnItemReceived(textboxEntityId);
+                }
+                
                 DeleteTextAtTextboxRow(textboxEntityId, 2, mWorld);
                 DeleteTextAtTextboxRow(textboxEntityId, 4, mWorld);
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::PARAGRAPH_END_DELAY;
@@ -406,6 +422,21 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
     }
 }
 
+void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) const
+{
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 4, mWorld);
+    if (textboxFirstLineString[0] == '\0')
+    {
+        textboxFirstLineString = textboxFirstLineString.substr(1);
+    }
+    
+    const auto itemNameSplitBySpace = StringSplit(textboxFirstLineString, ' ');
+    const auto itemNameSplitByExclamationMark = StringSplit(itemNameSplitBySpace[0], '!');
+    
+    playerStateComponent.mPendingItemToBeAdded = StringId(itemNameSplitByExclamationMark[0]);
+}
+
 void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const
 {    
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
@@ -503,6 +534,27 @@ bool GuiManagementSystem::DetectedFreeze(const ecs::EntityId textboxEntityId) co
                 }
             }
         }        
+    }
+    
+    return false;
+}
+
+bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const
+{
+    auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 2, mWorld);
+    if (textboxFirstLineString[0] == '\0')
+    {
+        textboxFirstLineString = textboxFirstLineString.substr(1);
+    }
+    
+    if
+    (
+        StringStartsWith(textboxFirstLineString, "PLAYERNAME got") ||
+        StringStartsWith(textboxFirstLineString, "PLAYERNAME found") ||
+        StringStartsWith(textboxFirstLineString, "PLAYERNAME received")
+    )
+    {
+        return true;
     }
     
     return false;

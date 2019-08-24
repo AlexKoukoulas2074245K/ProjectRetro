@@ -310,8 +310,8 @@ ecs::EntityId CreateNpcAttributes
             CreatePokemon
             (
                 StringId(pokemonEntryObject["name"].get<std::string>()),
-                true,
                 pokemonEntryObject["level"].get<int>(),
+                true,
                 world
             )
         );

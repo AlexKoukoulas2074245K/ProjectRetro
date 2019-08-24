@@ -60,8 +60,8 @@ struct CatchResult
 std::unique_ptr<Pokemon> CreatePokemon
 (
     const StringId pokemonName,
-    const bool trainerOwned,
     const int pokemonLevel,
+    const bool trainerOwned,
     const ecs::World& world,
     const Pokemon* const priorEvolution = nullptr
 );

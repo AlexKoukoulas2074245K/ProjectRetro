@@ -195,7 +195,7 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
     playerStateComponent->mTrainerName = StringId("TEST");
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), false, 6, mWorld));
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
     
     playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 50;
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)

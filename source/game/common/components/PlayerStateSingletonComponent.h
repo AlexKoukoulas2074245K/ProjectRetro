@@ -50,10 +50,13 @@ public:
     std::vector<BagItemEntry> mPlayerBag;
     std::vector<StringId> mBadgeNamesOwned;
 
+    ecs::EntityId mLastNpcSpokenToEntityId = ecs::NULL_ENTITY_ID;
+    
     StringId mLastOverworldLevelName   = StringId();
     StringId mTrainerName              = StringId();
     StringId mHomeLevelName            = StringId("pallet");
-
+    StringId mPendingItemToBeAdded     = StringId();
+    
     int mPokeDollarCredits             = 0;
     int mLastOverworldLevelOccupiedRow = 0;
     int mLastOverworldLevelOccupiedCol = 0;

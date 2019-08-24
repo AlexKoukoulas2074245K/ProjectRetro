@@ -241,9 +241,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("CLEFAIRY"),
+                            encounterInfo.mPokemonName,
+                            encounterInfo.mPokemonLevel,
                             false,
-                            18 + encounterInfo.mPokemonLevel - encounterInfo.mPokemonLevel,
                             mWorld
                         )
                     );

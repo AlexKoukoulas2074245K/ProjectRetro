@@ -157,6 +157,26 @@ const std::vector<TextboxCharacterEntry>& GetTextboxRowContent
     return textboxComponent.mTextContent[textboxRow];
 }
 
+std::string GetTextboxRowString
+(
+    const ecs::EntityId textboxEntityId,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    
+    assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
+    
+    std::string textboxRowContent = "";
+    for (const auto& characterEntry: GetTextboxRowContent(textboxEntityId, textboxRow, world))
+    {
+        textboxRowContent.push_back(characterEntry.mCharacter);
+    }
+    
+    return textboxRowContent;
+}
+
 std::vector<ecs::EntityId> GetAllTextboxResidentComponents
 (
     const ecs::EntityId textboxEntityId,

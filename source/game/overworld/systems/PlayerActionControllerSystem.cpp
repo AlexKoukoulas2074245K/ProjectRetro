@@ -14,8 +14,10 @@
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/flowstates/MainMenuOverworldFlowState.h"
+#include "../../common/utils/PokemonItemsUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -54,7 +56,21 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
     const auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-
+    auto& playerStateComponent           = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    if (playerStateComponent.mPendingItemToBeAdded != StringId())
+    {
+        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+        playerStateComponent.mPendingItemToBeAdded = StringId();
+        
+        // Update npc dialog
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(playerStateComponent.mLastNpcSpokenToEntityId);
+        if (npcAiComponent.mSideDialogs.size() > 0)
+        {
+            npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+        }
+    }
+    
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
         if (ShouldProcessEntity(entityId))
@@ -193,6 +209,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
         if (npcMovementState.mMoving == false)
         {
             const auto& npcAiComponent   = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
+            auto& playerStateComponent   = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
             auto& npcTimerComponent      = mWorld.GetComponent<AnimationTimerComponent>(tile.mTileOccupierEntityId);
             auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);            
             
@@ -204,9 +221,10 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
                 auto& npcRenderableComponent = mWorld.GetComponent<RenderableComponent>(tile.mTileOccupierEntityId);
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(newNpcDirection), npcRenderableComponent);
             }
-            // got, found, received (?) all add items
+            
             QueueDialogForChatbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
+            playerStateComponent.mLastNpcSpokenToEntityId = tile.mTileOccupierEntityId;
             npcTimerComponent.mAnimationTimer->Reset();
         }
     }
