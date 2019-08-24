@@ -1796,8 +1796,14 @@
     [
         { "texture_name": "route1_groundLayer.png", "game_position_x": 25.6, "game_position_z": 51.2 }
     ],
+    "level_npc_attributes":
+    [
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "See those ledges#along the road?#@It's a bit scary,#but you can jump#from them.#@You can get back#to PALLET TOWN#quicker that way.", "side_dialogs": [], "pokemon_roster": [], "editor_col": 20, "editor_row": 27, "game_col": 20, "game_row": 36, "game_position_x": 32.0, "game_position_z": 57.6 },
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Hi! I work at a#POK^MON MART.#@It's a convenient#shop, so please#visit us in#VIRIDIAN CITY.#@I know, I'll give#you a sample!#Here you go!#@PLAYERNAME got#POTION!", "side_dialogs": ["We also carry#POK^ BALLs for#catching POK^MON!"], "pokemon_roster": [], "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4 }
+    ],
     "level_npc_sprites":
     [
+        {  "editor_col": 20, "editor_row": 27, "game_col": 20, "game_row": 36, "game_position_x": 32.0, "game_position_z": 57.6, "atlas_col": 0, "atlas_row": 17 },
         {  "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4, "atlas_col": 0, "atlas_row": 17 }
     ],
     "level_model_list":
@@ -3027,9 +3033,5 @@
         { "tile_traits": "SOLID", "editor_col": 21, "editor_row": 51, "game_col": 21, "game_row": 12, "game_position_x": 33.6, "game_position_z": 19.2 },
         { "tile_traits": "SOLID", "editor_col": 22, "editor_row": 51, "game_col": 22, "game_row": 12, "game_position_x": 35.2, "game_position_z": 19.2 },
         { "tile_traits": "SOLID", "editor_col": 23, "editor_row": 51, "game_col": 23, "game_row": 12, "game_position_x": 36.8, "game_position_z": 19.2 }
-    ],
-    "level_npc_attributes":
-    [
-         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "dialog": "Hi! I work at a#POK^MON MART.#@It's a convenient#shop, so please#visit us in#VIRIDIAN CITY.#@I know, I'll give#you a sample!#Here you go!#@PLAYERNAME got#POTION!", "side_dialogs": ["We also carry#POK^ BALLs for#catching POK^MON!"], "pokemon_roster": [], "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4 }
     ]
 }
