@@ -106,6 +106,10 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
                         CheckForPlayerDistanceAndEncounterEngagement(entityId);
                     }
                 }
+                else if (npcAiComponent.mIsTrainer && npcAiComponent.mIsGymLeader)
+                {
+                    return;
+                }
                 else
                 {
                     auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
