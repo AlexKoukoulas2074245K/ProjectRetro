@@ -232,11 +232,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-                    
                     encounterStateComponent.mActiveEncounterType = EncounterType::WILD ;
-                    //encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
-                    //encounterStateComponent.mOpponentTrainerName = StringId("Gary");
-                    //encounterStateComponent.mOpponentTrainerDefeatedText = StringId("Gary: WHAT?#Unbelievable!#I picked the#wrong POK^MON!");
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon
@@ -248,7 +244,6 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                         )
                     );
                     
-
                     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
                     

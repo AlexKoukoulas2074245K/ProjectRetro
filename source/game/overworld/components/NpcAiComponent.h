@@ -42,6 +42,7 @@ public:
     Direction mInitDirection            = Direction::SOUTH;
     bool mIsTrainer                     = false;
     bool mIsGymLeader                   = false;
+    bool mIsDefeated                    = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

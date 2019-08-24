@@ -18,6 +18,7 @@
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/MathUtils.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -30,6 +31,8 @@
 
 const float NpcAiSystem::DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME = 0.5f;
 const float NpcAiSystem::DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME = 3.0f;
+
+const int NpcAiSystem::TRAINER_LINE_OF_SIGHT = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -65,16 +68,28 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
             
             if (npcAiComponent.mMovementType == CharacterMovementType::STATIONARY)
             {
-                auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
-                animationTimerComponent.mAnimationTimer->Resume();
-                animationTimerComponent.mAnimationTimer->Update(dt);
-                if (animationTimerComponent.mAnimationTimer->HasTicked())
+                if
+                (
+                    npcAiComponent.mIsTrainer &&
+                    npcAiComponent.mIsGymLeader == false &&
+                    npcAiComponent.mIsDefeated == false
+                )
                 {
-                    auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-                    auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(entityId);
-
-                    directionComponent.mDirection = npcAiComponent.mInitDirection;
-                    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(npcAiComponent.mInitDirection), renderableComponent);
+                    CheckForPlayerDistanceAndEncounterEngagement(entityId);
+                }
+                else
+                {
+                    auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+                    animationTimerComponent.mAnimationTimer->Resume();
+                    animationTimerComponent.mAnimationTimer->Update(dt);
+                    if (animationTimerComponent.mAnimationTimer->HasTicked())
+                    {
+                        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+                        auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(entityId);
+                        
+                        directionComponent.mDirection = npcAiComponent.mInitDirection;
+                        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(npcAiComponent.mInitDirection), renderableComponent);
+                    }
                 }
             }
             else if (npcAiComponent.mMovementType == CharacterMovementType::DYNAMIC)
@@ -125,6 +140,47 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
                         npcAiComponent.mAiTimer = nullptr;
                     }
                 }
+            }
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void NpcAiSystem::CheckForPlayerDistanceAndEncounterEngagement(const ecs::EntityId npcEntityId) const
+{
+    const auto playerEntityId = GetPlayerEntityId(mWorld);
+    
+    const auto& npcMovementStateComponent    = mWorld.GetComponent<MovementStateComponent>(npcEntityId);
+    const auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
+    const auto& npcDirectionComponent        = mWorld.GetComponent<DirectionComponent>(npcEntityId);
+    const auto& npcAiComponent               = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
+    auto& encounterStateComponent            = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    // Check for all tiles in line of sight of npc
+    for (int i = 1; i <= TRAINER_LINE_OF_SIGHT; ++i)
+    {
+        const auto& tileCoords = GetNeighborTileCoords(npcMovementStateComponent.mCurrentCoords, npcDirectionComponent.mDirection, i);
+        if (playerMovementStateComponent.mCurrentCoords == tileCoords)
+        {
+            encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
+            encounterStateComponent.mOpponentTrainerSpeciesName       = npcAiComponent.mTrainerName;
+            encounterStateComponent.mOpponentTrainerName              = StringId(npcAiComponent.mTrainerName);
+            encounterStateComponent.mOpponentTrainerDefeatedText      = npcAiComponent.mSideDialogs[0];
+            encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
+            encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
+            encounterStateComponent.mOpponentPokemonRoster.clear();
+            for (const auto& pokemon: npcAiComponent.mPokemonRoster)
+            {
+                encounterStateComponent.mOpponentPokemonRoster.push_back(CreatePokemon
+                (
+                    pokemon->mName,
+                    pokemon->mLevel,
+                    true,
+                    mWorld
+                ));
             }
         }
     }

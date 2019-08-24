@@ -86,22 +86,22 @@ inline Tile& GetTile(const TileCoords& coords, LevelTilemap& grid)
     return grid.at(coords.mRow).at(coords.mCol);
 }
 
-inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Direction direction)
+inline TileCoords GetNeighborTileCoords(const TileCoords& coords, const Direction direction, const int numberOfTilesAway = 1)
 {
     switch (direction)
     {
-        case Direction::EAST:  return TileCoords(coords.mCol + 1, coords.mRow);
-        case Direction::NORTH: return TileCoords(coords.mCol,     coords.mRow + 1);
-        case Direction::SOUTH: return TileCoords(coords.mCol,     coords.mRow - 1);
-        case Direction::WEST:  return TileCoords(coords.mCol - 1, coords.mRow);
+        case Direction::EAST:  return TileCoords(coords.mCol + numberOfTilesAway, coords.mRow);
+        case Direction::NORTH: return TileCoords(coords.mCol,     coords.mRow + numberOfTilesAway);
+        case Direction::SOUTH: return TileCoords(coords.mCol,     coords.mRow - numberOfTilesAway);
+        case Direction::WEST:  return TileCoords(coords.mCol - numberOfTilesAway, coords.mRow);
     }
 
     return TileCoords();
 }
 
-inline const Tile& GetNeighborTile(const TileCoords& coords, const Direction direction, const LevelTilemap& grid)
+inline const Tile& GetNeighborTile(const TileCoords& coords, const Direction direction, const LevelTilemap& grid, const int numberOfTilesAway = 1)
 {
-    const auto& tileCoords = GetNeighborTileCoords(coords, direction);
+    const auto& tileCoords = GetNeighborTileCoords(coords, direction, numberOfTilesAway);
     return GetTile(tileCoords, grid);
 }
 
