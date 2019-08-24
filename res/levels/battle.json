@@ -13,7 +13,7 @@
     [
         { "texture_name": "battle_groundLayer", "game_position_x": 0.0, "game_position_z":0.0 }
     ],
-    "level_npc_list":
+    "level_npc_sprites":
     [
     ],
     "level_model_list":

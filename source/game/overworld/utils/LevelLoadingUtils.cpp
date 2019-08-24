@@ -20,6 +20,7 @@
 #include "../components/MovementStateComponent.h"
 #include "../components/SeaTileTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -57,9 +58,18 @@ static void CreateLevelGroundLayer
     ecs::World& world
 );
 
-static void CreateNpc
+static ecs::EntityId CreateNpcAttributes
+(
+    const nlohmann::basic_json<>& npcDataJsonObject,
+    const StringId levelNameId,
+    LevelTilemap& levelTilemap,
+    ecs::World& world
+);
+
+static void CreateNpcSprite
 (
     const nlohmann::basic_json<>& npcEntryJsonObject,
+    const std::vector<ecs::EntityId>& npcAttributeEntityIdsAdded,
     const StringId levelNameId,
     LevelTilemap& levelTilemap,
     ecs::World& world
@@ -169,10 +179,17 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
         world
     );
     
+    // Load Npc Attributes
+    std::vector<ecs::EntityId> mNpcEntityIdsAdded;
+    for (const auto& npcAttributesJsonEntry: levelJson["level_npc_attributes"])
+    {
+        mNpcEntityIdsAdded.push_back(CreateNpcAttributes(npcAttributesJsonEntry, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world));
+    }
+    
     // Load NPC list
     for (const auto& npcJsonEntry: levelJson["level_npc_list"])
     {
-        CreateNpc(npcJsonEntry, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
+        CreateNpcSprite(npcJsonEntry, mNpcEntityIdsAdded, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
     }
 
     // Load model list
@@ -256,9 +273,9 @@ void CreateLevelGroundLayer
     world.AddComponent<RenderableComponent>(groundLayerEntityId, std::move(renderableComponent));
 }
 
-static void CreateNpc
+ecs::EntityId CreateNpcAttributes
 (
-    const nlohmann::basic_json<>& npcEntryJsonObject,
+    const nlohmann::basic_json<>& npcAttributesJsonObject,
     const StringId levelNameId,
     LevelTilemap& levelTilemap,
     ecs::World& world
@@ -271,14 +288,34 @@ static void CreateNpc
         { StringId("DYNAMIC"),    CharacterMovementType::DYNAMIC }
     };
     
-    const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcEntryJsonObject["movement_type"]));
-    const auto dialog       = npcEntryJsonObject["dialog"].get<std::string>();
-    const auto hasSprite    = npcEntryJsonObject["direction"].get<int>() != -1;
-    const auto direction    = static_cast<Direction>(math::Max(0, npcEntryJsonObject["direction"].get<int>()));
-    const auto gameCol      = npcEntryJsonObject["game_col"].get<int>();
-    const auto gameRow      = npcEntryJsonObject["game_row"].get<int>();
-    const auto atlasCol     = npcEntryJsonObject["atlas_col"].get<int>();
-    const auto atlasRow     = npcEntryJsonObject["atlas_row"].get<int>();
+    const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
+    const auto dialog       = npcAttributesJsonObject["dialog"].get<std::string>();
+    const auto direction    = npcAttributesJsonObject["direction"].get<int>();
+    const auto gameCol      = npcAttributesJsonObject["game_col"].get<int>();
+    const auto gameRow      = npcAttributesJsonObject["game_row"].get<int>();
+    const auto isTrainer    = npcAttributesJsonObject["is_trainer"].get<bool>();
+    const auto isGymLeader  = npcAttributesJsonObject["is_gym_leader"].get<bool>();
+    
+    std::vector<std::string> sideDialogs;
+    for (const auto& sideDialog: npcAttributesJsonObject["side_dialogs"])
+    {
+        sideDialogs.push_back(sideDialog.get<std::string>());
+    }
+    
+    std::vector<std::unique_ptr<Pokemon>> pokemonRoster;
+    for (const auto& pokemonEntryObject: npcAttributesJsonObject["pokemon_roster"])
+    {
+        pokemonRoster.push_back
+        (
+            CreatePokemon
+            (
+                StringId(pokemonEntryObject["name"].get<std::string>()),
+                true,
+                pokemonEntryObject["level"].get<int>(),
+                world
+            )
+        );
+    }
     
     const auto npcEntityId = world.CreateEntity();
     
@@ -286,13 +323,27 @@ static void CreateNpc
     animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
     animationTimerComponent->mAnimationTimer->Pause();
     
-    auto directionComponent        = std::make_unique<DirectionComponent>();
-    directionComponent->mDirection = direction;
-    
     auto aiComponent            = std::make_unique<NpcAiComponent>();
     aiComponent->mMovementType  = movementType;
     aiComponent->mDialog        = dialog;
-    aiComponent->mInitDirection = direction;
+    aiComponent->mSideDialogs   = std::move(sideDialogs);
+    aiComponent->mPokemonRoster = std::move(pokemonRoster);
+    aiComponent->mIsTrainer     = isTrainer;
+    aiComponent->mIsGymLeader   = isGymLeader;
+    
+    auto directionComponent = std::make_unique<DirectionComponent>();
+    
+    if (movementType == CharacterMovementType::STATIC)
+    {
+        directionComponent->mDirection = Direction::SOUTH;
+        aiComponent->mInitDirection    = Direction::SOUTH;
+    }
+    else
+    {
+        directionComponent->mDirection = static_cast<Direction>(math::Max(0, direction));
+        aiComponent->mInitDirection    = directionComponent->mDirection;
+    }
+    
     
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
@@ -303,14 +354,6 @@ static void CreateNpc
     auto movementStateComponent            = std::make_unique<MovementStateComponent>();
     movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
     
-    if (hasSprite)
-    {
-        auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(movementType, atlasCol, atlasRow));
-        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), *renderableComponent);
-
-        world.AddComponent<RenderableComponent>(npcEntityId, std::move(renderableComponent));
-    }    
-    
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
     GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
     
@@ -319,7 +362,91 @@ static void CreateNpc
     world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
     world.AddComponent<NpcAiComponent>(npcEntityId, std::move(aiComponent));
     world.AddComponent<MovementStateComponent>(npcEntityId, std::move(movementStateComponent));
-    world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));    
+    world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));
+    
+    return npcEntityId;
+}
+
+void CreateNpcSprite
+(
+    const nlohmann::basic_json<>& npcSpriteEntryJsonObject,
+    const std::vector<ecs::EntityId>& npcAttributeEntityIdsAdded,
+    const StringId levelNameId,
+    LevelTilemap& levelTilemap,
+    ecs::World& world
+)
+{
+    const auto gameCol      = npcSpriteEntryJsonObject["game_col"].get<int>();
+    const auto gameRow      = npcSpriteEntryJsonObject["game_row"].get<int>();
+    const auto atlasCol     = npcSpriteEntryJsonObject["atlas_col"].get<int>();
+    const auto atlasRow     = npcSpriteEntryJsonObject["atlas_row"].get<int>();
+    
+    auto npcEntityId = ecs::NULL_ENTITY_ID;
+    for (const auto npcAttributeEntityId: npcAttributeEntityIdsAdded)
+    {
+        const auto& npcMovementComponent = world.GetComponent<MovementStateComponent>(npcAttributeEntityId);
+        if
+        (
+         	npcMovementComponent.mCurrentCoords.mCol == gameCol &&
+            npcMovementComponent.mCurrentCoords.mRow == gameRow
+        )
+        {
+            npcEntityId = npcAttributeEntityId;
+            break;
+        }
+    }
+    
+    // This means that a character sprite was added in the editor without any npc data
+    if (npcEntityId == ecs::NULL_ENTITY_ID)
+    {
+        ShowMessageBox
+        (
+            MessageBoxType::WARNING,
+            "Npc Sprite without Data",
+            "Npc sprite found at " + std::to_string(gameCol) + "," + std::to_string(gameRow) + " without npc data!"
+        );
+        
+        npcEntityId = world.CreateEntity();
+        
+        // Manually create dummy components for sprite entity without data
+        auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
+        animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+        animationTimerComponent->mAnimationTimer->Pause();
+        
+        auto aiComponent            = std::make_unique<NpcAiComponent>();
+        aiComponent->mMovementType  = CharacterMovementType::STATIC;
+        aiComponent->mDialog        = "I HAVE NO DATA";
+        aiComponent->mInitDirection = Direction::SOUTH;
+        
+        auto directionComponent        = std::make_unique<DirectionComponent>();
+        directionComponent->mDirection = Direction::SOUTH;
+        
+        auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
+        levelResidentComponent->mLevelNameId = levelNameId;
+        
+        auto transformComponent       = std::make_unique<TransformComponent>();
+        transformComponent->mPosition = TileCoordsToPosition(gameCol, gameRow);
+        
+        auto movementStateComponent            = std::make_unique<MovementStateComponent>();
+        movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
+        
+        GetTile(gameCol, gameRow, levelTilemap).mTileOccupierEntityId = npcEntityId;
+        GetTile(gameCol, gameRow, levelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+        
+        world.AddComponent<AnimationTimerComponent>(npcEntityId, std::move(animationTimerComponent));
+        world.AddComponent<TransformComponent>(npcEntityId, std::move(transformComponent));
+        world.AddComponent<LevelResidentComponent>(npcEntityId, std::move(levelResidentComponent));
+        world.AddComponent<NpcAiComponent>(npcEntityId, std::move(aiComponent));
+        world.AddComponent<MovementStateComponent>(npcEntityId, std::move(movementStateComponent));
+        world.AddComponent<DirectionComponent>(npcEntityId, std::move(directionComponent));
+    }
+    
+    auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
+    
+    auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(npcAiComponent.mMovementType, atlasCol, atlasRow));
+    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(npcAiComponent.mInitDirection), *renderableComponent);
+    
+    world.AddComponent<RenderableComponent>(npcEntityId, std::move(renderableComponent));
 }
 
 void CreateLevelModelEntry

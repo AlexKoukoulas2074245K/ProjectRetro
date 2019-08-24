@@ -234,7 +234,7 @@
     [
         { "texture_name": "in_oaks_lab_groundLayer.png", "game_position_x": 12.8, "game_position_z": 12.8 }
     ],
-    "level_npc_list":
+    "level_npc_sprites":
     [
         { "editor_col": 8, "editor_row": 4, "game_col": 8, "game_row": 11, "game_position_x": 12.8, "game_position_z": 17.6, "atlas_col": 2, "atlas_row": 16 },
         { "editor_col": 4, "editor_row": 11, "game_col": 4, "game_row": 4, "game_position_x": 6.4, "game_position_z": 6.4, "atlas_col": 6, "atlas_row": 23 },

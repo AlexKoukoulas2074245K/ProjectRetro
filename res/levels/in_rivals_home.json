@@ -247,7 +247,7 @@
     [
         { "texture_name": "in_rivals_home_groundLayer.png", "game_position_x": 12.8, "game_position_z": 12.8 }
     ],
-    "level_npc_list":
+    "level_npc_sprites":
     [
         { "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26 }        
     ],

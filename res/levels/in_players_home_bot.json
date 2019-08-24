@@ -250,7 +250,7 @@
     [
         { "texture_name": "in_players_home_bot_groundLayer.png", "game_position_x": 12.8, "game_position_z": 12.8 }
     ],
-    "level_npc_list":
+    "level_npc_sprites":
     [
         { "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 7, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 7, "atlas_row": 36 }
     ],

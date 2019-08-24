@@ -1796,7 +1796,7 @@
     [
         { "texture_name": "route1_groundLayer.png", "game_position_x": 25.6, "game_position_z": 51.2 }
     ],
-    "level_npc_list":
+    "level_npc_sprites":
     [
     ],
     "level_model_list":
@@ -3026,5 +3026,9 @@
         { "tile_traits": "SOLID", "editor_col": 21, "editor_row": 51, "game_col": 21, "game_row": 12, "game_position_x": 33.6, "game_position_z": 19.2 },
         { "tile_traits": "SOLID", "editor_col": 22, "editor_row": 51, "game_col": 22, "game_row": 12, "game_position_x": 35.2, "game_position_z": 19.2 },
         { "tile_traits": "SOLID", "editor_col": 23, "editor_row": 51, "game_col": 23, "game_row": 12, "game_position_x": 36.8, "game_position_z": 19.2 }
+    ],
+    
+    "level_npc_attributes":
+    [
     ]
 }
