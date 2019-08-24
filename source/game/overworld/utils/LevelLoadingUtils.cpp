@@ -290,6 +290,7 @@ ecs::EntityId CreateNpcAttributes
     
     const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
     const auto dialog       = npcAttributesJsonObject["dialog"].get<std::string>();
+    const auto trainerName  = npcAttributesJsonObject["trainer_name"].get<std::string>();
     const auto direction    = npcAttributesJsonObject["direction"].get<int>();
     const auto gameCol      = npcAttributesJsonObject["game_col"].get<int>();
     const auto gameRow      = npcAttributesJsonObject["game_row"].get<int>();
@@ -326,6 +327,7 @@ ecs::EntityId CreateNpcAttributes
     auto aiComponent            = std::make_unique<NpcAiComponent>();
     aiComponent->mMovementType  = movementType;
     aiComponent->mDialog        = dialog;
+    aiComponent->mTrainerName   = trainerName;
     aiComponent->mSideDialogs   = std::move(sideDialogs);
     aiComponent->mPokemonRoster = std::move(pokemonRoster);
     aiComponent->mIsTrainer     = isTrainer;

@@ -36,6 +36,7 @@ public:
     std::vector<std::unique_ptr<Pokemon>> mPokemonRoster;
     std::vector<std::string> mSideDialogs;
     std::string mDialog                 = "";
+    std::string mTrainerName            = "";
     std::unique_ptr<Timer> mAiTimer     = nullptr;
     CharacterMovementType mMovementType = CharacterMovementType::DYNAMIC;            
     Direction mInitDirection            = Direction::SOUTH;
