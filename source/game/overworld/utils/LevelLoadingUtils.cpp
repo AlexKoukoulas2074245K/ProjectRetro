@@ -187,7 +187,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     }
     
     // Load NPC list
-    for (const auto& npcJsonEntry: levelJson["level_npc_list"])
+    for (const auto& npcJsonEntry: levelJson["level_npc_sprites"])
     {
         CreateNpcSprite(npcJsonEntry, mNpcEntityIdsAdded, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
     }
