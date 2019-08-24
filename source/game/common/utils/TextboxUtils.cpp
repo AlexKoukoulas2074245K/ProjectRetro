@@ -757,7 +757,12 @@ void DestroyActiveTextbox
     {
         guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
         guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-    }    
+        guiStateComponent.mChatboxDestroyedFlag      = true;
+    }
+    else
+    {
+        guiStateComponent.mChatboxDestroyedFlag = false;
+    }
     
     const auto& entityIds = world.GetActiveEntities();
     for (const auto& entityId: entityIds)

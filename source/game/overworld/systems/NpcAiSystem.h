@@ -35,8 +35,11 @@ private:
     static const float DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME;
     static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME;
     static const float STATIONARY_NPC_RESET_TIME;
+    static const float EXCLAMATION_MARK_LIFE_TIME;
     
     static const int TRAINER_LINE_OF_SIGHT;
+    static const int EXCLAMATION_MARK_ATLAS_COL;
+    static const int EXCLAMATION_MARK_ATLAS_ROW;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

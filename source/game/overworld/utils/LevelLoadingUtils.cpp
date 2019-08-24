@@ -288,7 +288,7 @@ ecs::EntityId CreateNpcAttributes
         { StringId("DYNAMIC"),    CharacterMovementType::DYNAMIC }
     };
     
-    const auto movementType = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
+    auto movementType       = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
     const auto dialog       = npcAttributesJsonObject["dialog"].get<std::string>();
     const auto trainerName  = npcAttributesJsonObject["trainer_name"].get<std::string>();
     const auto direction    = npcAttributesJsonObject["direction"].get<int>();
@@ -296,6 +296,11 @@ ecs::EntityId CreateNpcAttributes
     const auto gameRow      = npcAttributesJsonObject["game_row"].get<int>();
     const auto isTrainer    = npcAttributesJsonObject["is_trainer"].get<bool>();
     const auto isGymLeader  = npcAttributesJsonObject["is_gym_leader"].get<bool>();
+    
+    if (isTrainer)
+    {
+        movementType = CharacterMovementType::DYNAMIC;
+    }
     
     std::vector<std::string> sideDialogs;
     for (const auto& sideDialog: npcAttributesJsonObject["side_dialogs"])
@@ -345,7 +350,6 @@ ecs::EntityId CreateNpcAttributes
         directionComponent->mDirection = static_cast<Direction>(math::Max(0, direction));
         aiComponent->mInitDirection    = directionComponent->mDirection;
     }
-    
     
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
     levelResidentComponent->mLevelNameId = levelNameId;
