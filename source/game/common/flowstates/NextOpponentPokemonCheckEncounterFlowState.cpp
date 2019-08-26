@@ -64,7 +64,7 @@ NextOpponentPokemonCheckEncounterFlowState::NextOpponentPokemonCheckEncounterFlo
         mainChatboxEntityId,
         encounterStateComponent.mOpponentTrainerName.GetString() + " is#about to use#" + 
         nextOpponentPokemon.mName.GetString() + "!#@Will " + 
-        playerStateComponent.mTrainerName.GetString() + "#change POK^MON?+FREEZE",
+        playerStateComponent.mPlayerTrainerName.GetString() + "#change POK^MON?+FREEZE",
         mWorld
     );
 }

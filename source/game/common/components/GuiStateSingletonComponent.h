@@ -66,7 +66,6 @@ public:
     float mChatboxCharCooldown                        = DEFAULT_CHATBOX_CHAR_COOLDOWN;
     ChatboxDisplayState mActiveChatboxDisplayState    = ChatboxDisplayState::NORMAL;
     ChatboxContentEndState mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-    bool mChatboxDestroyedFlag                        = false;
     bool mShouldDisplayIndicationForMoreItems         = false;
 };
 

@@ -33,7 +33,7 @@ TrainerBattleWonPayoutEncounterFlowState::TrainerBattleWonPayoutEncounterFlowSta
     QueueDialogForChatbox
     (
         mainChatboxEntityId, 
-        playerStateComponent.mTrainerName.GetString() + " got $" + std::to_string(payout) + "#for winning!#+END",
+        playerStateComponent.mPlayerTrainerName.GetString() + " got $" + std::to_string(payout) + "#for winning!#+END",
         mWorld
     );
 }

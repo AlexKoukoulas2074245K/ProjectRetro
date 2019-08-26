@@ -39,6 +39,8 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
+    void AddPendingItemsToBag() const;
+    
     void CheckForNpcInteraction
     (
         const Direction,

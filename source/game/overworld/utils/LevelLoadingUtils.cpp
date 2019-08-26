@@ -20,6 +20,7 @@
 #include "../components/MovementStateComponent.h"
 #include "../components/SeaTileTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
@@ -61,6 +62,7 @@ static void CreateLevelGroundLayer
 static ecs::EntityId CreateNpcAttributes
 (
     const nlohmann::basic_json<>& npcDataJsonObject,
+    const int npcLevelIndex,
     const StringId levelNameId,
     LevelTilemap& levelTilemap,
     ecs::World& world
@@ -103,6 +105,13 @@ static void PadExtraSeaTiles
 static void CheckAndLoadEncounterInfo
 (
     LevelModelComponent& levelModelComponent
+);
+
+static void ReplaceDialogStringWithRegisteredCharacterNames
+(
+    const std::string& npcTrainerName,
+    const ecs::World&,
+    std::string& dialogString
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -181,9 +190,10 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     
     // Load Npc Attributes
     std::vector<ecs::EntityId> mNpcEntityIdsAdded;
+    int npcLevelIndexCounter = 0;
     for (const auto& npcAttributesJsonEntry: levelJson["level_npc_attributes"])
     {
-        mNpcEntityIdsAdded.push_back(CreateNpcAttributes(npcAttributesJsonEntry, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world));
+        mNpcEntityIdsAdded.push_back(CreateNpcAttributes(npcAttributesJsonEntry, npcLevelIndexCounter++, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world));
     }
     
     // Load NPC list
@@ -276,6 +286,7 @@ void CreateLevelGroundLayer
 ecs::EntityId CreateNpcAttributes
 (
     const nlohmann::basic_json<>& npcAttributesJsonObject,
+    const int npcLevelIndex,
     const StringId levelNameId,
     LevelTilemap& levelTilemap,
     ecs::World& world
@@ -288,14 +299,16 @@ ecs::EntityId CreateNpcAttributes
         { StringId("DYNAMIC"),    CharacterMovementType::DYNAMIC }
     };
     
-    auto movementType       = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
-    const auto dialog       = npcAttributesJsonObject["dialog"].get<std::string>();
     const auto trainerName  = npcAttributesJsonObject["trainer_name"].get<std::string>();
-    const auto direction    = npcAttributesJsonObject["direction"].get<int>();
-    const auto gameCol      = npcAttributesJsonObject["game_col"].get<int>();
-    const auto gameRow      = npcAttributesJsonObject["game_row"].get<int>();
     const auto isTrainer    = npcAttributesJsonObject["is_trainer"].get<bool>();
     const auto isGymLeader  = npcAttributesJsonObject["is_gym_leader"].get<bool>();
+    auto movementType       = characterMovementTypesNamesToEnums.at(StringId(npcAttributesJsonObject["movement_type"]));
+    auto direction          = npcAttributesJsonObject["direction"].get<int>();
+    auto gameCol            = npcAttributesJsonObject["game_col"].get<int>();
+    auto gameRow            = npcAttributesJsonObject["game_row"].get<int>();
+    
+    auto dialog = npcAttributesJsonObject["dialog"].get<std::string>();
+    ReplaceDialogStringWithRegisteredCharacterNames(trainerName, world, dialog);
     
     if (isTrainer)
     {
@@ -303,9 +316,11 @@ ecs::EntityId CreateNpcAttributes
     }
     
     std::vector<std::string> sideDialogs;
-    for (const auto& sideDialog: npcAttributesJsonObject["side_dialogs"])
+    for (const auto& sideDialogJson: npcAttributesJsonObject["side_dialogs"])
     {
-        sideDialogs.push_back(sideDialog.get<std::string>());
+        auto sideDialog = sideDialogJson.get<std::string>();
+        ReplaceDialogStringWithRegisteredCharacterNames(trainerName, world, sideDialog);
+        sideDialogs.push_back(sideDialog);
     }
     
     std::vector<std::unique_ptr<Pokemon>> pokemonRoster;
@@ -337,6 +352,34 @@ ecs::EntityId CreateNpcAttributes
     aiComponent->mPokemonRoster = std::move(pokemonRoster);
     aiComponent->mIsTrainer     = isTrainer;
     aiComponent->mIsGymLeader   = isGymLeader;
+    aiComponent->mLevelIndex    = npcLevelIndex;
+    
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+    for (const auto& defeatedNpcEntry: playerStateComponent.mDefeatedNpcEntries)
+    {
+        if
+        (
+            defeatedNpcEntry.mNpcLevelName == levelNameId &&
+            defeatedNpcEntry.mNpcLevelIndex == npcLevelIndex
+        )
+        {
+            aiComponent->mIsDefeated = true;
+            aiComponent->mDialog     = aiComponent->mSideDialogs[1];
+            
+            // This is the last defeated trainer
+            if
+            (
+                playerStateComponent.mLastNpcLevelIndexSpokenTo == npcLevelIndex &&
+                playerStateComponent.mLastOverworldLevelName == levelNameId
+            )
+            {
+                gameRow = playerStateComponent.mLastEngagedTrainerOccupiedRow;
+                gameCol = playerStateComponent.mLastEngagedTrainerOccupiedCol;
+                direction = static_cast<int>(playerStateComponent.mLastEngagedTrainerDirection);
+            }
+            break;
+        }
+    }
     
     auto directionComponent = std::make_unique<DirectionComponent>();
     
@@ -683,6 +726,20 @@ void CheckAndLoadEncounterInfo
     }
     
     resourceLoadingService.UnloadResource(encounterDataFilePath);
+}
+
+void ReplaceDialogStringWithRegisteredCharacterNames
+(
+    const std::string& trainerName,
+    const ecs::World& world,
+    std::string& dialogString
+)
+{
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    StringReplaceAllOccurences(dialogString, "PLAYERNAME", playerStateComponent.mPlayerTrainerName.GetString());
+    StringReplaceAllOccurences(dialogString, "RIVALNAME", playerStateComponent.mRivalName.GetString());
+    StringReplaceAllOccurences(dialogString, "TRAINERNAME", trainerName);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

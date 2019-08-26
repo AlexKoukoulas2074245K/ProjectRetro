@@ -114,7 +114,7 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mSpeed), 9 - std::to_string(selectedPokemon.mSpeed).size(), 14, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mSpecial), 9 - std::to_string(selectedPokemon.mSpecial).size(), 16, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(playerStateComponent.mTrainerId), 12, 14, mWorld);
-    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 12, 16, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, playerStateComponent.mPlayerTrainerName.GetString(), 12, 16, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mMaxHp), 19 - std::to_string(selectedPokemon.mMaxHp).size(), 4, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mHp), 15 - std::to_string(selectedPokemon.mHp).size(), 4, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "/", 15, 4, mWorld);

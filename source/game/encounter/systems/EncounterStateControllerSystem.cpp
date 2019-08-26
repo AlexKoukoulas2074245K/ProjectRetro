@@ -89,6 +89,18 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     playerStateComponent.mLastOverworldLevelOccupiedCol = overworldPlayerMovementComponent.mCurrentCoords.mCol;
     playerStateComponent.mLastOverworldLevelOccupiedRow = overworldPlayerMovementComponent.mCurrentCoords.mRow;
     
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+    {
+        const auto npcTrainerEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
+        
+        const auto& npcMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(npcTrainerEntityId);
+        const auto& npcDirectionComponent     = mWorld.GetComponent<DirectionComponent>(npcTrainerEntityId);
+        
+        playerStateComponent.mLastEngagedTrainerOccupiedRow = npcMovementStateComponent.mCurrentCoords.mRow;
+        playerStateComponent.mLastEngagedTrainerOccupiedCol = npcMovementStateComponent.mCurrentCoords.mCol;
+        playerStateComponent.mLastEngagedTrainerDirection   = npcDirectionComponent.mDirection;
+    }
+    
     DestroyLevel(levelModelComponent.mLevelName, mWorld);
     mWorld.DestroyEntity(GetPlayerEntityId(mWorld));
     
@@ -155,6 +167,14 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
         playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
         playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
+    }
+    else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+    {
+        playerStateComponent.mDefeatedNpcEntries.emplace_back
+        (
+            playerStateComponent.mLastOverworldLevelName,
+            playerStateComponent.mLastNpcLevelIndexSpokenTo
+        );
     }
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);

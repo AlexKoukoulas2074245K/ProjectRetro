@@ -483,7 +483,7 @@ ecs::EntityId CreateOverworldMainMenuTextbox
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^DEX", 2, 2, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^MON", 2, 4, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "ITEM", 2, 6, world);
-        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 2, 8, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mPlayerTrainerName.GetString(), 2, 8, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "SAVE", 2, 10, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "OPTION", 2, 12, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "EXIT", 2, 14, world);
@@ -492,7 +492,7 @@ ecs::EntityId CreateOverworldMainMenuTextbox
     {
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "POK^MON", 2, 2, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "ITEM", 2, 4, world);
-        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mTrainerName.GetString(), 2, 6, world);
+        WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, playerStateComponent.mPlayerTrainerName.GetString(), 2, 6, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "SAVE", 2, 8, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "OPTION", 2, 10, world);
         WriteTextAtTextboxCoords(overworldMenuTextboxEntityId, "EXIT", 2, 12, world);
@@ -757,11 +757,6 @@ void DestroyActiveTextbox
     {
         guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
         guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-        guiStateComponent.mChatboxDestroyedFlag      = true;
-    }
-    else
-    {
-        guiStateComponent.mChatboxDestroyedFlag = false;
     }
     
     const auto& entityIds = world.GetActiveEntities();

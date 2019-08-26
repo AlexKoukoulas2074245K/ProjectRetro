@@ -19,6 +19,7 @@
 
 #include "TypeTraits.h"
 
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -73,6 +74,16 @@ inline std::vector<std::string> StringSplit(const std::string& s, char delim)
     }
     
     return elems;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+// Replace all occurences of pattern with the replacement string in the original string
+inline void StringReplaceAllOccurences(std::string& s, const std::string& pattern, const std::string& replacement)
+{
+    s = regex_replace(s, std::regex(pattern), replacement);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

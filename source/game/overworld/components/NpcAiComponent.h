@@ -39,6 +39,7 @@ public:
     std::string mDialog                    = "";
     std::string mTrainerName               = "";
     std::unique_ptr<Timer> mAiTimer        = nullptr;
+    int mLevelIndex                        = -1;
     CharacterMovementType mMovementType    = CharacterMovementType::DYNAMIC;
     Direction mInitDirection               = Direction::SOUTH;
     bool mIsTrainer                        = false;

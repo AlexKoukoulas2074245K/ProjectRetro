@@ -35,7 +35,7 @@ ItemUsageFlowState::ItemUsageFlowState(ecs::World& world)
     if (ItemCanBeUsed() == false)
     {
         const auto chatboxEntityId = CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, ITEM_USAGE_CHATBOX_Z));
-        QueueDialogForChatbox(chatboxEntityId, "OAK: " + playerStateComponent.mTrainerName.GetString() + "!#This isn't the#time to use that!#+END", mWorld);
+        QueueDialogForChatbox(chatboxEntityId, "OAK: " + playerStateComponent.mPlayerTrainerName.GetString() + "!#This isn't the#time to use that!#+END", mWorld);
     }
 }
 

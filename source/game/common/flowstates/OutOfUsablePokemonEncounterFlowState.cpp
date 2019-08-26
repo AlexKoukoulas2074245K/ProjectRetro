@@ -33,8 +33,8 @@ OutOfUsablePokemonEncounterFlowState::OutOfUsablePokemonEncounterFlowState(ecs::
     QueueDialogForChatbox
     (
         mainChatboxEntityId,
-        playerStateComponent.mTrainerName.GetString() + " is out of#useable POK^MON!#@" +
-        playerStateComponent.mTrainerName.GetString() + " blacked#out!#+END",
+        playerStateComponent.mPlayerTrainerName.GetString() + " is out of#useable POK^MON!#@" +
+        playerStateComponent.mPlayerTrainerName.GetString() + " blacked#out!#+END",
         mWorld
     );
 }

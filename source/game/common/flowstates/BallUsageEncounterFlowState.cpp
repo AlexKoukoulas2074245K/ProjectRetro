@@ -39,7 +39,7 @@ BallUsageEncounterFlowState::BallUsageEncounterFlowState(ecs::World& world)
         QueueDialogForChatbox
         (
             mainChatboxEntityId,
-            playerStateComponent.mTrainerName.GetString() + " used#" +
+            playerStateComponent.mPlayerTrainerName.GetString() + " used#" +
             itemBagEntry.mItemName.GetString() + "!+FREEZE",
             mWorld
         );

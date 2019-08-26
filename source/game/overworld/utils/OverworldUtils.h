@@ -17,6 +17,7 @@
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/GameConstants.h"
 #include "../../ECS.h"
+#include "../../overworld/components/NpcAiComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,42 @@ inline Direction GetDirectionFacingDirection(const Direction direction)
     return static_cast<Direction>((static_cast<int>(direction) + 2) % 4);
 }
 
+inline ecs::EntityId GetNpcEntityIdFromLevelIndex(const int npcLevelIndex, const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if
+        (
+            world.HasComponent<NpcAiComponent>(entityId) &&
+            world.GetComponent<NpcAiComponent>(entityId).mLevelIndex == npcLevelIndex
+        )
+        {
+            return entityId;
+        }
+    }
+    
+    return ecs::NULL_ENTITY_ID;
+}
+
+inline int GetNpcLevelIndexFromEntityId(const ecs::EntityId npcEntityId, const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (entityId == npcEntityId)
+        {
+            assert(world.HasComponent<NpcAiComponent>(npcEntityId) && "Requested level index from entity with no NpcAiComponent");
+        }
+        
+        const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
+        return npcAiComponent.mLevelIndex;
+    }
+    
+    assert(false && "Requested level index from a non-existent entity");
+    return -1;
+}
+
 inline ecs::EntityId GetPlayerEntityId(const ecs::World& world)
 {
     const auto& activeEntities = world.GetActiveEntities();
@@ -57,6 +94,24 @@ inline ecs::EntityId GetPlayerEntityId(const ecs::World& world)
 inline bool IsAnyOverworldFlowCurrentlyRunning(const ecs::World& world)
 {
     return world.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowStateManager.HasActiveFlowState();
+}
+
+inline bool IsAnyNpcEngagedInCombat(const ecs::World& world)
+{
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if
+        (
+            world.HasComponent<NpcAiComponent>(entityId) &&
+            world.GetComponent<NpcAiComponent>(entityId).mIsEngagedInCombat
+        )
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 template<class FlowStateType>

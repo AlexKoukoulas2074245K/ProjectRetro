@@ -55,7 +55,7 @@ TrainerBattleWonEncounterFlowState::TrainerBattleWonEncounterFlowState(ecs::Worl
     QueueDialogForChatbox
     (
         mainChatboxEntityId,
-        playerStateComponent.mTrainerName.GetString() + " defeated#" + encounterStateComponent.mOpponentTrainerName.GetString() + "!#+END",
+        playerStateComponent.mPlayerTrainerName.GetString() + " defeated#" + encounterStateComponent.mOpponentTrainerName.GetString() + "!#+END",
         mWorld
     );
     

@@ -39,6 +39,23 @@ struct BagItemEntry
     int mQuantity;
 };
 
+struct DefeatedNpcEntry
+{
+    DefeatedNpcEntry
+    (
+        const StringId npcLevelName,
+        const int npcLevelIndex
+    )
+        : mNpcLevelName(npcLevelName)
+        , mNpcLevelIndex(npcLevelIndex)
+    {
+        
+    }
+    
+    const StringId mNpcLevelName;
+    const int mNpcLevelIndex;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -49,27 +66,32 @@ public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
     std::vector<BagItemEntry> mPlayerBag;
     std::vector<StringId> mBadgeNamesOwned;
-
-    ecs::EntityId mLastNpcSpokenToEntityId = ecs::NULL_ENTITY_ID;
+    std::vector<DefeatedNpcEntry> mDefeatedNpcEntries;
+    
+    int mLastNpcLevelIndexSpokenTo = -1;
     
     StringId mLastOverworldLevelName   = StringId();
-    StringId mTrainerName              = StringId();
+    StringId mPlayerTrainerName        = StringId();
+    StringId mRivalName                = StringId();
     StringId mHomeLevelName            = StringId("pallet");
     StringId mPendingItemToBeAdded     = StringId();
     
-    int mPokeDollarCredits             = 0;
-    int mLastOverworldLevelOccupiedRow = 0;
-    int mLastOverworldLevelOccupiedCol = 0;
-    int mHomeLevelOccupiedRow          = 17;
-    int mHomeLevelOccupiedCol          = 11;
-    int mLeveledUpPokemonRosterIndex   = -1;
-    int mTrainerId                     = 0;
-    int mPreviousItemMenuItemOffset    = 0;
-    int mPreviousItemMenuCursorRow     = 0;
-    int mPreviousMainMenuCursorRow     = 0;
-    int mQuantityOfItemsToToss         = 0;
-    Direction mLastOverworldDirection  = Direction::SOUTH;    
-    bool mBillInteractionCompleted     = false;    
+    int mPokeDollarCredits                 = 0;
+    int mLastOverworldLevelOccupiedRow     = 0;
+    int mLastOverworldLevelOccupiedCol     = 0;
+    int mLastEngagedTrainerOccupiedRow     = 0;
+    int mLastEngagedTrainerOccupiedCol     = 0;
+    int mHomeLevelOccupiedRow              = 17;
+    int mHomeLevelOccupiedCol              = 11;
+    int mLeveledUpPokemonRosterIndex       = -1;
+    int mTrainerId                         = 0;
+    int mPreviousItemMenuItemOffset        = 0;
+    int mPreviousItemMenuCursorRow         = 0;
+    int mPreviousMainMenuCursorRow         = 0;
+    int mQuantityOfItemsToToss             = 0;
+    Direction mLastOverworldDirection      = Direction::SOUTH;
+    Direction mLastEngagedTrainerDirection = Direction::SOUTH;
+    bool mBillInteractionCompleted         = false;
 
 };
 

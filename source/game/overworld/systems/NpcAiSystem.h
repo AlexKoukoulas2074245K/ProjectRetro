@@ -30,7 +30,13 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
     
 private:
+    void UpdateTrainerNpc(const float dt, const ecs::EntityId) const;
+    void UpdateStationaryNpc(const float dt, const ecs::EntityId) const;
+    void UpdateDynamicNpc(const float dt, const ecs::EntityId) const;
+    void StartEncounter(const ecs::EntityId) const;
     void CheckForPlayerDistanceAndEncounterEngagement(const ecs::EntityId npcEntityId) const;
+    void CreateExclamationMarkEntity(const ecs::EntityId npcEntityId) const;
+    void DestroyExclamationMarkEntity(const ecs::EntityId npcEntityId) const;
     
     static const float DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME;
     static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME;

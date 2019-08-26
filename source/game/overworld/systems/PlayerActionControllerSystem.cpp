@@ -55,23 +55,10 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 {    
     const auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
     const auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-    const auto& guiStateComponent        = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent        = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    auto& playerStateComponent           = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    if (playerStateComponent.mPendingItemToBeAdded != StringId())
-    {
-        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-        playerStateComponent.mPendingItemToBeAdded = StringId();
-        
-        // Update npc dialog
-        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(playerStateComponent.mLastNpcSpokenToEntityId);
-        if (npcAiComponent.mSideDialogs.size() > 0)
-        {
-            npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
-        }
-    }
+    AddPendingItemsToBag();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
     {
@@ -86,65 +73,24 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
                 continue;
             }
             
-            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            if
+            (
+                encounterStateComponent.mActiveEncounterType != EncounterType::NONE ||
+                transitionStateComponent.mIsPlayingTransitionAnimation ||
+                warpConnectionsComponent.mHasPendingWarpConnection ||
+                GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID ||
+                IsAnyOverworldFlowCurrentlyRunning(mWorld)
+            )
             {
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 continue;
             }
             
-            if (transitionStateComponent.mIsPlayingTransitionAnimation)
+            if (IsAnyNpcEngagedInCombat(mWorld))
             {
+                movementStateComponent.mMoving = false;
                 PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
                 continue;
-            }
-            
-            if (warpConnectionsComponent.mHasPendingWarpConnection)
-            {
-                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
-                continue;
-            }
-
-
-            if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
-            {
-                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
-                continue;
-            }
-
-            if (IsAnyOverworldFlowCurrentlyRunning(mWorld))
-            {
-                PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
-                continue;
-            }
-
-            
-            if (guiStateComponent.mChatboxDestroyedFlag)
-            {
-                if (playerStateComponent.mLastNpcSpokenToEntityId != ecs::NULL_ENTITY_ID)
-                {
-                    const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(playerStateComponent.mLastNpcSpokenToEntityId);
-                    if (npcAiComponent.mIsEngagedInCombat)
-                    {
-                        
-                        encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
-                        encounterStateComponent.mOpponentTrainerSpeciesName       = npcAiComponent.mTrainerName;
-                        encounterStateComponent.mOpponentTrainerName              = StringId(npcAiComponent.mTrainerName);
-                        encounterStateComponent.mOpponentTrainerDefeatedText      = npcAiComponent.mSideDialogs[0];
-                        encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
-                        encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
-                        encounterStateComponent.mOpponentPokemonRoster.clear();
-                        for (const auto& pokemon: npcAiComponent.mPokemonRoster)
-                        {
-                            encounterStateComponent.mOpponentPokemonRoster.push_back(CreatePokemon
-                            (
-                                pokemon->mName,
-                                pokemon->mLevel,
-                                true,
-                                mWorld
-                            ));
-                        }
-                    }
-                }
             }
             
             if (inputStateComponent.mHasBeenConsumed)
@@ -223,6 +169,25 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void PlayerActionControllerSystem::AddPendingItemsToBag() const
+{
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    if (playerStateComponent.mPendingItemToBeAdded != StringId())
+    {
+        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+        playerStateComponent.mPendingItemToBeAdded = StringId();
+        
+        // Update npc dialog
+        const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
+        if (npcAiComponent.mSideDialogs.size() > 0)
+        {
+            npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+        }
+    }
+}
+
 void PlayerActionControllerSystem::CheckForNpcInteraction
 (
     const Direction direction,
@@ -256,7 +221,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             
             QueueDialogForChatbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
-            playerStateComponent.mLastNpcSpokenToEntityId = tile.mTileOccupierEntityId;
+            playerStateComponent.mLastNpcLevelIndexSpokenTo = GetNpcLevelIndexFromEntityId(tile.mTileOccupierEntityId, mWorld);
             npcTimerComponent.mAnimationTimer->Reset();
             
             if (npcAiComponent.mIsTrainer && npcAiComponent.mIsDefeated == false)
