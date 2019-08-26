@@ -40,6 +40,8 @@ public:
     std::string mTrainerName               = "";
     std::unique_ptr<Timer> mAiTimer        = nullptr;
     int mLevelIndex                        = -1;
+    int mOriginalLevelCol                  = 0;
+    int mOriginalLevelRow                  = 0;
     CharacterMovementType mMovementType    = CharacterMovementType::DYNAMIC;
     Direction mInitDirection               = Direction::SOUTH;
     bool mIsTrainer                        = false;

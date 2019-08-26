@@ -118,14 +118,14 @@
 		"atlas_row": 1        
     },
 	
-	"JR._TRAINER[":
+	"JR.TRAINER[":
 	{
 		"base_payout": 20,
         "atlas_col": 9,
 		"atlas_row": 0  
 	},
 	
-	"JR._TRAINER]":
+	"JR.TRAINER]":
 	{
 		"base_payout": 20,
         "atlas_col": 6,

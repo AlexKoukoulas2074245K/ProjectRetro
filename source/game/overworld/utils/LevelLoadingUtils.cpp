@@ -344,15 +344,17 @@ ecs::EntityId CreateNpcAttributes
     animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
     animationTimerComponent->mAnimationTimer->Pause();
     
-    auto aiComponent            = std::make_unique<NpcAiComponent>();
-    aiComponent->mMovementType  = movementType;
-    aiComponent->mDialog        = dialog;
-    aiComponent->mTrainerName   = trainerName;
-    aiComponent->mSideDialogs   = std::move(sideDialogs);
-    aiComponent->mPokemonRoster = std::move(pokemonRoster);
-    aiComponent->mIsTrainer     = isTrainer;
-    aiComponent->mIsGymLeader   = isGymLeader;
-    aiComponent->mLevelIndex    = npcLevelIndex;
+    auto aiComponent               = std::make_unique<NpcAiComponent>();
+    aiComponent->mMovementType     = movementType;
+    aiComponent->mDialog           = dialog;
+    aiComponent->mTrainerName      = trainerName;
+    aiComponent->mSideDialogs      = std::move(sideDialogs);
+    aiComponent->mPokemonRoster    = std::move(pokemonRoster);
+    aiComponent->mIsTrainer        = isTrainer;
+    aiComponent->mIsGymLeader      = isGymLeader;
+    aiComponent->mLevelIndex       = npcLevelIndex;
+    aiComponent->mOriginalLevelCol = gameCol;
+    aiComponent->mOriginalLevelRow = gameRow;
     
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
     for (const auto& defeatedNpcEntry: playerStateComponent.mDefeatedNpcEntries)
@@ -433,11 +435,11 @@ void CreateNpcSprite
     auto npcEntityId = ecs::NULL_ENTITY_ID;
     for (const auto npcAttributeEntityId: npcAttributeEntityIdsAdded)
     {
-        const auto& npcMovementComponent = world.GetComponent<MovementStateComponent>(npcAttributeEntityId);
+        const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcAttributeEntityId);
         if
         (
-         	npcMovementComponent.mCurrentCoords.mCol == gameCol &&
-            npcMovementComponent.mCurrentCoords.mRow == gameRow
+         	npcAiComponent.mOriginalLevelCol == gameCol &&
+            npcAiComponent.mOriginalLevelRow == gameRow
         )
         {
             npcEntityId = npcAttributeEntityId;

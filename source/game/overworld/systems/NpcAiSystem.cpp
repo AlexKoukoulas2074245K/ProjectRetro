@@ -98,14 +98,18 @@ void NpcAiSystem::UpdateTrainerNpc(const float dt, const ecs::EntityId npcEntity
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
     const auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     
-    auto& npcAiComponent         = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
-    auto& movementStateComponent = mWorld.GetComponent<MovementStateComponent>(npcEntityId);
-    auto& playerStateComponent   = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& npcAiComponent          = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
+    auto& movementStateComponent  = mWorld.GetComponent<MovementStateComponent>(npcEntityId);
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(npcEntityId);
+    auto& renderableComponent     = mWorld.GetComponent<RenderableComponent>(npcEntityId);
     
     // Defeated Npcs behave exactly like stationary npcs
     if (npcAiComponent.mIsDefeated)
     {
         UpdateStationaryNpc(dt, npcEntityId);
+        movementStateComponent.mMoving = false;
+        PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
         return;
     }
     
