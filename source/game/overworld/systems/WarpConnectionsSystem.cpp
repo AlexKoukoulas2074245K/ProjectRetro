@@ -56,7 +56,11 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         if (playerStateComponent.mLastNpcLevelIndexSpokenTo != -1)
         {
-            playerStateComponent.mLastNpcLevelIndexSpokenTo = -1;
+            const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld));
+            playerStateComponent.mLastNpcLevelIndexSpokenTo     = -1;
+            playerStateComponent.mLastEngagedTrainerOccupiedRow = npcAiComponent.mOriginalLevelRow;
+            playerStateComponent.mLastEngagedTrainerOccupiedCol = npcAiComponent.mOriginalLevelCol;
+            playerStateComponent.mLastEngagedTrainerDirection   = npcAiComponent.mInitDirection;
         }
         
         DestroyLevel(activeLevelSingletonComponent.mActiveLevelNameId, mWorld);
