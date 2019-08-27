@@ -52,7 +52,13 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
     
     if (warpConnectionsComponent.mHasPendingWarpConnection && transitionAnimationStateSingletonComponent.mIsPlayingTransitionAnimation == false)
-    {        
+    {
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        if (playerStateComponent.mLastNpcLevelIndexSpokenTo != -1)
+        {
+            playerStateComponent.mLastNpcLevelIndexSpokenTo = -1;
+        }
+        
         DestroyLevel(activeLevelSingletonComponent.mActiveLevelNameId, mWorld);
         
         const auto playerEntityId           = GetPlayerEntityId(mWorld);
