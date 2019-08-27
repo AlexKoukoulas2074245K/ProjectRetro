@@ -224,7 +224,7 @@ void App::DummyInitialization()
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 16, 16, mWorld);
+    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 9, 46, mWorld);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

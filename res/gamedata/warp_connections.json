@@ -60,6 +60,22 @@
 		{ 
 			"from": { "level_name": "pallet", "level_col": 17, "level_row": 24 },
 			"to": { "level_name": "route1", "level_col": 16, "level_row": 14 } 
+		},
+		{ 
+			"from": { "level_name": "route1", "level_col": 15, "level_row": 50 },
+			"to": { "level_name": "viridian", "level_col": 25, "level_row": 8 } 
+		},
+		{ 
+			"from": { "level_name": "route1", "level_col": 16, "level_row": 50 },
+			"to": { "level_name": "viridian", "level_col": 26, "level_row": 8 } 
+		},
+		{ 
+			"from": { "level_name": "viridian", "level_col": 25, "level_row": 7 },
+			"to": { "level_name": "route1", "level_col": 15, "level_row": 49 } 
+		},
+		{ 
+			"from": { "level_name": "viridian", "level_col": 26, "level_row": 7 },
+			"to": { "level_name": "route1", "level_col": 16, "level_row": 49 } 
 		}
 	]
 }
