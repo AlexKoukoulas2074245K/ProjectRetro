@@ -90,7 +90,7 @@ void ConfusionHurtItselfAnimationEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mLastMoveSelected                = CONFUSION_HURT_ITSELF_MOVE_NAME;
             encounterStateComponent.mLastMoveCrit                    = false;
             encounterStateComponent.mMoveHadNoEffect                 = false;
-            encounterStateComponent.mNothingHappendFromMoveExecution = false;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = false;
             
             if (encounterStateComponent.mIsOpponentsTurn)
             { 

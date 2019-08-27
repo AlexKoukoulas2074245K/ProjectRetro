@@ -76,7 +76,7 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& selectedMoveStats = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
 
-    encounterStateComponent.mNothingHappendFromMoveExecution = false;
+    encounterStateComponent.mNothingHappenedFromMoveExecution = false;
     encounterStateComponent.mOutstandingFloatDamage = 0.0f;
     encounterStateComponent.mDefenderFloatHealth = static_cast<float>(defendingPokemon.mHp);
 
@@ -152,7 +152,7 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     const auto& fullMoveEffectString  = selectedMoveStats.mEffect.GetString();
 
     encounterStateComponent.mMoveHadNoEffect                           = false;
-    encounterStateComponent.mNothingHappendFromMoveExecution           = false;
+    encounterStateComponent.mNothingHappenedFromMoveExecution           = false;
     encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon   = PokemonStatus::NORMAL;
     encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
 
@@ -187,84 +187,84 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     {        
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mAttackEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }         
     }
     else if (StringStartsWith(fullMoveEffectString, "PA"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mAttackEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }        
     }
     else if (StringStartsWith(fullMoveEffectString, "ED"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mDefenseEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "PD"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mDefenseEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "EH"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mAccuracyStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "PH"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mAccuracyStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "ES"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mSpeedEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "PS"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mSpeedEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "EX"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mSpecialEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "PX"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mSpecialEncounterStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }    
     else if (StringStartsWith(fullMoveEffectString, "EE"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), defendingPokemon.mEvasionStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (StringStartsWith(fullMoveEffectString, "PE"))
     {
         if (!AddToStatStage(std::stoi(selectedMoveStats.mEffect.GetString().substr(2)), attackingPokemon.mEvasionStage))
         {
-            encounterStateComponent.mNothingHappendFromMoveExecution = true;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = true;
         }
     }
     else if (fullMoveEffectString == "EPAR")

@@ -125,7 +125,7 @@ public:
     bool mLastMoveMiss                                                   = false;
     bool mIsOpponentsTurn                                                = false;
     bool mPlayerChangedPokemonFromMainMenu                               = false;
-    bool mNothingHappendFromMoveExecution                                = false;
+    bool mNothingHappenedFromMoveExecution                               = false;
     bool mMoveHadNoEffect                                                = false;
     bool mHasEscapeSucceeded                                             = false;
     bool mEncounterJustFinished                                          = false;

@@ -164,8 +164,9 @@ std::string GetTextboxRowString
     ecs::World& world
 )
 {
+#ifndef NDEBUG
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
-    
+#endif
     assert((textboxRow > 0 && textboxRow < textboxComponent.mTextContent.size() - 1) && "Textbox row out of deletion bounds");
     
     std::string textboxRowContent = "";

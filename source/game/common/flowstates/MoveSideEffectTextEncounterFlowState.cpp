@@ -17,6 +17,8 @@
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
+#include <cctype>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +32,7 @@ MoveSideEffectTextEncounterFlowState::MoveSideEffectTextEncounterFlowState(ecs::
     const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     const auto& selectedMoveStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
 
-    if (selectedMoveStats.mEffect != StringId() && encounterStateComponent.mNothingHappendFromMoveExecution == false)
+    if (selectedMoveStats.mEffect != StringId() && encounterStateComponent.mNothingHappenedFromMoveExecution == false)
     {
         ConstructAndDisplayMoveSideEffectText
         (
@@ -65,7 +67,7 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
 {        
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    const auto& moveEffectString = selectedMoveStats.mEffect.GetString();    
+    auto moveEffectString = selectedMoveStats.mEffect.GetString();    
 
     if 
     (
@@ -76,6 +78,20 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
     )
     {
         return;
+    }
+
+    if (std::isdigit(moveEffectString[0]))
+    {
+        const auto probability = std::stoi(moveEffectString.substr(0, 2));
+        const auto shouldProc  = math::RandomInt(0, 99) <= probability;
+
+        if (!shouldProc)
+        {
+            return;
+        }
+
+        // Trim the probability portion of the move effect string
+        moveEffectString = moveEffectString.substr(3);
     }
 
     const auto mainChatboxEntityId = CreateChatbox(mWorld);

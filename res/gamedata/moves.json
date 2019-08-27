@@ -137,10 +137,10 @@
     "BUBBLE":
     {
         "type": "WATER",
-        "power": 40,
+        "power": 20,
         "accuracy": 255,
         "pp": 30,
-        "effect": "May lower opponent's Speed."
+        "effect": "33%ES-1"
     },
 
     "BUBBLE_BEAM":

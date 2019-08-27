@@ -61,7 +61,7 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     }
     
     
-    if (encounterStateComponent.mNothingHappendFromMoveExecution)
+    if (encounterStateComponent.mNothingHappenedFromMoveExecution)
     {
         const auto mainChatboxEntityId = CreateChatbox(world);
 

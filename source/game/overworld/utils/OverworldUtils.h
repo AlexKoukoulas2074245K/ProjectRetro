@@ -67,10 +67,10 @@ inline int GetNpcLevelIndexFromEntityId(const ecs::EntityId npcEntityId, const e
         if (entityId == npcEntityId)
         {
             assert(world.HasComponent<NpcAiComponent>(npcEntityId) && "Requested level index from entity with no NpcAiComponent");
-        }
-        
-        const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
-        return npcAiComponent.mLevelIndex;
+
+            const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
+            return npcAiComponent.mLevelIndex;
+        }               
     }
     
     assert(false && "Requested level index from a non-existent entity");

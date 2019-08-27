@@ -102,7 +102,7 @@ void MoveAnnouncementEncounterFlowState::VUpdate(const float dt)
                 {
                     CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
                 }
-                else if (encounterStateComponent.mNothingHappendFromMoveExecution)
+                else if (encounterStateComponent.mNothingHappenedFromMoveExecution)
                 {
                     CompleteAndTransitionTo<MoveEffectivenessTextEncounterFlowState>();
                 }

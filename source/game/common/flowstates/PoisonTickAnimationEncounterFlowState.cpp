@@ -90,7 +90,7 @@ void PoisonTickAnimationEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mLastMoveSelected                = POISON_TICK_MOVE_NAME;
             encounterStateComponent.mLastMoveCrit                    = false;
             encounterStateComponent.mMoveHadNoEffect                 = false;
-            encounterStateComponent.mNothingHappendFromMoveExecution = false;
+            encounterStateComponent.mNothingHappenedFromMoveExecution = false;
             
             // https://bulbapedia.bulbagarden.net/wiki/Poison_(status_condition)#Outside_of_battle
             encounterStateComponent.mOutstandingFloatDamage = ceil(attackingPokemon.mMaxHp / 16.0f);
