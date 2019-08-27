@@ -361,9 +361,10 @@ ecs::EntityId CreateNpcAttributes
             defeatedNpcEntry.mNpcLevelIndex == npcLevelIndex
         )
         {
-            aiComponent->mIsDefeated = true;
-            aiComponent->mDialog     = aiComponent->mSideDialogs[1];
-            movementType             = CharacterMovementType::STATIONARY;
+            aiComponent->mIsDefeated   = true;
+            aiComponent->mDialog       = aiComponent->mSideDialogs[1];
+            aiComponent->mMovementType = CharacterMovementType::STATIONARY;
+            movementType               = CharacterMovementType::STATIONARY;
             
             // This is the last defeated trainer
             if
