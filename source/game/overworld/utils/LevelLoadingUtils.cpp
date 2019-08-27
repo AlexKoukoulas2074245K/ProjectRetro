@@ -340,10 +340,6 @@ ecs::EntityId CreateNpcAttributes
     
     const auto npcEntityId = world.CreateEntity();
     
-    auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
-    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
-    animationTimerComponent->mAnimationTimer->Pause();
-    
     auto aiComponent               = std::make_unique<NpcAiComponent>();
     aiComponent->mMovementType     = movementType;
     aiComponent->mDialog           = dialog;
@@ -367,6 +363,7 @@ ecs::EntityId CreateNpcAttributes
         {
             aiComponent->mIsDefeated = true;
             aiComponent->mDialog     = aiComponent->mSideDialogs[1];
+            movementType             = CharacterMovementType::STATIONARY;
             
             // This is the last defeated trainer
             if
@@ -382,6 +379,10 @@ ecs::EntityId CreateNpcAttributes
             break;
         }
     }
+    
+    auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
+    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
+    animationTimerComponent->mAnimationTimer->Pause();
     
     auto directionComponent = std::make_unique<DirectionComponent>();
     

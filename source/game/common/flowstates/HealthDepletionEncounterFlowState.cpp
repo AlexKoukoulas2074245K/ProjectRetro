@@ -130,7 +130,7 @@ float HealthDepletionEncounterFlowState::CalculateHealthDepletionSpeed() const
 
     // Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
     // based on the pokemon level
-    const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.5f, 3.0f, defendingPokemon.mLevel / 100.0f);
+    const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.0f, 2.3f, defendingPokemon.mLevel / 100.0f);
     return defendingPokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
 }
 
