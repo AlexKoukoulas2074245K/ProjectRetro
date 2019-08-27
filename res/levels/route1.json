@@ -1799,13 +1799,12 @@
     "level_npc_attributes":
     [
          { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "See those ledges#along the road?#@It's a bit scary,#but you can jump#from them.#@You can get back#to PALLET TOWN#quicker that way.", "side_dialogs": [], "pokemon_roster": [], "editor_col": 20, "editor_row": 27, "game_col": 20, "game_row": 36, "game_position_x": 32.0, "game_position_z": 57.6 },
-         { "movement_type": "STATIONARY", "direction": 3, "is_trainer": true, "is_gym_leader": false, "trainer_name": "JR.TRAINER[", "dialog": "Stop right there,#kid!#@You're still light#years from facing#BROCK!", "side_dialogs": ["TRAINERNAME: Darn!#@Light years isn't#time! It measures#distance!#+END","You're pretty hot,#but not as hot#as BROCK!"], "pokemon_roster": [{ "name": "SQUIRTLE", "level": 9 },{ "name": "SANDSHREW", "level": 9 }], "editor_col": 20, "editor_row": 35, "game_col": 20, "game_row": 28, "game_position_x": 32.0, "game_position_z": 44.8 },
-         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Hi! I work at a#POK^MON MART.#@It's a convenient#shop, so please#visit us in#VIRIDIAN CITY.#@I know, I'll give#you a sample!#Here you go!#@PLAYERNAME got#POTION!", "side_dialogs": ["We also carry#POK^ BALLs for#catching POK^MON!"], "pokemon_roster": [], "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4 }
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Hi! I work at a#POK^MON MART.#@It's a convenient#shop, so please#visit us in#VIRIDIAN CITY.#@I know, I'll give#you a sample!#Here you go!#@PLAYERNAME got#POTION!", "side_dialogs": ["We also carry#POK^ BALLs for#catching POK^MON!"], "pokemon_roster": [], "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "ROUTE 1#PALLET TOWN -#VIRIDIAN CITY", "side_dialogs": [], "pokemon_roster": [], "editor_col": 14, "editor_row": 41, "game_col": 14, "game_row": 22, "game_position_x": 22.4, "game_position_z": 35.2 }
     ],
     "level_npc_sprites":
     [
         {  "editor_col": 20, "editor_row": 27, "game_col": 20, "game_row": 36, "game_position_x": 32.0, "game_position_z": 57.6, "atlas_col": 0, "atlas_row": 17 },
-        {  "editor_col": 20, "editor_row": 35, "game_col": 20, "game_row": 28, "game_position_x": 32.0, "game_position_z": 44.8, "atlas_col": 0, "atlas_row": 0 },
         {  "editor_col": 10, "editor_row": 39, "game_col": 10, "game_row": 24, "game_position_x": 16.0, "game_position_z": 38.4, "atlas_col": 0, "atlas_row": 17 }
     ],
     "level_model_list":
