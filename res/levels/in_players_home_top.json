@@ -75,14 +75,14 @@
         { "editor_col": 1, "editor_row": 4, "game_position_x": 1.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 2, "editor_row": 4, "game_position_x": 3.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 3, "editor_row": 4, "game_position_x": 4.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
-        { "editor_col": 4, "editor_row": 4, "game_position_x": 6.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 5, "editor_row": 4, "game_position_x": 8.0, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 6, "editor_row": 4, "game_position_x": 9.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 7, "editor_row": 4, "game_position_x": 11.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 8, "editor_row": 4, "game_position_x": 12.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 9, "editor_row": 4, "game_position_x": 14.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 10, "editor_row": 4, "game_position_x": 16.0, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 11, "editor_row": 4, "game_position_x": 17.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 4, "editor_row": 4, "game_position_x": 6.4, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 5, "editor_row": 4, "game_position_x": 8.0, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 6, "editor_row": 4, "game_position_x": 9.6, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 7, "editor_row": 4, "game_position_x": 11.2, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 8, "editor_row": 4, "game_position_x": 12.8, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 9, "editor_row": 4, "game_position_x": 14.4, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 10, "editor_row": 4, "game_position_x": 16.0, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 11, "editor_row": 4, "game_position_x": 17.6, "game_position_z": 17.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 12, "editor_row": 4, "game_position_x": 19.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 4, "game_position_x": 20.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 14, "editor_row": 4, "game_position_x": 22.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
@@ -91,14 +91,14 @@
         { "editor_col": 1, "editor_row": 5, "game_position_x": 1.6, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 2, "editor_row": 5, "game_position_x": 3.2, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 3, "editor_row": 5, "game_position_x": 4.8, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
-        { "editor_col": 4, "editor_row": 5, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 5, "editor_row": 5, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 4, "editor_row": 5, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 5, "editor_row": 5, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 6, "editor_row": 5, "game_position_x": 9.6, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 7, "editor_row": 5, "game_position_x": 11.2, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 8, "editor_row": 5, "game_position_x": 12.8, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 5, "game_position_x": 14.4, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 10, "editor_row": 5, "game_position_x": 16.0, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
-        { "editor_col": 11, "editor_row": 5, "game_position_x": 17.6, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 11, "editor_row": 5, "game_position_x": 17.6, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 12, "editor_row": 5, "game_position_x": 19.2, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 5, "game_position_x": 20.8, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 14, "editor_row": 5, "game_position_x": 22.4, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
@@ -142,7 +142,7 @@
         { "editor_col": 4, "editor_row": 8, "game_position_x": 6.4, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 8, "game_position_x": 8.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 6, "editor_row": 8, "game_position_x": 9.6, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
-        { "editor_col": 7, "editor_row": 8, "game_position_x": 11.2, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 7, "editor_row": 8, "game_position_x": 11.2, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 8, "editor_row": 8, "game_position_x": 12.8, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 8, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 10, "editor_row": 8, "game_position_x": 16.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
@@ -158,7 +158,7 @@
         { "editor_col": 4, "editor_row": 9, "game_position_x": 6.4, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 9, "game_position_x": 8.0, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 6, "editor_row": 9, "game_position_x": 9.6, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
-        { "editor_col": 7, "editor_row": 9, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 7, "editor_row": 9, "game_position_x": 11.2, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 8, "editor_row": 9, "game_position_x": 12.8, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 9, "game_position_x": 14.4, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 10, "editor_row": 9, "game_position_x": 16.0, "game_position_z": 9.6, "atlas_col": 4, "atlas_row": 15 },
@@ -171,7 +171,7 @@
         { "editor_col": 1, "editor_row": 10, "game_position_x": 1.6, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 2, "editor_row": 10, "game_position_x": 3.2, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 3, "editor_row": 10, "game_position_x": 4.8, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 15 },
-        { "editor_col": 4, "editor_row": 10, "game_position_x": 6.4, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 4, "editor_row": 10, "game_position_x": 6.4, "game_position_z": 8.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 10, "game_position_x": 8.0, "game_position_z": 8.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 6, "editor_row": 10, "game_position_x": 9.6, "game_position_z": 8.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 7, "editor_row": 10, "game_position_x": 11.2, "game_position_z": 8.0, "atlas_col": 4, "atlas_row": 15 },
@@ -192,7 +192,7 @@
         { "editor_col": 7, "editor_row": 11, "game_position_x": 11.2, "game_position_z": 6.4, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 8, "editor_row": 11, "game_position_x": 12.8, "game_position_z": 6.4, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 11, "game_position_x": 14.4, "game_position_z": 6.4, "atlas_col": 4, "atlas_row": 15 },
-        { "editor_col": 10, "editor_row": 11, "game_position_x": 16.0, "game_position_z": 6.4, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 10, "editor_row": 11, "game_position_x": 16.0, "game_position_z": 6.4, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 11, "editor_row": 11, "game_position_x": 17.6, "game_position_z": 6.4, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 12, "editor_row": 11, "game_position_x": 19.2, "game_position_z": 6.4, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 11, "game_position_x": 20.8, "game_position_z": 6.4, "atlas_col": 0, "atlas_row": 15 },
@@ -266,6 +266,10 @@
     "level_ground_layer_game":
     [
         { "texture_name": "in_players_home_top_groundLayer.png", "game_position_x": 12.8, "game_position_z": 12.8 }
+    ],
+    "level_npc_attributes":
+    [
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 9, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6 }
     ],
     "level_npc_sprites":
     [
@@ -342,9 +346,5 @@
         { "tile_traits": "SOLID", "editor_col": 10, "editor_row": 12, "game_col": 10, "game_row": 3, "game_position_x": 16.0, "game_position_z": 4.8 },
         { "tile_traits": "SOLID", "editor_col": 11, "editor_row": 12, "game_col": 11, "game_row": 3, "game_position_x": 17.6, "game_position_z": 4.8 },
         { "tile_traits": "SOLID", "editor_col": 12, "editor_row": 12, "game_col": 12, "game_row": 3, "game_position_x": 19.2, "game_position_z": 4.8 }
-    ],
-    "level_npc_attributes":
-    [
-         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PLAYERNAME is#playing the SNES!#...Okay!#It's time to go!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 9, "game_col": 7, "game_row": 6, "game_position_x": 11.2, "game_position_z": 9.6 }
     ]
 }
