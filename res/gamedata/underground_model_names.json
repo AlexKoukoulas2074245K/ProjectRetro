@@ -2,6 +2,11 @@
 	"underground_model_names": 
 	[
 		"sea_tile",
-		"in_staircase_down"
+		"in_staircase_down",
+		"out_water_ledge_left",
+		"out_water_ledge_right",
+		"out_water_ledge_top",
+		"out_water_ledge_topleft",
+		"out_water_ledge_topright"
 	]
 }
