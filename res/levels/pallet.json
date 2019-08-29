@@ -3,7 +3,8 @@
     {
         "name": "pallet",
         "dimensions": { "cols": 32, "rows": 32},
-        "color": "PALLET"
+        "color": "PALLET",
+		"music": "pallet"
     },
     "level_ground_layer_editor":
     [
