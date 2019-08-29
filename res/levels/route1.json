@@ -3,7 +3,8 @@
     {
         "name": "route1",
         "dimensions": { "cols": 32, "rows": 64},
-        "color": "VIRIDIAN"
+        "color": "VIRIDIAN",
+        "music": "route1"
     },
     "level_ground_layer_editor":
     [

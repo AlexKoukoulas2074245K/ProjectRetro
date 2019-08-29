@@ -3,7 +3,8 @@
     {
         "name": "in_rivals_home",
         "dimensions": { "cols": 16, "rows": 16},
-        "color": "PALLET"
+        "color": "PALLET",
+        "music": "pallet"
     },
     "level_ground_layer_editor":
     [
@@ -75,6 +76,14 @@
         { "editor_col": 1, "editor_row": 4, "game_position_x": 1.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 2, "editor_row": 4, "game_position_x": 3.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 3, "editor_row": 4, "game_position_x": 4.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
+        { "editor_col": 4, "editor_row": 4, "game_position_x": 6.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 5, "editor_row": 4, "game_position_x": 8.0, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 6, "editor_row": 4, "game_position_x": 9.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 7, "editor_row": 4, "game_position_x": 11.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 8, "editor_row": 4, "game_position_x": 12.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 9, "editor_row": 4, "game_position_x": 14.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 10, "editor_row": 4, "game_position_x": 16.0, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 11, "editor_row": 4, "game_position_x": 17.6, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 12, "editor_row": 4, "game_position_x": 19.2, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 4, "game_position_x": 20.8, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 14, "editor_row": 4, "game_position_x": 22.4, "game_position_z": 17.6, "atlas_col": 0, "atlas_row": 15 },
@@ -83,11 +92,14 @@
         { "editor_col": 1, "editor_row": 5, "game_position_x": 1.6, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 2, "editor_row": 5, "game_position_x": 3.2, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 3, "editor_row": 5, "game_position_x": 4.8, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
+        { "editor_col": 4, "editor_row": 5, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 5, "editor_row": 5, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 6, "editor_row": 5, "game_position_x": 9.6, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 7, "editor_row": 5, "game_position_x": 11.2, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 8, "editor_row": 5, "game_position_x": 12.8, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 9, "editor_row": 5, "game_position_x": 14.4, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 10, "editor_row": 5, "game_position_x": 16.0, "game_position_z": 16.0, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 11, "editor_row": 5, "game_position_x": 17.6, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 12, "editor_row": 5, "game_position_x": 19.2, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 13, "editor_row": 5, "game_position_x": 20.8, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 14, "editor_row": 5, "game_position_x": 22.4, "game_position_z": 16.0, "atlas_col": 0, "atlas_row": 15 },
@@ -114,6 +126,9 @@
         { "editor_col": 3, "editor_row": 7, "game_position_x": 4.8, "game_position_z": 12.8, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 4, "editor_row": 7, "game_position_x": 6.4, "game_position_z": 12.8, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 7, "game_position_x": 8.0, "game_position_z": 12.8, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 6, "editor_row": 7, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 7, "editor_row": 7, "game_position_x": 11.2, "game_position_z": 12.8, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 9, "editor_row": 7, "game_position_x": 14.4, "game_position_z": 12.8, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 10, "editor_row": 7, "game_position_x": 16.0, "game_position_z": 12.8, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 11, "editor_row": 7, "game_position_x": 17.6, "game_position_z": 12.8, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 12, "editor_row": 7, "game_position_x": 19.2, "game_position_z": 12.8, "atlas_col": 0, "atlas_row": 15 },
@@ -126,6 +141,9 @@
         { "editor_col": 3, "editor_row": 8, "game_position_x": 4.8, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 15 },
         { "editor_col": 4, "editor_row": 8, "game_position_x": 6.4, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 5, "editor_row": 8, "game_position_x": 8.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
+        { "editor_col": 6, "editor_row": 8, "game_position_x": 9.6, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 7, "editor_row": 8, "game_position_x": 11.2, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 9, "editor_row": 8, "game_position_x": 14.4, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 10, "editor_row": 8, "game_position_x": 16.0, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 11, "editor_row": 8, "game_position_x": 17.6, "game_position_z": 11.2, "atlas_col": 4, "atlas_row": 15 },
         { "editor_col": 12, "editor_row": 8, "game_position_x": 19.2, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 15 },
@@ -247,9 +265,17 @@
     [
         { "texture_name": "in_rivals_home_groundLayer.png", "game_position_x": 12.8, "game_position_z": 12.8 }
     ],
+    "level_npc_attributes":
+    [
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 4, "editor_row": 5, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 5, "editor_row": 5, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 11, "editor_row": 5, "game_col": 11, "game_row": 10, "game_position_x": 17.6, "game_position_z": 16.0 },
+         { "movement_type": "STATIONARY", "direction": 1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Hi PLAYERNAME!#RIVALNAME#is out at#Grandpa's lab.", "side_dialogs": [], "pokemon_roster": [], "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "It's a big map!#This is useful!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 7, "game_col": 7, "game_row": 8, "game_position_x": 11.2, "game_position_z": 12.8 }
+    ],
     "level_npc_sprites":
     [
-        { "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26 }        
+        {  "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26 }
     ],
     "level_model_list":
     [
@@ -257,8 +283,6 @@
         { "model_name": "in_bookcase_1 (1,1)", "editor_col": 11, "editor_row": 5, "game_col": 11, "game_row": 10, "game_position_x": 17.6, "game_position_z": 16.0 },
         { "model_name": "in_bookcase_2 (1,1)", "editor_col": 4, "editor_row": 5, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0 },
         { "model_name": "in_bookcase_2 (1,1)", "editor_col": 5, "editor_row": 5, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0 },
-        { "model_name": "in_plant (1,1)", "editor_col": 4, "editor_row": 11, "game_col": 4, "game_row": 4, "game_position_x": 6.4, "game_position_z": 6.4 },
-        { "model_name": "in_plant (1,1)", "editor_col": 11, "editor_row": 11, "game_col": 11, "game_row": 4, "game_position_x": 17.6, "game_position_z": 6.4 },
         { "model_name": "in_stool (1,1)", "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8 },
         { "model_name": "in_stool (1,1)", "editor_col": 9, "editor_row": 7, "game_col": 9, "game_row": 8, "game_position_x": 14.4, "game_position_z": 12.8 },
         { "model_name": "in_stool (1,1)", "editor_col": 6, "editor_row": 8, "game_col": 6, "game_row": 7, "game_position_x": 9.6, "game_position_z": 11.2 },
@@ -320,14 +344,5 @@
         { "tile_traits": "SOLID", "editor_col": 10, "editor_row": 12, "game_col": 10, "game_row": 3, "game_position_x": 16.0, "game_position_z": 4.8 },
         { "tile_traits": "SOLID", "editor_col": 11, "editor_row": 12, "game_col": 11, "game_row": 3, "game_position_x": 17.6, "game_position_z": 4.8 },
         { "tile_traits": "SOLID", "editor_col": 12, "editor_row": 12, "game_col": 12, "game_row": 3, "game_position_x": 19.2, "game_position_z": 4.8 }
-    ],
-	
-    "level_npc_attributes":
-    [
-		{ "movement_type": "STATIONARY", "direction": 1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Hi PLAYERNAME!#RIVALNAME#is out at#Grandpa's lab.", "side_dialogs": [], "pokemon_roster": [], "editor_col": 6, "editor_row": 7, "game_col": 6, "game_row": 8, "game_position_x": 9.6, "game_position_z": 12.8, "atlas_col": 6, "atlas_row": 26},
-		{ "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 4, "editor_row": 5, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 11, "editor_row": 5, "game_col": 11, "game_row": 10, "game_position_x": 17.6, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 5, "editor_row": 5, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "It's a big map!#This is useful!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 7, "game_col": 7, "game_row": 8, "game_position_x": 11.2, "game_position_z": 12.8, "atlas_col": -1, "atlas_row": -1 }
     ]
 }

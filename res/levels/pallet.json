@@ -4,7 +4,7 @@
         "name": "pallet",
         "dimensions": { "cols": 32, "rows": 32},
         "color": "PALLET",
-		"music": "pallet"
+        "music": "pallet"
     },
     "level_ground_layer_editor":
     [
@@ -1002,10 +1002,19 @@
     [
         { "texture_name": "pallet_groundLayer.png", "game_position_x": 25.6, "game_position_z": 25.6 }
     ],
+    "level_npc_attributes":
+    [
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PLAYERNAME's house", "side_dialogs": [], "pokemon_roster": [], "editor_col": 9, "editor_row": 13, "game_col": 9, "game_row": 18, "game_position_x": 14.4, "game_position_z": 28.8 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "RIVALNAME's house", "side_dialogs": [], "pokemon_roster": [], "editor_col": 17, "editor_row": 13, "game_col": 17, "game_row": 18, "game_position_x": 27.2, "game_position_z": 28.8 },
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "I'm raising#POK^MON too!#@When they get#strong, they can#protect me!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PALLET TOWN#Shades of your#journey await!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 13, "editor_row": 17, "game_col": 13, "game_row": 14, "game_position_x": 20.8, "game_position_z": 22.4 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "OAK POK^MON#RESEARCH LAB", "side_dialogs": [], "pokemon_roster": [], "editor_col": 19, "editor_row": 21, "game_col": 19, "game_row": 10, "game_position_x": 30.4, "game_position_z": 16.0 },
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POK^MON as#data via PC!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4 }
+    ],
     "level_npc_sprites":
     [
-        { "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 23 },
-        { "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 }
+        {  "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 23 },
+        {  "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 }
     ],
     "level_model_list":
     [
@@ -1851,15 +1860,5 @@
         { "tile_traits": "SOLID", "editor_col": 10, "editor_row": 31, "game_col": 10, "game_row": 0, "game_position_x": 16.0, "game_position_z": 0.0 },
         { "tile_traits": "SOLID", "editor_col": 13, "editor_row": 31, "game_col": 13, "game_row": 0, "game_position_x": 20.8, "game_position_z": 0.0 },
         { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 31, "game_col": 20, "game_row": 0, "game_position_x": 32.0, "game_position_z": 0.0 }
-    ],
-    
-    "level_npc_attributes":
-    [
-        { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "I'm raising#POK^MON too!#@When they get#strong, they can#protect me!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 23 },
-        { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POK^MON as#data via PC!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "OAK POK^MON#RESEARCH LAB", "side_dialogs": [], "pokemon_roster": [], "editor_col": 19, "editor_row": 21, "game_col": 19, "game_row": 10, "game_position_x": 30.4, "game_position_z": 16.0, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PLAYERNAME's house", "side_dialogs": [], "pokemon_roster": [], "editor_col": 9, "editor_row": 13, "game_col": 9, "game_row": 18, "game_position_x": 14.4, "game_position_z": 28.8, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PALLET TOWN#Shades of your#journey await!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 13, "editor_row": 17, "game_col": 13, "game_row": 14, "game_position_x": 20.8, "game_position_z": 22.4, "atlas_col": -1, "atlas_row": -1 },
-        { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "RIVALNAME's house", "side_dialogs": [], "pokemon_roster": [], "editor_col": 17, "editor_row": 13, "game_col": 17, "game_row": 18, "game_position_x": 27.2, "game_position_z": 28.8, "atlas_col": -1, "atlas_row": -1 }
     ]
 }
