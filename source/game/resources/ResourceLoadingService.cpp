@@ -14,6 +14,8 @@
 #include "DataFileLoader.h"
 #include "IResource.h"
 #include "MeshLoader.h"
+#include "MusicLoader.h"
+#include "SfxLoader.h"
 #include "ShaderLoader.h"
 #include "TextureLoader.h"
 #include "../common/utils/FileUtils.h"
@@ -40,6 +42,8 @@ const std::string ResourceLoadingService::RES_DATA_ROOT       = RES_ROOT + "game
 const std::string ResourceLoadingService::ENCOUNTER_DATA_ROOT = RES_DATA_ROOT + "encounter_rates/";
 const std::string ResourceLoadingService::RES_LEVELS_ROOT     = RES_ROOT + "levels/";
 const std::string ResourceLoadingService::RES_MODELS_ROOT     = RES_ROOT + "models/";
+const std::string ResourceLoadingService::RES_MUSIC_ROOT      = RES_ROOT + "music/";
+const std::string ResourceLoadingService::RES_SFX_ROOT        = RES_ROOT + "sfx/";
 const std::string ResourceLoadingService::RES_SHADERS_ROOT    = RES_ROOT + "shaders/";
 const std::string ResourceLoadingService::RES_TEXTURES_ROOT   = RES_ROOT + "textures/";
 
@@ -65,7 +69,9 @@ void ResourceLoadingService::InitializeResourceLoaders()
     mResourceLoaders.push_back(std::unique_ptr<DataFileLoader>(new DataFileLoader));
     mResourceLoaders.push_back(std::unique_ptr<ShaderLoader>(new ShaderLoader));
     mResourceLoaders.push_back(std::unique_ptr<MeshLoader>(new MeshLoader));
-    
+    mResourceLoaders.push_back(std::unique_ptr<MusicLoader>(new MusicLoader));
+    mResourceLoaders.push_back(std::unique_ptr<SfxLoader>(new SfxLoader));
+
     // Map resource extensions to loaders
     mResourceExtensionsToLoadersMap[StringId("png")]  = mResourceLoaders[0].get();
     mResourceExtensionsToLoadersMap[StringId("json")] = mResourceLoaders[1].get();
@@ -73,6 +79,8 @@ void ResourceLoadingService::InitializeResourceLoaders()
     mResourceExtensionsToLoadersMap[StringId("vs")]   = mResourceLoaders[2].get();
     mResourceExtensionsToLoadersMap[StringId("fs")]   = mResourceLoaders[2].get();
     mResourceExtensionsToLoadersMap[StringId("obj")]  = mResourceLoaders[3].get();
+    mResourceExtensionsToLoadersMap[StringId("ogg")]  = mResourceLoaders[4].get();
+    mResourceExtensionsToLoadersMap[StringId("wav")]  = mResourceLoaders[5].get();
     
     for (auto& resourceLoader: mResourceLoaders)
     {

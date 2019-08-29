@@ -43,7 +43,7 @@ void TextureLoader::VInitialize()
     const auto sdlImageInitFlags = IMG_INIT_PNG;
     if (!imgVersionConsistency || IMG_Init(sdlImageInitFlags) != sdlImageInitFlags)
     {
-        ShowMessageBox(MessageBoxType::ERROR, "SDL_image", "SDL_image did not initialize properly");        
+        ShowMessageBox(MessageBoxType::ERROR, "SDL_image", "SDL_image was not initialized properly");        
     }
     
     Log(LogType::INFO, "Successfully initialized SDL_image version %d.%d.%d", imgCompiledVersion.major, imgCompiledVersion.minor, imgCompiledVersion.patch);        

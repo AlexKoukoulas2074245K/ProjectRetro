@@ -42,6 +42,9 @@
 #include "rendering/systems/CameraControlSystem.h"
 #include "rendering/systems/RenderingSystem.h"
 #include "resources/MeshUtils.h"
+#include "resources/ResourceLoadingService.h"
+#include "resources/SfxResource.h"
+#include "resources/MusicResource.h"
 #include "overworld/components/ActiveLevelSingletonComponent.h"
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
@@ -60,6 +63,7 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
+#include <SDL_mixer.h>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +229,12 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
     CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 25, 13, mWorld);
+
+    const auto musicResourceId = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_MUSIC_ROOT + "viridian_city.ogg");
+    auto* musicHandle = ResourceLoadingService::GetInstance().GetResource<MusicResource>(musicResourceId).GetSdlMusicHandle();
+
+    Mix_PlayMusic(musicHandle, -1);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
