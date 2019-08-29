@@ -23,10 +23,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const std::string SoundService::MUSIC_FILE_EXTENSION = ".ogg";
+
 const int SoundService::SOUND_FREQUENCY = 44100;
 const int SoundService::HARDWARE_CHANNELS = 2;
 const int SoundService::CHUNK_SIZE_IN_BYTES = 1024;
-const int SoundService::FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS = 1000;
+const int SoundService::FADE_OUT_DURATION_IN_MILISECONDS = 1000;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +84,7 @@ void SoundService::PlayMusic(const StringId musicTrackName)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
-    const auto musicFilePath = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();
+    const auto musicFilePath = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString() + MUSIC_FILE_EXTENSION;
 
     if (resourceLoadingService.HasLoadedResource(musicFilePath) == false)
     {
@@ -100,7 +102,7 @@ void SoundService::PlayMusic(const StringId musicTrackName)
     else
     {        
         mQueuedMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePath);
-        Mix_FadeOutMusic(FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS/2);
+        Mix_FadeOutMusic(FADE_OUT_DURATION_IN_MILISECONDS);
         Mix_HookMusicFinished(OnMusicFinishedHook);
     }    
 }
@@ -112,7 +114,7 @@ void SoundService::OnMusicFinished()
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
     auto& musicResource = resourceLoadingService.GetResource<MusicResource>(mQueuedMusicResourceId);
 
-    Mix_FadeInMusic(musicResource.GetSdlMusicHandle(), -1, FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS/2);
+    Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

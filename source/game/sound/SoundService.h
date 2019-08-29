@@ -47,10 +47,12 @@ public:
 private:    
     SoundService() = default;    
     
+    static const std::string MUSIC_FILE_EXTENSION;
+    
     static const int SOUND_FREQUENCY;
     static const int HARDWARE_CHANNELS;
     static const int CHUNK_SIZE_IN_BYTES;
-    static const int FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS;
+    static const int FADE_OUT_DURATION_IN_MILISECONDS;
 
     MusicResourceId mCurrentlyPlayingMusicResourceId = 0;
     MusicResourceId mQueuedMusicResourceId = 0;
