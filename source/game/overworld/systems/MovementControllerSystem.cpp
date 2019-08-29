@@ -29,13 +29,16 @@
 #include "../../common/utils/PokemonUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * GAME_TILE_SIZE;
+
 const std::string MovementControllerSystem::JUMP_SHADOW_SPRITE_NAME = "jump_shadow";
+const std::string MovementControllerSystem::WILD_BATTLE_MUSIC_NAME  = "wild_battle";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +235,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     const auto& encounterInfo = SelectRandomWildEncounter(levelModelComponent);
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD ;
+                    encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon
@@ -247,6 +250,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
                     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
                     
+                    SoundService::GetInstance().PlayMusic(WILD_BATTLE_MUSIC_NAME, false);
+
                     return;
                 }
 

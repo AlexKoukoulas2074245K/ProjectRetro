@@ -176,16 +176,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     if (hasMusic)
     {
         levelModelComponent->mLevelMusicTrackName = StringId(levelJson["level_header"]["music"].get<std::string>());
-    }
-    else
-    {
-        ShowMessageBox
-        (
-            MessageBoxType::WARNING,
-            "Music Info Missing",
-            "No music info was found in level: " + levelName.GetString()
-        );
-    }
+    }    
 
     // Create optimized ground layer texture for level
     const auto groundLayerTextureName = levelJson["level_ground_layer_game"][0]["texture_name"];

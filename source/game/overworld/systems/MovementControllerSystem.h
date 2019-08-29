@@ -40,7 +40,9 @@ public:
     
 private:
     static const float CHARACTER_MOVEMENT_SPEED;
+
     static const std::string JUMP_SHADOW_SPRITE_NAME;
+    static const std::string WILD_BATTLE_MUSIC_NAME;
 
     void StartJump(const ecs::EntityId) const;
     void SimulateJumpDisplacement(const float dt, JumpingStateComponent&, TransformComponent&) const;

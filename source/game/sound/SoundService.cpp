@@ -24,10 +24,12 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const std::string SoundService::MUSIC_FILE_EXTENSION = ".ogg";
+
 const int SoundService::SOUND_FREQUENCY = 44100;
 const int SoundService::HARDWARE_CHANNELS = 2;
 const int SoundService::CHUNK_SIZE_IN_BYTES = 1024;
-const int SoundService::FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS = 1000;
+const int SoundService::FADE_OUT_DURATION_IN_MILISECONDS = 1000;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +38,11 @@ const int SoundService::FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS = 1000;
 static void OnMusicFinishedHook()
 {
     SoundService::GetInstance().OnMusicFinished();
+}
+
+static void OnMusicIntroFinishedHook()
+{
+    SoundService::GetInstance().OnMusicIntroFinished();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -79,29 +86,59 @@ void SoundService::InitializeSdlMixer() const
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
 }
 
-void SoundService::PlayMusic(const StringId musicTrackName)
+void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled /* true */)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
-    const auto musicFilePath = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();
-    
-    if (resourceLoadingService.HasLoadedResource(musicFilePath) == false)
+    const auto musicFilePath        = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();    
+    auto musicFilePathWithExtension = musicFilePath + MUSIC_FILE_EXTENSION;    
+
+    if (resourceLoadingService.HasLoadedResource(musicFilePathWithExtension) == false)
     {
-        Log(LogType::WARNING, "Music file %s requested not preloaded", musicFilePath.c_str());
-        resourceLoadingService.LoadResource(musicFilePath);
+        Log(LogType::WARNING, "Music file %s requested not preloaded", musicFilePathWithExtension.c_str());
+        resourceLoadingService.LoadResource(musicFilePathWithExtension);
     }
 
-    auto& musicResource = resourceLoadingService.GetResource<MusicResource>(musicFilePath);
-    
-    if (mCurrentlyPlayingMusicResourceId == 0)
+    // If music track has an intro part, the intro 
+    // gets played first, and the core part is saved
+    const auto hasIntro = HasIntro(musicFilePath);
+    if (hasIntro)
+    {        
+        musicFilePathWithExtension = musicFilePath + "_intro" + MUSIC_FILE_EXTENSION;
+        if (resourceLoadingService.HasLoadedResource(musicFilePathWithExtension) == false)
+        {
+            Log(LogType::WARNING, "Music intro file %s requested not preloaded", musicFilePathWithExtension.c_str());
+            resourceLoadingService.LoadResource(musicFilePathWithExtension);
+        }
+
+        mCoreMusicTrackResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePath + MUSIC_FILE_EXTENSION);
+    }
+    else
     {
-        mCurrentlyPlayingMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePath);
-        Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
+        mCoreMusicTrackResourceId = 0;
+    }
+    
+    auto& musicResource = resourceLoadingService.GetResource<MusicResource>(musicFilePathWithExtension);
+    
+    if (mCurrentlyPlayingMusicResourceId == 0 || fadeOutEnabled == false)
+    {
+        mCurrentlyPlayingMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePathWithExtension);
+
+        if (hasIntro)
+        {
+            
+            Mix_HookMusicFinished(fadeOutEnabled ? OnMusicFinishedHook : OnMusicIntroFinishedHook);            
+            Mix_PlayMusic(musicResource.GetSdlMusicHandle(), 0);
+        }
+        else
+        {
+            Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
+        }        
     }
     else
     {        
-        mQueuedMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePath);
-        Mix_FadeOutMusic(FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS/2);
+        mQueuedMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePathWithExtension);
+        Mix_FadeOutMusic(FADE_OUT_DURATION_IN_MILISECONDS);
         Mix_HookMusicFinished(OnMusicFinishedHook);
     }    
 }
@@ -113,7 +150,25 @@ void SoundService::OnMusicFinished()
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
     auto& musicResource = resourceLoadingService.GetResource<MusicResource>(mQueuedMusicResourceId);
 
-    Mix_FadeInMusic(musicResource.GetSdlMusicHandle(), -1, FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS/2);
+    mCurrentlyPlayingMusicResourceId = mQueuedMusicResourceId;
+    if (mCoreMusicTrackResourceId != 0)
+    {
+        Mix_HookMusicFinished(OnMusicIntroFinishedHook);
+        Mix_PlayMusic(musicResource.GetSdlMusicHandle(), 0);
+    }
+    else
+    {
+        Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
+    }        
+}
+
+void SoundService::OnMusicIntroFinished()
+{
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+    auto& musicResource = resourceLoadingService.GetResource<MusicResource>(mCoreMusicTrackResourceId);
+
+    mCurrentlyPlayingMusicResourceId = mCoreMusicTrackResourceId;
+    Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +177,7 @@ void SoundService::OnMusicFinished()
 
 bool SoundService::HasIntro(const std::string& musicTrackPath) const
 {
-    std::ifstream file(musicTrackPath + "_intro");
+    std::ifstream file(musicTrackPath + "_intro" + MUSIC_FILE_EXTENSION);
     return file.good();
 }
 

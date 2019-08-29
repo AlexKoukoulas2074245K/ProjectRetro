@@ -40,20 +40,26 @@ public:
 
     void InitializeSdlMixer() const;
     
-    void PlayMusic(const StringId musicTrackName);
+    void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
 
     void OnMusicFinished();
+    void OnMusicIntroFinished();
 
 private:    
     SoundService() = default;    
     
+    bool HasIntro(const std::string& musicTrackPath) const;
+
+    static const std::string MUSIC_FILE_EXTENSION;
+    
     static const int SOUND_FREQUENCY;
     static const int HARDWARE_CHANNELS;
     static const int CHUNK_SIZE_IN_BYTES;
-    static const int FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS;
+    static const int FADE_OUT_DURATION_IN_MILISECONDS;
 
     MusicResourceId mCurrentlyPlayingMusicResourceId = 0;
     MusicResourceId mQueuedMusicResourceId = 0;
+    MusicResourceId mCoreMusicTrackResourceId = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
