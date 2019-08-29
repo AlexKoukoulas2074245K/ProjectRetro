@@ -17,6 +17,7 @@
 #include "../resources/ResourceLoadingService.h"
 
 #include <cassert>
+#include <fstream>
 #include <SDL_mixer.h>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +84,7 @@ void SoundService::PlayMusic(const StringId musicTrackName)
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
     const auto musicFilePath = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();
-
+    
     if (resourceLoadingService.HasLoadedResource(musicFilePath) == false)
     {
         Log(LogType::WARNING, "Music file %s requested not preloaded", musicFilePath.c_str());
@@ -113,6 +114,16 @@ void SoundService::OnMusicFinished()
     auto& musicResource = resourceLoadingService.GetResource<MusicResource>(mQueuedMusicResourceId);
 
     Mix_FadeInMusic(musicResource.GetSdlMusicHandle(), -1, FADE_IN_OUT_TOTAL_DURATION_IN_MILISECONDS/2);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+bool SoundService::HasIntro(const std::string& musicTrackPath) const
+{
+    std::ifstream file(musicTrackPath + "_intro");
+    return file.good();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
