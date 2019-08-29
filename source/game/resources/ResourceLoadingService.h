@@ -50,7 +50,6 @@ struct ResourceIdHasher
 
 class ResourceLoadingService final
 {
-    friend class App;
 public:
     static const std::string RES_ROOT;
     static const std::string RES_ATLASES_ROOT;
@@ -76,6 +75,9 @@ public:
     // Should be called after the SDL/GL context has been initialized
     void InitializeResourceLoaders();
     
+    // Calculates a resource id from a given path
+    ResourceId GetResourceIdFromPath(const std::string& resourcePath);
+
     // Loads a single or number of resources based on the relative path(s) supplied
     // respectively. Both full paths, relative paths including the Resource Root, and relative
     // paths excluding the Resource Root are supported

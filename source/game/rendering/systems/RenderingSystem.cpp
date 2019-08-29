@@ -33,6 +33,7 @@
 #include "../../resources/MeshResource.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
+#include "../../sound/SoundService.h"
 
 #include <algorithm> // sort
 #include <cstdlib>   // exit
@@ -509,6 +510,7 @@ void RenderingSystem::InitializeRenderingWindowAndContext() const
     // Now that the GL context has been initialized, the ResourceLoadingService
     // can be properly initialized (given that many of them call SDL services)
     ResourceLoadingService::GetInstance().InitializeResourceLoaders();
+    SoundService::GetInstance().InitializeSdlMixer();
 }
 
 void RenderingSystem::InitializeCamera() const

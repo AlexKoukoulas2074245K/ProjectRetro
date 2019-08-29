@@ -79,6 +79,7 @@ public:
      LevelTilemap mLevelTilemap;
      std::vector<WildEncounterInfo> mWildEncounters;
      StringId mLevelName              = StringId();
+     StringId mLevelMusicTrackName    = StringId();
      glm::vec4 mLevelColor            = colors::PALLET_COLOR;
      ecs::EntityId mGroundLayerEntity = ecs::NULL_ENTITY_ID;
      int mEncounterDensity            = 0;

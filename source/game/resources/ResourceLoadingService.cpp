@@ -88,6 +88,11 @@ void ResourceLoadingService::InitializeResourceLoaders()
     }
 }
 
+ResourceId ResourceLoadingService::GetResourceIdFromPath(const std::string& path)
+{    
+    return GetStringHash(AdjustResourcePath(path));
+}
+
 ResourceId ResourceLoadingService::LoadResource(const std::string& resourcePath)
 {
     const auto adjustedPath = AdjustResourcePath(resourcePath);

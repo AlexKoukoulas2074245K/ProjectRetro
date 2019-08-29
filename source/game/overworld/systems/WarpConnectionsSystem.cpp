@@ -24,6 +24,7 @@
 #include "../../rendering/utils/AnimationUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/DataFileResource.h"
+#include "../../sound/SoundService.h"
 
 #include <json.hpp>
 
@@ -63,6 +64,9 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
             playerStateComponent.mLastEngagedTrainerDirection   = npcAiComponent.mInitDirection;
         }
         
+        const auto& oldLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelSingletonComponent.mActiveLevelNameId, mWorld));
+        const auto oldMusicTrackName = oldLevelModelComponent.mLevelMusicTrackName;
+
         DestroyLevel(activeLevelSingletonComponent.mActiveLevelNameId, mWorld);
         
         const auto playerEntityId           = GetPlayerEntityId(mWorld);
@@ -107,6 +111,11 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         warpConnectionsComponent.mHasPendingWarpConnection = false;
         
         mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mLastOverworldLevelName = targetWarp.mLevelName;
+
+        if (oldMusicTrackName != levelModelComponent.mLevelMusicTrackName)
+        {
+            SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
+        }
     }
 }
 

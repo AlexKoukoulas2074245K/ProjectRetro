@@ -27,6 +27,7 @@
 #include "../../overworld/utils/LevelLoadingUtils.h"
 #include "../../overworld/utils/OverworldCharacterLoadingUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -192,9 +193,9 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     DestroyEncounterSprites(mWorld);
     
     const auto newLevelEntityId        = LoadAndCreateLevelByName(playerStateComponent.mLastOverworldLevelName, mWorld);
-    auto& encounterLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
+    auto& overworldLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(newLevelEntityId);
     
-    mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = encounterLevelModelComponent.mLevelName;
+    mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId = overworldLevelModelComponent.mLevelName;
     
     CreatePlayerOverworldSprite
     (
@@ -203,7 +204,9 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelOccupiedCol,
         playerStateComponent.mLastOverworldLevelOccupiedRow,
         mWorld
-    );
+    );    
+
+    SoundService::GetInstance().PlayMusic(overworldLevelModelComponent.mLevelMusicTrackName);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

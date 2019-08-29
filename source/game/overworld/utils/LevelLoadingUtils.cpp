@@ -143,7 +143,7 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     levelModelComponent->mCols              = levelTilemapCols;
     levelModelComponent->mRows              = levelTilemapRows;
     levelModelComponent->mGroundLayerEntity = world.CreateEntity();
-    
+
     // Extract level palette color
     const auto hasPaletteEntry = levelJson["level_header"].count("color") != 0;
 
@@ -169,6 +169,21 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
             MessageBoxType::WARNING,
             "Palette Info Missing",
             "No palette info was found in level: " + levelName.GetString()
+        );
+    }
+
+    const auto hasMusic = levelJson["level_header"].count("music") != 0;
+    if (hasMusic)
+    {
+        levelModelComponent->mLevelMusicTrackName = StringId(levelJson["level_header"]["music"].get<std::string>());
+    }
+    else
+    {
+        ShowMessageBox
+        (
+            MessageBoxType::WARNING,
+            "Music Info Missing",
+            "No music info was found in level: " + levelName.GetString()
         );
     }
 
