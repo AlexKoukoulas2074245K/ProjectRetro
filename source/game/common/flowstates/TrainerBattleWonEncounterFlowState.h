@@ -19,6 +19,8 @@
 #include "BaseFlowState.h"
 #include "../../common/utils/MathUtils.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,6 +33,9 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    static const std::string GYM_BATTLE_WON_MUSIC_TRACK_NAME;
+    static const std::string TRAINER_BATTLE_WON_MUSIC_TRACK_NAME;
+
     static const glm::vec3 OPPONENT_TRAINER_INIT_POS;
     static const glm::vec3 OPPONENT_TRAINER_TARGET_POS;
     static const glm::vec3 SPRITE_SCALE;

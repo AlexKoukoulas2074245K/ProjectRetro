@@ -30,6 +30,8 @@ public:
     void VUpdate(const float dt) override;
 
 private:
+    static const std::string WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME;
+
     static const float OPPONENT_POKEMON_DEATH_TARGET_Y;
     static const float PLAYER_POKEMON_DEATH_TARGET_Y;
     static const float POKEMON_SPRITE_MOVE_SPEED;

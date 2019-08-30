@@ -3,210 +3,239 @@
     {
         "base_payout": 70,
         "atlas_col": 3,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "female_trainer"
     },
 	
 	"BIKER":
     {
         "base_payout": 20,
         "atlas_col": 5,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"
     },
 	
 	"BIRD_KEEPER":
     {
         "base_payout": 25,
         "atlas_col": 4,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"
     },
 	
 	"BLACKBELT":
     {
         "base_payout": 25,
         "atlas_col": 2,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"GIOVANNI":
     {
         "base_payout": 99,
         "atlas_col": 7,
-		"atlas_row": 0        
+		"atlas_row": 0     
     },
 	
 	"BUG_CATCHER":
     {
         "base_payout": 10,
         "atlas_col": 8,
-		"atlas_row": 0        
+		"atlas_row": 0,
+		"trainer_music": "male_trainer"    
     },
 	
 	"BURGLAR":
     {
         "base_payout": 90,
         "atlas_col": 1,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"CHANNELER":
     {
         "base_payout": 30,
         "atlas_col": 4,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"COOLTRAINER]":
     {
         "base_payout": 35,
         "atlas_col": 7,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "female_trainer"       
     },
 	
 	"COOLTRAINER[":
     {
         "base_payout": 35,
         "atlas_col": 4,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"CUE BALL":
     {
         "base_payout": 25,
         "atlas_col": 7,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"ENGINEER":
     {
         "base_payout": 50,
         "atlas_col": 7,
-		"atlas_row": 4        
+		"atlas_row": 4,
+		"trainer_music": "male_trainer"        
     },
 	
 	"FISHERMAN":
     {
         "base_payout": 35,
         "atlas_col": 2,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"        
     },
 	
 	"GAMBLER":
     {
         "base_payout": 70,
         "atlas_col": 1,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"        
     },
 	
 	"GENTLEMAN":
     {
         "base_payout": 70,
         "atlas_col": 9,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"GRUNT":
     {
         "base_payout": 30,
         "atlas_col": 2,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "rocket_trainer"        
     },
 	
 	"HIKER":
     {
         "base_payout": 35,
         "atlas_col": 3,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"JR.TRAINER[":
 	{
 		"base_payout": 20,
         "atlas_col": 9,
-		"atlas_row": 0  
+		"atlas_row": 0,
+		"trainer_music": "male_trainer"  
 	},
 	
 	"JR.TRAINER]":
 	{
 		"base_payout": 20,
         "atlas_col": 6,
-		"atlas_row": 1  
+		"atlas_row": 1,
+		"trainer_music": "female_trainer"  
 	},
 	
 	"JUGGLER":
     {
         "base_payout": 35,
         "atlas_col": 6,
-		"atlas_row": 2        
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"        
     },
 	
 	"LASS":
     {
         "base_payout": 15,
         "atlas_col": 0,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "female_trainer"        
     },
 	
 	"POK^MANIAC":
     {
         "base_payout": 50,
         "atlas_col": 8,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"PSYCHIC":
     {
         "base_payout": 10,
         "atlas_col": 3,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"ROCKER":
     {
         "base_payout": 25,
         "atlas_col": 8,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"SUPER_NERD":
     {
         "base_payout": 25,
         "atlas_col": 1,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"SWIMMER":
     {
         "base_payout": 5,
         "atlas_col": 5,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"SAILOR":
     {
         "base_payout": 30,
         "atlas_col": 7,
-		"atlas_row": 1        
+		"atlas_row": 1,
+		"trainer_music": "male_trainer"        
     },
 	
 	"SCIENTIST":
     {
         "base_payout": 50,
         "atlas_col": 6,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"TAMER":
     {
         "base_payout": 40,
         "atlas_col": 5,
-		"atlas_row": 3        
+		"atlas_row": 3,
+		"trainer_music": "male_trainer"        
     },
 	
 	"YOUNGSTER":
     {
         "base_payout": 15,
         "atlas_col": 0,
-		"atlas_row": 2
+		"atlas_row": 2,
+		"trainer_music": "male_trainer"
     },
 	
 	"BROCK":
@@ -291,14 +320,16 @@
     {
         "base_payout": 35,
         "atlas_col": 4,
-		"atlas_row": 4        
+		"atlas_row": 4,
+		"trainer_music": "gary_trainer"
     },
 	
 	"RIVAL_2":
     {
         "base_payout": 65,
         "atlas_col": 3,
-		"atlas_row": 4        
+		"atlas_row": 4,
+		"trainer_music": "gary_trainer"		
     },
 	
 	"RIVAL_3":

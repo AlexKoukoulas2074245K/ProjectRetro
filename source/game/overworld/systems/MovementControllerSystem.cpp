@@ -236,6 +236,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                     encounterStateComponent.mActiveEncounterType = EncounterType::WILD;
+                    encounterStateComponent.mIsGymLeaderBattle = false;
                     encounterStateComponent.mOpponentPokemonRoster.push_back
                     (
                         CreatePokemon

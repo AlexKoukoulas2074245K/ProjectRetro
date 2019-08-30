@@ -17,10 +17,13 @@
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string PokemonDeathMovementEncounterFlowState::WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME = "wild_battle_won";
 
 const float PokemonDeathMovementEncounterFlowState::OPPONENT_POKEMON_DEATH_TARGET_Y = 0.0f;
 const float PokemonDeathMovementEncounterFlowState::PLAYER_POKEMON_DEATH_TARGET_Y   = -0.24f;
@@ -33,7 +36,14 @@ const float PokemonDeathMovementEncounterFlowState::POKEMON_SPRITE_MOVE_SPEED   
 PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+
+    if (activeOpponentPokemon.mHp <= 0 && encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+    {
+        SoundService::GetInstance().PlayMusic(WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME, false);
+    }
+
 }
 
 void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)

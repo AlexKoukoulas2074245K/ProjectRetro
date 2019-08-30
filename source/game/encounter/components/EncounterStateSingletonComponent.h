@@ -134,6 +134,7 @@ public:
     bool mPlayerDecidedToChangePokemonBeforeNewOpponentPokemonIsSummoned = false;
     bool mWasPokemonCaught                                               = false;
     bool mHasPokemonEvolvedInBattle                                      = false;    
+    bool mIsGymLeaderBattle                                              = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

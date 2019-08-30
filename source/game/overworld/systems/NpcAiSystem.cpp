@@ -26,10 +26,14 @@
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string NpcAiSystem::GYM_BATTLE_MAIN_MUSIC_TRACK_NAME     = "gym_battle";
+const std::string NpcAiSystem::TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME = "trainer_battle";
 
 const float NpcAiSystem::DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME = 0.5f;
 const float NpcAiSystem::DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME = 3.0f;
@@ -251,6 +255,7 @@ void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
     encounterStateComponent.mOpponentTrainerSpeciesName       = npcAiComponent.mTrainerName;
     encounterStateComponent.mOpponentTrainerName              = StringId(npcAiComponent.mTrainerName);
     encounterStateComponent.mOpponentTrainerDefeatedText      = npcAiComponent.mSideDialogs[0];
+    encounterStateComponent.mIsGymLeaderBattle                = npcAiComponent.mIsGymLeader;
     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
     encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;
     encounterStateComponent.mOpponentPokemonRoster.clear();
@@ -265,6 +270,14 @@ void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
             mWorld
         ));
     }
+
+    SoundService::GetInstance().PlayMusic
+    (
+        encounterStateComponent.mIsGymLeaderBattle ?
+        GYM_BATTLE_MAIN_MUSIC_TRACK_NAME :
+        TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME,
+        false
+    );
 }
 
 void NpcAiSystem::CheckForPlayerDistanceAndEncounterEngagement(const ecs::EntityId npcEntityId) const

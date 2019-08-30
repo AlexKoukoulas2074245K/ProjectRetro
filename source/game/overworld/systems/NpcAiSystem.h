@@ -18,6 +18,8 @@
 
 #include "../../ECS.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,9 @@ private:
     void CreateExclamationMarkEntity(const ecs::EntityId npcEntityId) const;
     void DestroyExclamationMarkEntity(const ecs::EntityId npcEntityId) const;
     
+    static const std::string TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME;
+    static const std::string GYM_BATTLE_MAIN_MUSIC_TRACK_NAME;
+
     static const float DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME;
     static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME;
     static const float STATIONARY_NPC_RESET_TIME;

@@ -125,8 +125,7 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
         mCurrentlyPlayingMusicResourceId = resourceLoadingService.GetResourceIdFromPath(musicFilePathWithExtension);
 
         if (hasIntro)
-        {
-            
+        {   
             Mix_HookMusicFinished(fadeOutEnabled ? OnMusicFinishedHook : OnMusicIntroFinishedHook);            
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), 0);
         }
