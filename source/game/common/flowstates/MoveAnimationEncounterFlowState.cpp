@@ -11,9 +11,11 @@
 
 #include "MoveAnimationEncounterFlowState.h"
 #include "MoveShakeEncounterFlowState.h"
+#include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/utils/FileUtils.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -58,7 +60,11 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     : BaseFlowState(world)
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    
     if (DoesMoveHaveSpeciallyHandledAnimation(encounterStateComponent.mLastMoveSelected))
     {                
         encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>
@@ -81,10 +87,25 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
         LoadMoveAnimationFrames();
     }
     
-    SoundService::GetInstance().PlaySfx
-    (
-        "encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
-    );
+    if (encounterStateComponent.mLastMoveSelected == StringId("GROWL"))
+    {
+        SoundService::GetInstance().PlaySfx
+        (
+            "cries/" + GetFormattedPokemonIdString
+            (
+                encounterStateComponent.mIsOpponentsTurn ?
+                activeOpponentPokemon.mBaseSpeciesStats.mId :
+                activePlayerPokemon.mBaseSpeciesStats.mId
+            )
+        );
+    }
+    else
+    {
+        SoundService::GetInstance().PlaySfx
+        (
+            "encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
+        );
+    }
 }
 
 void MoveAnimationEncounterFlowState::VUpdate(const float dt)
