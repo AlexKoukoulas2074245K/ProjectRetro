@@ -282,12 +282,14 @@ struct TrainerInfo
 {
     TrainerInfo
     (
-        const StringId trainerSpeciesName,        
+        const StringId trainerSpeciesName,
+        const StringId trainerMusicTrackName,
         const int basePayout,
         const int textureAtlasCol,
         const int textureAtlasRow
     )
         : mTrainerSpeciesName(trainerSpeciesName)
+        , mTrainerMusicTrackName(trainerMusicTrackName)
         , mBasePayout(basePayout)
         , mTextureAtlasCol(textureAtlasCol)
         , mTextureAtlasRow(textureAtlasRow)
@@ -295,6 +297,7 @@ struct TrainerInfo
     }
 
     const StringId mTrainerSpeciesName;
+    const StringId mTrainerMusicTrackName;
     const int mBasePayout;
     const int mTextureAtlasCol;
     const int mTextureAtlasRow;

@@ -23,6 +23,7 @@
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../common/utils/TextboxUtils.h"
+#include "../../common/utils/TrainerUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
@@ -301,6 +302,12 @@ void NpcAiSystem::CheckForPlayerDistanceAndEncounterEngagement(const ecs::Entity
             
             CreateExclamationMarkEntity(npcEntityId);
             
+            const auto trainerMusicTrackName = GetTrainerInfo(npcAiComponent.mTrainerName, mWorld).mTrainerMusicTrackName;
+            if (trainerMusicTrackName != StringId())
+            {
+                SoundService::GetInstance().PlayMusic(trainerMusicTrackName, false);
+            }
+
             break;
         }
     }

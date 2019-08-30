@@ -77,11 +77,19 @@ void LoadAndPopulateTrainerInfoStats
 
         const auto& basePayout      = trainerStatsObject["base_payout"].get<int>();        
         const auto& textureAtlasCol = trainerStatsObject["atlas_col"].get<int>();
-        const auto& textureAtlasRow = trainerStatsObject["atlas_row"].get<int>();        
+        const auto& textureAtlasRow = trainerStatsObject["atlas_row"].get<int>();
+        
+        auto trainerMusicTrackName = StringId();
+
+        if (trainerStatsObject.count("trainer_music") != 0)
+        {
+            trainerMusicTrackName = StringId(trainerStatsObject["trainer_music"]);
+        }
 
         trainerInfoStats.insert(std::make_pair(trainerSpeciesName, TrainerInfo
         (
             trainerSpeciesName,
+            trainerMusicTrackName,
             basePayout,
             textureAtlasCol,
             textureAtlasRow
