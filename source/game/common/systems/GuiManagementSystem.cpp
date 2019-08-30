@@ -23,10 +23,13 @@
 #include "../../resources/DataFileResource.h"
 #include "../../resources/MeshUtils.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string GuiManagementSystem::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
 
 float GuiManagementSystem::GUI_TILE_DEFAULT_SIZE            = 0.11f;
 float GuiManagementSystem::CHATBOX_BLINKING_CURSOR_COOLDOWN = 0.7f;
@@ -243,15 +246,17 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
         IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
         IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)        
     )
-    {        
+    {                
         guiStateComponent.mActiveChatboxTimer = std::make_unique<Timer>(CHATBOX_SCROLL_ANIM_COOLDOWN);
         
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+
         switch (guiStateComponent.mActiveChatboxContentState)
         {
             case ChatboxContentEndState::NORMAL:
             {
-                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;
-                
+                guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;                                
+
                 if (DetectedItemReceivedText(textboxEntityId))
                 {
                     OnItemReceived(textboxEntityId);
@@ -457,6 +462,14 @@ void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntit
     else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent))
     {
         MoveTextboxCursor(textboxEntityId, Direction::SOUTH);
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
     }
     else
     {

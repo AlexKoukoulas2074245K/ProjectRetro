@@ -35,10 +35,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * GAME_TILE_SIZE;
+const std::string MovementControllerSystem::JUMP_SHADOW_SPRITE_NAME                = "jump_shadow";
+const std::string MovementControllerSystem::WILD_BATTLE_MUSIC_NAME                 = "wild_battle";
+const std::string MovementControllerSystem::LEDGE_JUMP_SFX_NAME                    = "general/ledge_jump";
+const std::string MovementControllerSystem::COLLISION_BUMP_SFX_NAME                = "general/collision_bump";
+const std::string MovementControllerSystem::OUTSIDE_DOOR_ENTERED_SFX_NAME          = "general/outside_door_entered.wav";
+const std::string MovementControllerSystem::INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME = "general/inside_door_exited.wav";
 
-const std::string MovementControllerSystem::JUMP_SHADOW_SPRITE_NAME = "jump_shadow";
-const std::string MovementControllerSystem::WILD_BATTLE_MUSIC_NAME  = "wild_battle";
+const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * GAME_TILE_SIZE;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -102,6 +106,9 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
                     warpConnectionsComponent.mHasPendingWarpConnection = true;
                     warpConnectionsComponent.mShouldPlayTransitionAnimation = true;
+
+                    SoundService::GetInstance().PlaySfx(INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME);
+
                     continue;
                 }
             }
@@ -112,6 +119,11 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             // Solidity check
             if (targetTile.mTileTrait == TileTrait::SOLID)
             {
+                if (hasPlayerTag)
+                {
+                    SoundService::GetInstance().PlaySfx(COLLISION_BUMP_SFX_NAME, false);
+                }
+                
                 movementStateComponent.mMoving = false;
                 continue;
             }                        
@@ -119,6 +131,11 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::NPC && targetTile.mTileOccupierEntityId != entityId)
             {
+                if (hasPlayerTag)
+                {
+                    SoundService::GetInstance().PlaySfx(COLLISION_BUMP_SFX_NAME, false);
+                }
+
                 movementStateComponent.mMoving = false;
                 continue;
             }
@@ -215,6 +232,29 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
                     warpConnectionsComponent.mHasPendingWarpConnection = true;
                     warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
+
+                    WarpInfo currentWarp
+                    (
+                        activeLevelComponent.mActiveLevelNameId.GetString(),
+                        TileCoords(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow)
+                    );
+
+                    assert(warpConnectionsComponent.mWarpConnections.count(currentWarp) != 0 &&
+                        "Warp for current tile not found");
+
+                    auto& targetWarp = warpConnectionsComponent.mWarpConnections.at(currentWarp);
+
+                    const auto isCurrentLevelIndoors = IsLevelIndoors(activeLevelComponent.mActiveLevelNameId);
+                    const auto isTargetLevelIndoors  = IsLevelIndoors(targetWarp.mLevelName);
+
+                    if (isCurrentLevelIndoors == false && isTargetLevelIndoors == true)
+                    {
+                        SoundService::GetInstance().PlaySfx(OUTSIDE_DOOR_ENTERED_SFX_NAME);
+                    }
+                    else if (isCurrentLevelIndoors == true && isTargetLevelIndoors == true)
+                    {
+                        SoundService::GetInstance().PlaySfx(INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME);
+                    }
                 }
 
                 // Encounter tile flow
@@ -323,6 +363,8 @@ void MovementControllerSystem::StartJump(const ecs::EntityId playerEntityId) con
     jumpingStateComponent->mJumpShadowSpriteEntityid = jumpShadowEntityId;
 
     mWorld.AddComponent<JumpingStateComponent>(playerEntityId, std::move(jumpingStateComponent));
+
+    SoundService::GetInstance().PlaySfx(LEDGE_JUMP_SFX_NAME);
 }
 
 void MovementControllerSystem::SimulateJumpDisplacement(const float dt, JumpingStateComponent& jumpStateComponent, TransformComponent& transformComponent) const

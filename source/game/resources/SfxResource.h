@@ -26,12 +26,12 @@
 
 class SfxResource final : public IResource
 {
-    friend class SfxLoader;
-
-    Mix_Chunk* GetSdlSfxHandle() const;
+    friend class SfxLoader;    
 
 public:
     ~SfxResource();
+
+    Mix_Chunk* GetSdlSfxHandle() const;
 
 private:
     SfxResource(Mix_Chunk*);

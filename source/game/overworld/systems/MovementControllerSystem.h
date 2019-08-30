@@ -43,10 +43,14 @@ private:
     void SimulateJumpDisplacement(const float dt, JumpingStateComponent&, TransformComponent&) const;
     void DestroyJumpSprite(const ecs::EntityId) const;
 
-    static const float CHARACTER_MOVEMENT_SPEED;
-
     static const std::string JUMP_SHADOW_SPRITE_NAME;
     static const std::string WILD_BATTLE_MUSIC_NAME;
+    static const std::string LEDGE_JUMP_SFX_NAME;
+    static const std::string COLLISION_BUMP_SFX_NAME;
+    static const std::string OUTSIDE_DOOR_ENTERED_SFX_NAME;
+    static const std::string INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME;
+
+    static const float CHARACTER_MOVEMENT_SPEED;
 
 };
 

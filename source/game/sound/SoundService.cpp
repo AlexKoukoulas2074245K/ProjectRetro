@@ -15,6 +15,7 @@
 #include "../common/utils/OSMessageBox.h"
 #include "../resources/MusicResource.h"
 #include "../resources/ResourceLoadingService.h"
+#include "../resources/SfxResource.h"
 
 #include <cassert>
 #include <fstream>
@@ -25,10 +26,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string SoundService::MUSIC_FILE_EXTENSION = ".ogg";
+const std::string SoundService::SFX_FILE_EXTENSION   = ".wav";
 
-const int SoundService::SOUND_FREQUENCY = 44100;
-const int SoundService::HARDWARE_CHANNELS = 2;
-const int SoundService::CHUNK_SIZE_IN_BYTES = 1024;
+const int SoundService::SOUND_FREQUENCY                  = 44100;
+const int SoundService::HARDWARE_CHANNELS                = 2;
+const int SoundService::CHUNK_SIZE_IN_BYTES              = 1024;
 const int SoundService::FADE_OUT_DURATION_IN_MILISECONDS = 1000;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +86,27 @@ void SoundService::InitializeSdlMixer() const
     }
 
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
+}
+
+void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */)
+{
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+
+    const auto sfxFilePath = ResourceLoadingService::RES_SFX_ROOT + sfxName.GetString();
+    auto sfxFilePathWithExtension = sfxFilePath + SFX_FILE_EXTENSION;
+
+    if (resourceLoadingService.HasLoadedResource(sfxFilePathWithExtension) == false)
+    {
+        Log(LogType::WARNING, "Sfx file %s requested not preloaded", sfxFilePathWithExtension.c_str());
+        resourceLoadingService.LoadResource(sfxFilePathWithExtension);
+    }
+
+    auto& sfxResource = resourceLoadingService.GetResource<SfxResource>(sfxFilePathWithExtension);
+
+    if (overrideCurrentPlaying || Mix_Playing(0))
+    {
+        Mix_PlayChannel(0, sfxResource.GetSdlSfxHandle(), 0);
+    }    
 }
 
 void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled /* true */)

@@ -40,6 +40,7 @@ public:
 
     void InitializeSdlMixer() const;
     
+    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true);
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
 
     void OnMusicFinished();
@@ -51,7 +52,8 @@ private:
     bool HasIntro(const std::string& musicTrackPath) const;
 
     static const std::string MUSIC_FILE_EXTENSION;
-    
+    static const std::string SFX_FILE_EXTENSION;
+
     static const int SOUND_FREQUENCY;
     static const int HARDWARE_CHANNELS;
     static const int CHUNK_SIZE_IN_BYTES;

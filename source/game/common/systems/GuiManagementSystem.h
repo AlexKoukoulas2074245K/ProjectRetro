@@ -19,6 +19,8 @@
 #include "../../ECS.h"
 #include "../GameConstants.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,8 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
     
 private:
+    static const std::string TEXTBOX_CLICK_SFX_NAME;
+
     static float GUI_TILE_DEFAULT_SIZE;
     static float CHATBOX_BLINKING_CURSOR_COOLDOWN;
     static float CHATBOX_SCROLL_ANIM_COOLDOWN;

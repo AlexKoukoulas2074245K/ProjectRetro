@@ -234,7 +234,7 @@ void NpcAiSystem::UpdateDynamicNpc(const float dt, const ecs::EntityId entityId)
             
             const auto& targetTile = GetNeighborTile(movementStateComponent.mCurrentCoords, newDirection, levelModelComponent.mLevelTilemap);
             
-            // Start moving if not target tile is olid
+            // Start moving if target tile is free
             if (targetTile.mTileTrait == TileTrait::NONE)
             {
                 ResumeCurrentlyPlayingAnimation(animationTimerComponent);
