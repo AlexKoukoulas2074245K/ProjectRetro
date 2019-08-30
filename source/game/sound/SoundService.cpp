@@ -103,9 +103,9 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
 
     auto& sfxResource = resourceLoadingService.GetResource<SfxResource>(sfxFilePathWithExtension);
 
-    if (overrideCurrentPlaying || Mix_Playing(0))
+    if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
-        Mix_PlayChannel(0, sfxResource.GetSdlSfxHandle(), 0);
+        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
     }    
 }
 

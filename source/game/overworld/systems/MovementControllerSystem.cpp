@@ -39,8 +39,8 @@ const std::string MovementControllerSystem::JUMP_SHADOW_SPRITE_NAME             
 const std::string MovementControllerSystem::WILD_BATTLE_MUSIC_NAME                 = "wild_battle";
 const std::string MovementControllerSystem::LEDGE_JUMP_SFX_NAME                    = "general/ledge_jump";
 const std::string MovementControllerSystem::COLLISION_BUMP_SFX_NAME                = "general/collision_bump";
-const std::string MovementControllerSystem::OUTSIDE_DOOR_ENTERED_SFX_NAME          = "general/outside_door_entered.wav";
-const std::string MovementControllerSystem::INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME = "general/inside_door_exited.wav";
+const std::string MovementControllerSystem::OUTSIDE_DOOR_ENTERED_SFX_NAME          = "general/outside_door_entered";
+const std::string MovementControllerSystem::INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME = "general/inside_door_exited";
 
 const float MovementControllerSystem::CHARACTER_MOVEMENT_SPEED = 4 * GAME_TILE_SIZE;
 
@@ -281,7 +281,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            encounterInfo.mPokemonName,
+                            StringId("ONIX"),
                             encounterInfo.mPokemonLevel,
                             false,
                             mWorld

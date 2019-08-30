@@ -15,6 +15,8 @@
 #include "BaseFlowState.h"
 #include "../../common/utils/MathUtils.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,10 @@ public:
  
 private:
     void DetermineShakeTypeToBeInitiated() const;
+    
+    static const std::string NOT_VERY_EFFECTIVE_MOVE_SFX;
+    static const std::string NORMAL_EFFECTIVE_MOVE_SFX;
+    static const std::string SUPER_EFFECTIVE_MOVE_SFX;
     
     static const glm::vec3 ENCOUNTER_LEFT_EDGE_POSITION;
     static const glm::vec3 ENCOUNTER_RIGHT_EDGE_POSITION;

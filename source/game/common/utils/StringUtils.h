@@ -19,6 +19,8 @@
 
 #include "TypeTraits.h"
 
+#include <algorithm>
+#include <cctype>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -56,6 +58,20 @@ inline bool StringEndsWith(const std::string& s, const std::string& pattern)
     }
     
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+// Returns a copy of the given string (s) in lowercase
+inline std::string StringToLower(const std::string& s)
+{
+    auto stringCopy = s;
+    std::transform(stringCopy.begin(), stringCopy.end(), stringCopy.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    
+    return stringCopy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

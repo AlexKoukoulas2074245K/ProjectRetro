@@ -13,13 +13,20 @@
 #include "HealthDepletionEncounterFlowState.h"
 #include "../utils/PokemonMoveUtils.h"
 #include "../../common/components/TransformComponent.h"
+#include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterShakeSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/CameraSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string MoveShakeEncounterFlowState::NOT_VERY_EFFECTIVE_MOVE_SFX = "encounter/not_very_effective";
+const std::string MoveShakeEncounterFlowState::NORMAL_EFFECTIVE_MOVE_SFX   = "encounter/normal_effective";
+const std::string MoveShakeEncounterFlowState::SUPER_EFFECTIVE_MOVE_SFX    = "encounter/super_effective";
 
 const glm::vec3 MoveShakeEncounterFlowState::ENCOUNTER_LEFT_EDGE_POSITION  = glm::vec3(-0.937f, 0.0f, -1.0f);
 const glm::vec3 MoveShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm::vec3(0.962f, 0.0f, -1.0f);
@@ -29,7 +36,7 @@ const glm::vec3 MoveShakeEncounterFlowState::ENCOUNTER_RIGHT_EDGE_POSITION = glm
 ////////////////////////////////////////////////////////////////////////////////////
 
 MoveShakeEncounterFlowState::MoveShakeEncounterFlowState(ecs::World& world)
-    : BaseFlowState(world)
+: BaseFlowState(world)
 {
     DetermineShakeTypeToBeInitiated();
 }
@@ -39,7 +46,7 @@ void MoveShakeEncounterFlowState::VUpdate(const float)
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& cameraComponent         = mWorld.GetSingletonComponent<CameraSingletonComponent>();
     const auto& shakeComponent          = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
-
+    
     // Wait until Shake is finished
     if (shakeComponent.mActiveShakeType == ShakeType::NONE)
     {
@@ -62,16 +69,45 @@ void MoveShakeEncounterFlowState::VUpdate(const float)
 
 void MoveShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
 {
-    const auto& encounterComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& lastMoveUsedStats  = GetMoveStats(encounterComponent.mLastMoveSelected, mWorld);
-    const auto isOpponentsTurn     = encounterComponent.mIsOpponentsTurn;
-    auto& shakeComponent           = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
-
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& lastMoveUsedStats       = GetMoveStats(encounterStateComponent.mLastMoveSelected, mWorld);
+    const auto isOpponentsTurn          = encounterStateComponent.mIsOpponentsTurn;
+    const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    
+    auto& shakeComponent = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
+    
     if (isMoveNonShake(lastMoveUsedStats.mName))
     {
         return;
     }
 
+    if (lastMoveUsedStats.mPower > 0)
+    {
+        const auto& defendingPokemon = encounterStateComponent.mIsOpponentsTurn ? activePlayerPokemon : activeOpponentPokemon;
+        auto effectivenessFactor = GetTypeEffectiveness(lastMoveUsedStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
+        if (defendingPokemon.mBaseSpeciesStats.mSecondType != StringId())
+        {
+            effectivenessFactor *= GetTypeEffectiveness(lastMoveUsedStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
+        }
+        
+        if (effectivenessFactor < 0.9f && effectivenessFactor > 0.1f)
+        {
+            SoundService::GetInstance().PlaySfx(NOT_VERY_EFFECTIVE_MOVE_SFX);
+        }
+        else if (effectivenessFactor > 1.1f)
+        {
+            SoundService::GetInstance().PlaySfx(SUPER_EFFECTIVE_MOVE_SFX);
+        }
+        else
+        {
+            SoundService::GetInstance().PlaySfx(NORMAL_EFFECTIVE_MOVE_SFX);
+        }
+    }
+    
+    
+    
     shakeComponent.mShakeProgressionStep = 0;
     
     if (isOpponentsTurn == false)

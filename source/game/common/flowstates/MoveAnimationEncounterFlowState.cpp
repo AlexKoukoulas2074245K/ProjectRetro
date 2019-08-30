@@ -27,6 +27,7 @@
 #include "../../rendering/utils/RenderingUtils.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../resources/TextureResource.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +79,12 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     else
     {
         LoadMoveAnimationFrames();
-    }    
+    }
+    
+    SoundService::GetInstance().PlaySfx
+    (
+        "encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
+    );
 }
 
 void MoveAnimationEncounterFlowState::VUpdate(const float dt)
