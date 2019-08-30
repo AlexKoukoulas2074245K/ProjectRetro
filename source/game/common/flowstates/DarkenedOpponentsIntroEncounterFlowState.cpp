@@ -18,6 +18,7 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +63,13 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
         opponentTrainerSpriteTransformComponent.mPosition.x = OPPONENT_SPRITE_TARGET_POS.x;
         
         mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = false;
+
+        SoundService::GetInstance().PlaySfx
+        (
+            "cries/" +
+            GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
+        );
+
         CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
     }
 }

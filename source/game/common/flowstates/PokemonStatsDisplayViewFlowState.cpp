@@ -21,6 +21,7 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +43,7 @@ PokemonStatsDisplayViewFlowState::PokemonStatsDisplayViewFlowState(ecs::World& w
     pokemonStatsDisplayViewStateComponent.mIsInScreen1 = true;    
 
     CreatePokemonStatsBackground();
-    LoadAndCreatePokemonStatsScreen1();
+    LoadAndCreatePokemonStatsScreen1();    
 }
 
 void PokemonStatsDisplayViewFlowState::VUpdate(const float)
@@ -102,7 +103,6 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
         POKEMON_SPRITE_SCALE,
         mWorld
     );
-
     
     pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId = CreatePokemonStatsDisplayTextbox(mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, GetFormattedPokemonIdString(selectedPokemon.mBaseSpeciesStats.mId), 3, 7, mWorld);
@@ -134,6 +134,8 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
         mWorld,
         true
     );
+
+    SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(selectedPokemon.mBaseSpeciesStats.mId));
 }
 
 void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen2() const

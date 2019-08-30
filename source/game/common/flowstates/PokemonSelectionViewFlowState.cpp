@@ -35,13 +35,15 @@
 
 #include <unordered_map>
 #include <utility>
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME                           = "camera_facing_quad";
-const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME              = "characters.png";
+const std::string PokemonSelectionViewFlowState::POKEMON_SWAP_SFX                       = "general/pokemon_swap";
+const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME              = "camera_facing_quad";
+const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME = "characters.png";
 
 const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_POSITION            = glm::vec3(0.0f, 0.0f, 0.01f);
 const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_SCALE               = glm::vec3(2.0f, 2.0f, 2.0f);
@@ -300,6 +302,8 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
                 {
                     const auto pokemonSelectionViewInfoTextboxEntityId = GetActiveTextboxEntityId(mWorld);
                     
+                    SoundService::GetInstance().PlaySfx(POKEMON_SWAP_SFX);
+
                     mWorld.RemoveComponent<CursorComponent>(pokemonSelectionViewInfoTextboxEntityId);
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex * 2, mWorld);
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex * 2 + 1, mWorld);
@@ -323,6 +327,8 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
 
                     const auto pokemonSelectionViewInfoTextboxEntityId = GetActiveTextboxEntityId(mWorld);
                     
+                    SoundService::GetInstance().PlaySfx(POKEMON_SWAP_SFX);
+
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex * 2, mWorld);
                     DeleteTextAtTextboxRow(pokemonSelectionViewInfoTextboxEntityId, pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex * 2 + 1, mWorld);
                                         

@@ -26,6 +26,7 @@
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +40,7 @@ const glm::vec3 PlayerPokemonSummonEncounterFlowState::OPPONENT_POKEMON_DEATH_CO
 const glm::vec3 PlayerPokemonSummonEncounterFlowState::SPRITE_SCALE                          = glm::vec3(0.49f, 0.49f, 1.0f);
 const glm::vec3 PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_ANIMATION_SCALE        = glm::vec3(2.0f, 2.0f, 1.0f);
 
+const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BALL_SFX                    = "general/ball_poof";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME   = "battle_animations/PLAYER_POKEMON_SUMMON/";
 
@@ -183,7 +185,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     }
     else
     {
-        LoadPokemonSummonBattleAnimation();
+        LoadPokemonSummonBattleAnimation();        
     }
     
     encounterStateComponent.mLastPlayerSelectedMoveIndexFromFightMenu = 0;
@@ -247,6 +249,8 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 pokemonSpriteScalingComponent.mScaleOpponentPokemon = false;
                 pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;
                 CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
+
+                SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(activePlayerPokemon.mBaseSpeciesStats.mId));
             }
         }
     }
@@ -310,6 +314,8 @@ void PlayerPokemonSummonEncounterFlowState::LoadPokemonSummonBattleAnimation() c
     }
 
     encounterStateComponent.mViewObjects.mBattleAnimationTimer = std::make_unique<Timer>(BATTLE_MOVE_ANIMATION_FRAME_DURATION);
+
+    SoundService::GetInstance().PlaySfx(POKEMON_SUMMON_BALL_SFX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

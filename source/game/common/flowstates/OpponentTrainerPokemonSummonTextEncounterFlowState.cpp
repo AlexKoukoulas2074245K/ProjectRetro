@@ -11,11 +11,13 @@
 
 #include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 #include "PokemonScalingAnimationEncounterFlowState.h"
+#include "../utils/PokemonUtils.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +73,12 @@ void OpponentTrainerPokemonSummonTextEncounterFlowState::VUpdate(const float)
         pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;
 
         CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
+
+        SoundService::GetInstance().PlaySfx
+        (
+            "cries/" +
+            GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
+        );           
     }
 }
 

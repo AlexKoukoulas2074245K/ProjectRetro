@@ -57,6 +57,7 @@ private:
         const int row
     ) const;
         
+    static const std::string POKEMON_SWAP_SFX;
     static const std::string POKEMON_SPRITE_MODEL_NAME;
     static const std::string POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME;
 
