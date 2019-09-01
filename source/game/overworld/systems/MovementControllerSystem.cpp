@@ -281,7 +281,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     (
                         CreatePokemon
                         (
-                            StringId("ONIX"),
+                            encounterInfo.mPokemonName,
                             encounterInfo.mPokemonLevel,
                             false,
                             mWorld
