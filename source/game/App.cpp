@@ -222,7 +222,7 @@ void App::DummyInitialization()
     AddItemToBag(StringId("OLD_AMBER"), mWorld, 2);
     AddItemToBag(StringId("REPEL"), mWorld, 2);
 
-    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("pallet"), mWorld);
+    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("viridian"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
