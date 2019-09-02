@@ -20,10 +20,14 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string EvolutionAnimationFlowState::EVOLUTION_MUSIC_TRACK_NAME = "evolution";
+const std::string EvolutionAnimationFlowState::POKEMON_EVOLUTION_SFX_NAME = "general/evolution";
 
 const glm::vec3 EvolutionAnimationFlowState::POKEMON_SPRITE_POSITION = glm::vec3(0.0f, 0.2f, -0.5f);
 const glm::vec3 EvolutionAnimationFlowState::POKEMON_SPRITE_SCALE    = glm::vec3(-0.49f, 0.49f, 1.0f);
@@ -52,44 +56,47 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
     {
         case EvolutionAnimationState::NOT_STARTED: 
         {
-            auto& encounterStateComponent        = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-            auto& playerStateComponent           = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-            const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
-            auto& pokemonReadyToEvolve           = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
-            
-            const auto pokemonReadyToEvolveHp          = pokemonReadyToEvolve.mHp;
-            const auto pokemonReadyToEvolveName        = pokemonReadyToEvolve.mName;
-            const auto pokemonReadyToEvolveSpeciesName = pokemonReadyToEvolve.mBaseSpeciesStats.mSpeciesName;
-
-            playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex] = std::move(pokemonReadyToEvolve.mEvolution);            
-            playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mHp = pokemonReadyToEvolveHp;
-            
-            // i.e. if it has a nickname
-            if (pokemonReadyToEvolveName != pokemonReadyToEvolveSpeciesName)
+            evolutionAnimationStateComponent.mEvolutionAnimationTimer->Update(dt);
+            if (evolutionAnimationStateComponent.mEvolutionAnimationTimer->HasTicked())
             {
-                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = pokemonReadyToEvolveName;
+                auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+                auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+                const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
+                auto& pokemonReadyToEvolve = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
+
+                const auto pokemonReadyToEvolveHp = pokemonReadyToEvolve.mHp;
+                const auto pokemonReadyToEvolveName = pokemonReadyToEvolve.mName;
+                const auto pokemonReadyToEvolveSpeciesName = pokemonReadyToEvolve.mBaseSpeciesStats.mSpeciesName;
+
+                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex] = std::move(pokemonReadyToEvolve.mEvolution);
+                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mHp = pokemonReadyToEvolveHp;
+
+                // i.e. if it has a nickname
+                if (pokemonReadyToEvolveName != pokemonReadyToEvolveSpeciesName)
+                {
+                    playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = pokemonReadyToEvolveName;
+                }
+                else
+                {
+                    playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mBaseSpeciesStats.mSpeciesName;
+                }
+
+                DestroyActiveTextbox(mWorld);
+                mWorld.DestroyEntity(evolutionAnimationStateComponent.mOldPokemonSpriteEntityId);
+                mWorld.DestroyEntity(evolutionAnimationStateComponent.mNewPokemonSpriteEntityId);
+
+                evolutionAnimationStateComponent.mOldPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
+                evolutionAnimationStateComponent.mNewPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
+                evolutionAnimationStateComponent.mNeedToCheckEvolutionNewMoves = true;
+
+                if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+                {
+                    encounterStateComponent.mHasPokemonEvolvedInBattle = true;
+                }
+
+                playerStateComponent.mLeveledUpPokemonRosterIndex = pokemonReadyToEvolveIndex;
+                CompleteAndTransitionTo<NewMovesCheckFlowState>();
             }
-            else
-            {
-                playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mBaseSpeciesStats.mSpeciesName;
-            }
-
-            DestroyActiveTextbox(mWorld);
-            mWorld.DestroyEntity(evolutionAnimationStateComponent.mOldPokemonSpriteEntityId);
-            mWorld.DestroyEntity(evolutionAnimationStateComponent.mNewPokemonSpriteEntityId);
-
-            evolutionAnimationStateComponent.mOldPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
-            evolutionAnimationStateComponent.mNewPokemonSpriteEntityId = ecs::NULL_ENTITY_ID;
-            evolutionAnimationStateComponent.mNeedToCheckEvolutionNewMoves = true;
-            
-            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
-            {
-                encounterStateComponent.mHasPokemonEvolvedInBattle = true;
-            }
-
-            playerStateComponent.mLeveledUpPokemonRosterIndex = pokemonReadyToEvolveIndex;
-            CompleteAndTransitionTo<NewMovesCheckFlowState>();
-
         } break;
 
         case EvolutionAnimationState::SHOW_OLD_POKEMON_COLORED:
@@ -102,6 +109,8 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
 
                 auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
                 transitionAnimationStateComponent.mBlackAndWhiteModeEnabled = true;
+
+                SoundService::GetInstance().PlayMusic(EVOLUTION_MUSIC_TRACK_NAME, false);
             }
 
         } break;
@@ -171,6 +180,9 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                     pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mSpeciesName.GetString() + "!#+FREEZE", 
                     mWorld
                 );
+
+                SoundService::GetInstance().StopMusic();
+                SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mId));
             }
         } break;
 
@@ -183,6 +195,9 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                 if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
                 {
                     evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::NOT_STARTED;
+                    evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY);
+
+                    SoundService::GetInstance().PlaySfx(POKEMON_EVOLUTION_SFX_NAME);
                 }
             }
         } break;
@@ -225,6 +240,8 @@ void EvolutionAnimationFlowState::ConfigureEvolutionAnimationState() const
     evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY);
 
     ToggleVisibilityOfNewPokemonSprite(false);
+
+    SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(pokemonReadyToEvolve.mBaseSpeciesStats.mId));
 }
 
 void EvolutionAnimationFlowState::ToggleVisibilityOfOldPokemonSprite(const bool visibility) const

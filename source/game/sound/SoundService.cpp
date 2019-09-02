@@ -165,6 +165,11 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
     }    
 }
 
+void SoundService::StopMusic()
+{
+    Mix_HaltMusic();
+}
+
 void SoundService::OnMusicFinished()
 {
     assert(mQueuedMusicResourceId != 0 && "No queued music to play");

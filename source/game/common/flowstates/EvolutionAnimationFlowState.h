@@ -15,6 +15,8 @@
 #include "BaseFlowState.h"
 #include "../utils/MathUtils.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,9 @@ private:
     void ConfigureEvolutionAnimationState() const;
     void ToggleVisibilityOfOldPokemonSprite(const bool visibility) const;
     void ToggleVisibilityOfNewPokemonSprite(const bool visibility) const;
+
+    static const std::string POKEMON_EVOLUTION_SFX_NAME;
+    static const std::string EVOLUTION_MUSIC_TRACK_NAME;
 
     static const glm::vec3 POKEMON_SPRITE_POSITION;
     static const glm::vec3 POKEMON_SPRITE_SCALE;

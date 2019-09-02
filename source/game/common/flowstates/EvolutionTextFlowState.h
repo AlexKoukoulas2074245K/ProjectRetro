@@ -25,6 +25,8 @@ public:
     
     void VUpdate(const float dt) override;
    
+private:
+    static const std::string EVOLUTION_MUSIC_TRACK_NAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -59,7 +59,7 @@ void EvolutionTextFlowState::VUpdate(const float)
     {
         const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
         if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
-        {
+        {            
             CompleteAndTransitionTo<EvolutionAnimationFlowState>();
         }
     }

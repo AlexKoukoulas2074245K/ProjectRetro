@@ -42,6 +42,7 @@ public:
     
     void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true);
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
+    void StopMusic();
 
     void OnMusicFinished();
     void OnMusicIntroFinished();

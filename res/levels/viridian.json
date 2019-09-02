@@ -1419,13 +1419,15 @@
          { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Those POK^ Balls#at your wast!#You have POK^MON!#@It's great that#you can carry and#use POK^MON any-#time, anywhere!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 24, "editor_row": 40, "game_col": 24, "game_row": 23, "game_position_x": 38.4, "game_position_z": 36.8 },
          { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "You want to know#about the 2 kinds#of caterpillar#POK^MON?+YESNO", "side_dialogs": ["CATERPIE has no#poison, but#WEEDLE does.#@Watch out for its#POISON STING!","Oh, OK then!"], "pokemon_roster": [], "editor_col": 34, "editor_row": 44, "game_col": 34, "game_row": 19, "game_position_x": 54.4, "game_position_z": 30.4 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Heal Your POK^MON!#POK^MON CENTER", "side_dialogs": [], "pokemon_roster": [], "editor_col": 29, "editor_row": 45, "game_col": 29, "game_row": 18, "game_position_x": 46.4, "game_position_z": 28.8 },
+         { "movement_type": "STATIC", "direction": 2, "is_trainer": true, "is_gym_leader": false, "trainer_name": "BIRD_KEEPER", "dialog": "a", "side_dialogs": ["a","a"], "pokemon_roster": [{ "name": "ABRA", "level": 5 }], "editor_col": 21, "editor_row": 48, "game_col": 21, "game_row": 15, "game_position_x": 33.6, "game_position_z": 24.0 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "TRAINER TIPS#@The battle moves#of POK^MON are#limited by their#POWER POINTs, PP.#@To replenish PP,#rest  your tired#POK^MON at a#POK^MON CENTER!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 26, "editor_row": 49, "game_col": 26, "game_row": 14, "game_position_x": 41.6, "game_position_z": 22.4 }
     ],
     "level_npc_sprites":
     [
         {  "editor_col": 22, "editor_row": 29, "game_col": 22, "game_row": 34, "game_position_x": 35.2, "game_position_z": 54.4, "atlas_col": 6, "atlas_row": 23 },
         {  "editor_col": 24, "editor_row": 40, "game_col": 24, "game_row": 23, "game_position_x": 38.4, "game_position_z": 36.8, "atlas_col": 0, "atlas_row": 17 },
-        {  "editor_col": 34, "editor_row": 44, "game_col": 34, "game_row": 19, "game_position_x": 54.4, "game_position_z": 30.4, "atlas_col": 0, "atlas_row": 17 }
+        {  "editor_col": 34, "editor_row": 44, "game_col": 34, "game_row": 19, "game_position_x": 54.4, "game_position_z": 30.4, "atlas_col": 0, "atlas_row": 17 },
+        {  "editor_col": 21, "editor_row": 48, "game_col": 21, "game_row": 15, "game_position_x": 33.6, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 0 }
     ],
     "level_model_list":
     [

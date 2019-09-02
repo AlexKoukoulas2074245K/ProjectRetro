@@ -26,7 +26,7 @@
 const std::string TrainerBattleWonEncounterFlowState::GYM_BATTLE_WON_MUSIC_TRACK_NAME     = "gym_battle_won";
 const std::string TrainerBattleWonEncounterFlowState::TRAINER_BATTLE_WON_MUSIC_TRACK_NAME = "trainer_battle_won";
 
-const glm::vec3 TrainerBattleWonEncounterFlowState::OPPONENT_TRAINER_INIT_POS   = glm::vec3(0.9f, 0.61f, 0.1f);
+const glm::vec3 TrainerBattleWonEncounterFlowState::OPPONENT_TRAINER_INIT_POS   = glm::vec3(0.95f, 0.61f, 0.1f);
 const glm::vec3 TrainerBattleWonEncounterFlowState::OPPONENT_TRAINER_TARGET_POS = glm::vec3(0.38f, 0.61f, 0.3f);
 const glm::vec3 TrainerBattleWonEncounterFlowState::SPRITE_SCALE                = glm::vec3(0.49f, 0.49f, 1.0f);
 

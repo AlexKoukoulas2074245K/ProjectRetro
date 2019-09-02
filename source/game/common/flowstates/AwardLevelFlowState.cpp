@@ -18,10 +18,13 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string AwardLevelFlowState::POKEMON_LEVEL_UP_SFX_NAME = "general/level_up_or_badge";
 
 const glm::vec3 AwardLevelFlowState::POKEMON_STATS_DISPLAY_TEXTBOX_POSITION = glm::vec3(0.31f, 0.2f, -0.4f);
 
@@ -46,6 +49,8 @@ AwardLevelFlowState::AwardLevelFlowState(ecs::World& world)
         activePlayerPokemon.mName.GetString() + " grew#to level " + std::to_string(activePlayerPokemon.mLevel) + "!+FREEZE",
         mWorld
     );
+
+    SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
 }
 
 void AwardLevelFlowState::VUpdate(const float)

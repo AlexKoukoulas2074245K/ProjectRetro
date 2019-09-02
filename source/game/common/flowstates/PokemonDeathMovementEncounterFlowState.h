@@ -31,6 +31,8 @@ public:
 
 private:
     static const std::string WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME;
+    static const std::string TRAINER_POKEMON_FAINT_SFX_1;
+    static const std::string TRAINER_POKEMON_FAINT_SFX_2;
 
     static const float OPPONENT_POKEMON_DEATH_TARGET_Y;
     static const float PLAYER_POKEMON_DEATH_TARGET_Y;

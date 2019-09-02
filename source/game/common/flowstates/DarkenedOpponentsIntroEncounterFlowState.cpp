@@ -64,12 +64,15 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
         
         mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = false;
 
-        SoundService::GetInstance().PlaySfx
-        (
-            "cries/" +
-            GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
-        );
-
+        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        {
+            SoundService::GetInstance().PlaySfx
+            (
+                "cries/" +
+                GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
+            );
+        }
+        
         CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
     }
 }
