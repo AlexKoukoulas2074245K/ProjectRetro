@@ -19,8 +19,15 @@
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
+#include "../../sound/SoundService.h"
 
 #include <memory>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string LearnNewMoveFlowState::POKEMON_LEVEL_UP_SFX_NAME = "general/level_up_or_badge";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +66,9 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
         mainChatboxEntityId,
         activePlayerPokemon.mName.GetString() + " learned#" + moveStats.mName.GetString() + "!#+END",
         mWorld
-    );
+    );    
+
+    SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
 }
 
 void LearnNewMoveFlowState::VUpdate(const float)
@@ -70,7 +79,7 @@ void LearnNewMoveFlowState::VUpdate(const float)
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
-    {
+    {        
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
         
         if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)

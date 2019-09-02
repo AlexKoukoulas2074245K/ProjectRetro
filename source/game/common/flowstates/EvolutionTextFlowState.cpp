@@ -15,6 +15,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,8 @@ EvolutionTextFlowState::EvolutionTextFlowState(ecs::World& world)
 
         const auto& mainChatboxEntityId = CreateChatbox(mWorld);
         QueueDialogForChatbox(mainChatboxEntityId, "What? " + playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName.GetString() + "#is evolving!#+FREEZE", mWorld);
+
+        SoundService::GetInstance().PauseMusic();
     }
 }
 

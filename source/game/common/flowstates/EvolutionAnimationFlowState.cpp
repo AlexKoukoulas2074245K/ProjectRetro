@@ -146,44 +146,40 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                     {                        
                         ToggleVisibilityOfOldPokemonSprite(false);
                         ToggleVisibilityOfNewPokemonSprite(true);
+                        
+                        evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::SHOW_NEW_POKEMON_COLORED;  
 
-                        evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY);
-                        evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::SHOW_NEW_POKEMON_COLORED;                        
+                        SoundService::GetInstance().PauseMusic();
                     }
                 }
             }
         } break;
 
         case EvolutionAnimationState::SHOW_NEW_POKEMON_COLORED: 
-        {
-            evolutionAnimationStateComponent.mEvolutionAnimationTimer->Update(dt);
-            if (evolutionAnimationStateComponent.mEvolutionAnimationTimer->HasTicked())
-            {
-                evolutionAnimationStateComponent.mEvolutionAnimationTimer->Reset();
+        {            
+            evolutionAnimationStateComponent.mEvolutionAnimationTimer->Reset();
 
-                auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
-                transitionAnimationStateComponent.mBlackAndWhiteModeEnabled = false;
+            auto& transitionAnimationStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+            transitionAnimationStateComponent.mBlackAndWhiteModeEnabled = false;
 
-                evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::EVOLUTION_FINISHED_TEXT;
+            evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::EVOLUTION_FINISHED_TEXT;
 
-                DestroyActiveTextbox(mWorld);
+            DestroyActiveTextbox(mWorld);
 
-                const auto& playerStateComponent     = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-                const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
-                const auto& pokemonReadyToEvolve     = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
+            const auto& playerStateComponent     = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+            const auto pokemonReadyToEvolveIndex = GetReadyToEvolvePokemonRosterIndex(playerStateComponent.mPlayerPokemonRoster);
+            const auto& pokemonReadyToEvolve     = *playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex];
 
-                const auto& mainChatboxEntityId = CreateChatbox(mWorld);
-                QueueDialogForChatbox
-                (
-                    mainChatboxEntityId, 
-                    pokemonReadyToEvolve.mName.GetString() + " evolved#into " +
-                    pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mSpeciesName.GetString() + "!#+FREEZE", 
-                    mWorld
-                );
-
-                SoundService::GetInstance().StopMusic();
-                SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mId));
-            }
+            const auto& mainChatboxEntityId = CreateChatbox(mWorld);
+            QueueDialogForChatbox
+            (
+                mainChatboxEntityId, 
+                pokemonReadyToEvolve.mName.GetString() + " evolved#into " +
+                pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mSpeciesName.GetString() + "!#+FREEZE", 
+                mWorld
+            );
+                
+            SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(pokemonReadyToEvolve.mEvolution->mBaseSpeciesStats.mId));            
         } break;
 
         case EvolutionAnimationState::EVOLUTION_FINISHED_TEXT:
@@ -195,7 +191,7 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                 if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
                 {
                     evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::NOT_STARTED;
-                    evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY);
+                    evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY * 2);
 
                     SoundService::GetInstance().PlaySfx(POKEMON_EVOLUTION_SFX_NAME);
                 }
