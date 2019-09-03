@@ -15,6 +15,8 @@
 
 #include "../common/utils/StringUtils.h"
 
+#include <functional>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +42,15 @@ public:
 
     void InitializeSdlMixer() const;
     
-    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true);
+    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true, std::function<void()> onSfxFinishedCallback = nullptr);
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
     void PauseMusic();
 
     void OnMusicFinished();
     void OnMusicIntroFinished();
+    void OnSfxFinished();
+    
+    bool IsPlayingSfx() const;
 
 private:    
     SoundService() = default;    
@@ -63,6 +68,8 @@ private:
     MusicResourceId mCurrentlyPlayingMusicResourceId = 0;
     MusicResourceId mQueuedMusicResourceId = 0;
     MusicResourceId mCoreMusicTrackResourceId = 0;
+    
+    std::function<void()> mOnSfxFinishedCallback;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

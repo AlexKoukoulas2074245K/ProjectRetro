@@ -47,6 +47,14 @@ static void OnMusicIntroFinishedHook()
     SoundService::GetInstance().OnMusicIntroFinished();
 }
 
+static void OnSfxFinishedHook(const int channel)
+{
+    if (channel == 1)
+    {
+        SoundService::GetInstance().OnSfxFinished();
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +96,7 @@ void SoundService::InitializeSdlMixer() const
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
 }
 
-void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */)
+void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */, std::function<void()> onSfxFinishedCallback /* nullptr */)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
@@ -106,6 +114,17 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
     if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
         Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
+        
+        if (onSfxFinishedCallback != nullptr)
+        {
+            mOnSfxFinishedCallback = onSfxFinishedCallback;
+            Mix_ChannelFinished(OnSfxFinishedHook);
+        }
+        else
+        {
+            mOnSfxFinishedCallback = nullptr;
+            Mix_ChannelFinished(nullptr);
+        }
     }    
 }
 
@@ -201,6 +220,17 @@ void SoundService::OnMusicIntroFinished()
 
     mCurrentlyPlayingMusicResourceId = mCoreMusicTrackResourceId;
     Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
+}
+
+void SoundService::OnSfxFinished()
+{
+    mOnSfxFinishedCallback();
+    mOnSfxFinishedCallback = nullptr;
+}
+
+bool SoundService::IsPlayingSfx() const
+{
+    return Mix_Playing(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/TextboxComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../../common/utils/PokemonItemsUtils.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
@@ -29,7 +30,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string GuiManagementSystem::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
+const std::string GuiManagementSystem::TEXTBOX_CLICK_SFX_NAME         = "general/textbox_click";
+const std::string GuiManagementSystem::KEY_ITEM_RECEIVED_SFX_NAME     = "general/got_key_item";
+const std::string GuiManagementSystem::REGULAR_ITEM_RECEIVED_SFX_NAME = "general/got_or_found_item";
 
 float GuiManagementSystem::GUI_TILE_DEFAULT_SIZE            = 0.11f;
 float GuiManagementSystem::CHATBOX_BLINKING_CURSOR_COOLDOWN = 0.7f;
@@ -154,20 +157,26 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
     }
     else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
     {
-        if
-        (
-            IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
-            IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)        
-        )
+        if (DetectedItemReceivedText(textboxEntityId) && !textboxComponent.mHasPlayedItemReceivedSfx)
         {
-            if (DetectedItemReceivedText(textboxEntityId))
+            OnItemReceived(textboxEntityId);
+            textboxComponent.mHasPlayedItemReceivedSfx = true;
+        }
+        else
+        {
+            if
+            (
+                 IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||
+                 IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
+            )
             {
-                OnItemReceived(textboxEntityId);
+                if (SoundService::GetInstance().IsPlayingSfx() == false)
+                {
+                    DestroyActiveTextbox(mWorld);
+                    guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
+                    guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+                }
             }
-            
-            DestroyActiveTextbox(mWorld);
-            guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
-            guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
         }
     }
 }
@@ -438,8 +447,24 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
     
     const auto itemNameSplitBySpace = StringSplit(textboxFirstLineString, ' ');
     const auto itemNameSplitByExclamationMark = StringSplit(itemNameSplitBySpace[0], '!');
+    const auto itemName   = itemNameSplitByExclamationMark[0];
     
-    playerStateComponent.mPendingItemToBeAdded = StringId(itemNameSplitByExclamationMark[0]);
+    if (StringStartsWith(itemName, "for"))
+    {
+        return;
+    }
+    
+    const auto& itemStats = GetItemStats(itemName, mWorld);
+    if (itemStats.mUnique)
+    {
+        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME);
+    }
+    else
+    {
+        SoundService::GetInstance().PlaySfx(REGULAR_ITEM_RECEIVED_SFX_NAME);
+    }
+    
+    playerStateComponent.mPendingItemToBeAdded = StringId(itemName);
 }
 
 void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const
@@ -554,6 +579,8 @@ bool GuiManagementSystem::DetectedFreeze(const ecs::EntityId textboxEntityId) co
 
 bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const
 {
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
     auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 2, mWorld);
     if (textboxFirstLineString[0] == '\0')
     {
@@ -562,9 +589,9 @@ bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEn
     
     if
     (
-        StringStartsWith(textboxFirstLineString, "PLAYERNAME got") ||
-        StringStartsWith(textboxFirstLineString, "PLAYERNAME found") ||
-        StringStartsWith(textboxFirstLineString, "PLAYERNAME received")
+        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got") ||
+        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found") ||
+        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received")
     )
     {
         return true;

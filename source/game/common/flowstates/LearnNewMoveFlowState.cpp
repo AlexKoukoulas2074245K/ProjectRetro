@@ -64,48 +64,51 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     QueueDialogForChatbox
     (
         mainChatboxEntityId,
-        activePlayerPokemon.mName.GetString() + " learned#" + moveStats.mName.GetString() + "!#+END",
+        activePlayerPokemon.mName.GetString() + " learned#" + moveStats.mName.GetString() + "!#+FREEZE",
         mWorld
-    );    
-
-    SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
+    );
 }
 
 void LearnNewMoveFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
-    {        
-        playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-        
-        if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
+    if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN && SoundService::GetInstance().IsPlayingSfx() == false)
+    {
+        SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME, true, [this]()
         {
-            evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
-            encounterStateComponent.mEncounterJustFinished = true;
-        }
-        else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-        {
-            CompleteAndTransitionTo<EvolutionTextFlowState>();
-        }
-        else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-        {
-            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+            auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
+            auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+            
+            playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
+            
+            if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
             {
-                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
+                encounterStateComponent.mEncounterJustFinished = true;
+            }
+            else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+            {
+                CompleteAndTransitionTo<EvolutionTextFlowState>();
+            }
+            else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+            {
+                if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+                {
+                    CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                }
             }
             else
             {
-                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                //TODO: Continue with overworld
             }
-        }
-        else
-        {
-            //TODO: Continue with overworld
-        }
+
+        });
     }
 }
 

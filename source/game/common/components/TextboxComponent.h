@@ -87,6 +87,7 @@ public:
     int mTextboxTileRows           = TEXTBOX_MIN_TILE_ROWS;
     TextboxType mTextboxType       = TextboxType::GENERIC_TEXTBOX;
     bool mShouldFreezeWhenComplete = false;
+    bool mHasPlayedItemReceivedSfx = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

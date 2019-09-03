@@ -40,7 +40,9 @@ public:
     
 private:
     static const std::string TEXTBOX_CLICK_SFX_NAME;
-
+    static const std::string KEY_ITEM_RECEIVED_SFX_NAME;
+    static const std::string REGULAR_ITEM_RECEIVED_SFX_NAME;
+    
     static float GUI_TILE_DEFAULT_SIZE;
     static float CHATBOX_BLINKING_CURSOR_COOLDOWN;
     static float CHATBOX_SCROLL_ANIM_COOLDOWN;
@@ -62,6 +64,7 @@ private:
     bool DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const;
     void StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const;
     void MoveTextboxCursor(const ecs::EntityId textboxEntityId, const Direction direction) const;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
