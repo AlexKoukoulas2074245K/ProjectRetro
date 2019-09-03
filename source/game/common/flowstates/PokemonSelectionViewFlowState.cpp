@@ -142,7 +142,9 @@ void PokemonSelectionViewFlowState::PokemonSelectedFlow()
         }        
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
-    {                        
+    {
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        
         // Destroy pokemon selected textbox
         DestroyActiveTextbox(mWorld);
         
@@ -357,6 +359,8 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
         }
         else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
         {
+            SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+            
             pokemonSelectionViewComponent.mIndexSwapFlowActive = false;
             pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
             
