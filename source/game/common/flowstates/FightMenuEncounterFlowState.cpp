@@ -20,6 +20,13 @@
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string FightMenuEncounterFlowState::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +82,8 @@ void FightMenuEncounterFlowState::VUpdate(const float)
         }
         else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
         {
+            SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+            
             // Destroy fight menu textbox
             DestroyActiveTextbox(mWorld);
 

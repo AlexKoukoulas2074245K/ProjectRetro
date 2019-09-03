@@ -24,10 +24,13 @@
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string ItemMenuFlowState::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
 
 const glm::vec3 ItemMenuFlowState::USE_TOSS_TEXTBOX_POSITION = glm::vec3(0.442699999f, -0.368300259f, -0.2f);
 
@@ -207,6 +210,8 @@ void ItemMenuFlowState::UpdateUseTossTextbox()
 
 void ItemMenuFlowState::CancelItemMenu()
 {
+    SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+    
     SaveItemMenuState();
     DestroyActiveTextbox(mWorld);
 

@@ -56,8 +56,9 @@ private:
         const float healthRemainingProportion, 
         const int row
     ) const;
-        
-    static const std::string POKEMON_SWAP_SFX;
+    
+    static const std::string TEXTBOX_CLICK_SFX_NAME;
+    static const std::string POKEMON_SWAP_SFX_NAME;
     static const std::string POKEMON_SPRITE_MODEL_NAME;
     static const std::string POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME;
 

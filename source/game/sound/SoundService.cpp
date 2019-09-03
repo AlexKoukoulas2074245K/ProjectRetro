@@ -110,7 +110,12 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
 }
 
 void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled /* true */)
-{    
+{
+    if (Mix_PausedMusic())
+    {
+        Mix_ResumeMusic();
+    }
+    
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
     const auto musicFilePath        = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();    

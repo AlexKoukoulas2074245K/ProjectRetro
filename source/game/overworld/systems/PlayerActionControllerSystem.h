@@ -53,6 +53,9 @@ private:
         RenderableComponent&,
         DirectionComponent&
     ) const;
+    
+    static const std::string MENU_OPEN_SFX_NAME;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

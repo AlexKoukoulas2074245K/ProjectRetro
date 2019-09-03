@@ -33,6 +33,13 @@
 #include "../../overworld/components/TransitionAnimationStateSingletonComponent.h"
 #include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
+#include "../../sound/SoundService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string PlayerActionControllerSystem::MENU_OPEN_SFX_NAME = "general/main_menu_open";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +111,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
             
             if (inputStateComponent.mCurrentInputState.at(VirtualActionType::START_BUTTON) == VirtualActionInputState::TAPPED)
             {
+                SoundService::GetInstance().PlaySfx(MENU_OPEN_SFX_NAME);
                 StartOverworldFlowState<MainMenuOverworldFlowState>(mWorld);
             }
             else if (inputStateComponent.mCurrentInputState.at(VirtualActionType::A_BUTTON) == VirtualActionInputState::TAPPED)

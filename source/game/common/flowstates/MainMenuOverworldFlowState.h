@@ -35,6 +35,7 @@ private:
     void ExitOverworldMainMenu();
     std::string GetCursorMainMenuItemFirstFourLetters() const;
     
+    static const std::string TEXTBOX_CLICK_SFX_NAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

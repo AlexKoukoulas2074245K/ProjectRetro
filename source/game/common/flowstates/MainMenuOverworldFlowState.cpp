@@ -21,6 +21,13 @@
 #include "../../input/utils/InputUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../overworld/components/OverworldFlowStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string MainMenuOverworldFlowState::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +102,8 @@ void MainMenuOverworldFlowState::VUpdate(const float)
 
 void MainMenuOverworldFlowState::ExitOverworldMainMenu()
 {
+    SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+    
     const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
     auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     playerStateComponent.mPreviousMainMenuCursorRow = cursorComponent.mCursorRow;

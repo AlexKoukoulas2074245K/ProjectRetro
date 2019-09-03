@@ -30,6 +30,9 @@ public:
     
     void VUpdate(const float dt) override;
 
+private:
+    static const std::string TEXTBOX_CLICK_SFX_NAME;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

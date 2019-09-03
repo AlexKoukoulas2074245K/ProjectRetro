@@ -40,6 +40,8 @@ private:
     void SaveLastFramesCursorRow() const;
     void SaveItemMenuState() const;
 
+    static const std::string TEXTBOX_CLICK_SFX_NAME;
+    
     static const glm::vec3 USE_TOSS_TEXTBOX_POSITION;
 
     static const float TOO_IMPORTANT_TO_TOSS_CHATBOX_Z;
