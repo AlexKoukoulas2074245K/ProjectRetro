@@ -42,7 +42,7 @@ public:
 
     void InitializeSdlMixer() const;
     
-    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true, const bool shouldMuteMusic = false);
+    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true, const bool shouldMuteMusicWhilePlaying = false);
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
     void MuteMusic();
     void UnmuteMusic();

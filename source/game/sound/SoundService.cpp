@@ -96,7 +96,7 @@ void SoundService::InitializeSdlMixer() const
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
 }
 
-void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */, const bool shouldMuteMusic /* false */)
+void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */, const bool shouldMuteMusicWhilePlaying /* false */)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
@@ -116,7 +116,7 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
         mLastPlayedSfxName = sfxName;
         Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
         
-        if (shouldMuteMusic)
+        if (shouldMuteMusicWhilePlaying)
         {
             MuteMusic();
             Mix_ChannelFinished(OnSfxFinishedHook);
