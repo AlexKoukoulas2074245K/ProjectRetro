@@ -44,7 +44,7 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::PARAGRAPH_END)
+    if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::PARAGRAPH_END && encounterStateComponent.mWasPokemonCaught)
     {
         if (SoundService::GetInstance().GetLastPlayedSfxName() != CAUGHT_POKEMON_SFX_NAME)
         {

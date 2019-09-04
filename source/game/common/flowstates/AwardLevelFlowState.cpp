@@ -49,12 +49,13 @@ AwardLevelFlowState::AwardLevelFlowState(ecs::World& world)
         activePlayerPokemon.mName.GetString() + " grew#to level " + std::to_string(activePlayerPokemon.mLevel) + "!+FREEZE",
         mWorld
     );
-
-    SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
 }
 
 void AwardLevelFlowState::VUpdate(const float)
 {    
+    auto& soundService = SoundService::GetInstance();
+    if (soundService.IsPlayingSfx()) return;
+
     const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
@@ -64,6 +65,14 @@ void AwardLevelFlowState::VUpdate(const float)
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {        
+        
+        if (soundService.IsPlayingSfx() == false && soundService.GetLastPlayedSfxName() != POKEMON_LEVEL_UP_SFX_NAME)
+        {
+            soundService.PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
+            soundService.MuteMusic();
+            return;
+        }
+
         if (encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId == ecs::NULL_ENTITY_ID)
         {
             encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = CreatePokemonMiniStatsDisplay
@@ -81,6 +90,7 @@ void AwardLevelFlowState::VUpdate(const float)
         {
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId, mWorld);
             encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = ecs::NULL_ENTITY_ID;
+            SoundService::GetInstance().UnmuteMusic();
             CompleteAndTransitionTo<NewMovesCheckFlowState>();
         }
     }

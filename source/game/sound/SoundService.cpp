@@ -172,10 +172,15 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
     }    
 }
 
-void SoundService::SilenceMusic()
+void SoundService::MuteMusic()
 {
     mMusicVolumePriorToSilence = Mix_VolumeMusic(-1);
     Mix_VolumeMusic(0);
+}
+
+void SoundService::UnmuteMusic()
+{
+    Mix_VolumeMusic(mMusicVolumePriorToSilence);
 }
 
 void SoundService::OnMusicFinished()

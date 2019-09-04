@@ -149,7 +149,7 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                         
                         evolutionAnimationStateComponent.mAnimationState = EvolutionAnimationState::SHOW_NEW_POKEMON_COLORED;  
 
-                        SoundService::GetInstance().SilenceMusic();
+                        SoundService::GetInstance().MuteMusic();
                     }
                 }
             }

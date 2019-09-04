@@ -450,12 +450,7 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
     const auto itemNameSplitBySpace = StringSplit(textboxFirstLineString, ' ');
     const auto itemNameSplitByExclamationMark = StringSplit(itemNameSplitBySpace[0], '!');
     const auto itemName   = itemNameSplitByExclamationMark[0];
-    
-    if (StringStartsWith(itemName, "for"))
-    {
-        return;
-    }
-    
+
     const auto& itemStats = GetItemStats(itemName, mWorld);
     if (itemStats.mUnique)
     {
@@ -584,6 +579,8 @@ bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEn
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 2, mWorld);
+    auto textboxSecondLineString = GetTextboxRowString(textboxEntityId, 4, mWorld);
+
     if (textboxFirstLineString[0] == '\0')
     {
         textboxFirstLineString = textboxFirstLineString.substr(1);
@@ -593,10 +590,13 @@ bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEn
     (
         StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got") ||
         StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found") ||
-        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received")
+        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received")        
     )
     {
-        return true;
+        if (textboxSecondLineString[1] != 'f' || textboxSecondLineString[2] != 'o' || textboxSecondLineString[3] != 'r')
+        {
+            return true;
+        }        
     }
     
     return false;
