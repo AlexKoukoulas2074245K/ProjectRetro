@@ -34,6 +34,7 @@ private:
     void TransitionToPokemonSelectionView();
     void RenderGotAwaySafelyText();
 
+    static const std::string RUN_AWAY_SAFELY_SFX_NAME;
     static const glm::vec3 YES_NO_TEXTBOX_POSITION;
 };
 

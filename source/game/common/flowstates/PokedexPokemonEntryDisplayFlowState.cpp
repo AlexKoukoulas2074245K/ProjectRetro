@@ -20,6 +20,7 @@
 #include "../../input/utils/InputUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +47,8 @@ PokedexPokemonEntryDisplayFlowState::PokedexPokemonEntryDisplayFlowState(ecs::Wo
 
 void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
 {          
+    if (SoundService::GetInstance().IsPlayingSfx()) return;
+
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& pokedexStateComponent     = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
 
@@ -71,7 +74,7 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                 }
 
                 DisplayPokemonSprite();
-
+                
                 pokedexStateComponent.mPokedexViewTimer->Reset();
             }
         } break;
@@ -182,15 +185,19 @@ void PokedexPokemonEntryDisplayFlowState::DisplayPokemonBodyStatsText() const
 void PokedexPokemonEntryDisplayFlowState::DisplayPokemonSprite() const
 {
     auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+    
+    const auto& pokemonBaseStats = GetPokemonBaseStats(pokedexStateComponent.mSelectedPokemonName, mWorld);
 
     pokedexStateComponent.mPokemonSpriteEntityId = LoadAndCreatePokemonSprite
     (
-        GetPokemonBaseStats(pokedexStateComponent.mSelectedPokemonName, mWorld).mSpeciesName.GetString(),
+        pokemonBaseStats.mSpeciesName.GetString(),
         true,
         POKEMON_SPRITE_POSITION,
         POKEMON_SPRITE_SCALE,
         mWorld
     );
+
+    SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(pokemonBaseStats.mId));
 }
 
 void PokedexPokemonEntryDisplayFlowState::DisplayPokemonPokedexDescriptionForPage(const int requestedPageNumber) const

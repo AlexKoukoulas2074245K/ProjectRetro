@@ -18,10 +18,13 @@
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string UseNextPokemonQuestionEncounterFlowState::RUN_AWAY_SAFELY_SFX_NAME = "encounter/run";
 
 const glm::vec3 UseNextPokemonQuestionEncounterFlowState::YES_NO_TEXTBOX_POSITION = glm::vec3(0.412899911f, -0.275700212, -0.1f);
 
@@ -117,6 +120,8 @@ void UseNextPokemonQuestionEncounterFlowState::RenderGotAwaySafelyText()
 
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
     QueueDialogForChatbox(mainChatboxEntityId, "Got away safely!# #+END", mWorld);
+
+    SoundService::GetInstance().PlaySfx(RUN_AWAY_SAFELY_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
