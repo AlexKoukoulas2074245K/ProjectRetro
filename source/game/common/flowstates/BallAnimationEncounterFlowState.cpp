@@ -28,6 +28,7 @@
 
 const std::string BallAnimationEncounterFlowState::BALL_THROW_SFX_NAME              = "general/ball_throw";
 const std::string BallAnimationEncounterFlowState::BALL_POOF_SFX_NAME               = "general/ball_poof";
+const std::string BallAnimationEncounterFlowState::BALL_WOBBLE_SFX_NAME             = "general/ball_wobble";
 const std::string BallAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string BallAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
 
@@ -36,6 +37,9 @@ const glm::vec3 BallAnimationEncounterFlowState::BATTLE_MOVE_SCALE = glm::vec3(2
 const float BallAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z = -1.0f;
 
 const int BallAnimationEncounterFlowState::BALL_ANIMATION_FRAME_FOR_POOF_SFX = 34;
+const int BallAnimationEncounterFlowState::BALL_ANIMATION_WOBBLE_1_FRAME     = 55;
+const int BallAnimationEncounterFlowState::BALL_ANIMATION_WOBBLE_2_FRAME     = 77;
+const int BallAnimationEncounterFlowState::BALL_ANIMATION_WOBBLE_3_FRAME     = 99;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -105,10 +109,21 @@ void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt
 
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
             
-            if (encounterStateComponent.mViewObjects.mBallAnimationFrameCounter++ == BALL_ANIMATION_FRAME_FOR_POOF_SFX)
+            if (encounterStateComponent.mViewObjects.mBallAnimationFrameCounter == BALL_ANIMATION_FRAME_FOR_POOF_SFX)
             {
                 SoundService::GetInstance().PlaySfx(BALL_POOF_SFX_NAME);
             }
+            else if 
+            (
+                encounterStateComponent.mViewObjects.mBallAnimationFrameCounter == BALL_ANIMATION_WOBBLE_1_FRAME ||
+                encounterStateComponent.mViewObjects.mBallAnimationFrameCounter == BALL_ANIMATION_WOBBLE_2_FRAME ||
+                encounterStateComponent.mViewObjects.mBallAnimationFrameCounter == BALL_ANIMATION_WOBBLE_3_FRAME
+            )
+            {
+                SoundService::GetInstance().PlaySfx(BALL_WOBBLE_SFX_NAME);
+            }
+
+            encounterStateComponent.mViewObjects.mBallAnimationFrameCounter++;
         }
         else
         {

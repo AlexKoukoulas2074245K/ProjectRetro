@@ -36,14 +36,17 @@ private:
 
     static const std::string BALL_THROW_SFX_NAME;
     static const std::string BALL_POOF_SFX_NAME;
+    static const std::string BALL_WOBBLE_SFX_NAME;
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string BATTLE_ANIMATION_DIR_NAME;
-
     static const glm::vec3 BATTLE_MOVE_SCALE;
 
     static const float BATTLE_MOVE_ANIMATION_Z;
     
     static const int BALL_ANIMATION_FRAME_FOR_POOF_SFX;
+    static const int BALL_ANIMATION_WOBBLE_1_FRAME;
+    static const int BALL_ANIMATION_WOBBLE_2_FRAME;
+    static const int BALL_ANIMATION_WOBBLE_3_FRAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
