@@ -40,6 +40,7 @@ const glm::vec3 PlayerPokemonSummonEncounterFlowState::OPPONENT_POKEMON_DEATH_CO
 const glm::vec3 PlayerPokemonSummonEncounterFlowState::SPRITE_SCALE                          = glm::vec3(0.49f, 0.49f, 1.0f);
 const glm::vec3 PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_ANIMATION_SCALE        = glm::vec3(2.0f, 2.0f, 1.0f);
 
+const std::string PlayerPokemonSummonEncounterFlowState::PIKACHU_BATTLE_SUMMON_CRY_SFX              = "cries/pikachu_battle_summon_cry";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BALL_SFX                    = "general/ball_poof";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string PlayerPokemonSummonEncounterFlowState::POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME   = "battle_animations/PLAYER_POKEMON_SUMMON/";
@@ -278,6 +279,8 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 DestroyActiveTextbox(mWorld);
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
                 guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
+
+                SoundService::GetInstance().PlaySfx(PIKACHU_BATTLE_SUMMON_CRY_SFX);
 
                 if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
                 {

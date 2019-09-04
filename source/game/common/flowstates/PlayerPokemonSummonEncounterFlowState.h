@@ -41,6 +41,7 @@ private:
     static const glm::vec3 SPRITE_SCALE;
     static const glm::vec3 POKEMON_SUMMON_ANIMATION_SCALE;
 
+    static const std::string PIKACHU_BATTLE_SUMMON_CRY_SFX;
     static const std::string POKEMON_SUMMON_BALL_SFX;
     static const std::string POKEMON_SUMMON_BATTLE_ANIM_MODEL_FILE_NAME;
     static const std::string POKEMON_SUMMON_BATTLE_ANIMATION_DIR_NAME;
