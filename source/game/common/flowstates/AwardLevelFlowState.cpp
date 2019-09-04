@@ -64,14 +64,15 @@ void AwardLevelFlowState::VUpdate(const float)
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
-    {        
-        
+    {                
         if (soundService.IsPlayingSfx() == false && soundService.GetLastPlayedSfxName() != POKEMON_LEVEL_UP_SFX_NAME)
         {
             soundService.PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
             soundService.MuteMusic();
             return;
         }
+
+        SoundService::GetInstance().UnmuteMusic();
 
         if (encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId == ecs::NULL_ENTITY_ID)
         {
@@ -89,8 +90,7 @@ void AwardLevelFlowState::VUpdate(const float)
         )
         {
             DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId, mWorld);
-            encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = ecs::NULL_ENTITY_ID;
-            SoundService::GetInstance().UnmuteMusic();
+            encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId = ecs::NULL_ENTITY_ID;            
             CompleteAndTransitionTo<NewMovesCheckFlowState>();
         }
     }

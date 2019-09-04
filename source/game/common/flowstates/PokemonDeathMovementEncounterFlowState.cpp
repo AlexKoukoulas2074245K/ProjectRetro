@@ -24,8 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string PokemonDeathMovementEncounterFlowState::WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME = "wild_battle_won";
-const std::string PokemonDeathMovementEncounterFlowState::TRAINER_POKEMON_FAINT_SFX_1 = "encounter/trainer_pokemon_faint_1";
-const std::string PokemonDeathMovementEncounterFlowState::TRAINER_POKEMON_FAINT_SFX_2 = "encounter/trainer_pokemon_faint_2";
+const std::string PokemonDeathMovementEncounterFlowState::TRAINER_POKEMON_FAINT_SFX = "encounter/trainer_pokemon_faint";
 
 const float PokemonDeathMovementEncounterFlowState::OPPONENT_POKEMON_DEATH_TARGET_Y = 0.0f;
 const float PokemonDeathMovementEncounterFlowState::PLAYER_POKEMON_DEATH_TARGET_Y   = -0.24f;
@@ -50,7 +49,7 @@ PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(e
     }
     else if (activeOpponentPokemon.mHp <= 0 && encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
-        SoundService::GetInstance().PlaySfx(TRAINER_POKEMON_FAINT_SFX_1);
+        SoundService::GetInstance().PlaySfx(TRAINER_POKEMON_FAINT_SFX);
     }
     else if (activePlayerPokemon.mHp <= 0)
     {
@@ -92,11 +91,6 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
             encounterStateComponent.mViewObjects.mOpponentPokemonHealthBarEntityId   = ecs::NULL_ENTITY_ID;
             encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
-
-            if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-            {
-                SoundService::GetInstance().PlaySfx(TRAINER_POKEMON_FAINT_SFX_2);
-            }
 
             CompleteAndTransitionTo<PokemonDeathTextEncounterFlowState>();
         }

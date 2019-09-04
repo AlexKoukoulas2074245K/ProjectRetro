@@ -182,6 +182,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
     // Pikachu gets summoned from the side of the screen, while all other pokemon via pokeball summons
     if (activePlayerPokemon.mBaseSpeciesStats.mSpeciesName == StringId("PIKACHU"))
     { 
+        SoundService::GetInstance().PlaySfx(PIKACHU_BATTLE_SUMMON_CRY_SFX);
         encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
     }
     else
@@ -279,8 +280,6 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 DestroyActiveTextbox(mWorld);
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
                 guiStateComponent.mActiveChatboxContentState = ChatboxContentEndState::NORMAL;
-
-                SoundService::GetInstance().PlaySfx(PIKACHU_BATTLE_SUMMON_CRY_SFX);
 
                 if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
                 {

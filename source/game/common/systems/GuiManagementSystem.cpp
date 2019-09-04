@@ -240,15 +240,14 @@ void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityI
         {
             WriteCharAtTextboxCoords(textboxEntityId, queuedCharacter, emptyColQuery, 2, mWorld);
             OnTextboxQueuedCharacterRemoval(textboxEntityId);
-        }
-        
+        }        
     }
 }
 
 void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const
 {    
     if (SoundService::GetInstance().IsPlayingSfx()) return;
-
+    
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
@@ -453,8 +452,8 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
 
     const auto& itemStats = GetItemStats(itemName, mWorld);
     if (itemStats.mUnique)
-    {
-        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME);
+    {        
+        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME);        
     }
     else
     {
