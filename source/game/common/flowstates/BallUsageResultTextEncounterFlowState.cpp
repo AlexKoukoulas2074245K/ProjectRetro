@@ -139,7 +139,7 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
     }
     else if (encounterStateComponent.mBallThrownShakeCount == 2)
     {
-        catchResultText += "Aww! It appeared#to be caught!";
+        catchResultText += "Aww! It appeared#to be caught!#+END";
     }
     else if (encounterStateComponent.mBallThrownShakeCount == 3)
     {
