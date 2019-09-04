@@ -42,13 +42,14 @@ public:
 
     void InitializeSdlMixer() const;
     
-    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true);
+    void PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying = true, const bool shouldMuteMusic = false);
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
     void MuteMusic();
     void UnmuteMusic();
 
     void OnMusicFinished();
     void OnMusicIntroFinished();    
+    void OnSfxFinished();
     
     bool IsPlayingSfx() const;
     StringId GetLastPlayedSfxName() const;
@@ -70,8 +71,9 @@ private:
     MusicResourceId mQueuedMusicResourceId = 0;
     MusicResourceId mCoreMusicTrackResourceId = 0;    
 
-    StringId mLastPlayedSfxName = StringId();
-    int mMusicVolumePriorToSilence = -1;
+    StringId mLastPlayedSfxName    = StringId();
+    int mMusicVolumePriorToMuting = -1;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

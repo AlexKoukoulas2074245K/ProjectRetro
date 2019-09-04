@@ -67,12 +67,9 @@ void AwardLevelFlowState::VUpdate(const float)
     {                
         if (soundService.IsPlayingSfx() == false && soundService.GetLastPlayedSfxName() != POKEMON_LEVEL_UP_SFX_NAME)
         {
-            soundService.PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
-            soundService.MuteMusic();
+            soundService.PlaySfx(POKEMON_LEVEL_UP_SFX_NAME, true, true);
             return;
         }
-
-        SoundService::GetInstance().UnmuteMusic();
 
         if (encounterStateComponent.mViewObjects.mLevelUpNewStatsTextboxEntityId == ecs::NULL_ENTITY_ID)
         {

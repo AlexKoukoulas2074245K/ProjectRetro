@@ -47,6 +47,14 @@ static void OnMusicIntroFinishedHook()
     SoundService::GetInstance().OnMusicIntroFinished();
 }
 
+static void OnSfxFinishedHook(const int channel)
+{
+    if (channel == 1)
+    {
+        SoundService::GetInstance().OnSfxFinished();
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +96,7 @@ void SoundService::InitializeSdlMixer() const
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
 }
 
-void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */)
+void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */, const bool shouldMuteMusic /* false */)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
@@ -106,7 +114,17 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
     if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
         mLastPlayedSfxName = sfxName;
-        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);        
+        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
+        
+        if (shouldMuteMusic)
+        {
+            MuteMusic();
+            Mix_ChannelFinished(OnSfxFinishedHook);
+        }
+        else
+        {
+            Mix_ChannelFinished(nullptr);
+        }
     }    
 }
 
@@ -158,11 +176,11 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
         }               
 
-        if (mMusicVolumePriorToSilence == -1)
+        if (mMusicVolumePriorToMuting == -1)
         {
-            mMusicVolumePriorToSilence = Mix_VolumeMusic(-1);
+            mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
         }
-        Mix_VolumeMusic(mMusicVolumePriorToSilence);
+        Mix_VolumeMusic(mMusicVolumePriorToMuting);
     }
     else
     {        
@@ -174,13 +192,13 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
 
 void SoundService::MuteMusic()
 {
-    mMusicVolumePriorToSilence = Mix_VolumeMusic(-1);
+    mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
     Mix_VolumeMusic(0);
 }
 
 void SoundService::UnmuteMusic()
 {
-    Mix_VolumeMusic(mMusicVolumePriorToSilence);
+    Mix_VolumeMusic(mMusicVolumePriorToMuting);
 }
 
 void SoundService::OnMusicFinished()
@@ -201,7 +219,7 @@ void SoundService::OnMusicFinished()
         Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
     }        
 
-    Mix_VolumeMusic(mMusicVolumePriorToSilence);
+    Mix_VolumeMusic(mMusicVolumePriorToMuting);
 }
 
 void SoundService::OnMusicIntroFinished()
@@ -212,7 +230,12 @@ void SoundService::OnMusicIntroFinished()
     mCurrentlyPlayingMusicResourceId = mCoreMusicTrackResourceId;
     Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
 
-    Mix_VolumeMusic(mMusicVolumePriorToSilence);
+    Mix_VolumeMusic(mMusicVolumePriorToMuting);
+}
+
+void SoundService::OnSfxFinished()
+{
+    UnmuteMusic();
 }
 
 bool SoundService::IsPlayingSfx() const

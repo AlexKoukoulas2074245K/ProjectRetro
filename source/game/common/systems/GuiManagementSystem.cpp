@@ -453,11 +453,11 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
     const auto& itemStats = GetItemStats(itemName, mWorld);
     if (itemStats.mUnique)
     {        
-        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME);        
+        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME, true, true);
     }
     else
     {
-        SoundService::GetInstance().PlaySfx(REGULAR_ITEM_RECEIVED_SFX_NAME);
+        SoundService::GetInstance().PlaySfx(REGULAR_ITEM_RECEIVED_SFX_NAME, true, true);
     }
     
     playerStateComponent.mPendingItemToBeAdded = StringId(itemName);

@@ -193,8 +193,6 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         {
             npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
         }
-
-        SoundService::GetInstance().UnmuteMusic();
     }
 }
 
