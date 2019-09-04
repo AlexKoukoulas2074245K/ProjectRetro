@@ -48,6 +48,8 @@ PokemonStatsDisplayViewFlowState::PokemonStatsDisplayViewFlowState(ecs::World& w
 
 void PokemonStatsDisplayViewFlowState::VUpdate(const float)
 {        
+    if (SoundService::GetInstance().IsPlayingSfx()) return;
+
     const auto& inputStateComponent             = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
 

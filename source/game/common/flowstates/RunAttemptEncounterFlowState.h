@@ -28,6 +28,8 @@ public:
 private:
     void AttemptToRun() const;
     void WriteRunResultText() const;
+
+    static const std::string RUN_AWAY_SAFELY_SFX_NAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

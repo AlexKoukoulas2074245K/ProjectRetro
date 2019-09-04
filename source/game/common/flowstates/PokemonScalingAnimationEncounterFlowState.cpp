@@ -67,7 +67,10 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
     }
     // Sfx just finished playing
     else if (WasSfxPlayingOnPreviousUpdate())
-    {                
+    {           
+        scalingStateComponent.mScalingStep = 2;
+        RepopulateScalingBlockEntities();
+
         if (scalingStateComponent.mScaleOpponentPokemon)
         {
             CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
@@ -188,7 +191,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
     const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster.at(encounterStateComponent.mActivePlayerPokemonRosterIndex);
     auto& scalingStateComponent         = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
 
-    const auto pokemonSpriteImage =
+    const auto pokemonSpriteImagePath =
         ResourceLoadingService::RES_TEXTURES_ROOT +
         (scalingStateComponent.mScaleOpponentPokemon ? "pkmnfront/" : "pkmnback/") +
         (scalingStateComponent.mScaleOpponentPokemon ? activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName.GetString() : activePlayerPokemon.mBaseSpeciesStats.mSpeciesName.GetString()) +
@@ -207,7 +210,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
         {
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (                
-                pokemonSpriteImage, 
+                pokemonSpriteImagePath, 
                 scalingStateComponent.mScaleOpponentPokemon, 
                 0,
                 0,
@@ -216,7 +219,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 -1,
                 0,
@@ -225,7 +228,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 1,
                 0,
@@ -234,7 +237,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 0,
                 1,
@@ -247,7 +250,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
         {
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 0,
                 0,
@@ -256,7 +259,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 -1,
                 0,
@@ -265,7 +268,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 -1,
                 1,
@@ -274,7 +277,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 -1,
                 2,
@@ -283,7 +286,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 0,
                 1,
@@ -292,7 +295,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 0,
                 2,
@@ -301,7 +304,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 1,
                 0,
@@ -310,7 +313,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 1,
                 1,
@@ -319,7 +322,7 @@ void PokemonScalingAnimationEncounterFlowState::RepopulateScalingBlockEntities()
             ));
             scalingStateComponent.mScalingBlockEntities.push_back(CreateScalingBlockEntity
             (
-                pokemonSpriteImage,
+                pokemonSpriteImagePath,
                 scalingStateComponent.mScaleOpponentPokemon,
                 1,
                 2,

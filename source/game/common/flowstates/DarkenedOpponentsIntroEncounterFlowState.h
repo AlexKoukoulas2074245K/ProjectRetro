@@ -34,6 +34,8 @@ private:
     void CreateEncounterOpponentsSprites() const;
     void CreateEncounterEdges() const;
     
+    static const std::string TRAINER_CLICK_SFX_NAME;
+
     static const glm::vec3 PLAYER_TRAINER_SPRITE_INIT_POS;
     static const glm::vec3 PLAYER_TRAINER_SPRITE_TARGET_POS;
     static const glm::vec3 OPPONENT_SPRITE_INIT_POS;

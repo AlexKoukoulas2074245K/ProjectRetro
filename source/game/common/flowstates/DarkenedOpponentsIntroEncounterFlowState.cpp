@@ -24,6 +24,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const std::string DarkenedOpponentsIntroEncounterFlowState::TRAINER_CLICK_SFX_NAME = "encounter/trainer_click";
+
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_INIT_POS   = glm::vec3(0.9f, 0.06f, 0.1f);
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_TARGET_POS = glm::vec3(-0.39f, 0.06f, 0.1f);
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::OPPONENT_SPRITE_INIT_POS         = glm::vec3(-0.9f, 0.61f, 0.3f);
@@ -86,7 +88,7 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
         }
         else
         {
-            CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+            SoundService::GetInstance().PlaySfx(TRAINER_CLICK_SFX_NAME);
         }        
     }
 }

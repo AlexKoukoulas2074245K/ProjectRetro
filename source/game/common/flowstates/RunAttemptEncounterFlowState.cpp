@@ -19,10 +19,13 @@
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+const std::string RunAttemptEncounterFlowState::RUN_AWAY_SAFELY_SFX_NAME = "encounter/run";
 
 RunAttemptEncounterFlowState::RunAttemptEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
@@ -118,6 +121,7 @@ void RunAttemptEncounterFlowState::WriteRunResultText() const
         if (encounterStateComponent.mHasEscapeSucceeded)
         {
             QueueDialogForChatbox(mainChatboxEntityId, "Got away safely!# #+END", mWorld);
+            SoundService::GetInstance().PlaySfx(RUN_AWAY_SAFELY_SFX_NAME);
         }
         else
         {
