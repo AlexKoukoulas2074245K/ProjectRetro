@@ -192,7 +192,7 @@ PlayerPokemonSummonEncounterFlowState::PlayerPokemonSummonEncounterFlowState(ecs
 }
 
 void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
-{
+{    
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& guiStateComponent          = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -247,10 +247,9 @@ void PlayerPokemonSummonEncounterFlowState::VUpdate(const float dt)
                 
                 auto& pokemonSpriteScalingComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
                 pokemonSpriteScalingComponent.mScaleOpponentPokemon = false;
-                pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;
-                CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
+                pokemonSpriteScalingComponent.mScalingAnimationType = ScalingAnimationType::SCALING_UP;                
 
-                SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(activePlayerPokemon.mBaseSpeciesStats.mId));
+                CompleteAndTransitionTo<PokemonScalingAnimationEncounterFlowState>();
             }
         }
     }

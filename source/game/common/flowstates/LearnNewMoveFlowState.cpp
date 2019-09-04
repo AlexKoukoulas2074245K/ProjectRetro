@@ -71,44 +71,53 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 
 void LearnNewMoveFlowState::VUpdate(const float)
 {
+    // Sfx currently playing
+    if (SoundService::GetInstance().IsPlayingSfx())
+    {
+        return;
+    }
+    // Sfx just finished playing
+    else if (WasSfxPlayingOnPreviousUpdate())
+    {
+        auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
+        auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+        playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
+
+        if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
+        {
+            evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
+            encounterStateComponent.mEncounterJustFinished = true;
+        }
+        else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        {
+            CompleteAndTransitionTo<EvolutionTextFlowState>();
+        }
+        else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+        {
+            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            {
+                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+            }
+            else
+            {
+                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+            }
+        }
+        else
+        {
+            //TODO: Continue with overworld
+        }
+
+        return;
+    }
+
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN && SoundService::GetInstance().IsPlayingSfx() == false)
     {
-        SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME, true, [this]()
-        {
-            auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-            auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
-            auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-            
-            playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-            
-            if (evolutionStateComponent.mNeedToCheckEvolutionNewMoves)
-            {
-                evolutionStateComponent.mNeedToCheckEvolutionNewMoves = false;
-                encounterStateComponent.mEncounterJustFinished = true;
-            }
-            else if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-            {
-                CompleteAndTransitionTo<EvolutionTextFlowState>();
-            }
-            else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-            {
-                if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
-                {
-                    CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
-                }
-                else
-                {
-                    CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
-                }
-            }
-            else
-            {
-                //TODO: Continue with overworld
-            }
-
-        });
+        SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
     }
 }
 

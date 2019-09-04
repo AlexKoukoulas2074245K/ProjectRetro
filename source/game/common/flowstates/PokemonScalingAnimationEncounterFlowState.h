@@ -34,8 +34,8 @@ public:
     void VUpdate(const float dt) override;
    
 private:
-    void ScaleUpTransition();
-    void ScaleDownTransition();
+    void OnScaleUpFinished();
+    void OnScaleDownFinished();
     void RepopulateScalingBlockEntities();
     ecs::EntityId CreateScalingBlockEntity
     (

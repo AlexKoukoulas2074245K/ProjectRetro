@@ -41,8 +41,9 @@ class BaseFlowState
 
 public:
     BaseFlowState(ecs::World& world)
-        : mWorld(world)
+        : mWorld(world)        
         , mNextFlowState(nullptr)
+        , mSfxPlaying(false)
     {
 
     }
@@ -65,11 +66,16 @@ protected:
         mNextFlowState = std::make_unique<FlowStateType>(mWorld);
     }
 
-    ecs::World& mWorld;
+    bool WasSfxPlayingOnPreviousUpdate() const
+    {
+        return mSfxPlaying;
+    }
+
+    ecs::World& mWorld;    
 
 private:
     std::unique_ptr<BaseFlowState> mNextFlowState;
-
+    bool mSfxPlaying;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

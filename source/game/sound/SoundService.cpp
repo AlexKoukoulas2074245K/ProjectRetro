@@ -47,14 +47,6 @@ static void OnMusicIntroFinishedHook()
     SoundService::GetInstance().OnMusicIntroFinished();
 }
 
-static void OnSfxFinishedHook(const int channel)
-{
-    if (channel == 1)
-    {
-        SoundService::GetInstance().OnSfxFinished();
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +88,7 @@ void SoundService::InitializeSdlMixer() const
     Log(LogType::INFO, "Successfully initialized SDL_Mixer version %d.%d.%d", mixerCompiledVersion.major, mixerCompiledVersion.minor, mixerCompiledVersion.patch);
 }
 
-void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */, std::function<void()> onSfxFinishedCallback /* nullptr */)
+void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPlaying /* true */)
 {
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
@@ -113,28 +105,12 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
 
     if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
-        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
-        
-        if (onSfxFinishedCallback != nullptr)
-        {
-            mOnSfxFinishedCallback = onSfxFinishedCallback;
-            Mix_ChannelFinished(OnSfxFinishedHook);
-        }
-        else
-        {
-            mOnSfxFinishedCallback = nullptr;
-            Mix_ChannelFinished(nullptr);
-        }
+        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);        
     }    
 }
 
 void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled /* true */)
-{
-    if (Mix_PausedMusic())
-    {
-        Mix_ResumeMusic();
-    }
-    
+{    
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
     const auto musicFilePath        = ResourceLoadingService::RES_MUSIC_ROOT + musicTrackName.GetString();    
@@ -173,13 +149,19 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
 
         if (hasIntro)
         {   
-            Mix_HookMusicFinished(fadeOutEnabled ? OnMusicFinishedHook : OnMusicIntroFinishedHook);            
+            Mix_HookMusicFinished(fadeOutEnabled ? OnMusicFinishedHook : OnMusicIntroFinishedHook);               
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), 0);
         }
         else
-        {
+        {            
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
-        }        
+        }               
+
+        if (mMusicVolumePriorToSilence == -1)
+        {
+            mMusicVolumePriorToSilence = Mix_VolumeMusic(-1);
+        }
+        Mix_VolumeMusic(mMusicVolumePriorToSilence);
     }
     else
     {        
@@ -189,9 +171,10 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
     }    
 }
 
-void SoundService::PauseMusic()
+void SoundService::SilenceMusic()
 {
-    Mix_PauseMusic();
+    mMusicVolumePriorToSilence = Mix_VolumeMusic(-1);
+    Mix_VolumeMusic(0);
 }
 
 void SoundService::OnMusicFinished()
@@ -211,6 +194,8 @@ void SoundService::OnMusicFinished()
     {
         Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
     }        
+
+    Mix_VolumeMusic(mMusicVolumePriorToSilence);
 }
 
 void SoundService::OnMusicIntroFinished()
@@ -220,17 +205,13 @@ void SoundService::OnMusicIntroFinished()
 
     mCurrentlyPlayingMusicResourceId = mCoreMusicTrackResourceId;
     Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
-}
 
-void SoundService::OnSfxFinished()
-{
-    mOnSfxFinishedCallback();
-    mOnSfxFinishedCallback = nullptr;
+    Mix_VolumeMusic(mMusicVolumePriorToSilence);
 }
 
 bool SoundService::IsPlayingSfx() const
 {
-    return Mix_Playing(1);
+    return Mix_Playing(1) != 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

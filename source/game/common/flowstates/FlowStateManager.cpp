@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "FlowStateManager.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +43,9 @@ void FlowStateManager::Update(const float dt)
     if (HasActiveFlowState())
     {
         mActiveFlowState->VUpdate(dt);
+
+        // This needs to happen due to the need of many states to finished once an sfx has finished playing
+        mActiveFlowState->mSfxPlaying = SoundService::GetInstance().IsPlayingSfx();
 
         // While instead of if to handle completion on construction
         while (mActiveFlowState->mNextFlowState != nullptr)

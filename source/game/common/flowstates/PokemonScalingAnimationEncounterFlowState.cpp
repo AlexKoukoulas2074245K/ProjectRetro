@@ -26,6 +26,8 @@
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
+#include "../../sound/SoundService.h"
+#include "../utils/PokemonUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +58,37 @@ PokemonScalingAnimationEncounterFlowState::PokemonScalingAnimationEncounterFlowS
 void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
 {
     auto& scalingStateComponent   = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+   
+    // Sfx currently playing
+    if (SoundService::GetInstance().IsPlayingSfx())
+    {
+        return;
+    }
+    // Sfx just finished playing
+    else if (WasSfxPlayingOnPreviousUpdate())
+    {                
+        if (scalingStateComponent.mScaleOpponentPokemon)
+        {
+            CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
+        }
+        else
+        {
+            DestroyActiveTextbox(mWorld);
+
+            if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
+            {
+                encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;
+                CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+            }
+            else
+            {
+                CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+            }
+        }    
+
+        return;
+    }    
 
     scalingStateComponent.mScalingStepDurationTimer->Update(dt);
     if (scalingStateComponent.mScalingStepDurationTimer->HasTicked())
@@ -69,7 +102,7 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
 
             if (scalingStateComponent.mScalingStep == 2)
             {         
-                ScaleUpTransition();
+                OnScaleUpFinished();
             }            
         }
         else
@@ -79,7 +112,7 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
             
             if (scalingStateComponent.mScalingStep == 0)
             {
-                ScaleDownTransition();
+                OnScaleDownFinished();
             }
         }
     }
@@ -89,37 +122,38 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void PokemonScalingAnimationEncounterFlowState::ScaleUpTransition()
+void PokemonScalingAnimationEncounterFlowState::OnScaleUpFinished()
 {
     const auto& scalingStateComponent = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     if (scalingStateComponent.mScaleOpponentPokemon)
     {
         mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId).mScale =
             glm::vec3(SPRITE_FINAL_SCALE, SPRITE_FINAL_SCALE, 1.0f);
-        CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
+
+        SoundService::GetInstance().PlaySfx
+        (
+            "cries/" +
+            GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
+        );       
     }
     else
     {
+        const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
         mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId).mScale =
             glm::vec3(SPRITE_FINAL_SCALE, SPRITE_FINAL_SCALE, 1.0f);
 
-        DestroyActiveTextbox(mWorld);
-
-        if (encounterStateComponent.mPlayerChangedPokemonFromMainMenu)
-        {
-            encounterStateComponent.mPlayerChangedPokemonFromMainMenu = false;            
-            CompleteAndTransitionTo<TurnOverEncounterFlowState>();
-        }        
-        else
-        {
-            CompleteAndTransitionTo<MainMenuEncounterFlowState>();
-        }
+        SoundService::GetInstance().PlaySfx
+        (
+            "cries/" +
+            GetFormattedPokemonIdString(playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mBaseSpeciesStats.mId)
+        );                         
     }
 }
 
-void PokemonScalingAnimationEncounterFlowState::ScaleDownTransition()
+void PokemonScalingAnimationEncounterFlowState::OnScaleDownFinished()
 {
     const auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     auto& scalingStateComponent   = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();

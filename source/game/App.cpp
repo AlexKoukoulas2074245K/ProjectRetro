@@ -136,9 +136,9 @@ void App::GameLoop()
 
             framesAccumulator = 0;
             dtAccumulator = 0.0f;
-        }
-
-#ifndef NDEBUG
+        }        
+        
+#ifndef NDEBUG        
         if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
         {
             mWorld.Update(math::Min(dt * 10, 1.0f));
@@ -149,8 +149,7 @@ void App::GameLoop()
         }
 #else
         mWorld.Update(math::Min(dt, 1.0f));
-#endif
-        
+#endif        
     }
 }
 

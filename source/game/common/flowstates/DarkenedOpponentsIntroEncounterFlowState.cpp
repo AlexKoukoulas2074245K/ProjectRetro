@@ -49,6 +49,18 @@ DarkenedOpponentsIntroEncounterFlowState::DarkenedOpponentsIntroEncounterFlowSta
 
 void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
 {
+    // Sfx currently playing
+    if (SoundService::GetInstance().IsPlayingSfx())
+    {
+        return;
+    }
+    // Sfx just finished playing
+    else if (WasSfxPlayingOnPreviousUpdate())
+    {
+        CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+        return;
+    }
+
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     auto& playerTrainerSpriteTransformComponent   = mWorld.GetComponent<TransformComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
@@ -70,10 +82,12 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
             (
                 "cries/" +
                 GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
-            );
+            );            
         }
-        
-        CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+        else
+        {
+            CompleteAndTransitionTo<OpponentIntroTextEncounterFlowState>();
+        }        
     }
 }
 
