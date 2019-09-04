@@ -50,12 +50,13 @@ public:
     void OnMusicIntroFinished();    
     
     bool IsPlayingSfx() const;
-
+    StringId GetLastPlayedSfxName() const;
+    
 private:    
     SoundService() = default;    
     
     bool HasIntro(const std::string& musicTrackPath) const;
-
+    
     static const std::string MUSIC_FILE_EXTENSION;
     static const std::string SFX_FILE_EXTENSION;
 
@@ -68,6 +69,7 @@ private:
     MusicResourceId mQueuedMusicResourceId = 0;
     MusicResourceId mCoreMusicTrackResourceId = 0;    
 
+    StringId mLastPlayedSfxName = StringId();
     int mMusicVolumePriorToSilence = -1;
 };
 

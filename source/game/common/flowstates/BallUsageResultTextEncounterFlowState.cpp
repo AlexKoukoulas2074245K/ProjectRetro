@@ -19,6 +19,13 @@
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../sound/SoundService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string BallUsageResultTextEncounterFlowState::CAUGHT_POKEMON_SFX_NAME = "encounter/caught_pokemon";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,10 +38,20 @@ BallUsageResultTextEncounterFlowState::BallUsageResultTextEncounterFlowState(ecs
 }
 
 void BallUsageResultTextEncounterFlowState::VUpdate(const float)
-{          
+{
+    if (SoundService::GetInstance().IsPlayingSfx()) return;
+    
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
+    if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::PARAGRAPH_END)
+    {
+        if (SoundService::GetInstance().GetLastPlayedSfxName() != CAUGHT_POKEMON_SFX_NAME)
+        {
+            SoundService::GetInstance().PlaySfx(CAUGHT_POKEMON_SFX_NAME);
+            return;
+        }
+    }
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         if (encounterStateComponent.mWasPokemonCaught)

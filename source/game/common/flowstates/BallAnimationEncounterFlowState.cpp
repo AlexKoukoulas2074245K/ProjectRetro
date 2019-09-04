@@ -20,17 +20,22 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/RenderingUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const std::string BallAnimationEncounterFlowState::BALL_THROW_SFX_NAME              = "general/ball_throw";
+const std::string BallAnimationEncounterFlowState::BALL_POOF_SFX_NAME               = "general/ball_poof";
 const std::string BallAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string BallAnimationEncounterFlowState::BATTLE_ANIMATION_DIR_NAME        = "battle_animations/";
 
 const glm::vec3 BallAnimationEncounterFlowState::BATTLE_MOVE_SCALE = glm::vec3(2.0f, 2.0f, 1.0f);
 
 const float BallAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z = -1.0f;
+
+const int BallAnimationEncounterFlowState::BALL_ANIMATION_FRAME_FOR_POOF_SFX = 34;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -99,9 +104,19 @@ void BallAnimationEncounterFlowState::UpdateCatchAttemptAnimation(const float dt
             }
 
             encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.pop();
+            
+            if (encounterStateComponent.mViewObjects.mBallAnimationFrameCounter++ == BALL_ANIMATION_FRAME_FOR_POOF_SFX)
+            {
+                SoundService::GetInstance().PlaySfx(BALL_POOF_SFX_NAME);
+            }
         }
         else
         {
+            if (encounterStateComponent.mWasPokemonCaught == false)
+            {
+                SoundService::GetInstance().PlaySfx(BALL_POOF_SFX_NAME);
+            }
+            
             CompleteAndTransitionTo<BallUsageResultTextEncounterFlowState>();
         }
     }
@@ -152,6 +167,9 @@ void BallAnimationEncounterFlowState::LoadCatchAttemptFrames() const
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
+    
+    encounterStateComponent.mViewObjects.mBallAnimationFrameCounter = 0;
+    SoundService::GetInstance().PlaySfx(BALL_THROW_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

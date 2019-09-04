@@ -105,6 +105,7 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
 
     if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
+        mLastPlayedSfxName = sfxName;
         Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);        
     }    
 }
@@ -212,6 +213,11 @@ void SoundService::OnMusicIntroFinished()
 bool SoundService::IsPlayingSfx() const
 {
     return Mix_Playing(1) != 0;
+}
+
+StringId SoundService::GetLastPlayedSfxName() const
+{
+    return mLastPlayedSfxName;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

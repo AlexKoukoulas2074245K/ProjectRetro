@@ -57,9 +57,14 @@ PokemonScalingAnimationEncounterFlowState::PokemonScalingAnimationEncounterFlowS
 
 void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
 {
+    const auto& soundService = SoundService::GetInstance();
+    
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    
     auto& scalingStateComponent   = mWorld.GetSingletonComponent<PokemonSpriteScalingAnimationStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-   
+    
+    
     // Sfx currently playing
     if (SoundService::GetInstance().IsPlayingSfx())
     {
@@ -67,15 +72,14 @@ void PokemonScalingAnimationEncounterFlowState::VUpdate(const float dt)
     }
     // Sfx just finished playing
     else if (WasSfxPlayingOnPreviousUpdate())
-    {           
-        scalingStateComponent.mScalingStep = 2;
-        RepopulateScalingBlockEntities();
-
-        if (scalingStateComponent.mScaleOpponentPokemon)
+    {
+        if (scalingStateComponent.mScaleOpponentPokemon && soundService.GetLastPlayedSfxName() == "cries/" +
+            GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId))
         {
             CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
         }
-        else
+        else if (scalingStateComponent.mScaleOpponentPokemon == false && soundService.GetLastPlayedSfxName() == "cries/" +
+                 GetFormattedPokemonIdString(playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex]->mBaseSpeciesStats.mId))
         {
             DestroyActiveTextbox(mWorld);
 

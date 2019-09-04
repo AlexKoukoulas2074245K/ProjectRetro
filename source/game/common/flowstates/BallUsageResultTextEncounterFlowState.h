@@ -31,6 +31,8 @@ public:
 
 private:
     void DisplayCatchResultText() const;
+    
+    static const std::string CAUGHT_POKEMON_SFX_NAME;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

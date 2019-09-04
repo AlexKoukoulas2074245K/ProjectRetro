@@ -246,7 +246,9 @@ void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityI
 }
 
 void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const
-{
+{    
+    if (SoundService::GetInstance().IsPlayingSfx()) return;
+
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     

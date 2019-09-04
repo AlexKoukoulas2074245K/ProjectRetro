@@ -90,6 +90,7 @@ public:
     ecs::EntityId mPlayerPokemonInfoTextboxEntityId   = ecs::NULL_ENTITY_ID;
     ecs::EntityId mOpponentPokemonDeathCoverEntityId  = ecs::NULL_ENTITY_ID;
     ecs::EntityId mLevelUpNewStatsTextboxEntityId     = ecs::NULL_ENTITY_ID;
+    int mBallAnimationFrameCounter                    = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
