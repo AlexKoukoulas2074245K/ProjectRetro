@@ -20,6 +20,7 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../overworld/components/OverworldFlowStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/MeshUtils.h"
@@ -139,12 +140,19 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
 
     if (textboxComponent.mQueuedDialog.size() > 0)
     {
-        if (DetectedFreeze(textboxEntityId))
+        if (DetectedFlowHook(textboxEntityId))
         {
-            StripFreezeStringFromQueuedText(textboxEntityId);
+            StripSpecialHookStringFromQueuedText(textboxEntityId);
+            mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHookTriggered = true;
             guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::FROZEN;
         }
 
+        if (DetectedFreeze(textboxEntityId))
+        {
+            StripSpecialHookStringFromQueuedText(textboxEntityId);
+            guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::FROZEN;
+        }
+      
         switch (guiStateComponent.mActiveChatboxDisplayState)
         {
             case ChatboxDisplayState::NORMAL: UpdateChatboxNormal(textboxEntityId, dt); break;
@@ -573,6 +581,43 @@ bool GuiManagementSystem::DetectedFreeze(const ecs::EntityId textboxEntityId) co
     return false;
 }
 
+bool GuiManagementSystem::DetectedFlowHook(const ecs::EntityId textboxEntityId) const
+{
+    const auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+
+    if (textboxComponent.mQueuedDialog.size() <= 0 || textboxComponent.mQueuedDialog.front().size() <= 0) return false;
+
+    const auto& queuedParagraph = textboxComponent.mQueuedDialog.front();
+    const auto& queuedLine = queuedParagraph.front();
+    auto queuedLineCopy = queuedLine;
+
+    if (queuedLineCopy.size() >= 5)
+    {
+        if (queuedLineCopy.front() == '+')
+        {
+            queuedLineCopy.pop();
+            if (queuedLineCopy.front() == 'F')
+            {
+                queuedLineCopy.pop();
+                if (queuedLineCopy.front() == 'L')
+                {
+                    queuedLineCopy.pop();
+                    if (queuedLineCopy.front() == 'O')
+                    {
+                        queuedLineCopy.pop();
+                        if (queuedLineCopy.front() == 'W')
+                        {
+                            return true;                                                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
@@ -601,7 +646,7 @@ bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEn
     return false;
 }
 
-void GuiManagementSystem::StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const
+void GuiManagementSystem::StripSpecialHookStringFromQueuedText(const ecs::EntityId textboxEntityId) const
 {
     auto& textboxComponent  = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
     auto& currentQueuedLine = textboxComponent.mQueuedDialog.front().front();

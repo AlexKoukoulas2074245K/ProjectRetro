@@ -61,8 +61,9 @@ private:
 
     bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
     bool DetectedFreeze(const ecs::EntityId textboxEntityId) const;
-    bool DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const;
-    void StripFreezeStringFromQueuedText(const ecs::EntityId textboxEntityId) const;
+    bool DetectedFlowHook(const ecs::EntityId textboxEntityId) const;
+    bool DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const;    
+    void StripSpecialHookStringFromQueuedText(const ecs::EntityId textboxEntityId) const;    
     void MoveTextboxCursor(const ecs::EntityId textboxEntityId, const Direction direction) const;
     
 };

@@ -117,9 +117,7 @@ inline bool IsAnyNpcEngagedInCombat(const ecs::World& world)
 template<class FlowStateType>
 inline void StartOverworldFlowState(ecs::World& world)
 {
-    auto& overworldFlowStateComponent = world.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
-    
-    overworldFlowStateComponent.mFlowHasJustFinished = false;
+    auto& overworldFlowStateComponent = world.GetSingletonComponent<OverworldFlowStateSingletonComponent>();        
     overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<FlowStateType>(world));
 }
 
