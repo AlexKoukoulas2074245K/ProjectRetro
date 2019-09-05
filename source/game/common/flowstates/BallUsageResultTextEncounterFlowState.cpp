@@ -48,7 +48,7 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
     {
         if (SoundService::GetInstance().GetLastPlayedSfxName() != CAUGHT_POKEMON_SFX_NAME)
         {
-            SoundService::GetInstance().PlaySfx(CAUGHT_POKEMON_SFX_NAME);
+            SoundService::GetInstance().PlaySfx(CAUGHT_POKEMON_SFX_NAME, true, true);
             return;
         }
     }
