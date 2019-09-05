@@ -76,6 +76,18 @@
 		{ 
 			"from": { "level_name": "viridian", "level_col": 26, "level_row": 7 },
 			"to": { "level_name": "route1", "level_col": 16, "level_row": 49 } 
+		},
+		{ 
+			"from": { "level_name": "viridian", "level_col": 35, "level_row": 24 },
+			"to": { "level_name": "in_viridian_poke_mart", "level_col": 7, "level_row": 4 } 
+		},
+		{ 
+			"from": { "level_name": "in_viridian_poke_mart", "level_col": 7, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 35, "level_row": 24 } 
+		},
+		{ 
+			"from": { "level_name": "in_viridian_poke_mart", "level_col": 8, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 35, "level_row": 24 } 
 		}
 	]
 }
