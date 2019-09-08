@@ -555,7 +555,7 @@ void CreateLevelModelEntry
     }
     
     const auto modelEntityId = world.CreateEntity();
-
+    
     auto transformComponent         = std::make_unique<TransformComponent>();
     transformComponent->mPosition.x = modelEntryJsonObject["game_position_x"].get<float>();
     transformComponent->mPosition.y = 0.0f;

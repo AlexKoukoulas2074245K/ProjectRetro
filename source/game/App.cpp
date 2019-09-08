@@ -110,7 +110,7 @@ void App::GameLoop()
 
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-    
+     
 #ifndef NDEBUG
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 #endif
@@ -125,7 +125,7 @@ void App::GameLoop()
 
         framesAccumulator++;
         dtAccumulator += dt;
-
+        
         if (dtAccumulator > 1.0f)
         {
             const auto fpsString            = " - FPS: " + std::to_string(framesAccumulator);
@@ -147,6 +147,7 @@ void App::GameLoop()
         {
             mWorld.Update(math::Min(dt, 1.0f));
         }
+        
 #else
         mWorld.Update(math::Min(dt, 1.0f));
 #endif        
