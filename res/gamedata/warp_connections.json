@@ -100,6 +100,18 @@
 		{ 
 			"from": { "level_name": "in_viridian_school", "level_col": 7, "level_row": 4 },
 			"to": { "level_name": "viridian", "level_col": 26, "level_row": 29 }
+		},
+		{ 
+			"from": { "level_name": "viridian", "level_col": 26, "level_row": 34 },
+			"to": { "level_name": "in_viridian_nickname_family", "level_col": 6, "level_row": 4 } 
+		},
+		{ 
+			"from": { "level_name": "in_viridian_nickname_family", "level_col": 6, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 26, "level_row": 34 }
+		},
+		{ 
+			"from": { "level_name": "in_viridian_nickname_family", "level_col": 7, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 26, "level_row": 34 }
 		}
 	]
 }
