@@ -69,6 +69,17 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const float App::MIN_DT = 0.00001f;
+const float App::MAX_DT = 1.0f;
+
+#ifndef NDEBUG
+const float App::DEBUG_DT_SPEEDUP = 10.0f;
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 void App::Run()
 {    
     CreateSystems();
@@ -141,15 +152,15 @@ void App::GameLoop()
 #ifndef NDEBUG        
         if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
         {
-            mWorld.Update(math::Min(dt * 10, 1.0f));
+            mWorld.Update(math::Max(MIN_DT, math::Min(dt * DEBUG_DT_SPEEDUP, MAX_DT)));
         }
         else
         {
-            mWorld.Update(math::Min(dt, 1.0f));
+            mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
         }
         
 #else
-        mWorld.Update(math::Min(dt, 1.0f));
+        mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
 #endif        
     }
 }

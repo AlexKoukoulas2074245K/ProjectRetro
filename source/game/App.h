@@ -34,6 +34,13 @@ private:
     void DummyInitialization();
     
 private:
+    static const float MIN_DT;
+    static const float MAX_DT;
+
+#ifndef NDEBUG
+    static const float DEBUG_DT_SPEEDUP;
+#endif
+
     ecs::World mWorld;    
 };
 
