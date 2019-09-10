@@ -42,7 +42,12 @@ enum class TileTrait
     ENCOUNTER,
     JUMPING_LEDGE_BOT,
     JUMPING_LEDGE_LEFT,
-    JUMPING_LEDGE_RIGHT
+    JUMPING_LEDGE_RIGHT,
+    SEA_TILE,
+    FLOW_TRIGGER,
+    CUTTABLE_TREE,
+    PUSHABLE_ROCK
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

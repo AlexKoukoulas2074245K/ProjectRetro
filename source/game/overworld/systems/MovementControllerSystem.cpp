@@ -128,6 +128,23 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 continue;
             }                        
             
+            // Cuttable/Pushable/SeaTile group
+            if 
+            (
+                targetTile.mTileTrait == TileTrait::CUTTABLE_TREE ||
+                targetTile.mTileTrait == TileTrait::PUSHABLE_ROCK ||
+                targetTile.mTileTrait == TileTrait::SEA_TILE
+            )
+            {
+                if (hasPlayerTag)
+                {
+                    SoundService::GetInstance().PlaySfx(COLLISION_BUMP_SFX_NAME, false);
+                }
+
+                movementStateComponent.mMoving = false;
+                continue;
+            }
+
             // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::NPC && targetTile.mTileOccupierEntityId != entityId)
             {

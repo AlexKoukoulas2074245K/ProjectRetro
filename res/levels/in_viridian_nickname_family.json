@@ -271,7 +271,7 @@
     ],
     "level_npc_attributes":
     [
-         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "MAP:#+FLOW", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 4, "game_col": 7, "game_row": 11, "game_position_x": 11.2, "game_position_z": 17.6 },
+         { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "MAP_FLOW", "side_dialogs": [], "pokemon_roster": [], "editor_col": 7, "editor_row": 4, "game_col": 7, "game_row": 11, "game_position_x": 11.2, "game_position_z": 17.6 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "SPEAROW#NAME: SPEARY", "side_dialogs": [], "pokemon_roster": [], "editor_col": 8, "editor_row": 4, "game_col": 8, "game_row": 11, "game_position_x": 12.8, "game_position_z": 17.6 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 4, "editor_row": 5, "game_col": 4, "game_row": 10, "game_position_x": 6.4, "game_position_z": 16.0 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Crammed full of#POK^MON books!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 5, "editor_row": 5, "game_col": 5, "game_row": 10, "game_position_x": 8.0, "game_position_z": 16.0 },
