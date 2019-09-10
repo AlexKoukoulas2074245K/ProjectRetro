@@ -79,7 +79,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
             // Rude guy trigger
             if (currentPlayerTileCoords.mCol == 24 && currentPlayerTileCoords.mRow == 34)
             {
-                //StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+                StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
             }
             // Gym trigger
             else if (currentPlayerTileCoords.mCol == 37 && currentPlayerTileCoords.mRow == 35)
@@ -89,7 +89,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         }
         else if (lastNpcSpokenToLevelIndex == 4)
         {
-            //StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+            StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
         }
         else if (lastNpcSpokenToLevelIndex == 9)
         {

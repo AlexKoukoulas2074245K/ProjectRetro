@@ -112,6 +112,18 @@
 		{ 
 			"from": { "level_name": "in_viridian_nickname_family", "level_col": 7, "level_row": 4 },
 			"to": { "level_name": "viridian", "level_col": 26, "level_row": 34 }
+		},
+		{ 
+			"from": { "level_name": "viridian", "level_col": 28, "level_row": 18 },
+			"to": { "level_name": "in_viridian_poke_center", "level_col": 12, "level_row": 4 } 
+		},
+		{ 
+			"from": { "level_name": "in_viridian_poke_center", "level_col": 12, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 28, "level_row": 18 }
+		},
+		{ 
+			"from": { "level_name": "in_viridian_poke_center", "level_col": 13, "level_row": 4 },
+			"to": { "level_name": "viridian", "level_col": 28, "level_row": 18 }
 		}
 	]
 }
