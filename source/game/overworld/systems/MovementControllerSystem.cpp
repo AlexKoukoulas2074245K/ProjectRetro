@@ -200,7 +200,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     StartJump(entityId);
                 }
             }
-
+            
             // Clear occupier status of the current tile
             currentTile.mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
             currentTile.mTileOccupierType     = TileOccupierType::NONE;
@@ -273,9 +273,8 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                         SoundService::GetInstance().PlaySfx(INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME);
                     }
                 }
-
                 // Encounter tile flow
-                if 
+                else if 
                 (
                     targetTile.mTileTrait == TileTrait::ENCOUNTER &&
                     DoesLevelHaveWildEncounters(levelModelComponent) &&
@@ -310,6 +309,17 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     SoundService::GetInstance().PlayMusic(WILD_BATTLE_MUSIC_NAME, false);
 
+                    return;
+                }
+                // Trigger flow
+                else if 
+                (
+                    targetTile.mTileTrait == TileTrait::FLOW_TRIGGER &&
+                    hasPlayerTag
+                )
+                {
+                    auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
+                    overworldFlowStateComponent.mFlowHookTriggered = true;
                     return;
                 }
 
