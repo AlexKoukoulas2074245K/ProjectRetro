@@ -639,7 +639,7 @@ void SetTileTrait
         { StringId("JUMPING_LEDGE_BOT"),   TileTrait::JUMPING_LEDGE_BOT },
         { StringId("JUMPING_LEDGE_LEFT"),  TileTrait::JUMPING_LEDGE_LEFT },
         { StringId("JUMPING_LEDGE_RIGHT"), TileTrait::JUMPING_LEDGE_RIGHT },
-        { StringId("SEA_TILE"),            TileTrait::SEA_TILE },
+        { StringId("SEA_TILE_EDGE"),       TileTrait::SEA_TILE_EDGE },
         { StringId("FLOW_TRIGGER"),        TileTrait::FLOW_TRIGGER },
         { StringId("CUTTABLE_TREE"),       TileTrait::CUTTABLE_TREE },
         { StringId("PUSHABLE_STONE"),      TileTrait::PUSHABLE_ROCK }        

@@ -133,7 +133,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             (
                 targetTile.mTileTrait == TileTrait::CUTTABLE_TREE ||
                 targetTile.mTileTrait == TileTrait::PUSHABLE_ROCK ||
-                targetTile.mTileTrait == TileTrait::SEA_TILE
+                targetTile.mTileTrait == TileTrait::SEA_TILE_EDGE
             )
             {
                 if (hasPlayerTag)
