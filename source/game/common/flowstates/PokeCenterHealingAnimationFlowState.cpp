@@ -11,13 +11,14 @@
 
 #include "PokeCenterHealingAnimationFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../../input/utils/InputUtils.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelResidentComponent.h"
 #include "../../overworld/components/PokeCenterHealingAnimationStateSingletonComponent.h"
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/utils/AnimationUtils.h"
-#include "../../sound/SoundService.h"
 #include "../../resources/ResourceLoadingService.h"
-#include "../../overworld/components/LevelResidentComponent.h"
-#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +91,29 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
         } break;
         
         case PokeCenterHealingAnimationState::POKEBALL_PLACEMENT:
+        {
+            auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+            auto& t = mWorld.GetComponent<TransformComponent>(pokeCenterHealingAnimationState.mComputerScreenOverlayEntityId);
+            
+            if (IsActionTypeKeyPressed(VirtualActionType::LEFT_ARROW, inputStateComponent))
+            {
+                t.mPosition.x -= 0.05f * dt;
+            }
+            if (IsActionTypeKeyPressed(VirtualActionType::RIGHT_ARROW, inputStateComponent))
+            {
+                t.mPosition.x += 0.05f * dt;
+            }
+            if (IsActionTypeKeyPressed(VirtualActionType::A_BUTTON, inputStateComponent))
+            {
+                t.mPosition.z -= 0.05f * dt;
+            }
+            if (IsActionTypeKeyPressed(VirtualActionType::B_BUTTON, inputStateComponent))
+            {
+                t.mPosition.z += 0.05f * dt;
+            }
+            
+            
+        } break;
         case PokeCenterHealingAnimationState::COLOR_SWAPPING:
         case PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH:
         case PokeCenterHealingAnimationState::THANK_YOU_DIALOG:
@@ -122,7 +146,7 @@ void PokeCenterHealingAnimationFlowState::ShowComputerScreenOverlayEffect(const 
     auto transformComponent = std::make_unique<TransformComponent>();
     transformComponent->mPosition.x = 16.9f;
     transformComponent->mPosition.y = 0.0f;
-    transformComponent->mPosition.z = 17.4f;
+    transformComponent->mPosition.z = 17.455f;
     
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
