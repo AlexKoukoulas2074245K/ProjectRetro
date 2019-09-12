@@ -112,6 +112,12 @@ ecs::EntityId CreateYesNoTextbox
     const glm::vec3& position
 );
 
+ecs::EntityId CreateHealCancelTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+);
+
 ecs::EntityId CreateUseTossTextbox
 (
     ecs::World& world,

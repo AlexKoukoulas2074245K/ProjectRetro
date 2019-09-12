@@ -50,6 +50,7 @@
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
+#include "overworld/components/PokeCenterHealingAnimationStateSingletonComponent.h"
 #include "overworld/systems/AnimatedFlowersAnimationSystem.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
@@ -205,6 +206,7 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
+    mWorld.SetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>(std::make_unique<PokeCenterHealingAnimationStateSingletonComponent>());
 
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);

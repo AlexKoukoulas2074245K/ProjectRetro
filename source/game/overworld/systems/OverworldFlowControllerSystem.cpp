@@ -17,6 +17,7 @@
 #include "../utils/LevelUtils.h"
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/flowstates/PokeCenterHealingIntroDialogFlowState.h"
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
@@ -96,6 +97,15 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
             StartOverworldFlowState<ViridianCaterpieWeedleGuyOverworldFlowState>(mWorld);
         }        
     }
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_poke_center"))
+    {
+        // Joey flow
+        if (lastNpcSpokenToLevelIndex == 2)
+        {
+            StartOverworldFlowState<PokeCenterHealingIntroDialogFlowState>(mWorld);
+        }
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -50,6 +50,9 @@ static const int YES_NO_TEXTBOX_ROWS = 5;
 static const int USE_TOSS_TEXTBOX_COLS = 7;
 static const int USE_TOSS_TEXTBOX_ROWS = 5;
 
+static const int HEAL_CANCEL_TEXTBOX_COLS = 9;
+static const int HEAL_CANCEL_TEXTBOX_ROWS = 6;
+
 static const int OVERWORLD_MAIN_MENU_TEXTBOX_COLS_WITH_POKEDEX = 10;
 static const int OVERWORLD_MAIN_MENU_TEXTBOX_ROWS_WITH_POKEDEX = 16;
 
@@ -408,6 +411,55 @@ ecs::EntityId CreateYesNoTextbox
     world.AddComponent<CursorComponent>(yesNoTextboxEntityId, std::move(cursorComponent));
 
     return yesNoTextboxEntityId;
+}
+
+ecs::EntityId CreateHealCancelTextbox
+(
+    ecs::World& world,
+    const glm::vec3& position
+)
+{
+    const auto healCancelTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        HEAL_CANCEL_TEXTBOX_COLS,
+        HEAL_CANCEL_TEXTBOX_ROWS,
+        position.x,
+        position.y,
+        position.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(healCancelTextboxEntityId, "HEAL", 2, 2, world);
+    WriteTextAtTextboxCoords(healCancelTextboxEntityId, "CANCEL", 2, 4, world);
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 2;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        healCancelTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(healCancelTextboxEntityId, std::move(cursorComponent));
+
+    return healCancelTextboxEntityId;
 }
 
 ecs::EntityId CreateUseTossTextbox
