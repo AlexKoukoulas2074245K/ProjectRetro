@@ -24,6 +24,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const glm::vec3 PokeCenterHealingAnimationFlowState::PC_OVERLAY_POSITION = glm::vec3(16.9f, 0.0f, 17.455f);
+
+const std::string PokeCenterHealingAnimationFlowState::PC_OVERLAY_MODEL_NAME = "in_poke_center_computer_screen_overlay";
+
 const int PokeCenterHealingAnimationFlowState::JOY_NPC_LEVEL_INDEX = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -92,25 +96,6 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
         
         case PokeCenterHealingAnimationState::POKEBALL_PLACEMENT:
         {
-            auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-            auto& t = mWorld.GetComponent<TransformComponent>(pokeCenterHealingAnimationState.mComputerScreenOverlayEntityId);
-            
-            if (IsActionTypeKeyPressed(VirtualActionType::LEFT_ARROW, inputStateComponent))
-            {
-                t.mPosition.x -= 0.05f * dt;
-            }
-            if (IsActionTypeKeyPressed(VirtualActionType::RIGHT_ARROW, inputStateComponent))
-            {
-                t.mPosition.x += 0.05f * dt;
-            }
-            if (IsActionTypeKeyPressed(VirtualActionType::A_BUTTON, inputStateComponent))
-            {
-                t.mPosition.z -= 0.05f * dt;
-            }
-            if (IsActionTypeKeyPressed(VirtualActionType::B_BUTTON, inputStateComponent))
-            {
-                t.mPosition.z += 0.05f * dt;
-            }
             
             
         } break;
@@ -144,9 +129,7 @@ void PokeCenterHealingAnimationFlowState::ShowComputerScreenOverlayEffect(const 
     pokeCenterHealingAnimationState.mComputerScreenOverlayEntityId = mWorld.CreateEntity();
 
     auto transformComponent = std::make_unique<TransformComponent>();
-    transformComponent->mPosition.x = 16.9f;
-    transformComponent->mPosition.y = 0.0f;
-    transformComponent->mPosition.z = 17.455f;
+    transformComponent->mPosition = PC_OVERLAY_POSITION;
     
     auto renderableComponent = std::make_unique<RenderableComponent>();
     renderableComponent->mRenderableLayer = RenderableLayer::LEVEL_FLOOR_LEVEL;
@@ -154,12 +137,12 @@ void PokeCenterHealingAnimationFlowState::ShowComputerScreenOverlayEffect(const 
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back
     (
         ResourceLoadingService::GetInstance().
-        LoadResource(ResourceLoadingService::RES_MODELS_ROOT + "in_poke_center_computer_screen_overlay.obj")
+        LoadResource(ResourceLoadingService::RES_MODELS_ROOT + PC_OVERLAY_MODEL_NAME + ".obj")
     );
     renderableComponent->mActiveAnimationNameId = StringId("default");
     renderableComponent->mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource
     (
-        ResourceLoadingService::RES_TEXTURES_ROOT + "in_poke_center_computer_screen_overlay_" + (computerScreenOverlayEffect == ComputerScreenOverlayEffect::BLUE ? "blue" : "white") + ".png"
+        ResourceLoadingService::RES_TEXTURES_ROOT + PC_OVERLAY_MODEL_NAME + (computerScreenOverlayEffect == ComputerScreenOverlayEffect::BLUE ? "_blue" : "_white") + ".png"
     );
 
     auto levelResidentComponent = std::make_unique<LevelResidentComponent>();

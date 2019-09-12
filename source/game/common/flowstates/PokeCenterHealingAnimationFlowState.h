@@ -18,6 +18,7 @@
 
 #include "BaseFlowState.h"
 #include "../../ECS.h"
+#include "../../common/utils/MathUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,10 @@ private:
     void ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect) const;
     void SetCurrentStateDurationTimer() const;
 
+    static const glm::vec3 PC_OVERLAY_POSITION;
+    
+    static const std::string PC_OVERLAY_MODEL_NAME;
+    
     static const int JOY_NPC_LEVEL_INDEX;
 };
 
