@@ -51,7 +51,9 @@ public:
     void OnMusicIntroFinished();    
     void OnSfxFinished();
     
+    bool IsPlayingMusic() const;
     bool IsPlayingSfx() const;
+
     StringId GetLastPlayedSfxName() const;
     
 private:    

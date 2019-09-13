@@ -60,8 +60,7 @@ class PokeCenterHealingAnimationStateSingletonComponent final: public ecs::IComp
 {   
 public:
     std::queue<PokeCenterHealingAnimationState> mHealingAnimationStateQueue;
-    std::vector<ecs::EntityId> mPokeballEntityIds;
-    ecs::EntityId mComputerScreenOverlayEntityId;
+    std::vector<ecs::EntityId> mPokeballEntityIds;    
     std::unique_ptr<Timer> mAnimationTimer = nullptr;    
     int mFlashingCounter                   = 0;
     bool mInvertedColors                   = false;

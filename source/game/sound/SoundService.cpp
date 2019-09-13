@@ -238,6 +238,11 @@ void SoundService::OnSfxFinished()
     UnmuteMusic();
 }
 
+bool SoundService::IsPlayingMusic() const
+{
+    return Mix_PlayingMusic() != 0;
+}
+
 bool SoundService::IsPlayingSfx() const
 {
     return Mix_Playing(1) != 0;

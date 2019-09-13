@@ -220,7 +220,9 @@ void App::DummyInitialization()
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
     
-    playerStateComponent->mPlayerPokemonRoster.front()->mXpPoints += 50;
+    playerStateComponent->mPlayerPokemonRoster.front()->mStatus = PokemonStatus::ASLEEP;
+    playerStateComponent->mPlayerPokemonRoster.front()->mHp = 2;
+
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
     {
         ChangePokedexEntryForPokemon(pokemonEntry->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);
