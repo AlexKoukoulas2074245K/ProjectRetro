@@ -17,6 +17,7 @@
 #include "../utils/LevelUtils.h"
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
+#include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogFlowState.h"
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
@@ -66,6 +67,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
 {
     const auto& activeLevelComponent      = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
     const auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& pokedexStateComponent     = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
     const auto& activeLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     const auto& playerMovementComponent   = mWorld.GetComponent<MovementStateComponent>(GetPlayerEntityId(mWorld));
     const auto& currentPlayerTileCoords   = playerMovementComponent.mCurrentCoords;
@@ -80,7 +82,10 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
             // Rude guy trigger
             if (currentPlayerTileCoords.mCol == 24 && currentPlayerTileCoords.mRow == 34)
             {
-                StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+                if (pokedexStateComponent.mPokedexUnlocked == false)
+                {
+                    StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+                }                
             }
             // Gym trigger
             else if (currentPlayerTileCoords.mCol == 37 && currentPlayerTileCoords.mRow == 35)
@@ -90,7 +95,10 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         }
         else if (lastNpcSpokenToLevelIndex == 4)
         {
-            StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+            if (pokedexStateComponent.mPokedexUnlocked == false)
+            {
+                StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
+            }
         }
         else if (lastNpcSpokenToLevelIndex == 9)
         {

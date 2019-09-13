@@ -24,7 +24,7 @@
 
 ViridianRudeGuyOverworldFlowState::ViridianRudeGuyOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
-{
+{    
     if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
     {
         DestroyActiveTextbox(mWorld);
