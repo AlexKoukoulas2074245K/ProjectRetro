@@ -45,8 +45,8 @@ static const std::unordered_map<PokeCenterHealingAnimationState, float> sHealing
     { PokeCenterHealingAnimationState::ANIMATION_START,                   1.0f },
     { PokeCenterHealingAnimationState::JOY_FACING_NORTH,                  1.0f },
     { PokeCenterHealingAnimationState::JOY_FACING_WEST,                   1.0f },
-    { PokeCenterHealingAnimationState::POKEBALL_PLACEMENT,                0.5f },
-    { PokeCenterHealingAnimationState::COLOR_SWAPPING,                    2.0f },
+    { PokeCenterHealingAnimationState::POKEBALL_PLACEMENT,                0.6f },
+    { PokeCenterHealingAnimationState::COLOR_SWAPPING,                    0.25f },
     { PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH, 1.0f },
     { PokeCenterHealingAnimationState::THANK_YOU_DIALOG,                  1.0f },
     { PokeCenterHealingAnimationState::JOY_BOW,                           1.0f },
@@ -63,6 +63,8 @@ public:
     std::vector<ecs::EntityId> mPokeballEntityIds;
     ecs::EntityId mComputerScreenOverlayEntityId;
     std::unique_ptr<Timer> mAnimationTimer = nullptr;    
+    int mFlashingCounter                   = 0;
+    bool mInvertedColors                   = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

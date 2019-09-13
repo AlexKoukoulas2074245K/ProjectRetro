@@ -37,15 +37,23 @@ private:
         NONE, WHITE, BLUE,
     };
 
-    ecs::EntityId GetJoyEntityId() const;
-    void ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect) const;
-    void SetCurrentStateDurationTimer() const;
-
     static const glm::vec3 PC_OVERLAY_POSITION;
+    static const glm::vec3 FIRST_HEALING_BALL_POSITION;
     
     static const std::string PC_OVERLAY_MODEL_NAME;
+    static const std::string HEALING_BALL_MODEL_NAME;
+    static const std::string HEALING_ANIMATION_SFX_NAME;
+    static const std::string POKEBALL_HEALING_SFX_NAME;
+
+    static const float HEALING_BALL_X_DISTANCE;
+    static const float HEALING_BALL_Z_DISTANCE;
     
     static const int JOY_NPC_LEVEL_INDEX;
+
+    ecs::EntityId GetJoyEntityId() const;
+    void ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect) const;
+    void ShowHealingBallWithIndex(const size_t ballIndex, const bool invertedColors) const;
+    void SetCurrentStateDurationTimer() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
