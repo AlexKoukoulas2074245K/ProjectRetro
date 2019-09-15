@@ -68,6 +68,7 @@ PokeCenterHealingAnimationFlowState::PokeCenterHealingAnimationFlowState(ecs::Wo
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::JOY_FACING_WEST);
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::POKEBALL_PLACEMENT);
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::COLOR_SWAPPING);
+    pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::HEALING_FINISHED_DELAY);
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH);
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::THANK_YOU_DIALOG);
     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.push(PokeCenterHealingAnimationState::JOY_BOW);
@@ -185,6 +186,15 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
                     pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
                     SetCurrentStateDurationTimer();
                 }
+            }
+        } break;
+        case PokeCenterHealingAnimationState::HEALING_FINISHED_DELAY:
+        {
+            pokeCenterHealingAnimationState.mAnimationTimer->Update(dt);
+            if (pokeCenterHealingAnimationState.mAnimationTimer->HasTicked())
+            {
+                pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
+                SetCurrentStateDurationTimer();
             }
         } break;
         case PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH:
