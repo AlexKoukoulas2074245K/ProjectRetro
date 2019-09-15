@@ -233,6 +233,7 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
                     RestorePokemonStats(*pokemon);
                 }
 
+                pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
                 CompleteAndTransitionTo<PokeCenterHealingFarewellDialogFlowState>();
             }
         } break;
