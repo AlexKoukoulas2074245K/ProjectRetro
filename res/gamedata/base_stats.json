@@ -604,7 +604,7 @@
           "ovimagetype": "NORMAL",
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDORINO", "method": "16" } ],
-          "moveset": [{ "level": 1, "movename": "LEER"},{ "level": 1, "movename": "TACKLE"},{ "level": 8, "movename": "HORN_ATTACK"},{ "level": 12, "movename": "DOUBLE_KICK"},{ "level": 17, "movename": "POISON_STING"},{ "level": 23, "movename": "FOCUS_ENERGY"},{ "level": 30, "movename": "FURY_ATTACK"},{ "level": 38, "movename": "HORN_DRILL"},],
+          "moveset": [{ "level": 1, "movename": "LEER"},{ "level": 1, "movename": "TACKLE"},{ "level": 8, "movename": "HORN_ATTACK"},{ "level": 12, "movename": "DOUBLE_KICK"},{ "level": 17, "movename": "POISON_STING"},{ "level": 23, "movename": "FOCUS_ENERGY"},{ "level": 30, "movename": "FURY_ATTACK"},{ "level": 38, "movename": "HORN_DRILL"}],
 	      "text": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting.",
 		  "dextype": "POISON PIN",
 		  "body": "1 08 20" 

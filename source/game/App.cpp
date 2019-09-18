@@ -241,14 +241,14 @@ void App::DummyInitialization()
     AddItemToBag(StringId("OLD_AMBER"), mWorld, 2);
     AddItemToBag(StringId("REPEL"), mWorld, 2);
 
-    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("in_viridian_poke_center"), mWorld);
+    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("route2_viridian_side"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 12, 5, mWorld);
+    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 22, 33, mWorld);
 
     SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
 }
