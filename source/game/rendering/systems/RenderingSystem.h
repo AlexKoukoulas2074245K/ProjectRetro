@@ -81,10 +81,12 @@ private:
     static const StringId OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME;
     static const StringId OVERRIDDEN_DARK_COLOR_UNIFORM_NAME;
     static const StringId SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME;
+    static const StringId SPRITE_SHADER_NAME;
 
     static const std::unordered_set<StringId, StringIdHasher> GUI_SHADERS;
-
-    static const float TARGET_ASPECT_RATIO;
+    
+    static const float TARGET_ASPECT_RATIO;    
+    static const float SPRITE_GLOBAL_CAMERA_FACING_ROTATION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

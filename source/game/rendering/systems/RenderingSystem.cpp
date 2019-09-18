@@ -58,13 +58,15 @@ const StringId RenderingSystem::PRIMARY_DARK_COLOR_UNIFORM_NAME              = S
 const StringId RenderingSystem::OVERRIDDEN_LIGHT_COLOR_UNIFORM_NAME          = StringId("overridden_light_color");
 const StringId RenderingSystem::OVERRIDDEN_DARK_COLOR_UNIFORM_NAME           = StringId("overridden_dark_color");
 const StringId RenderingSystem::SHOULD_OVERRIDE_PRIMARY_COLORS_UNIFORMN_NAME = StringId("should_override_primary_colors");
+const StringId RenderingSystem::SPRITE_SHADER_NAME                           = StringId("basic");
 
 const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS =
 {
     StringId("gui"), StringId("dark_flip_hud_special_case"), StringId("gui_unaffected_by_white_flip"), StringId("transition_flip_hud_special_case")
 };
 
-const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;
+const float RenderingSystem::TARGET_ASPECT_RATIO                  = 1.5993266f;
+const float RenderingSystem::SPRITE_GLOBAL_CAMERA_FACING_ROTATION = 0.858f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -311,6 +313,8 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const float rotdY = 0.0f;
+
 void RenderingSystem::RenderEntityInternal
 (
     const ecs::EntityId entityId,
@@ -366,16 +370,28 @@ void RenderingSystem::RenderEntityInternal
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
     world = glm::translate(world, transformComponent.mPosition + cameraComponent.mGlobalScreenOffset);
-    world = glm::rotate(world, transformComponent.mRotation.x, math::X_AXIS);
-    world = glm::rotate(world, transformComponent.mRotation.y, math::Y_AXIS);
-    world = glm::rotate(world, transformComponent.mRotation.z, math::Z_AXIS);
-    
-    // Correct scale of hud and billboard entities
-    glm::vec3 scale = transformComponent.mScale;
+
+    // Correct display of hud and billboard entities    
+    glm::vec3 scale    = transformComponent.mScale;
+    glm::vec3 rotation = transformComponent.mRotation;
+
     if (!renderableComponent.mAffectedByPerspective)
     {
-        scale.x /= windowComponent.mAspectRatio;
-    }    
+        // 2d sprite entities in 3D world
+        if (renderableComponent.mShaderNameId == SPRITE_SHADER_NAME)
+        {            
+            rotation.x = SPRITE_GLOBAL_CAMERA_FACING_ROTATION;                        
+        }
+        // Gui entities
+        else
+        {
+            scale.x /= windowComponent.mAspectRatio;
+        }
+    }  
+    
+    world = glm::rotate(world, rotation.x, math::X_AXIS);
+    world = glm::rotate(world, rotation.y, math::Y_AXIS);
+    world = glm::rotate(world, rotation.z, math::Z_AXIS);
     world = glm::scale(world, scale);
         
     // Update texture if necessary
