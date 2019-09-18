@@ -546,7 +546,7 @@
           "ovimagetype": "NORMAL",
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDORINA", "method": "16" } ],
-          "moveset": [{ "level": 1, "movename": "SCRATCH"},{ "level": 1, "movename": "SAND-ATTACK"},{ "level": 10, "movename": "SAND-ATTACK"},{ "level": 17, "movename": "SLASH"},{ "level": 27, "movename": "POISON_STING"},{ "level": 36, "movename": "SWIFT"},{ "level": 47, "movename": "FURY_SWIPES"}],
+          "moveset": [{ "level": 1, "movename": "GROWL"},{ "level": 1, "movename": "TACKLE"},{ "level": 8, "movename": "SCRATCH"},{ "level": 8, "movename": "DOUBLE_KICK"},{ "level": 17, "movename": "POISON_STING"},{ "level": 23, "movename": "TAIL_WHIP"},{ "level": 30, "movename": "BITE"},{ "level": 38, "movename": "FURY_SWIPES"}],
 	      "text": "A mild-mannered POK^MON that does not like to fight. Beware, its small horns secrete venom.",
 		  "dextype": "POISON PIN",
 		  "body": "1 04 15" 
@@ -604,7 +604,7 @@
           "ovimagetype": "NORMAL",
           "type": [ { "name": "POISON"} ],
           "evolution": [ { "name": "NIDORINO", "method": "16" } ],
-          "moveset": [{ "level": 1, "movename": "TACKLE"},{ "level": 1, "movename": "SCRATCH"},{ "level": 1, "movename": "TAIL_WHIP"},{ "level": 1, "movename": "BODY_SLAM"},{ "level": 8, "movename": "SCRATCH"},{ "level": 12, "movename": "DOUBLE_KICK"},{ "level": 23, "movename": "BODY_SLAM"}],
+          "moveset": [{ "level": 1, "movename": "LEER"},{ "level": 1, "movename": "TACKLE"},{ "level": 8, "movename": "HORN_ATTACK"},{ "level": 12, "movename": "DOUBLE_KICK"},{ "level": 17, "movename": "POISON_STING"},{ "level": 23, "movename": "FOCUS_ENERGY"},{ "level": 30, "movename": "FURY_ATTACK"},{ "level": 38, "movename": "HORN_DRILL"},],
 	      "text": "Its large ears are always kept upright. If it senses danger, it will attack with a poisonous sting.",
 		  "dextype": "POISON PIN",
 		  "body": "1 08 20" 

@@ -15,6 +15,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../utils/PokemonUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -51,9 +52,18 @@ PokemonJustWokeUpEncounterFlowState::PokemonJustWokeUpEncounterFlowState(ecs::Wo
 
 void PokemonJustWokeUpEncounterFlowState::VUpdate(const float)
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
+        DeleteTextAtTextboxRow
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            1,
+            mWorld
+        );
+
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
     }
 }
