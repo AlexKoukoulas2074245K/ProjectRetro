@@ -85,8 +85,7 @@ private:
 
     static const std::unordered_set<StringId, StringIdHasher> GUI_SHADERS;
     
-    static const float TARGET_ASPECT_RATIO;    
-    static const float SPRITE_GLOBAL_CAMERA_FACING_ROTATION;
+    static const float TARGET_ASPECT_RATIO;        
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

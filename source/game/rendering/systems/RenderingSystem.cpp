@@ -66,7 +66,6 @@ const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS 
 };
 
 const float RenderingSystem::TARGET_ASPECT_RATIO                  = 1.5993266f;
-const float RenderingSystem::SPRITE_GLOBAL_CAMERA_FACING_ROTATION = 0.858f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -369,26 +368,18 @@ void RenderingSystem::RenderEntityInternal
         
     // Calculate world matrix for entity
     glm::mat4 world(1.0f);
-    world = glm::translate(world, transformComponent.mPosition + cameraComponent.mGlobalScreenOffset);
-
+        
     // Correct display of hud and billboard entities    
+    glm::vec3 position = transformComponent.mPosition;
     glm::vec3 scale    = transformComponent.mScale;
     glm::vec3 rotation = transformComponent.mRotation;
 
     if (!renderableComponent.mAffectedByPerspective)
-    {
-        // 2d sprite entities in 3D world
-        if (renderableComponent.mShaderNameId == SPRITE_SHADER_NAME)
-        {            
-            rotation.x = SPRITE_GLOBAL_CAMERA_FACING_ROTATION;                        
-        }
-        // Gui entities
-        else
-        {
-            scale.x /= windowComponent.mAspectRatio;
-        }
+    {        
+        scale.x /= windowComponent.mAspectRatio;        
     }  
-    
+
+    world = glm::translate(world, position + cameraComponent.mGlobalScreenOffset);
     world = glm::rotate(world, rotation.x, math::X_AXIS);
     world = glm::rotate(world, rotation.y, math::Y_AXIS);
     world = glm::rotate(world, rotation.z, math::Z_AXIS);
