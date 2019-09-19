@@ -106,6 +106,13 @@ ecs::EntityId CreateItemMenu
     const int itemOffset = 0
 );
 
+ecs::EntityId CreateBlackboardTextbox
+(
+    ecs::World& world,
+    const int initialCursorCol = 0,
+    const int initialCursorRow = 0
+);
+
 ecs::EntityId CreateYesNoTextbox
 (
     ecs::World& world,

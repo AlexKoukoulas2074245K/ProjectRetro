@@ -30,7 +30,7 @@ const glm::vec3 ViridianCaterpieWeedleGuyOverworldFlowState::YES_NO_TEXTBOX_POSI
 ////////////////////////////////////////////////////////////////////////////////////
 
 ViridianCaterpieWeedleGuyOverworldFlowState::ViridianCaterpieWeedleGuyOverworldFlowState(ecs::World& world)
-    : BaseFlowState(world)
+    : BaseOverworldFlowState(world)
 {
     CreateYesNoTextbox(mWorld, YES_NO_TEXTBOX_POSITION);
 }
@@ -84,7 +84,7 @@ void ViridianCaterpieWeedleGuyOverworldFlowState::VUpdate(const float)
     }
     else if (guiStateComponent.mActiveTextboxesStack.size() == 0)
     {
-        mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHasJustFinished = true;
+        CompleteOverworldFlow();
     }
 }
 

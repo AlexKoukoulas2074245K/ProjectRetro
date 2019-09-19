@@ -34,7 +34,7 @@ const std::string MainMenuOverworldFlowState::TEXTBOX_CLICK_SFX_NAME = "general/
 ////////////////////////////////////////////////////////////////////////////////////
 
 MainMenuOverworldFlowState::MainMenuOverworldFlowState(ecs::World& world)
-    : BaseFlowState(world)
+    : BaseOverworldFlowState(world)
 {
     const auto& guiStateComponent     = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
@@ -111,8 +111,7 @@ void MainMenuOverworldFlowState::ExitOverworldMainMenu()
     // Destroy main menu
     DestroyActiveTextbox(mWorld);
     
-    auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
-    overworldFlowStateComponent.mFlowHasJustFinished = true;
+    CompleteOverworldFlow();
 }
 
 std::string MainMenuOverworldFlowState::GetCursorMainMenuItemFirstFourLetters() const

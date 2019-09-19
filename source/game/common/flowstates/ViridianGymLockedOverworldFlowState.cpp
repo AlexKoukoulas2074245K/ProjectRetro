@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 ViridianGymLockedOverworldFlowState::ViridianGymLockedOverworldFlowState(ecs::World& world)
-    : BaseFlowState(world)
+    : BaseOverworldFlowState(world)
 {
     if (GetActiveTextboxEntityId(mWorld) != ecs::NULL_ENTITY_ID)
     {
@@ -48,7 +48,7 @@ void ViridianGymLockedOverworldFlowState::VUpdate(const float)
         playerDirectionComponent.mDirection = Direction::SOUTH;
         ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(playerDirectionComponent.mDirection), playerRenderableComponent);
 
-        mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHasJustFinished = true;
+        CompleteOverworldFlow();
     }
 }
 

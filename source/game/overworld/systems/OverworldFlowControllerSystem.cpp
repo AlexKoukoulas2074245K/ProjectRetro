@@ -22,6 +22,8 @@
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
+#include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
+#include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +115,19 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
             StartOverworldFlowState<PokeCenterHealingIntroDialogFlowState>(mWorld);
         }
     }
-
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_school"))
+    {
+        // Blackboard flow
+        if (lastNpcSpokenToLevelIndex == 0)
+        {
+            StartOverworldFlowState<ViridianSchoolBlackboardOverworldFlowState>(mWorld);
+        }
+        // Book lesson flow
+        else if (lastNpcSpokenToLevelIndex == 3)
+        {
+            StartOverworldFlowState<ViridianSchoolBookOverworldFlowState>(mWorld);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

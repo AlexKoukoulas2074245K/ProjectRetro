@@ -37,6 +37,7 @@ static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION      = gl
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = glm::vec3(0.0f, 0.0f, -0.8f);
 static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.005f, 0.0f, -0.8f);
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
+static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -73,6 +74,9 @@ static const int POKEMON_STATS_DISPLAY_TEXTBOX_ROWS = 18;
 
 static const int POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_COLS = 20;
 static const int POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_ROWS = 18;
+
+static const int BLACKBOARD_TEXTBOX_COLS = 12;
+static const int BLACKBOARD_TEXTBOX_ROWS = 8;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -362,6 +366,60 @@ ecs::EntityId CreateItemMenu
     world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::move(itemMenuStateComponent));    
 
     return itemMenuTextboxEntityId;
+}
+
+ecs::EntityId CreateBlackboardTextbox
+(
+    ecs::World& world,
+    const int initialCursorCol /* 0 */,
+    const int initialCursorRow /* 0 */
+)
+{
+    const auto blackboardTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        BLACKBOARD_TEXTBOX_COLS,
+        BLACKBOARD_TEXTBOX_ROWS,
+        BLACKBOARD_TEXTBOX_POSITION.x,
+        BLACKBOARD_TEXTBOX_POSITION.y,
+        BLACKBOARD_TEXTBOX_POSITION.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "SLP", 2, 2, world);
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "BRN", 7, 2, world);
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "PSN", 2, 4, world);
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "FRZ", 7, 4, world);
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "PAR", 2, 6, world);
+    WriteTextAtTextboxCoords(blackboardTextboxEntityId, "QUIT", 7, 6, world);
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = initialCursorCol;
+    cursorComponent->mCursorRow = initialCursorRow;
+
+    cursorComponent->mCursorColCount = 2;
+    cursorComponent->mCursorRowCount = 3;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 5;
+    cursorComponent->mCursorDisplayVerticalTileIncrements = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        blackboardTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(blackboardTextboxEntityId, std::move(cursorComponent));
+
+    return blackboardTextboxEntityId;
 }
 
 ecs::EntityId CreateYesNoTextbox
