@@ -248,7 +248,7 @@ void App::DummyInitialization()
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 22, 33, mWorld);
+    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 12, 33, mWorld);
 
     SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
 }
