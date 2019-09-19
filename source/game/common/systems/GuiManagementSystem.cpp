@@ -165,9 +165,10 @@ void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, con
     }
     else if (guiStateComponent.mActiveChatboxContentState == ChatboxContentEndState::DIALOG_END)
     {
-        if (DetectedItemReceivedText(textboxEntityId) && !textboxComponent.mHasPlayedItemReceivedSfx)
+        const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
+        if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM && !textboxComponent.mHasPlayedItemReceivedSfx)
         {
-            OnItemReceived(textboxEntityId);
+            OnItemReceived(textboxEntityId, itemDiscoveryType);
             textboxComponent.mHasPlayedItemReceivedSfx = true;
         }
         else
@@ -275,9 +276,10 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
             {
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;                                
 
-                if (DetectedItemReceivedText(textboxEntityId))
+                const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
+                if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM)
                 {
-                    OnItemReceived(textboxEntityId);
+                    OnItemReceived(textboxEntityId, itemDiscoveryType);
                 }
                 else if (DetectedKillSwitch(textboxEntityId))
                 {
@@ -291,9 +293,10 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
                 
             case ChatboxContentEndState::PARAGRAPH_END:
             {
-                if (DetectedItemReceivedText(textboxEntityId))
+                const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
+                if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM)
                 {
-                    OnItemReceived(textboxEntityId);
+                    OnItemReceived(textboxEntityId, itemDiscoveryType);
                 }
                 
                 DeleteTextAtTextboxRow(textboxEntityId, 2, mWorld);
@@ -445,7 +448,7 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
     }
 }
 
-void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) const
+void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, const ItemDiscoveryType discoveryType) const
 {
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 4, mWorld);
@@ -453,10 +456,9 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
     {
         textboxFirstLineString = textboxFirstLineString.substr(1);
     }
-    
-    const auto itemNameSplitBySpace = StringSplit(textboxFirstLineString, ' ');
-    const auto itemNameSplitByExclamationMark = StringSplit(itemNameSplitBySpace[0], '!');
-    const auto itemName   = itemNameSplitByExclamationMark[0];
+        
+    auto itemName = StringSplit(textboxFirstLineString, '!')[0];
+    StringReplaceAllOccurences(itemName, " ", "_");
 
     const auto& itemStats = GetItemStats(itemName, mWorld);
     if (itemStats.mUnique)
@@ -469,6 +471,7 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId) co
     }
     
     playerStateComponent.mPendingItemToBeAdded = StringId(itemName);
+    playerStateComponent.mPendingItemToBeAddedDiscoveryType = discoveryType;
 }
 
 void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const
@@ -618,7 +621,7 @@ bool GuiManagementSystem::DetectedFlowHook(const ecs::EntityId textboxEntityId) 
     return false;
 }
 
-bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const
+ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
@@ -630,20 +633,34 @@ bool GuiManagementSystem::DetectedItemReceivedText(const ecs::EntityId textboxEn
         textboxFirstLineString = textboxFirstLineString.substr(1);
     }
     
-    if
-    (
-        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got") ||
-        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found") ||
-        StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received")        
-    )
+    const auto stringStartsWithGot      = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got");
+    const auto stringStartsWithFound    = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found");
+    const auto stringStartsWithReceived = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received");
+
+    if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived)
     {
-        if (textboxSecondLineString[1] != 'f' || textboxSecondLineString[2] != 'o' || textboxSecondLineString[3] != 'r')
+        if (textboxSecondLineString[1] == 'f' && textboxSecondLineString[2] == 'o' && textboxSecondLineString[3] == 'r')
         {
-            return true;
+            return ItemDiscoveryType::NO_ITEM;
         }        
+
+        if (stringStartsWithGot)
+        {
+            return ItemDiscoveryType::GOT;
+        }
+        else if (stringStartsWithFound)
+        {
+            return ItemDiscoveryType::FOUND;
+        }
+        else if (stringStartsWithReceived)
+        {
+            return ItemDiscoveryType::RECEIVED;
+        }
+
+        assert(false && "Item discovery type not handled");
     }
     
-    return false;
+    return ItemDiscoveryType::NO_ITEM;
 }
 
 void GuiManagementSystem::StripSpecialHookStringFromQueuedText(const ecs::EntityId textboxEntityId) const

@@ -56,7 +56,7 @@ void LoadAndPopulateItemsStats(ItemStatsSingletonComponent& itemsStatsComponent)
         const auto usage      = itemUsageToEnumEntry.at(statsObject["usage"].get<int>());
         const auto uniqueness = statsObject["unique"].get<bool>();
         const auto effect     = statsObject["effect"].get<std::string>();
-        const auto price      = statsObject["bprice"].get<int>();
+        const auto price      = statsObject["price"].get<int>();
 
         itemsStatsComponent.mItemStats.insert(std::make_pair(itemName, ItemStats
         (

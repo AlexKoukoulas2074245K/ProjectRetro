@@ -2794,7 +2794,6 @@
         { "tile_traits": "SOLID", "editor_col": 19, "editor_row": 53, "game_col": 19, "game_row": 10, "game_position_x": 30.4, "game_position_z": 16.0 },
         { "tile_traits": "SOLID", "editor_col": 27, "editor_row": 53, "game_col": 27, "game_row": 10, "game_position_x": 43.2, "game_position_z": 16.0 },
         { "tile_traits": "SOLID", "editor_col": 8, "editor_row": 54, "game_col": 8, "game_row": 9, "game_position_x": 12.8, "game_position_z": 14.4 },
-        { "tile_traits": "CUTTABLE_TREE", "editor_col": 19, "editor_row": 54, "game_col": 19, "game_row": 9, "game_position_x": 30.4, "game_position_z": 14.4 },
         { "tile_traits": "SOLID", "editor_col": 27, "editor_row": 54, "game_col": 27, "game_row": 9, "game_position_x": 43.2, "game_position_z": 14.4 },
         { "tile_traits": "SOLID", "editor_col": 8, "editor_row": 55, "game_col": 8, "game_row": 8, "game_position_x": 12.8, "game_position_z": 12.8 },
         { "tile_traits": "SOLID", "editor_col": 17, "editor_row": 55, "game_col": 17, "game_row": 8, "game_position_x": 27.2, "game_position_z": 12.8 },

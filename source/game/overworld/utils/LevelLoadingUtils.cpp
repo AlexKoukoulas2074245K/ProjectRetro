@@ -102,6 +102,13 @@ static void PadExtraSeaTiles
     ecs::World& world
 );
 
+static void DestroyAnyCollectedItemNpcs
+(
+    const std::vector<ecs::EntityId> npcEntityIdsAdded,
+    ecs::World& world,
+    LevelModelComponent& levelModelComponent
+);
+
 static void CheckAndLoadEncounterInfo
 (
     LevelModelComponent& levelModelComponent
@@ -195,17 +202,17 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     );
     
     // Load Npc Attributes
-    std::vector<ecs::EntityId> mNpcEntityIdsAdded;
+    std::vector<ecs::EntityId> npcEntityIdsAdded;
     int npcLevelIndexCounter = 0;
     for (const auto& npcAttributesJsonEntry: levelJson["level_npc_attributes"])
     {
-        mNpcEntityIdsAdded.push_back(CreateNpcAttributes(npcAttributesJsonEntry, npcLevelIndexCounter++, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world));
+        npcEntityIdsAdded.push_back(CreateNpcAttributes(npcAttributesJsonEntry, npcLevelIndexCounter++, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world));
     }
     
-    // Load NPC list
+    // Load NPC sprites
     for (const auto& npcJsonEntry: levelJson["level_npc_sprites"])
     {
-        CreateNpcSprite(npcJsonEntry, mNpcEntityIdsAdded, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
+        CreateNpcSprite(npcJsonEntry, npcEntityIdsAdded, levelModelComponent->mLevelName, levelModelComponent->mLevelTilemap, world);
     }
 
     // Load model list
@@ -233,6 +240,9 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
         SetTileTrait(tileTraitEntry, levelModelComponent->mLevelTilemap);
     }
     
+    // Destroy any collected item npcs
+    DestroyAnyCollectedItemNpcs(npcEntityIdsAdded, world, *levelModelComponent);
+
     // Load encounter info if any
     CheckAndLoadEncounterInfo(*levelModelComponent);
     
@@ -359,6 +369,7 @@ ecs::EntityId CreateNpcAttributes
     aiComponent->mOriginalLevelRow = gameRow;
     
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+
     for (const auto& defeatedNpcEntry: playerStateComponent.mDefeatedNpcEntries)
     {
         if
@@ -453,8 +464,8 @@ void CreateNpcSprite
             npcEntityId = npcAttributeEntityId;
             break;
         }
-    }
-    
+    }     
+
     // This means that a character sprite was added in the editor without any npc data
     if (npcEntityId == ecs::NULL_ENTITY_ID)
     {
@@ -697,6 +708,39 @@ static void PadExtraSeaTiles
             world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));
         }
     }    
+}
+
+void DestroyAnyCollectedItemNpcs
+(
+    const std::vector<ecs::EntityId> npcEntityIdsAdded, 
+    ecs::World& world, 
+    LevelModelComponent& levelModelComponent
+)
+{
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+    for (const auto& collectedItemNpcEntry : playerStateComponent.mCollectedNpcItemEntries)
+    {
+        if (collectedItemNpcEntry.mNpcLevelName == levelModelComponent.mLevelName)
+        {
+            for (const auto& npcEntityId : npcEntityIdsAdded)
+            {
+                // Check as the entity might have been deleted in prior iteration of this 
+                if (world.HasComponent<NpcAiComponent>(npcEntityId))
+                {
+                    const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
+                    const auto& movementStateComponent = world.GetComponent<MovementStateComponent>(npcEntityId);
+
+                    if (npcAiComponent.mLevelIndex == collectedItemNpcEntry.mNpcLevelIndex)
+                    {
+                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
+                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NONE;
+
+                        world.DestroyEntity(npcEntityId);
+                    }
+                }                
+            }
+        }
+    }
 }
 
 void CheckAndLoadEncounterInfo

@@ -56,6 +56,23 @@ struct DefeatedNpcEntry
     const int mNpcLevelIndex;
 };
 
+struct CollectedItemNpcEntry
+{
+    CollectedItemNpcEntry
+    (
+        const StringId npcLevelName,
+        const int npcLevelIndex
+    )
+        : mNpcLevelName(npcLevelName)
+        , mNpcLevelIndex(npcLevelIndex)
+    {
+
+    }
+
+    const StringId mNpcLevelName;
+    const int mNpcLevelIndex;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +84,7 @@ public:
     std::vector<BagItemEntry> mPlayerBag;
     std::vector<StringId> mBadgeNamesOwned;
     std::vector<DefeatedNpcEntry> mDefeatedNpcEntries;
+    std::vector<CollectedItemNpcEntry> mCollectedNpcItemEntries;
     
     int mLastNpcLevelIndexSpokenTo = -1;
     
@@ -93,6 +111,7 @@ public:
     Direction mLastEngagedTrainerDirection = Direction::SOUTH;
     bool mBillInteractionCompleted         = false;
 
+    ItemDiscoveryType mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

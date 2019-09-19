@@ -56,13 +56,13 @@ private:
     void UpdateChatboxScrollAnim2(const ecs::EntityId textboxEntityId, const float dt) const;
     void UpdateChatboxParagraphEndDelay(const float dt) const;    
     void OnTextboxQueuedCharacterRemoval(const ecs::EntityId textboxEntityId) const;
-    void OnItemReceived(const ecs::EntityId textboxEntityId) const;
+    void OnItemReceived(const ecs::EntityId textboxEntityId, const ItemDiscoveryType) const;
     void UpdateCursoredTextbox(const ecs::EntityId textboxEntityId) const;
 
     bool DetectedKillSwitch(const ecs::EntityId textboxEntityId) const;
     bool DetectedFreeze(const ecs::EntityId textboxEntityId) const;
     bool DetectedFlowHook(const ecs::EntityId textboxEntityId) const;
-    bool DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const;    
+    ItemDiscoveryType DetectedItemReceivedText(const ecs::EntityId textboxEntityId) const;    
     void StripSpecialHookStringFromQueuedText(const ecs::EntityId textboxEntityId) const;    
     void MoveTextboxCursor(const ecs::EntityId textboxEntityId, const Direction direction) const;
     

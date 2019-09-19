@@ -183,16 +183,45 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
     
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
     {
-        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-        playerStateComponent.mPendingItemToBeAdded = StringId();
+        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);        
         
         // Update npc dialog
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
         auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
-        if (npcAiComponent.mSideDialogs.size() > 0)
+
+        // Found item (pokeball npc)
+        if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::FOUND)
         {
-            npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+            playerStateComponent.mCollectedNpcItemEntries.emplace_back
+            (
+                playerStateComponent.mLastOverworldLevelName,
+                playerStateComponent.mLastNpcLevelIndexSpokenTo
+            );
+
+            const auto playerEntityId                = GetPlayerEntityId(mWorld);
+            const auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
+            const auto& playerDirectionComponent     = mWorld.GetComponent<DirectionComponent>(playerEntityId);
+            const auto& activeLevelComponent         = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+            auto& levelModelComponent                = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+
+            auto& npcItemTile = GetNeighborTile(playerMovementStateComponent.mCurrentCoords, playerDirectionComponent.mDirection, levelModelComponent.mLevelTilemap);
+
+            mWorld.DestroyEntity(npcEntityId);
+            playerStateComponent.mLastNpcLevelIndexSpokenTo = -1;
+            npcItemTile.mTileOccupierType = TileOccupierType::NONE;
+            npcItemTile.mTileOccupierEntityId = ecs::NULL_ENTITY_ID;            
         }
+        // Collected item 
+        else
+        {
+            if (npcAiComponent.mSideDialogs.size() > 0)
+            {
+                npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+            }
+        }  
+
+        playerStateComponent.mPendingItemToBeAdded = StringId();
+        playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
     }
 }
 

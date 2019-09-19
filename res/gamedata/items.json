@@ -4,7 +4,7 @@
 		"usage": 2,
         "unique": true,
         "effect": "",
-        "bprice": 0
+        "price": 0
 	},
 	
     "POK^_BALL": 
@@ -12,7 +12,7 @@
         "usage": 1,
         "unique": false,
         "effect": "BALL",
-        "bprice": 100 
+        "price": 200 
     },
 
     "GREAT_BALL": 
@@ -20,7 +20,7 @@
         "usage": 1,
         "unique": false,
         "effect": "BALL",
-        "bprice": 300
+        "price": 600
     },
 
     "POTION": 
@@ -28,7 +28,7 @@
         "usage": 2,
         "unique": false,
         "effect": "20HP",
-        "bprice": 150
+        "price": 300
     },
 
     "SUPER_POTION": 
@@ -36,7 +36,7 @@
         "usage": 2,
         "unique": false,
         "effect": "50HP",
-        "bprice": 350
+        "price": 700
     },
  
     "AWAKENING": 
@@ -44,7 +44,7 @@
         "usage": 2,
         "unique": false,
         "effect": "SLPH",
-        "bprice": 125
+        "price": 250
     },
 
     "MOON_STONE": 
@@ -52,7 +52,7 @@
         "usage": 0,
         "unique": false,
         "effect": "#",
-        "bprice": 0
+        "price": 0
     },
 
     "ANTIDOTE": 
@@ -60,7 +60,7 @@
         "usage": 2,
         "unique": false,
         "effect": "PSNH",
-        "bprice": 50
+        "price": 100
     },
 
     "BURN_HEAL": 
@@ -68,7 +68,7 @@
         "usage": 2,
         "unique": false,
         "effect": "BRNH",
-        "bprice": 125
+        "price": 250
     },
 
     "PARALYZ_HEAL": 
@@ -76,7 +76,7 @@
         "usage": 2,
         "unique": false,
         "effect": "PRZH",
-        "bprice": 100
+        "price": 200
     },
 
     "ESCAPE_ROPE": 
@@ -84,7 +84,7 @@
         "usage": 0,
         "unique": false,
         "effect": "#",
-        "bprice": 225
+        "price": 550
     },
 
     "REPEL": 
@@ -92,7 +92,7 @@
         "usage": 0,
         "unique": false,
         "effect": "#",
-        "bprice": 175
+        "price": 350
     },
 
     "NUGGET": 
@@ -100,7 +100,7 @@
         "usage": -1,
         "unique": false,
         "effect": "#",
-        "bprice": 4900
+        "price": 9800
     },
 
     "FOSSIL": 
@@ -108,7 +108,7 @@
         "usage": -1,
         "unique": true,
         "effect": "#",
-        "bprice": 0
+        "price": 0
     },
 
     "OLD_AMBER": 
@@ -116,7 +116,7 @@
         "usage": -1,
         "unique": true,
         "effect": "#",
-        "bprice": 0
+        "price": 0
     },
 
     "BOULDERBADGE": 
@@ -124,6 +124,14 @@
         "usage": -1,
         "unique": true,
         "effect": "BADGE",
-        "bprice": 0
-    }
+        "price": 0
+    },
+	
+	"HP_UP":
+	{
+		"usage": 0,
+        "unique": false,
+        "effect": "#",
+        "price": 9800
+	}
 }

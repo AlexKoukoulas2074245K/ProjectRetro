@@ -105,6 +105,12 @@ inline const Tile& GetNeighborTile(const TileCoords& coords, const Direction dir
     return GetTile(tileCoords, grid);
 }
 
+inline Tile& GetNeighborTile(const TileCoords& coords, const Direction direction, LevelTilemap& grid, const int numberOfTilesAway = 1)
+{
+    const auto& tileCoords = GetNeighborTileCoords(coords, direction, numberOfTilesAway);
+    return GetTile(tileCoords, grid);
+}
+
 inline StringId GetLevelNameFromId(const ecs::EntityId levelId, const ecs::World& world)
 {
     const auto& activeEntities = world.GetActiveEntities();
