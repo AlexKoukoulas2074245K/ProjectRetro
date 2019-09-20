@@ -158,6 +158,11 @@ ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox
     ecs::World& world
 );
 
+ecs::EntityId CreateSaveScreenPlayerStatsTextbox
+(    
+    ecs::World& world
+);
+
 ecs::EntityId CreatePokemonMiniStatsDisplay
 (
     const Pokemon& pokemon,

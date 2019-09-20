@@ -122,7 +122,9 @@ void App::GameLoop()
 
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
-     
+
+    auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
 #ifndef NDEBUG
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 #endif
@@ -140,6 +142,8 @@ void App::GameLoop()
         
         if (dtAccumulator > 1.0f)
         {
+            playerStateComponent.mSecondsPlayed++;
+
             const auto fpsString            = " - FPS: " + std::to_string(framesAccumulator);
             const auto frustumCulledString  = " - FCed: " + std::to_string(renderingContextComponent.mFrustumCulledEntities);
             const auto entityCountString    = " - Entities: " + std::to_string(mWorld.GetActiveEntities().size());
@@ -209,6 +213,7 @@ void App::DummyInitialization()
     mWorld.SetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>(std::make_unique<PokeCenterHealingAnimationStateSingletonComponent>());
 
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
+    playerStateComponent->mSecondsPlayed = 4000;
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
     playerStateComponent->mPlayerTrainerName = StringId("Alex");

@@ -12,6 +12,7 @@
 #include "ItemMenuFlowState.h"
 #include "MainMenuOverworldFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
+#include "SavePromptDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -75,7 +76,7 @@ void MainMenuOverworldFlowState::VUpdate(const float)
         }
         else if (StringStartsWith(mainMenuItem, "SAVE"))
         {
-            
+            CompleteAndTransitionTo<SavePromptDialogOverworldFlowState>();
         }
         else if (StringStartsWith(mainMenuItem, "OPTIO"))
         {

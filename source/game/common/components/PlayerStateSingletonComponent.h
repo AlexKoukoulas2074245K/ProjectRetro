@@ -110,6 +110,7 @@ public:
     StringId mHomeLevelName            = StringId("pallet");
     StringId mPendingItemToBeAdded     = StringId();
     
+    int mSecondsPlayed                     = 0;
     int mLastNpcLevelIndexSpokenTo         = -1;
     int mPokeDollarCredits                 = 0;
     int mLastOverworldLevelOccupiedRow     = 0;

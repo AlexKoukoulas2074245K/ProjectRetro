@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "PokedexSpriteUtils.h"
 #include "TextboxUtils.h"
 #include "../../ECS.h"
 #include "../components/CursorComponent.h"
@@ -38,6 +39,7 @@ static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = gl
 static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.005f, 0.0f, -0.8f);
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
+static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -77,6 +79,9 @@ static const int POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_ROWS = 18;
 
 static const int BLACKBOARD_TEXTBOX_COLS = 12;
 static const int BLACKBOARD_TEXTBOX_ROWS = 8;
+
+static const int SAVE_SCREEN_PLAYER_STATS_TEXTBOX_COLS = 16;
+static const int SAVE_SCREEN_PLAYER_STATS_TEXTBOX_ROWS = 10;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -751,6 +756,40 @@ ecs::EntityId CreateEncounterFightMenuTextbox
     world.AddComponent<CursorComponent>(fightMenuTextboxEntityId, std::move(cursorComponent));
 
     return fightMenuTextboxEntityId;
+}
+
+ecs::EntityId CreateSaveScreenPlayerStatsTextbox
+(    
+    ecs::World& world
+)
+{
+    const auto playerStatsTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::GENERIC_TEXTBOX,
+        SAVE_SCREEN_PLAYER_STATS_TEXTBOX_COLS, 
+        SAVE_SCREEN_PLAYER_STATS_TEXTBOX_ROWS, 
+        SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION.x,
+        SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION.y,
+        SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION.z,
+        world
+    );
+
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto playerName            = playerStateComponent.mPlayerTrainerName.GetString();
+    const auto playerBadgesString    = std::to_string(playerStateComponent.mBadgeNamesOwned.size());
+    const auto numPokemonOwnedString = std::to_string(GetNumberOfOwnedPokemon(world));
+    const auto timePlayedString      = GetHoursMinutesStringFromSeconds(playerStateComponent.mSecondsPlayed);
+
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, "PLAYER", 1, 2, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, "BADGES", 1, 4, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, "POK^DEX", 1, 6, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, "TIME", 1, 8, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, playerName, 15 - playerName.size(), 2, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, playerBadgesString, 15 - playerBadgesString.size(), 4, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, numPokemonOwnedString, 15 - numPokemonOwnedString.size(), 6, world);
+    WriteTextAtTextboxCoords(playerStatsTextboxEntityId, timePlayedString, 15 - timePlayedString.size(), 8, world);
+        
+    return playerStatsTextboxEntityId;
 }
 
 ecs::EntityId CreateEncounterFightMenuMoveInfoTextbox

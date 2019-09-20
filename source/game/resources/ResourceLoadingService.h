@@ -60,8 +60,7 @@ public:
     static const std::string RES_MUSIC_ROOT;
     static const std::string RES_SFX_ROOT;
     static const std::string RES_SHADERS_ROOT;
-    static const std::string RES_TEXTURES_ROOT;
-    
+    static const std::string RES_TEXTURES_ROOT;    
     
     static ResourceLoadingService& GetInstance();
 
@@ -111,6 +110,8 @@ public:
 	{
 		return static_cast<ResourceType&>(GetResource(resourceId));
 	}
+
+    void WriteStringToFile(const std::string& str, const std::string& relativeFilePath);
 
 private:    
     ResourceLoadingService() = default;

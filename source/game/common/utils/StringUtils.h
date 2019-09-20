@@ -96,6 +96,27 @@ inline std::vector<std::string> StringSplit(const std::string& s, char delim)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+// Returns the formatted time string HH:MM from the given number of seconds
+inline std::string GetHoursMinutesStringFromSeconds(const int seconds)
+{
+    const auto minutes = seconds / 60;
+    const auto hours   = minutes / 60;
+
+    const auto hoursString = std::to_string(hours);
+    auto minutesString = std::to_string(minutes % 60);
+
+    if (minutesString.size() == 1)
+    {
+        minutesString = "0" + minutesString;
+    }
+
+    return hoursString + ":" + minutesString;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 // Replace all occurences of pattern with the replacement string in the original string
 inline void StringReplaceAllOccurences(std::string& s, const std::string& pattern, const std::string& replacement)
 {
