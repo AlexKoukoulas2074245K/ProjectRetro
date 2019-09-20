@@ -104,10 +104,10 @@ public:
     std::vector<CollectedItemNpcEntry> mCollectedNpcItemEntries;        
     std::vector<CollectedItemNonDestructibleNpcEntry> mCollectedItemNonDestructibleNpcEntries;
 
-    StringId mLastOverworldLevelName   = StringId();
     StringId mPlayerTrainerName        = StringId();
     StringId mRivalName                = StringId();
     StringId mHomeLevelName            = StringId("pallet");
+    StringId mLastOverworldLevelName   = StringId();
     StringId mPendingItemToBeAdded     = StringId();
     
     int mSecondsPlayed                     = 0;

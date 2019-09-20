@@ -33,6 +33,8 @@ public:
 
 private:
     static const std::string SAVE_SFX;
+    static const std::string SAVE_FILE_NAME;
+
     static const float SAVE_DELAY;
 
     void SaveGame() const;

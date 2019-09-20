@@ -224,7 +224,14 @@ void App::DummyInitialization()
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    
+    playerStateComponent->mBadgeNamesOwned.push_back(StringId("BOULDERBADGE"));
+    playerStateComponent->mBadgeNamesOwned.push_back(StringId("CASCADEBADGE"));
+    playerStateComponent->mDefeatedNpcEntries.emplace_back(StringId("lavender"), 0);
+    playerStateComponent->mDefeatedNpcEntries.emplace_back(StringId("lavender"), 1);
+    playerStateComponent->mCollectedNpcItemEntries.emplace_back(StringId("lavender"), 2);
+    playerStateComponent->mCollectedNpcItemEntries.emplace_back(StringId("lavender"), 3);
+    playerStateComponent->mCollectedItemNonDestructibleNpcEntries.emplace_back(StringId("lavender"), 4);
+    playerStateComponent->mCollectedItemNonDestructibleNpcEntries.emplace_back(StringId("lavender"), 5);
     playerStateComponent->mPlayerPokemonRoster.front()->mStatus = PokemonStatus::ASLEEP;
     playerStateComponent->mPlayerPokemonRoster.front()->mHp = 2;
 
