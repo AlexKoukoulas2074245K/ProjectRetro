@@ -18,7 +18,7 @@
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
-#include "../../common/flowstates/PokeCenterHealingIntroDialogFlowState.h"
+#include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
@@ -112,7 +112,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         // Joey flow
         if (lastNpcSpokenToLevelIndex == 2)
         {
-            StartOverworldFlowState<PokeCenterHealingIntroDialogFlowState>(mWorld);
+            StartOverworldFlowState<PokeCenterHealingIntroDialogOverworldFlowState>(mWorld);
         }
     }
     else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_school"))

@@ -398,6 +398,18 @@ ecs::EntityId CreateNpcAttributes
         }
     }
     
+    for (const auto& collectedItemNonDestructibleNpcEntry : playerStateComponent.mCollectedItemNonDestructibleNpcEntries)
+    {
+        if
+        (
+            collectedItemNonDestructibleNpcEntry.mNpcLevelName == levelNameId &&
+            collectedItemNonDestructibleNpcEntry.mNpcLevelIndex == npcLevelIndex
+        )
+        {
+            aiComponent->mDialog = aiComponent->mSideDialogs[0];
+        }
+    }
+
     auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
     animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
     animationTimerComponent->mAnimationTimer->Pause();

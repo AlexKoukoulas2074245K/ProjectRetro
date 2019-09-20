@@ -1,5 +1,5 @@
 //
-//  PokeCenterHealingAnimationFlowState.cpp
+//  PokeCenterHealingAnimationOverworldFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 12/09/2019.
@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PokeCenterHealingFarewellDialogFlowState.h"
-#include "PokeCenterHealingAnimationFlowState.h"
+#include "PokeCenterHealingFarewellDialogOverworldFlowState.h"
+#include "PokeCenterHealingAnimationOverworldFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
@@ -31,34 +31,34 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 PokeCenterHealingAnimationFlowState::PC_OVERLAY_POSITION         = glm::vec3(16.9049511f, 0.00630000001f, 17.4549999f);
-const glm::vec3 PokeCenterHealingAnimationFlowState::FIRST_HEALING_BALL_POSITION = glm::vec3(17.0f, 0.523000658f, 15.0216150f);
+const glm::vec3 PokeCenterHealingAnimationOverworldFlowState::PC_OVERLAY_POSITION         = glm::vec3(16.9049511f, 0.00630000001f, 17.4549999f);
+const glm::vec3 PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_BALL_POSITION = glm::vec3(17.0f, 0.523000658f, 15.0216150f);
 
-const StringId PokeCenterHealingAnimationFlowState::JOY_BOW_ANIMATION_NAME = StringId("bow");
+const StringId PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_ANIMATION_NAME = StringId("bow");
 
-const std::string PokeCenterHealingAnimationFlowState::HEALING_MACHINE_MODEL_NAME   = "in_poke_center_healing_machine";
-const std::string PokeCenterHealingAnimationFlowState::HEALING_BALL_MODEL_NAME      = "healing_ball";
-const std::string PokeCenterHealingAnimationFlowState::POKEBALL_HEALING_SFX_NAME    = "general/pokeball_healing";
-const std::string PokeCenterHealingAnimationFlowState::HEALING_ANIMATION_SFX_NAME   = "general/healing_long";
-const std::string PokeCenterHealingAnimationFlowState::POKE_CENTER_MUSIC_TRACK_NAME = "poke_center_mart";
-const std::string PokeCenterHealingAnimationFlowState::CHARACTER_MODEL_NAME         = "camera_facing_quad";
+const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_MACHINE_MODEL_NAME   = "in_poke_center_healing_machine";
+const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_MODEL_NAME      = "healing_ball";
+const std::string PokeCenterHealingAnimationOverworldFlowState::POKEBALL_HEALING_SFX_NAME    = "general/pokeball_healing";
+const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_ANIMATION_SFX_NAME   = "general/healing_long";
+const std::string PokeCenterHealingAnimationOverworldFlowState::POKE_CENTER_MUSIC_TRACK_NAME = "poke_center_mart";
+const std::string PokeCenterHealingAnimationOverworldFlowState::CHARACTER_MODEL_NAME         = "camera_facing_quad";
 
-const float PokeCenterHealingAnimationFlowState::HEALING_BALL_X_DISTANCE = 0.5799007f;
-const float PokeCenterHealingAnimationFlowState::HEALING_BALL_Z_DISTANCE = 0.4590192f;
+const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_X_DISTANCE = 0.5799007f;
+const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_Z_DISTANCE = 0.4590192f;
 
-const int PokeCenterHealingAnimationFlowState::JOY_NPC_LEVEL_INDEX            = 0;
-const int PokeCenterHealingAnimationFlowState::JOY_BOW_SPRITE_ATLAS_COL       = 7;
-const int PokeCenterHealingAnimationFlowState::JOY_BOW_SPRITE_ATLAS_ROW       = 4;
-const int PokeCenterHealingAnimationFlowState::FIRST_HEALING_MACHINE_GAME_COL = 11;
-const int PokeCenterHealingAnimationFlowState::FIRST_HEALING_MACHINE_GAME_ROW = 10;
-const int PokeCenterHealingAnimationFlowState::CHARACTER_ATLAS_COLS           = 8;
-const int PokeCenterHealingAnimationFlowState::CHARACTER_ATLAS_ROWS           = 64;
+const int PokeCenterHealingAnimationOverworldFlowState::JOY_NPC_LEVEL_INDEX            = 0;
+const int PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_SPRITE_ATLAS_COL       = 7;
+const int PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_SPRITE_ATLAS_ROW       = 4;
+const int PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_MACHINE_GAME_COL = 11;
+const int PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_MACHINE_GAME_ROW = 10;
+const int PokeCenterHealingAnimationOverworldFlowState::CHARACTER_ATLAS_COLS           = 8;
+const int PokeCenterHealingAnimationOverworldFlowState::CHARACTER_ATLAS_ROWS           = 64;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-PokeCenterHealingAnimationFlowState::PokeCenterHealingAnimationFlowState(ecs::World& world)
+PokeCenterHealingAnimationOverworldFlowState::PokeCenterHealingAnimationOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
 {       
     auto& pokeCenterHealingAnimationState = mWorld.GetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>();
@@ -83,7 +83,7 @@ PokeCenterHealingAnimationFlowState::PokeCenterHealingAnimationFlowState(ecs::Wo
     SetCurrentStateDurationTimer();    
 }
 
-void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
+void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
 {    
     const auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& pokeCenterHealingAnimationState = mWorld.GetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>();
@@ -244,7 +244,7 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
                 }
 
                 pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
-                CompleteAndTransitionTo<PokeCenterHealingFarewellDialogFlowState>();
+                CompleteAndTransitionTo<PokeCenterHealingFarewellDialogOverworldFlowState>();
             }
         } break;
     }
@@ -254,12 +254,12 @@ void PokeCenterHealingAnimationFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ecs::EntityId PokeCenterHealingAnimationFlowState::GetJoyEntityId() const
+ecs::EntityId PokeCenterHealingAnimationOverworldFlowState::GetJoyEntityId() const
 {
     return GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
 }
 
-ecs::EntityId PokeCenterHealingAnimationFlowState::GetHealingMachineEntityId() const
+ecs::EntityId PokeCenterHealingAnimationOverworldFlowState::GetHealingMachineEntityId() const
 {
     const auto& activeEntities = mWorld.GetActiveEntities();
     const auto healingMachinePosition = TileCoordsToPosition(FIRST_HEALING_MACHINE_GAME_COL, FIRST_HEALING_MACHINE_GAME_ROW);
@@ -284,7 +284,7 @@ ecs::EntityId PokeCenterHealingAnimationFlowState::GetHealingMachineEntityId() c
     return ecs::NULL_ENTITY_ID;
 }
 
-void PokeCenterHealingAnimationFlowState::ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect computerScreenOverlayEffect) const
+void PokeCenterHealingAnimationOverworldFlowState::ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect computerScreenOverlayEffect) const
 {            
     auto healingMachineTexturePath = ResourceLoadingService::RES_TEXTURES_ROOT + HEALING_MACHINE_MODEL_NAME;
 
@@ -303,7 +303,7 @@ void PokeCenterHealingAnimationFlowState::ShowComputerScreenOverlayEffect(const 
     renderableComponent.mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(healingMachineTexturePath);            
 }
 
-void PokeCenterHealingAnimationFlowState::ShowHealingBallWithIndex(const size_t ballIndex, const bool invertedColors) const
+void PokeCenterHealingAnimationOverworldFlowState::ShowHealingBallWithIndex(const size_t ballIndex, const bool invertedColors) const
 {
     auto& pokeCenterHealingAnimationState = mWorld.GetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>();
     if (pokeCenterHealingAnimationState.mPokeballEntityIds.size() > ballIndex)
@@ -345,7 +345,7 @@ void PokeCenterHealingAnimationFlowState::ShowHealingBallWithIndex(const size_t 
     mWorld.AddComponent<RenderableComponent>(pokeCenterHealingAnimationState.mPokeballEntityIds[ballIndex], std::move(renderableComponent));
 }
 
-void PokeCenterHealingAnimationFlowState::AddBowAnimationToJoy() const
+void PokeCenterHealingAnimationOverworldFlowState::AddBowAnimationToJoy() const
 {
     const auto joyEntityId = GetJoyEntityId();
     auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
@@ -353,7 +353,7 @@ void PokeCenterHealingAnimationFlowState::AddBowAnimationToJoy() const
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(JOY_BOW_SPRITE_ATLAS_COL, JOY_BOW_SPRITE_ATLAS_ROW, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, false, CHARACTER_MODEL_NAME, JOY_BOW_ANIMATION_NAME, joyRenderableComponent);
 }
 
-void PokeCenterHealingAnimationFlowState::PreloadHealingMachineSkins() const
+void PokeCenterHealingAnimationOverworldFlowState::PreloadHealingMachineSkins() const
 {    
     ResourceLoadingService::GetInstance().LoadResource
     (
@@ -365,7 +365,7 @@ void PokeCenterHealingAnimationFlowState::PreloadHealingMachineSkins() const
     );
 }
 
-void PokeCenterHealingAnimationFlowState::SetCurrentStateDurationTimer() const
+void PokeCenterHealingAnimationOverworldFlowState::SetCurrentStateDurationTimer() const
 {
     auto& pokeCenterHealingAnimationState = mWorld.GetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>();
     pokeCenterHealingAnimationState.mAnimationTimer = std::make_unique<Timer>(sHealingAnimationStateDurations.at(pokeCenterHealingAnimationState.mHealingAnimationStateQueue.front()));

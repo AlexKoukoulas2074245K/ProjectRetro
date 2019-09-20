@@ -1,5 +1,5 @@
 //
-//  PokeCenterHealingFarewellDialogFlowState.cpp
+//  PokeCenterHealingFarewellDialogOverworldFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 12/09/2019.
@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PokeCenterHealingFarewellDialogFlowState.h"
+#include "PokeCenterHealingFarewellDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
@@ -21,14 +21,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-PokeCenterHealingFarewellDialogFlowState::PokeCenterHealingFarewellDialogFlowState(ecs::World& world)
+PokeCenterHealingFarewellDialogOverworldFlowState::PokeCenterHealingFarewellDialogOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
 {   
     const auto mainChatbox = CreateChatbox(mWorld);
     QueueDialogForChatbox(mainChatbox, "We hope to see#you again!", mWorld);
 }
 
-void PokeCenterHealingFarewellDialogFlowState::VUpdate(const float)
+void PokeCenterHealingFarewellDialogOverworldFlowState::VUpdate(const float)
 {
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {

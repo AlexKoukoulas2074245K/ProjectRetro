@@ -1,5 +1,5 @@
 //
-//  PokeCenterHealingIntroDialogFlowState.cpp
+//  PokeCenterHealingIntroDialogOverworldFlowState.cpp
 //  ProjectRetro
 //
 //  Created by Alex Koukoulas on 12/09/2019.
@@ -9,9 +9,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PokeCenterHealingAnimationFlowState.h"
-#include "PokeCenterHealingFarewellDialogFlowState.h"
-#include "PokeCenterHealingIntroDialogFlowState.h"
+#include "PokeCenterHealingAnimationOverworldFlowState.h"
+#include "PokeCenterHealingFarewellDialogOverworldFlowState.h"
+#include "PokeCenterHealingIntroDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
@@ -22,19 +22,19 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 PokeCenterHealingIntroDialogFlowState::HEAL_CANCEL_TEXTBOX_POSITION = glm::vec3(0.378, -0.01f, -0.4f);
+const glm::vec3 PokeCenterHealingIntroDialogOverworldFlowState::HEAL_CANCEL_TEXTBOX_POSITION = glm::vec3(0.378, -0.01f, -0.4f);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-PokeCenterHealingIntroDialogFlowState::PokeCenterHealingIntroDialogFlowState(ecs::World& world)
+PokeCenterHealingIntroDialogOverworldFlowState::PokeCenterHealingIntroDialogOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
 {   
     CreateHealCancelTextbox(mWorld, HEAL_CANCEL_TEXTBOX_POSITION);
 }
 
-void PokeCenterHealingIntroDialogFlowState::VUpdate(const float)
+void PokeCenterHealingIntroDialogOverworldFlowState::VUpdate(const float)
 {    
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
@@ -63,7 +63,7 @@ void PokeCenterHealingIntroDialogFlowState::VUpdate(const float)
             // Cancel Selected
             else
             {
-                CompleteAndTransitionTo<PokeCenterHealingFarewellDialogFlowState>();
+                CompleteAndTransitionTo<PokeCenterHealingFarewellDialogOverworldFlowState>();
             }
         }
         else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
@@ -74,13 +74,13 @@ void PokeCenterHealingIntroDialogFlowState::VUpdate(const float)
             // Destroy main chatbox
             DestroyActiveTextbox(mWorld);
 
-            CompleteAndTransitionTo<PokeCenterHealingFarewellDialogFlowState>();
+            CompleteAndTransitionTo<PokeCenterHealingFarewellDialogOverworldFlowState>();
         }
     }
     // Heal intro text flow
     else if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
-        CompleteAndTransitionTo<PokeCenterHealingAnimationFlowState>();
+        CompleteAndTransitionTo<PokeCenterHealingAnimationOverworldFlowState>();
     }
 }
 

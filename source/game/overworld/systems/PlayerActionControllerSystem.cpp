@@ -179,15 +179,18 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 
 void PlayerActionControllerSystem::AddPendingItemsToBag() const
 {
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+
+    auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    
+
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
     {
         AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);        
-        
-        // Update npc dialog
+                
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
         auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
+        
 
         // Found item (pokeball npc)
         if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::FOUND)
@@ -200,11 +203,14 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
 
             const auto playerEntityId                = GetPlayerEntityId(mWorld);
             const auto& playerMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(playerEntityId);
-            const auto& playerDirectionComponent     = mWorld.GetComponent<DirectionComponent>(playerEntityId);
-            const auto& activeLevelComponent         = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-            auto& levelModelComponent                = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+            const auto& playerDirectionComponent     = mWorld.GetComponent<DirectionComponent>(playerEntityId);            
 
-            auto& npcItemTile = GetNeighborTile(playerMovementStateComponent.mCurrentCoords, playerDirectionComponent.mDirection, levelModelComponent.mLevelTilemap);
+            auto& npcItemTile = GetNeighborTile
+            (
+                playerMovementStateComponent.mCurrentCoords, 
+                playerDirectionComponent.mDirection,
+                levelModelComponent.mLevelTilemap
+            );
 
             mWorld.DestroyEntity(npcEntityId);
             playerStateComponent.mLastNpcLevelIndexSpokenTo = -1;
@@ -217,6 +223,11 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             if (npcAiComponent.mSideDialogs.size() > 0)
             {
                 npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+                playerStateComponent.mCollectedItemNonDestructibleNpcEntries.emplace_back
+                (
+                    activeLevelComponent.mActiveLevelNameId,
+                    npcAiComponent.mLevelIndex
+                );
             }
         }  
 

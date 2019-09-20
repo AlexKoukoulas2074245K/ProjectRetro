@@ -73,6 +73,23 @@ struct CollectedItemNpcEntry
     const int mNpcLevelIndex;
 };
 
+struct CollectedItemNonDestructibleNpcEntry
+{
+    CollectedItemNonDestructibleNpcEntry
+    (
+        const StringId npcLevelName,
+        const int npcLevelIndex
+    )
+        : mNpcLevelName(npcLevelName)
+        , mNpcLevelIndex(npcLevelIndex)
+    {
+
+    }
+
+    const StringId mNpcLevelName;
+    const int mNpcLevelIndex;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -84,16 +101,16 @@ public:
     std::vector<BagItemEntry> mPlayerBag;
     std::vector<StringId> mBadgeNamesOwned;
     std::vector<DefeatedNpcEntry> mDefeatedNpcEntries;
-    std::vector<CollectedItemNpcEntry> mCollectedNpcItemEntries;
-    
-    int mLastNpcLevelIndexSpokenTo = -1;
-    
+    std::vector<CollectedItemNpcEntry> mCollectedNpcItemEntries;        
+    std::vector<CollectedItemNonDestructibleNpcEntry> mCollectedItemNonDestructibleNpcEntries;
+
     StringId mLastOverworldLevelName   = StringId();
     StringId mPlayerTrainerName        = StringId();
     StringId mRivalName                = StringId();
     StringId mHomeLevelName            = StringId("pallet");
     StringId mPendingItemToBeAdded     = StringId();
     
+    int mLastNpcLevelIndexSpokenTo         = -1;
     int mPokeDollarCredits                 = 0;
     int mLastOverworldLevelOccupiedRow     = 0;
     int mLastOverworldLevelOccupiedCol     = 0;
