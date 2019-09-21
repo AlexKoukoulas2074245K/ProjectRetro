@@ -37,8 +37,6 @@ private:
 
     static const float SAVE_DELAY;
 
-    void SaveGame() const;
-
     Timer mSaveTimer;
     ecs::EntityId mPlayerStatsTextboxEntityId;
 };

@@ -24,6 +24,7 @@
 #include "common/components/PokemonSelectionViewStateSingletonComponent.h"
 #include "common/components/TrainersInfoStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
+#include "common/utils/PersistenceUtils.h"
 #include "common/utils/PokemonItemsUtils.h"
 #include "common/utils/PokemonMoveUtils.h"
 #include "common/utils/PokemonUtils.h"
@@ -118,7 +119,17 @@ void App::GameLoop()
     float dtAccumulator         = 0.0f;
     long long framesAccumulator = 0;
     
-    DummyInitialization();
+    CommonSingletonsInitialization();
+    
+    if (DoesSaveFileExist())
+    {
+        InitializationFromSaveFile();
+    }
+    else
+    {
+        DummyInitialization();
+    }
+    
 
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
@@ -128,6 +139,8 @@ void App::GameLoop()
 #ifndef NDEBUG
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 #endif
+    
+    mWorld.OnPreFirstUpdate();
     
     while (!AppShouldQuit())
     {
@@ -185,55 +198,48 @@ bool App::AppShouldQuit()
     return false;
 }
 
-void App::DummyInitialization()
+void App::CommonSingletonsInitialization()
 {
     auto pokemonBaseStatsComponent = std::make_unique<PokemonBaseStatsSingletonComponent>();
     LoadAndPopulatePokemonBaseStats(*pokemonBaseStatsComponent);
     mWorld.SetSingletonComponent<PokemonBaseStatsSingletonComponent>(std::move(pokemonBaseStatsComponent));
-
+    
     auto trainerInfoStatsComponent = std::make_unique<TrainersInfoStatsSingletonComponent>();
     LoadAndPopulateTrainerInfoStats(*trainerInfoStatsComponent);
     mWorld.SetSingletonComponent<TrainersInfoStatsSingletonComponent>(std::move(trainerInfoStatsComponent));
-
+    
     auto moveStatsComponent = std::make_unique<MoveStatsSingletonComponent>();
     LoadAndPopulateMoveStats(*moveStatsComponent);
     mWorld.SetSingletonComponent<MoveStatsSingletonComponent>(std::move(moveStatsComponent));
-
+    
     auto itemStatsComponent = std::make_unique<ItemStatsSingletonComponent>();
     LoadAndPopulateItemsStats(*itemStatsComponent);
     mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
-
+    
     auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();
-    pokedexStateComponent->mPokedexUnlocked = true;    
+    pokedexStateComponent->mPokedexUnlocked = true;
     mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
-
+    
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>(std::make_unique<PokeCenterHealingAnimationStateSingletonComponent>());
+}
 
+void App::InitializationFromSaveFile()
+{
+    RestoreGameStateFromSaveFile(mWorld);
+}
+
+void App::DummyInitialization()
+{
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
-    playerStateComponent->mSecondsPlayed = 4000;
+    playerStateComponent->mSecondsPlayed = 0;
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
     playerStateComponent->mPlayerTrainerName = StringId("Alex");
     playerStateComponent->mRivalName  = StringId("Gary");
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));    
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 6, false, mWorld));
-    playerStateComponent->mBadgeNamesOwned.push_back(StringId("BOULDERBADGE"));
-    playerStateComponent->mBadgeNamesOwned.push_back(StringId("CASCADEBADGE"));
-    playerStateComponent->mDefeatedNpcEntries.emplace_back(StringId("lavender"), 0);
-    playerStateComponent->mDefeatedNpcEntries.emplace_back(StringId("lavender"), 1);
-    playerStateComponent->mCollectedNpcItemEntries.emplace_back(StringId("lavender"), 2);
-    playerStateComponent->mCollectedNpcItemEntries.emplace_back(StringId("lavender"), 3);
-    playerStateComponent->mCollectedItemNonDestructibleNpcEntries.emplace_back(StringId("lavender"), 4);
-    playerStateComponent->mCollectedItemNonDestructibleNpcEntries.emplace_back(StringId("lavender"), 5);
-    playerStateComponent->mPlayerPokemonRoster.front()->mStatus = PokemonStatus::ASLEEP;
-    playerStateComponent->mPlayerPokemonRoster.front()->mHp = 2;
+    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, false, mWorld));
 
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
     {
@@ -244,23 +250,14 @@ void App::DummyInitialization()
 
     InitializePlayerBag(mWorld);
 
-    AddItemToBag(StringId("POTION"), mWorld, 2);
-    AddItemToBag(StringId("POK^_BALL"), mWorld, 2);
-    AddItemToBag(StringId("GREAT_BALL"), mWorld, 2);    
-    AddItemToBag(StringId("GREAT_BALL"), mWorld, 2);
-    AddItemToBag(StringId("NUGGET"), mWorld, 2);
-    AddItemToBag(StringId("FOSSIL"), mWorld, 2);
-    AddItemToBag(StringId("OLD_AMBER"), mWorld, 2);
-    AddItemToBag(StringId("REPEL"), mWorld, 2);
-
-    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("viridian"), mWorld);
+    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
     auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
 
     auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 23, 38, mWorld);
+    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 7, 5, mWorld);
 
     SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
 }

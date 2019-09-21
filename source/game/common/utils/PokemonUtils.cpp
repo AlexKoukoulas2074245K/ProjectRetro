@@ -799,6 +799,15 @@ int CalculateBallShakeCountBeforePokemonBreaksFree
     }
 }
 
+int GetNumberOfOwnedPokemon
+(
+    const ecs::World& world
+)
+{
+    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
+    return std::count(pokedexStateComponent.mPokedexEntries.cbegin(), pokedexStateComponent.mPokedexEntries.cend(), PokedexEntryType::OWNED);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

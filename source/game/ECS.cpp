@@ -88,6 +88,8 @@ void ecs::World::RemoveEntitiesWithoutAnyComponents()
     {                
         if (entityIter->second.mComponentMap.size() == 0)
         {
+            const auto id = entityIter->first;
+            (void)id;
             entityIter = mEntityComponentStore.erase(entityIter);
         }
         else
@@ -110,7 +112,6 @@ void ecs::World::CongregateActiveEntitiesInCurrentFrame()
 
 void ecs::World::InsertNewEntitiesIntoActiveCollection()
 {
-
     if (mAddedEntitiesBySystemsUpdate.size() > 0)
     {
         mActiveEntitiesInFrame.insert(mActiveEntitiesInFrame.end(), mAddedEntitiesBySystemsUpdate.begin(), mAddedEntitiesBySystemsUpdate.end());

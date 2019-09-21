@@ -84,7 +84,13 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
             (
                 "cries/" +
                 GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
-            );            
+            );
+            
+            const auto pokedexEntryType = GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, mWorld);
+            if (pokedexEntryType != PokedexEntryType::OWNED)
+            {
+                ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::SEEN, mWorld);
+            }
         }
         else
         {

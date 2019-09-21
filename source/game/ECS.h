@@ -307,6 +307,11 @@ public:
         return mComponentMasks.at(componentTypeId) |
             CalculateComponentUsageMask<SecondUtilizedComponentType, RestUtilizedComponentTypes...>();
     }
+    
+    inline void OnPreFirstUpdate()
+    {
+        mAddedEntitiesBySystemsUpdate.clear();
+    }
 
 private:    
     // Removes all systems that have been marked to be removed

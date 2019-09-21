@@ -113,7 +113,7 @@ void ViridianSchoolBlackboardOverworldFlowState::ShowBlackboardExplanationText
     DestroyActiveTextbox(mWorld);
 
     // Recreate blackboard textbox
-    const auto blackboardTextboxEntityId = CreateBlackboardTextbox(mWorld, blackboardCursorCol, blackboardCursorRow);
+    CreateBlackboardTextbox(mWorld, blackboardCursorCol, blackboardCursorRow);
 
     // Create status explanation chatbox
     const auto statusExplanationChatboxEntityId = CreateChatbox(mWorld);

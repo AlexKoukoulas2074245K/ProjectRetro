@@ -111,8 +111,12 @@ public:
 		return static_cast<ResourceType&>(GetResource(resourceId));
 	}
 
+    // Opens a file based on the relative file path given, and writes the string str to it
     void WriteStringToFile(const std::string& str, const std::string& relativeFilePath);
 
+    // Checks whether a file with the given relative file path exists
+    bool DoesFileExist(const std::string& relativeFilePath);
+    
 private:    
     ResourceLoadingService() = default;
 

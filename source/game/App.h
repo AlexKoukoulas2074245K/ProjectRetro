@@ -31,6 +31,8 @@ private:
     void CreateSystems();
     void GameLoop();
     bool AppShouldQuit();
+    void CommonSingletonsInitialization();
+    void InitializationFromSaveFile();
     void DummyInitialization();
     
 private:

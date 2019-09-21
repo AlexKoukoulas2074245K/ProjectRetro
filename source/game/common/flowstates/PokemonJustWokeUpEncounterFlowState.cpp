@@ -54,7 +54,9 @@ void PokemonJustWokeUpEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         DeleteTextAtTextboxRow
@@ -64,6 +66,15 @@ void PokemonJustWokeUpEncounterFlowState::VUpdate(const float)
             mWorld
         );
 
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            "=" + std::to_string(activePlayerPokemon.mLevel),
+            4,
+            1,
+            mWorld
+        );
+        
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
     }
 }

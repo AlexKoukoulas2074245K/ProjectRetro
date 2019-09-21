@@ -18,11 +18,13 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/TextboxResidentComponent.h"
 #include "../components/TransformComponent.h"
+#include "../utils/MathUtils.h"
+#include "../utils/PokemonUtils.h"
+#include "../utils/StringUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
-#include "../utils/MathUtils.h"
-#include "../utils/StringUtils.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

@@ -16,7 +16,7 @@
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 
-#include <xutility>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -56,15 +56,6 @@ ecs::EntityId LoadAndCreatePokedexPokemonDataScreen
     world.AddComponent<TransformComponent>(pokedexPokemonEntryDataScreenEntityId, std::move(transformComponent));
 
     return pokedexPokemonEntryDataScreenEntityId;
-}
-
-int GetNumberOfOwnedPokemon
-(
-    const ecs::World& world
-)
-{
-    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
-    return std::count(pokedexStateComponent.mPokedexEntries.cbegin(), pokedexStateComponent.mPokedexEntries.cend(), PokedexEntryType::OWNED);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -42,6 +42,12 @@ OpponentTrainerPokemonSummonTextEncounterFlowState::OpponentTrainerPokemonSummon
         encounterStateComponent.mOpponentTrainerName.GetString() + " sent#out " + activeOpponentPokemon.mName.GetString() + "!+FREEZE",
         mWorld
     );
+    
+    const auto pokedexEntryType = GetPokedexEntryTypeForPokemon(activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName, mWorld);
+    if (pokedexEntryType != PokedexEntryType::OWNED)
+    {
+        ChangePokedexEntryForPokemon(activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName, PokedexEntryType::SEEN, mWorld);
+    }
 }
 
 void OpponentTrainerPokemonSummonTextEncounterFlowState::VUpdate(const float)

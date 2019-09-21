@@ -98,6 +98,7 @@ class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
+    std::vector<std::unique_ptr<Pokemon>> mPlayerBoxedPokemon;
     std::vector<BagItemEntry> mPlayerBag;
     std::vector<StringId> mBadgeNamesOwned;
     std::vector<DefeatedNpcEntry> mDefeatedNpcEntries;
