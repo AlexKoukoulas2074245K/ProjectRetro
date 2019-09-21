@@ -123,11 +123,11 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
     {
         auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
         
-        pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
+        pokemon.mNumberOfRoundsUntilConfusionEnds = 2;
         
         if (pokemon.mStatus == PokemonStatus::CONFUSED)
         {
-            pokemon.mStatus = PokemonStatus::NORMAL;
+            pokemon.mStatus = PokemonStatus::CONFUSED;
         }
         
         ResetPokemonEncounterModifierStages(pokemon);

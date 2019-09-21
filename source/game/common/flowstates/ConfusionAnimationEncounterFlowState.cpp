@@ -17,6 +17,7 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +28,7 @@ const glm::vec3 ConfusionAnimationEncounterFlowState::CONFUSION_CHECK_ANIMATION_
 const std::string ConfusionAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME     = "battle_anim_quad.obj";
 const std::string ConfusionAnimationEncounterFlowState::PLAYER_CONFUSION_CHECK_ANIMATION_DIR = "battle_animations/CONFUSION_CHECK/";
 const std::string ConfusionAnimationEncounterFlowState::ENEMY_CONFUSION_CHECK_ANIMATION_DIR  = "battle_animations/CONFUSION_CHECK_ENEMY/";
+const std::string ConfusionAnimationEncounterFlowState::CONFUSION_CHECK_SFX_NAME             = "encounter/confusion_check";
 
 const float ConfusionAnimationEncounterFlowState::CONFUSION_CHECK_ANIMATION_Z = -1.0f;
 
@@ -122,6 +124,8 @@ void ConfusionAnimationEncounterFlowState::LoadConfusionCheckAnimationFrames() c
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
+    
+    SoundService::GetInstance().PlaySfx(CONFUSION_CHECK_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

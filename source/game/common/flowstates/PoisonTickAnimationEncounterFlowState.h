@@ -34,7 +34,8 @@ private:
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string PLAYER_POISON_TICK_ANIMATION_DIR;
     static const std::string ENEMY_POISON_TICK_ANIMATION_DIR;
-
+    static const std::string POISON_TICK_SFX_NAME;
+    
     static const float POISON_TICK_ANIMATION_Z;
 };
 

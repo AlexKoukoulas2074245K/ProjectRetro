@@ -38,6 +38,7 @@ private:
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string PLAYER_FAST_ASLEEP_ANIMATION_DIR;
     static const std::string ENEMY_FAST_ASLEEP_ANIMATION_DIR;
+    static const std::string FAST_ASLEEP_SFX_NAME;
     
     static const float FAST_ASLEEP_ANIMATION_Z;
 };

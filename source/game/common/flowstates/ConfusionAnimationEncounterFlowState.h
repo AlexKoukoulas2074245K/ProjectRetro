@@ -38,7 +38,8 @@ private:
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string PLAYER_CONFUSION_CHECK_ANIMATION_DIR;
     static const std::string ENEMY_CONFUSION_CHECK_ANIMATION_DIR;
-
+    static const std::string CONFUSION_CHECK_SFX_NAME;
+    
     static const float CONFUSION_CHECK_ANIMATION_Z;
 };
 

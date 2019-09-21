@@ -18,6 +18,7 @@
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ const glm::vec3 FastAsleepAnimationEncounterFlowState::FAST_ASLEEP_ANIMATION_SCA
 const std::string FastAsleepAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string FastAsleepAnimationEncounterFlowState::PLAYER_FAST_ASLEEP_ANIMATION_DIR = "battle_animations/FAST_ASLEEP/";
 const std::string FastAsleepAnimationEncounterFlowState::ENEMY_FAST_ASLEEP_ANIMATION_DIR  = "battle_animations/FAST_ASLEEP_ENEMY/";
+const std::string FastAsleepAnimationEncounterFlowState::FAST_ASLEEP_SFX_NAME             = "encounter/sleeping";
 
 const float FastAsleepAnimationEncounterFlowState::FAST_ASLEEP_ANIMATION_Z = -1.0f;
 
@@ -124,6 +126,8 @@ void FastAsleepAnimationEncounterFlowState::LoadFastAsleepAnimationFrames() cons
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
+    
+    SoundService::GetInstance().PlaySfx(FAST_ASLEEP_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

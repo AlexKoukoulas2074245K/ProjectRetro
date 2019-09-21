@@ -15,10 +15,11 @@
 #include "../components/TransformComponent.h"
 #include "../utils/FileUtils.h"
 #include "../utils/OSMessageBox.h"
+#include "../utils/PokemonMoveUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../resources/ResourceLoadingService.h"
 #include "../../rendering/components/RenderableComponent.h"
-#include "../utils/PokemonMoveUtils.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +30,7 @@ const glm::vec3 ConfusionHurtItselfAnimationEncounterFlowState::POKEMON_HURT_ITS
 const std::string ConfusionHurtItselfAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME         = "battle_anim_quad.obj";
 const std::string ConfusionHurtItselfAnimationEncounterFlowState::PLAYER_POKEMON_HURT_ITSELF_ANIMATION_DIR = "battle_animations/CONFUSION_HURT_ITSELF/";
 const std::string ConfusionHurtItselfAnimationEncounterFlowState::ENEMY_POKEMON_HURT_ITSELF_ANIMATION_DIR  = "battle_animations/CONFUSION_HURT_ITSELF_ENEMY/";
+const std::string ConfusionHurtItselfAnimationEncounterFlowState::POKEMON_HURT_ITSELF_SFX_NAME             = "encounter/confusion_hurt_itself";
 
 const float ConfusionHurtItselfAnimationEncounterFlowState::POKEMON_HURT_ITSELF_ANIMATION_Z = -1.0f;
 
@@ -155,6 +157,8 @@ void ConfusionHurtItselfAnimationEncounterFlowState::LoadPokemonHurtItselfAnimat
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
+    
+    SoundService::GetInstance().PlaySfx(POKEMON_HURT_ITSELF_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

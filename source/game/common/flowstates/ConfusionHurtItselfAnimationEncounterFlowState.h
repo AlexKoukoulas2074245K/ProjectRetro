@@ -34,7 +34,8 @@ private:
     static const std::string BATTLE_ANIMATION_MODEL_FILE_NAME;
     static const std::string PLAYER_POKEMON_HURT_ITSELF_ANIMATION_DIR;
     static const std::string ENEMY_POKEMON_HURT_ITSELF_ANIMATION_DIR;
-
+    static const std::string POKEMON_HURT_ITSELF_SFX_NAME;
+    
     static const float POKEMON_HURT_ITSELF_ANIMATION_Z;
    
 };

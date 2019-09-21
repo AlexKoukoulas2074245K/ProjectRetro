@@ -18,6 +18,7 @@
 #include "../utils/OSMessageBox.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ const glm::vec3 PoisonTickAnimationEncounterFlowState::POISON_TICK_ANIMATION_SCA
 const std::string PoisonTickAnimationEncounterFlowState::BATTLE_ANIMATION_MODEL_FILE_NAME = "battle_anim_quad.obj";
 const std::string PoisonTickAnimationEncounterFlowState::PLAYER_POISON_TICK_ANIMATION_DIR = "battle_animations/POISON_TICK/";
 const std::string PoisonTickAnimationEncounterFlowState::ENEMY_POISON_TICK_ANIMATION_DIR  = "battle_animations/POISON_TICK_ENEMY/";
+const std::string PoisonTickAnimationEncounterFlowState::POISON_TICK_SFX_NAME             = "encounter/poison_tick";
 
 const float PoisonTickAnimationEncounterFlowState::POISON_TICK_ANIMATION_Z = -1.0f;
 
@@ -138,6 +140,8 @@ void PoisonTickAnimationEncounterFlowState::LoadPoisonTickFrames() const
             resourceLoadingService.LoadResource(battleAnimationDirPath + filename)
         );
     }
+    
+    SoundService::GetInstance().PlaySfx(POISON_TICK_SFX_NAME);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

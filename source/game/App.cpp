@@ -241,6 +241,7 @@ void App::DummyInitialization()
     playerStateComponent->mRivalName  = StringId("Gary");
     playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 10, false, mWorld));
     playerStateComponent->mPlayerPokemonRoster.back()->mXpPoints += 330;
+    
     for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
     {
         ChangePokedexEntryForPokemon(pokemonEntry->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);
