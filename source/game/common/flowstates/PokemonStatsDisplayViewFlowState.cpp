@@ -165,7 +165,7 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen2() const
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, selectedPokemon.mBaseSpeciesStats.mSpeciesName.GetString(), 9, 1, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(selectedPokemon.mXpPoints), 19 - std::to_string(selectedPokemon.mXpPoints).size(), 4, mWorld);
     WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, std::to_string(xpToNextLevel), 14 - std::to_string(xpToNextLevel).size(), 6, mWorld);
-    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "=" + std::to_string(selectedPokemon.mLevel + 1), 18 - std::to_string(xpToNextLevel).size(), 6, mWorld);
+    WriteTextAtTextboxCoords(pokemonStatsDisplayViewStateComponent.mPokemonStatsInvisibleTextboxEntityId, "=" + std::to_string(selectedPokemon.mLevel + 1), 18 - std::to_string(selectedPokemon.mLevel + 1).size(), 6, mWorld);
 
     for (auto i = 0U; i < selectedPokemon.mMoveSet.size(); ++i)
     {

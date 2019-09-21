@@ -77,7 +77,7 @@ void LearnNewMoveFlowState::VUpdate(const float)
         return;
     }
     // Sfx just finished playing
-    else if (WasSfxPlayingOnPreviousUpdate())
+    else if (WasSfxPlayingOnPreviousUpdate() && SoundService::GetInstance().GetLastPlayedSfxName() == POKEMON_LEVEL_UP_SFX_NAME)
     {
         auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         auto& evolutionStateComponent = mWorld.GetSingletonComponent<EvolutionAnimationStateSingletonComponent>();
