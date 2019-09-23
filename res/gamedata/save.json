@@ -1,0 +1,20 @@
+{
+    "player_name": "Alex",
+    "rival_name": "Gary",
+    "home_name": "pallet",
+    "current_level_name": "viridian",
+    "current_game_col": 17,
+    "current_game_row": 23,
+    "current_direction": 3,
+    "seconds_played": 27,
+    "poke_dollars": 3000,
+    "trainer_id": 50947,
+    "badges": [],
+    "defeated_npc_entries": [],
+    "collected_npc_item_entries": [],
+    "collected_npc_item_non_destructible_entries": [],
+    "bag": [{ "item_name": "CANCEL", "item_quantity": 1 }],
+    "pokedex": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "box_pokemon": [],
+    "pokemon": [{ "species_name": "PIKACHU", "nickname": "PIKACHU", "level": 10, "current_hp": 28, "xp_points": 1330, "status": 0, "rounds_to_awake": 0, "hp_iv": 7, "attack_iv": 14, "defense_iv": 9, "speed_iv": 5, "special_iv": 11, "hp_ev": 0, "attack_ev": 0, "defense_ev": 0, "speed_ev": 0, "special_ev": 0, "moveset": [{ "move_name": "THUNDERSHOCK", "pp_left": 30 }, { "move_name": "GROWL", "pp_left": 40 }, { "move_name": "TAIL_WHIP", "pp_left": 30 }, { "move_name": "THUNDER_WAVE", "pp_left": 20 }] }]
+}

@@ -140,6 +140,38 @@
 		{ 
 			"from": { "level_name": "route2_viridian_side", "level_col": 15, "level_row": 4 },
 			"to": { "level_name": "viridian", "level_col": 23, "level_row": 42 } 
-		}
+		},
+        {
+            "from": { "level_name": "viridian", "level_col": 7, "level_row": 29 },
+            "to": { "level_name": "route22", "level_col": 55, "level_row": 18 }
+        },
+        {
+            "from": { "level_name": "viridian", "level_col": 7, "level_row": 28 },
+            "to": { "level_name": "route22", "level_col": 55, "level_row": 17 }
+        },
+        {
+            "from": { "level_name": "viridian", "level_col": 7, "level_row": 27 },
+            "to": { "level_name": "route22", "level_col": 55, "level_row": 16 }
+        },
+        {
+            "from": { "level_name": "viridian", "level_col": 7, "level_row": 26 },
+            "to": { "level_name": "route22", "level_col": 55, "level_row": 15 }
+        },
+        {
+            "from": { "level_name": "route22", "level_col": 56, "level_row": 18 },
+            "to": { "level_name": "viridian", "level_col": 8, "level_row": 29 }
+        },
+        {
+            "from": { "level_name": "route22", "level_col": 56, "level_row":17 },
+            "to": { "level_name": "viridian", "level_col": 8, "level_row": 28 }
+        },
+        {
+            "from": { "level_name": "route22", "level_col": 56, "level_row": 16 },
+            "to": { "level_name": "viridian", "level_col": 8, "level_row": 27 }
+        },
+        {
+            "from": { "level_name": "route22", "level_col": 56, "level_row": 15 },
+            "to": { "level_name": "viridian", "level_col": 8, "level_row": 26 }
+        }
 	]
 }
