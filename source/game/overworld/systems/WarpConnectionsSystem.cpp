@@ -99,7 +99,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         auto& newTile = GetTile
         (
             targetWarp.mTileCoords.mCol,
-            targetWarp.mTileCoords.mCol,
+            targetWarp.mTileCoords.mRow,
             levelModelComponent.mLevelTilemap
         );
 

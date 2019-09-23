@@ -41,7 +41,7 @@ DeterminePokemonPlacementFlowState::DeterminePokemonPlacementFlowState(ecs::Worl
             mWorld
         );
 
-        //TODO: add pokemon to box
+        playerStateComponent.mPlayerBoxedPokemon.push_back(std::move(encounterStateComponent.mOpponentPokemonRoster.front()));
     }
 }
 
