@@ -168,7 +168,7 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
 
         if (hasIntro)
         {   
-            Mix_HookMusicFinished(fadeOutEnabled ? OnMusicFinishedHook : OnMusicIntroFinishedHook);               
+            Mix_HookMusicFinished(OnMusicIntroFinishedHook);               
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), 0);
         }
         else
