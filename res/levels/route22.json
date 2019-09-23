@@ -271,6 +271,7 @@
         { "editor_col": 12, "editor_row": 10, "game_position_x": 19.2, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 13, "editor_row": 10, "game_position_x": 20.8, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 14, "editor_row": 10, "game_position_x": 22.4, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
+        { "editor_col": 15, "editor_row": 10, "game_position_x": 24.0, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 27, "editor_row": 10, "game_position_x": 43.2, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 28, "editor_row": 10, "game_position_x": 44.8, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 29, "editor_row": 10, "game_position_x": 46.4, "game_position_z": 33.6, "atlas_col": 0, "atlas_row": 0 },
@@ -1239,6 +1240,7 @@
     ],
     "level_model_list":
     [
+        { "model_name": "big_building (12,3)", "editor_col": 15, "editor_row": 10, "game_col": 15, "game_row": 21, "game_position_x": 24.0, "game_position_z": 33.6 },
         { "model_name": "cut_tree (2,1)", "editor_col": 61, "editor_row": 21, "game_col": 61, "game_row": 10, "game_position_x": 97.6, "game_position_z": 16.0 },
         { "model_name": "out_bush (1,1)", "editor_col": 61, "editor_row": 0, "game_col": 61, "game_row": 31, "game_position_x": 97.6, "game_position_z": 49.6 },
         { "model_name": "out_bush (1,1)", "editor_col": 62, "editor_row": 0, "game_col": 62, "game_row": 31, "game_position_x": 99.2, "game_position_z": 49.6 },
