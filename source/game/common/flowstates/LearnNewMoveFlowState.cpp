@@ -117,7 +117,7 @@ void LearnNewMoveFlowState::VUpdate(const float)
     
     if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN && SoundService::GetInstance().IsPlayingSfx() == false)
     {
-        SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME);
+        SoundService::GetInstance().PlaySfx(POKEMON_LEVEL_UP_SFX_NAME, true, true);
     }
 }
 

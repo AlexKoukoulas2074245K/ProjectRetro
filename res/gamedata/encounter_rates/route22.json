@@ -1,0 +1,16 @@
+{
+    "density": 25,
+    "encounters": 
+    [
+		{ "pokemon": "NIDORAN[", "level": 2, "rate": 51 },
+		{ "pokemon": "NIDORAN]", "level": 2, "rate": 51 },
+        { "pokemon": "MANKEY", "level": 3, "rate": 39 },
+        { "pokemon": "RATTATA", "level": 3, "rate": 25 },		     
+        { "pokemon": "NIDORAN[", "level": 4, "rate": 24 },
+        { "pokemon": "NIDORAN]", "level": 4, "rate": 24 },
+        { "pokemon": "MANKEY", "level": 5, "rate": 13 },
+		{ "pokemon": "SPEAROW", "level": 2, "rate": 13 },        
+		{ "pokemon": "SPEAROW", "level": 4, "rate": 11 },        
+		{ "pokemon": "SPEAROW", "level": 6, "rate": 3 }  
+    ]
+}
