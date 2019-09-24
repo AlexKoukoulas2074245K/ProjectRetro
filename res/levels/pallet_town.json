@@ -1,7 +1,7 @@
 {
     "level_header":
     {
-        "name": "pallet",
+        "name": "pallet_town",
         "dimensions": { "cols": 32, "rows": 32},
         "color": "PALLET",
         "music": "pallet"

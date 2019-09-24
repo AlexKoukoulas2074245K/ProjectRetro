@@ -77,7 +77,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
     const auto lastNpcSpokenToLevelIndex  = playerStateComponent.mLastNpcLevelIndexSpokenTo;
     const auto flowStartedByTileTrigger   = currentPlayerTile.mTileTrait == TileTrait::FLOW_TRIGGER;
 
-    if (activeLevelComponent.mActiveLevelNameId == StringId("viridian"))
+    if (activeLevelComponent.mActiveLevelNameId == StringId("viridian_city"))
     { 
         if (flowStartedByTileTrigger)
         {

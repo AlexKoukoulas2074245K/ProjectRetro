@@ -1,7 +1,7 @@
 {
     "level_header":
     {
-        "name": "viridian",
+        "name": "viridian_city",
         "dimensions": { "cols": 64, "rows": 64},
         "color": "VIRIDIAN",
         "music": "viridian"

@@ -107,7 +107,7 @@ public:
 
     StringId mPlayerTrainerName        = StringId();
     StringId mRivalName                = StringId();
-    StringId mHomeLevelName            = StringId("pallet");
+    StringId mHomeLevelName            = StringId("pallet_town");
     StringId mLastOverworldLevelName   = StringId();
     StringId mPendingItemToBeAdded     = StringId();
     
