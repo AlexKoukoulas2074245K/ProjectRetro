@@ -1,7 +1,7 @@
 {
     "level_header":
     {
-        "name": "route1",
+        "name": "route_1",
         "dimensions": { "cols": 32, "rows": 64},
         "color": "VIRIDIAN",
         "music": "route1"

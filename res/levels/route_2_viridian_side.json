@@ -1,7 +1,7 @@
 {
     "level_header":
     {
-        "name": "route2_viridian_side",
+        "name": "route_2_viridian_side",
         "dimensions": { "cols": 64, "rows": 64},
         "color": "VIRIDIAN",
         "music": "route1"
