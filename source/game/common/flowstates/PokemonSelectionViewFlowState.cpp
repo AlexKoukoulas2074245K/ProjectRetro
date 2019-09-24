@@ -566,7 +566,7 @@ void PokemonSelectionViewFlowState::CreatePokemonSelectionBackground() const
 {
     auto& pokemonSelectionViewEntities = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-    pokemonSelectionViewEntities.mBackgroundEntityId = LoadAndCreateBackgroundCover
+    pokemonSelectionViewEntities.mBackgroundEntityId = LoadAndCreatePokemonSelectionViewBackgroundCover
     (
         BACKGROUND_POSITION, 
         BACKGROUND_SCALE, 

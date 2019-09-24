@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
+#include "../../common/flowstates/TownMapOverworldFlowState.h"
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
@@ -113,6 +114,14 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         if (lastNpcSpokenToLevelIndex == 2)
         {
             StartOverworldFlowState<PokeCenterHealingIntroDialogOverworldFlowState>(mWorld);
+        }
+    }
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_nickname_family"))
+    {
+        // Town Map Flow
+        if (lastNpcSpokenToLevelIndex == 0)
+        {
+            StartOverworldFlowState<TownMapOverworldFlowState>(mWorld);
         }
     }
     else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_school"))

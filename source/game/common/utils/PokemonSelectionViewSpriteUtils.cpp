@@ -96,7 +96,7 @@ ecs::EntityId CreatePokemonSelectionViewSelectionTextbox
     return textboxEntityId;
 }
 
-ecs::EntityId LoadAndCreateBackgroundCover
+ecs::EntityId LoadAndCreatePokemonSelectionViewBackgroundCover
 (
     const glm::vec3& position,
     const glm::vec3& scale,

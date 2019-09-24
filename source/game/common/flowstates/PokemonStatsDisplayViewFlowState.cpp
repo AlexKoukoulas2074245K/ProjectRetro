@@ -81,7 +81,7 @@ void PokemonStatsDisplayViewFlowState::VUpdate(const float)
 void PokemonStatsDisplayViewFlowState::CreatePokemonStatsBackground() const
 {
     auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
-    pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId = LoadAndCreateBackgroundCover
+    pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId = LoadAndCreatePokemonSelectionViewBackgroundCover
     (
         BACKGROUND_POSITION, 
         BACKGROUND_SCALE, mWorld
