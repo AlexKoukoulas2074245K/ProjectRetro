@@ -41,7 +41,7 @@ const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_MOD
 const std::string PokeCenterHealingAnimationOverworldFlowState::POKEBALL_HEALING_SFX_NAME    = "general/pokeball_healing";
 const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_ANIMATION_SFX_NAME   = "general/healing_long";
 const std::string PokeCenterHealingAnimationOverworldFlowState::POKE_CENTER_MUSIC_TRACK_NAME = "poke_center_mart";
-const std::string PokeCenterHealingAnimationOverworldFlowState::CHARACTER_MODEL_NAME         = "camera_facing_quad";
+const std::string PokeCenterHealingAnimationOverworldFlowState::CHARACTER_MODEL_NAME         = "camera_facing_quad_sub_atlas";
 
 const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_X_DISTANCE = 0.5799007f;
 const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_Z_DISTANCE = 0.4590192f;

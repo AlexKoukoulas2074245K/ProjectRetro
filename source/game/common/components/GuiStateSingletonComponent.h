@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string GUI_COMPONENTS_MODEL_NAME = "camera_facing_quad_hud";
+static const std::string GUI_COMPONENTS_MODEL_NAME = "camera_facing_quad_hud_sub_atlas";
 
 const int GUI_ATLAS_COLS = 16;
 const int GUI_ATLAS_ROWS = 16;

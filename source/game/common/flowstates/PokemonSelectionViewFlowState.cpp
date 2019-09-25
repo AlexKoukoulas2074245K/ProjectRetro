@@ -43,7 +43,7 @@
 
 const std::string PokemonSelectionViewFlowState::TEXTBOX_CLICK_SFX_NAME                 = "general/textbox_click";
 const std::string PokemonSelectionViewFlowState::POKEMON_SWAP_SFX_NAME                  = "general/pokemon_swap";
-const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME              = "camera_facing_quad_hud";
+const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_MODEL_NAME              = "camera_facing_quad_hud_sub_atlas";
 const std::string PokemonSelectionViewFlowState::POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME = "characters.png";
 
 const glm::vec3 PokemonSelectionViewFlowState::BACKGROUND_POSITION            = glm::vec3(0.0f, 0.0f, 0.01f);

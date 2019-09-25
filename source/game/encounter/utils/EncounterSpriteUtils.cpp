@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string ENCOUNTER_SPRITE_MODEL_NAME                             = "camera_facing_quad_hud";
+static const std::string ENCOUNTER_SPRITE_MODEL_NAME                             = "camera_facing_quad_hud_sub_atlas";
 static const std::string POKEMON_BATTLE_SPRITE_MODEL_NAME                        = "pokemon_battle_sprite";
 static const std::string ENCOUNTER_SPRITE_ANIMATION_NAME                         = "default";
 static const std::string ENCOUNTER_SPRITE_SHADER_NAME                            = "gui";

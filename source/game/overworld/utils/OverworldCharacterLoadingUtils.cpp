@@ -29,7 +29,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string CHARACTER_MODEL_NAME = "camera_facing_quad";
+static const std::string CHARACTER_MODEL_NAME = "camera_facing_quad_sub_atlas";
 static const auto CHARACTER_ATLAS_COLS = 8;
 static const auto CHARACTER_ATLAS_ROWS = 64;
 

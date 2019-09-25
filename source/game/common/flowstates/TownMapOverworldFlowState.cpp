@@ -28,10 +28,10 @@ const float TownMapOverworldFlowState::CURSOR_BLINKING_DELAY = 0.5f;
 
 TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
-    , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)
-    , mBackgroundCoverEntityId(LoadAndCreateTownMapBackgroundCover(mWorld))
+    , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)    
     , mBackgroundEntityId(LoadAndCreateTownMapBackground(mWorld))
 {            
+    
     DestroyActiveTextbox(mWorld);        
 }
 
@@ -45,8 +45,7 @@ void TownMapOverworldFlowState::VUpdate(const float)
         IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
     )
     {
-        mWorld.DestroyEntity(mBackgroundEntityId);
-        mWorld.DestroyEntity(mBackgroundCoverEntityId);
+        mWorld.DestroyEntity(mBackgroundEntityId);        
         CompleteOverworldFlow();
     }
 }

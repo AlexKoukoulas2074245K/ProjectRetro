@@ -33,8 +33,7 @@ public:
 
 private:    
     static const float CURSOR_BLINKING_DELAY;
-
-    ecs::EntityId mBackgroundCoverEntityId;
+    
     ecs::EntityId mBackgroundEntityId;
     Timer mCursorBlinkingTimer;
 };

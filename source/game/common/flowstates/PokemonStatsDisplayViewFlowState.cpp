@@ -84,7 +84,8 @@ void PokemonStatsDisplayViewFlowState::CreatePokemonStatsBackground() const
     pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId = LoadAndCreatePokemonSelectionViewBackgroundCover
     (
         BACKGROUND_POSITION, 
-        BACKGROUND_SCALE, mWorld
+        BACKGROUND_SCALE, 
+        mWorld
     );
 }
 
