@@ -26,9 +26,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 TOWN_MAP_BACKGROUND_POSITION           = glm::vec3(0.0f, -0.005f, 0.1f);
+static const glm::vec3 TOWN_MAP_BACKGROUND_POSITION           = glm::vec3(0.0f, -0.01f, 0.1f);
 static const glm::vec3 TOWN_MAP_BACKGROUND_SCALE              = glm::vec3(2.2f, 2.2f, 1.0f);
-static const glm::vec3 TOWN_MAP_ICON_TOP_LEFT_ORIGIN_POSITION = glm::vec3(-0.62f, 0.89f, 0.0f);
+static const glm::vec3 TOWN_MAP_ICON_TOP_LEFT_ORIGIN_POSITION = glm::vec3(-0.62f, 0.885f, 0.0f);
 
 static const std::string TOWN_MAP_LOCATIONS_DATA_FILE_NAME      = "town_map_locations.json";
 static const std::string TOWN_MAP_SPRITE_MODEL_FILE_NAME        = "town_map_sprite.obj";
