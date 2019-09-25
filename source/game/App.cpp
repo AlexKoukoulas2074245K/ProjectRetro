@@ -52,6 +52,7 @@
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
 #include "overworld/components/PokeCenterHealingAnimationStateSingletonComponent.h"
+#include "overworld/components/TownMapLocationDataSingletonComponent.h"
 #include "overworld/systems/AnimatedFlowersAnimationSystem.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
@@ -63,6 +64,7 @@
 #include "overworld/utils/LevelUtils.h"
 #include "overworld/utils/LevelLoadingUtils.h"
 #include "overworld/utils/OverworldCharacterLoadingUtils.h"
+#include "overworld/utils/TownMapUtils.h"
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
@@ -220,6 +222,10 @@ void App::CommonSingletonsInitialization()
     pokedexStateComponent->mPokedexUnlocked = true;
     mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
     
+    auto townMapDataComponent = std::make_unique<TownMapLocationDataSingletonComponent>();
+    LoadAndPopulateTownMapLocationData(*townMapDataComponent);
+    mWorld.SetSingletonComponent<TownMapLocationDataSingletonComponent>(std::move(townMapDataComponent));
+
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
