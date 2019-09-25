@@ -32,10 +32,10 @@ TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
     , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)        
 {                
-    //const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
 
     mBackgroundEntityId = LoadAndCreateTownMapBackground(mWorld);    
-    mPlayerIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, StringId("pewter_city"), mWorld);
+    mPlayerIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, activeLevelComponent.mActiveLevelNameId, mWorld);
 
     DestroyActiveTextbox(mWorld);
 }
