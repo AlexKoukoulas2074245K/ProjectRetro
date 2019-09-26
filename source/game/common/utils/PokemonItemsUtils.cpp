@@ -11,6 +11,7 @@
 
 #include "PokemonItemsUtils.h"
 #include "../components/ItemStatsSingletonComponent.h"
+#include "../components/MarketStocksSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -22,7 +23,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const std::string ITEMS_STATS_FILE_NAME = "items.json";
+static const std::string ITEMS_STATS_FILE_NAME   = "items.json";
+static const std::string MARKET_STOCKS_FILE_NAME = "pokemart_stocks.json";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +42,12 @@ void LoadAndPopulateItemsStats(ItemStatsSingletonComponent& itemsStatsComponent)
 
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
 
-    // Get move stats data file resource
+    // Get item stats data file resource
     const auto itemsStatsFilePath = ResourceLoadingService::RES_DATA_ROOT + ITEMS_STATS_FILE_NAME;
     resourceLoadingService.LoadResource(itemsStatsFilePath);
     const auto& itemsStatsFileResource = resourceLoadingService.GetResource<DataFileResource>(itemsStatsFilePath);
 
-    // Parse base stats json
+    // Parse item stats json
     const auto itemStatsJson = nlohmann::json::parse(itemsStatsFileResource.GetContents());
 
     for (auto it = itemStatsJson.begin(); it != itemStatsJson.end(); ++it)
@@ -66,6 +68,33 @@ void LoadAndPopulateItemsStats(ItemStatsSingletonComponent& itemsStatsComponent)
             usage,
             uniqueness
         )));
+    }
+}
+
+void LoadAndPopulateMarketStocks
+(
+    MarketStocksSingletonComponent& marketStocksComponent
+)
+{
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+
+    // Get move stats data file resource
+    const auto marketStocksFilePath = ResourceLoadingService::RES_DATA_ROOT + MARKET_STOCKS_FILE_NAME;
+    resourceLoadingService.LoadResource(marketStocksFilePath);
+    const auto& marketStocksFileResource = resourceLoadingService.GetResource<DataFileResource>(marketStocksFilePath);
+
+    // Parse market stocks json
+    const auto marketStocksJson = nlohmann::json::parse(marketStocksFileResource.GetContents());
+
+    for (auto it = marketStocksJson.begin(); it != marketStocksJson.end(); ++it)
+    {
+        const auto& locationName    = StringId(it.key());
+        const auto& stocksJsonArray = it.value();
+
+        for (const auto& itemNameJson : stocksJsonArray)
+        {
+            marketStocksComponent.mMarketStocks[StringId(locationName)].push_back(StringId(itemNameJson.get<std::string>()));
+        }
     }
 }
 

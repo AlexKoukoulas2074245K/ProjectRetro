@@ -68,6 +68,7 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
+#include "common/components/MarketStocksSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +226,10 @@ void App::CommonSingletonsInitialization()
     auto townMapDataComponent = std::make_unique<TownMapLocationDataSingletonComponent>();
     LoadAndPopulateTownMapLocationData(*townMapDataComponent);
     mWorld.SetSingletonComponent<TownMapLocationDataSingletonComponent>(std::move(townMapDataComponent));
+
+    auto marketStocksComponent = std::make_unique<MarketStocksSingletonComponent>();
+    LoadAndPopulateMarketStocks(*marketStocksComponent);
+    mWorld.SetSingletonComponent<MarketStocksSingletonComponent>(std::move(marketStocksComponent));
 
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());

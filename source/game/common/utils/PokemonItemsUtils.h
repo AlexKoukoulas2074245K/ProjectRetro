@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 class ItemStatsSingletonComponent;
+class MarketStocksSingletonComponent;
 struct ItemStats;
 struct BagItemEntry;
 
@@ -33,7 +34,15 @@ struct BagItemEntry;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void LoadAndPopulateItemsStats(ItemStatsSingletonComponent&);
+void LoadAndPopulateItemsStats
+(
+    ItemStatsSingletonComponent&
+);
+
+void LoadAndPopulateMarketStocks
+(
+    MarketStocksSingletonComponent&
+);
 
 const ItemStats& GetItemStats
 (
