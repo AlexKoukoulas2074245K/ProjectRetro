@@ -39,8 +39,7 @@ PokeMartIntroDialogOverworldFlowState::PokeMartIntroDialogOverworldFlowState(ecs
     const auto directionFacingPlayer = static_cast<Direction>((static_cast<int>(playerDirectionComponent.mDirection) + 2) % 4);
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(directionFacingPlayer), npcRenderableComponent);
 
-    const auto mainChatbox = CreateChatbox(mWorld);
-    QueueDialogForChatbox(CreateChatbox(mWorld), "Hi there!#May I help you ?+FREEZE", mWorld);
+    QueueDialogForChatbox(CreateChatbox(mWorld), "Hi there!#May I help you?+FREEZE", mWorld);
 }
 
 void PokeMartIntroDialogOverworldFlowState::VUpdate(const float)
