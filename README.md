@@ -48,7 +48,10 @@ Most of the work currently done revolves around the precise emulation of battle 
 5) Open the xcodeproj file with XCode
 6) Compile and run
 
-## Features in place
+## Features implemented
+### Characters
+* Character movement and interaction works as expected
+
 ### Locations (including houses and indoor areas)
 * Pallet town
 * Route 1
