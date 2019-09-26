@@ -48,3 +48,20 @@ Most of the work currently done revolves around the precise emulation of battle 
 5) Open the xcodeproj file with XCode
 6) Compile and run
 
+## Features implemented
+### Characters
+* Character movement and interaction works as expected
+
+### Locations (including houses and indoor areas)
+* Pallet town
+* Route 1
+* Viridian City
+* Route 22 (except room leading to victory road)
+* Route 2 (viridian side)
+
+### Encounters
+* Combat is generally well-emulated at this point, except for burn, and freeze statuses
+* The moves are added to the game incrementally, the more areas and wild encounters are added. All moves with animation folders under res/textures/battle_animations should be working properly in battle
+
+### Misc
+* Flows and scripted events are also added incrementally as more levels are built. The major common flows that are currently missing at this stage of content creation are the Poke-mart buying/selling flows, as well as the PC (pokemon deposit/withdrawals, etc..) flow
