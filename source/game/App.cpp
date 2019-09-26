@@ -13,7 +13,9 @@
 #include "common/components/DirectionComponent.h"
 #include "common/components/EvolutionAnimationStateSingletonComponent.h"
 #include "common/components/ItemStatsSingletonComponent.h"
+#include "common/components/MarketStocksSingletonComponent.h"
 #include "common/components/MoveStatsSingletonComponent.h"
+#include "common/components/PokeMartDialogStateComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
 #include "common/components/PlayerStateSingletonComponent.h"
@@ -68,7 +70,6 @@
 
 #include <SDL_events.h> 
 #include <SDL_timer.h>
-#include "common/components/MarketStocksSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -235,6 +236,7 @@ void App::CommonSingletonsInitialization()
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>(std::make_unique<PokeCenterHealingAnimationStateSingletonComponent>());
+    mWorld.SetSingletonComponent<PokeMartDialogStateComponent>(std::make_unique<PokeMartDialogStateComponent>());
 }
 
 void App::InitializationFromSaveFile()

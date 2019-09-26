@@ -40,6 +40,8 @@ static const glm::vec3 ENCOUNTER_FIGHT_MENU_MOVE_INFO_TEXTBOX_POSITION      = gl
 static const glm::vec3 POKEMON_STATS_DISPLAY_TEXTBOX_POSITION               = glm::vec3(0.0f, 0.0f, -0.8f);
 static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = glm::vec3(0.005f, 0.0f, -0.8f);
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
+static const glm::vec3 MART_MONEY_TEXTBOX_POSITION                          = glm::vec3(0.377200305f, 0.836796045f, 0.0f);
+static const glm::vec3 MART_MENU_TEXTBOX_POSITION                           = glm::vec3(-0.309200227f, 0.616698325f, 0.0f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
 
@@ -48,6 +50,12 @@ static const int CHATBOX_ROWS = 6;
 
 static const int ITEM_MENU_TEXTBOX_COLS = 16;
 static const int ITEM_MENU_TEXTBOX_ROWS = 11;
+
+static const int MART_MENU_TEXTBOX_COLS = 11;
+static const int MART_MENU_TEXTBOX_ROWS = 7;
+
+static const int MART_MONEY_TEXTBOX_COLS = 9;
+static const int MART_MONEY_TEXTBOX_ROWS = 3;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
@@ -373,6 +381,81 @@ ecs::EntityId CreateItemMenu
     world.AddComponent<ItemMenuStateComponent>(itemMenuTextboxEntityId, std::move(itemMenuStateComponent));    
 
     return itemMenuTextboxEntityId;
+}
+
+ecs::EntityId CreatePokeMartMenuTextbox
+(
+    ecs::World& world
+)
+{
+    const auto martMenuTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        MART_MENU_TEXTBOX_COLS,
+        MART_MENU_TEXTBOX_ROWS,
+        MART_MENU_TEXTBOX_POSITION.x,
+        MART_MENU_TEXTBOX_POSITION.y,
+        MART_MENU_TEXTBOX_POSITION.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(martMenuTextboxEntityId, "BUY", 2, 1, world);
+    WriteTextAtTextboxCoords(martMenuTextboxEntityId, "SELL", 2, 3, world);
+    WriteTextAtTextboxCoords(martMenuTextboxEntityId, "QUIT", 2, 5, world);
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 3;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 1;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        martMenuTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(martMenuTextboxEntityId, std::move(cursorComponent));
+
+    return martMenuTextboxEntityId;
+}
+
+ecs::EntityId CreatePokeMartMoneyTextbox
+(
+    ecs::World& world
+)
+{
+    const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();    
+
+    const auto moneyTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::GENERIC_TEXTBOX,
+        MART_MONEY_TEXTBOX_COLS,
+        MART_MONEY_TEXTBOX_ROWS,
+        MART_MONEY_TEXTBOX_POSITION.x,
+        MART_MONEY_TEXTBOX_POSITION.y,
+        MART_MONEY_TEXTBOX_POSITION.z,
+        world
+    );
+
+    const auto& moneyString = "$" + std::to_string(playerStateComponent.mPokeDollarCredits);
+
+    WriteTextAtTextboxCoords(moneyTextboxEntityId, "MONEY", 2, 0, world);
+    WriteTextAtTextboxCoords(moneyTextboxEntityId, moneyString, MART_MONEY_TEXTBOX_COLS - 1 - moneyString.size(), 1, world);
+
+    return moneyTextboxEntityId;
 }
 
 ecs::EntityId CreateBlackboardTextbox

@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
+#include "../../common/flowstates/PokeMartIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/TownMapOverworldFlowState.h"
 #include "../../common/flowstates/ViridianCaterpieWeedleGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianGymLockedOverworldFlowState.h"
@@ -114,6 +115,14 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         if (lastNpcSpokenToLevelIndex == 2)
         {
             StartOverworldFlowState<PokeCenterHealingIntroDialogOverworldFlowState>(mWorld);
+        }
+    }
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_poke_mart"))
+    {
+        // Mart flow
+        if (lastNpcSpokenToLevelIndex == 1 || lastNpcSpokenToLevelIndex == 7 || lastNpcSpokenToLevelIndex == 9)
+        {
+            StartOverworldFlowState<PokeMartIntroDialogOverworldFlowState>(mWorld);
         }
     }
     else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_nickname_family"))

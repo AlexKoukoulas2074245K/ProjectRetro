@@ -106,6 +106,16 @@ ecs::EntityId CreateItemMenu
     const int itemOffset = 0
 );
 
+ecs::EntityId CreatePokeMartMenuTextbox
+(
+    ecs::World& world
+);
+
+ecs::EntityId CreatePokeMartMoneyTextbox
+(
+    ecs::World& world
+);
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,
