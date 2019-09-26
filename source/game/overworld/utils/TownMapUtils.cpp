@@ -42,6 +42,14 @@ static const float TOWN_MAP_ICON_Z = 0.0f;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+static bool IsLocationInTownMapData(const StringId location, const TownMapLocationDataSingletonComponent&);
+
+static const TownMapLocationEntry& GetTownMapLocationEntry(const StringId location, const TownMapLocationDataSingletonComponent&);
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 ecs::EntityId LoadAndCreateTownMapBackground
 (
     ecs::World& world
@@ -82,6 +90,7 @@ ecs::EntityId LoadAndCreateTownMapIconAtLocation
     const auto& guiStateComponent             = world.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& townMapLocationsDataComponent = world.GetSingletonComponent<TownMapLocationDataSingletonComponent>();    
     const auto& windowComponent               = world.GetSingletonComponent<WindowSingletonComponent>();
+
     const auto townMapIconEntityId = world.CreateEntity();
 
     auto& resourceLoadingService = ResourceLoadingService::GetInstance();
@@ -104,13 +113,15 @@ ecs::EntityId LoadAndCreateTownMapIconAtLocation
     renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
 
     glm::vec3 locationCoords;    
-    if (townMapLocationsDataComponent.mTownMapLocationsToPositions.count(location) != 0)
+    if (IsLocationInTownMapData(location, townMapLocationsDataComponent))
     {
-        locationCoords = townMapLocationsDataComponent.mTownMapLocationsToPositions.at(location);
+        locationCoords = GetTownMapLocationEntry(location, townMapLocationsDataComponent).mPosition;
     }
     else
     {
-        locationCoords = townMapLocationsDataComponent.mTownMapLocationsToPositions.at(townMapLocationsDataComponent.mIndoorLocationsToOwnerLevels.at(location));
+        // Get the position of this location based on its onwer location
+        const auto ownerLocationName = townMapLocationsDataComponent.mIndoorLocationsToOwnerLocations.at(location);
+        locationCoords = GetTownMapLocationEntry(ownerLocationName, townMapLocationsDataComponent).mPosition;
     }
     
     auto transformedCoords = TOWN_MAP_ICON_TOP_LEFT_ORIGIN_POSITION;
@@ -142,14 +153,14 @@ void LoadAndPopulateTownMapLocationData
     // Parse town map locations json
     const auto townMapDataJson = nlohmann::json::parse(townMapDataFileResource.GetContents());
 
-    // Parse indoor locations to owner levels mapping data
-    auto& indoorLocationsToLevelsJson = townMapDataJson["indoor_locations_to_owner_levels"];    
-    for (auto it = indoorLocationsToLevelsJson.begin(); it != indoorLocationsToLevelsJson.end(); ++it)
+    // Parse indoor locations to owner locations mapping data
+    auto& indoorLocationsToOwnerLocationsJson = townMapDataJson["indoor_locations_to_owner_locations"];    
+    for (auto it = indoorLocationsToOwnerLocationsJson.begin(); it != indoorLocationsToOwnerLocationsJson.end(); ++it)
     {
         const auto& indoorLocationName = StringId(it.value()["indoor_location_name"].get<std::string>());
-        const auto& ownerLevelName     = StringId(it.value()["owner_level_name"].get<std::string>());
+        const auto& ownerLocationName  = StringId(it.value()["owner_location_name"].get<std::string>());
 
-        townMapDataComponent.mIndoorLocationsToOwnerLevels[indoorLocationName] = ownerLevelName;
+        townMapDataComponent.mIndoorLocationsToOwnerLocations[indoorLocationName] = ownerLocationName;
     }
 
     // Parse town map locations positions 
@@ -157,11 +168,81 @@ void LoadAndPopulateTownMapLocationData
     for (auto it = townMapLocationsJson.begin(); it != townMapLocationsJson.end(); ++it)
     {
         const auto& locationDataJson = it.value();
-        const auto& locationName = locationDataJson["level_name"].get<std::string>();
+        const auto& locationName = locationDataJson["location_name"].get<std::string>();
         const auto mapPosition = glm::vec3(locationDataJson["map_position_x"].get<int>(), locationDataJson["map_position_y"].get<int>(), TOWN_MAP_ICON_Z);
 
-        townMapDataComponent.mTownMapLocationsToPositions[StringId(locationName)] = mapPosition;
+        townMapDataComponent.mTownMapLocations.emplace_back(StringId(locationName), mapPosition);
     }
+}
+
+std::string GetFormattedLocationName
+(
+    const StringId locationName
+)
+{
+    auto locationNameUpper = StringToUpper(locationName.GetString());
+    StringReplaceAllOccurences(locationNameUpper, "_", " ");
+    return locationNameUpper;
+}
+
+int GetTownMapLocationCount
+(
+    const ecs::World& world
+)
+{
+    const auto& townMapLocationsDataComponent = world.GetSingletonComponent<TownMapLocationDataSingletonComponent>();
+    return static_cast<int>(townMapLocationsDataComponent.mTownMapLocations.size());
+}
+
+int GetLocationIndexInTownMap
+(
+    const StringId location,
+    const ecs::World& world
+)
+{
+    const auto& townMapLocationsDataComponent = world.GetSingletonComponent<TownMapLocationDataSingletonComponent>();
+
+    auto locationToSearch = location;
+
+    if (!IsLocationInTownMapData(locationToSearch, townMapLocationsDataComponent))
+    {
+        locationToSearch = townMapLocationsDataComponent.mIndoorLocationsToOwnerLocations.at(location);        
+    }
+
+    return static_cast<int>(std::find_if(townMapLocationsDataComponent.mTownMapLocations.cbegin(), townMapLocationsDataComponent.mTownMapLocations.cend(), [&locationToSearch](const TownMapLocationEntry& townMapEntry)
+    {
+        return townMapEntry.mLocation == locationToSearch;
+    }) - townMapLocationsDataComponent.mTownMapLocations.cbegin());    
+}
+
+StringId GetLocationFromTownMapIndex
+(
+    const int townMapIndex,
+    const ecs::World& world
+)
+{
+    const auto& townMapLocationsDataComponent = world.GetSingletonComponent<TownMapLocationDataSingletonComponent>();
+    return townMapLocationsDataComponent.mTownMapLocations[townMapIndex].mLocation;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+bool IsLocationInTownMapData(const StringId location, const TownMapLocationDataSingletonComponent& townMapDataComponent)
+{
+    return std::find_if(townMapDataComponent.mTownMapLocations.cbegin(), townMapDataComponent.mTownMapLocations.cend(), [&location](const TownMapLocationEntry& townMapEntry)
+    {
+        return townMapEntry.mLocation == location;
+    }) != townMapDataComponent.mTownMapLocations.cend();
+}
+
+const TownMapLocationEntry& GetTownMapLocationEntry(const StringId location, const TownMapLocationDataSingletonComponent& townMapDataComponent)
+{
+    return *std::find_if(townMapDataComponent.mTownMapLocations.cbegin(), townMapDataComponent.mTownMapLocations.cend(), [&location](const TownMapLocationEntry& townMapEntry)
+    {
+        return townMapEntry.mLocation == location;
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

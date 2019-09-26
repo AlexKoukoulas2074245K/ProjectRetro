@@ -22,16 +22,29 @@
 #include "../../common/utils/MathUtils.h"
 
 #include <unordered_map>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+struct TownMapLocationEntry
+{
+    TownMapLocationEntry(const StringId location, const glm::vec3& position)
+        : mLocation(location)
+        , mPosition(position)
+    {
+    }
+
+    const StringId mLocation;
+    const glm::vec3 mPosition;
+};
 
 class TownMapLocationDataSingletonComponent final: public ecs::IComponent
 {
 public:    
-    std::unordered_map<StringId, StringId, StringIdHasher> mIndoorLocationsToOwnerLevels;
-    std::unordered_map<StringId, glm::vec3, StringIdHasher> mTownMapLocationsToPositions;
+    std::unordered_map<StringId, StringId, StringIdHasher> mIndoorLocationsToOwnerLocations;
+    std::vector<TownMapLocationEntry> mTownMapLocations;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

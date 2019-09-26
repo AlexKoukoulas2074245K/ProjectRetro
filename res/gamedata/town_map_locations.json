@@ -1,250 +1,250 @@
 {
-	"indoor_locations_to_owner_levels":
+	"indoor_locations_to_owner_locations":
 	[
-		{ "indoor_location_name": "in_oaks_lab", "owner_level_name": "pallet_town" },
-		{ "indoor_location_name": "in_players_home_bot", "owner_level_name": "pallet_town" },
-		{ "indoor_location_name": "in_players_home_top", "owner_level_name": "pallet_town" },
-		{ "indoor_location_name": "in_rivals_home", "owner_level_name": "pallet_town" },
-		{ "indoor_location_name": "in_viridian_nickname_family", "owner_level_name": "viridian_city" },
-		{ "indoor_location_name": "in_viridian_poke_center", "owner_level_name": "viridian_city" },
-		{ "indoor_location_name": "in_viridian_poke_mart", "owner_level_name": "viridian_city" },
-		{ "indoor_location_name": "in_viridian_school", "owner_level_name": "viridian_city" }
+		{ "indoor_location_name": "in_oaks_lab", "owner_location_name": "pallet_town" },
+		{ "indoor_location_name": "in_players_home_bot", "owner_location_name": "pallet_town" },
+		{ "indoor_location_name": "in_players_home_top", "owner_location_name": "pallet_town" },
+		{ "indoor_location_name": "in_rivals_home", "owner_location_name": "pallet_town" },
+		{ "indoor_location_name": "in_viridian_nickname_family", "owner_location_name": "viridian_city" },
+		{ "indoor_location_name": "in_viridian_poke_center", "owner_location_name": "viridian_city" },
+		{ "indoor_location_name": "in_viridian_poke_mart", "owner_location_name": "viridian_city" },
+		{ "indoor_location_name": "in_viridian_school", "owner_location_name": "viridian_city" }
 	],
 	
 	"location_coords" :
 	[
 		  {
-			"level_name": "pallet_town",
+			"location_name": "pallet_town",
 			"map_position_x": 28,
 			"map_position_y": 93
 		  },
 		  {
-			"level_name": "route_1",
+			"location_name": "route_1",
 			"map_position_x": 28,
 			"map_position_y": 85
 		  },
 		  {
-			"level_name": "viridian_city",
+			"location_name": "viridian_city",
 			"map_position_x": 28,
 			"map_position_y": 69
 		  },
 		  {
-			"level_name": "route_2",
+			"location_name": "route_2",
 			"map_position_x": 28,
 			"map_position_y": 53
 		  },
 		  {
-			"level_name": "viridian_forest",
+			"location_name": "viridian_forest",
 			"map_position_x": 28,
 			"map_position_y": 37
 		  },
 		  {
-			"level_name": "digglet's_cave",
+			"location_name": "digglet's_cave",
 			"map_position_x": 36,
 			"map_position_y": 37
 		  },
 		  {
-			"level_name": "pewter_city",
+			"location_name": "pewter_city",
 			"map_position_x": 28,
 			"map_position_y": 29
 		  },
 		  {
-			"level_name": "route_3",
+			"location_name": "route_3",
 			"map_position_x": 44,
 			"map_position_y": 29
 		  },
 		  {
-			"level_name": "mt.moon",
+			"location_name": "mt.moon",
 			"map_position_x": 60,
 			"map_position_y": 21
 		  },
 		  {
-			"level_name": "route_4",
+			"location_name": "route_4",
 			"map_position_x": 76,
 			"map_position_y": 21
 		  },
 		  {
-			"level_name": "cerulean_city",
+			"location_name": "cerulean_city",
 			"map_position_x": 92,
 			"map_position_y": 21
 		  },
 		  {
-			"level_name": "route_24",
+			"location_name": "route_24",
 			"map_position_x": 92,
 			"map_position_y": 13
 		  },
 		  {
-			"level_name": "route_25",
+			"location_name": "route_25",
 			"map_position_x": 100,
 			"map_position_y": 5
 		  },
 		  {
-			"level_name": "sea_cottage",
+			"location_name": "sea_cottage",
 			"map_position_x": 108,
 			"map_position_y": 5
 		  },
 		  {
-			"level_name": "route_5",
+			"location_name": "route_5",
 			"map_position_x": 92,
 			"map_position_y": 29
 		  },
 		  {
-			"level_name": "route_6",
+			"location_name": "route_6",
 			"map_position_x": 92,
 			"map_position_y": 69
 		  },
 		  {
-			"level_name": "vermilion_city",
+			"location_name": "vermilion_city",
 			"map_position_x": 92,
 			"map_position_y": 77
 		  },
 		  {
-			"level_name": "s.s.anne",
+			"location_name": "s.s.anne",
 			"map_position_x": 84,
 			"map_position_y": 85
 		  },
 		  {
-			"level_name": "route_9",
+			"location_name": "route_9",
 			"map_position_x": 116,
 			"map_position_y": 21
 		  },
 		  {
-			"level_name": "rock_tunnel",
+			"location_name": "rock_tunnel",
 			"map_position_x": 124,
 			"map_position_y": 29
 		  },
 		  {
-			"level_name": "route_10",
+			"location_name": "route_10",
 			"map_position_x": 124,
 			"map_position_y": 37
 		  },
 		  {
-			"level_name": "lavender_town",
+			"location_name": "lavender_town",
 			"map_position_x": 124,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "pok^mon_tower",
+			"location_name": "pok^mon_tower",
 			"map_position_x": 132,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "route_8",
+			"location_name": "route_8",
 			"map_position_x": 116,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "route_7",
+			"location_name": "route_7",
 			"map_position_x": 76,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "celadon_city",
+			"location_name": "celadon_city",
 			"map_position_x": 68,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "saffron_city",
+			"location_name": "saffron_city",
 			"map_position_x": 92,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "route_11",
+			"location_name": "route_11",
 			"map_position_x": 108,
 			"map_position_y": 77
 		  },
 		  {
-			"level_name": "route_12",
+			"location_name": "route_12",
 			"map_position_x": 124,
 			"map_position_y": 77
 		  },
 		  {
-			"level_name": "route_13",
+			"location_name": "route_13",
 			"map_position_x": 116,
 			"map_position_y": 93
 		  },
 		  {
-			"level_name": "route_14",
+			"location_name": "route_14",
 			"map_position_x": 100,
 			"map_position_y": 101
 		  },
 		  {
-			"level_name": "route_15",
+			"location_name": "route_15",
 			"map_position_x": 92,
 			"map_position_y": 109
 		  },
 		  {
-			"level_name": "route_16",
+			"location_name": "route_16",
 			"map_position_x": 52,
 			"map_position_y": 45
 		  },
 		  {
-			"level_name": "route_17",
+			"location_name": "route_17",
 			"map_position_x": 44,
 			"map_position_y": 69
 		  },
 		  {
-			"level_name": "route_18",
+			"location_name": "route_18",
 			"map_position_x": 60,
 			"map_position_y": 109
 		  },
 		  {
-			"level_name": "fuchsia_city",
+			"location_name": "fuchsia_city",
 			"map_position_x": 76,
 			"map_position_y": 109
 		  },
 		  {
-			"level_name": "safari_zone",
+			"location_name": "safari_zone",
 			"map_position_x": 76,
 			"map_position_y": 101
 		  },
 		  {
-			"level_name": "sea_route_19",
+			"location_name": "sea_route_19",
 			"map_position_x": 60,
 			"map_position_y": 125
 		  },
 		  {
-			"level_name": "seafoam_islands",
+			"location_name": "seafoam_islands",
 			"map_position_x": 52,
 			"map_position_y": 125
 		  },
 		  {
-			"level_name": "sea_route_20",
+			"location_name": "sea_route_20",
 			"map_position_x": 44,
 			"map_position_y": 125
 		  },
 		  {
-			"level_name": "cinnabar_island",
+			"location_name": "cinnabar_island",
 			"map_position_x": 28,
 			"map_position_y": 125
 		  },
 		  {
-			"level_name": "sea_route_21",
+			"location_name": "sea_route_21",
 			"map_position_x": 28,
 			"map_position_y": 109
 		  },
 		  {
-			"level_name": "route_22",
+			"location_name": "route_22",
 			"map_position_x": 12,
 			"map_position_y": 69
 		  },
 		  {
-			"level_name": "route_23",
+			"location_name": "route_23",
 			"map_position_x": 12,
 			"map_position_y": 53
 		  },
 		  {
-			"level_name": "victory_road",
+			"location_name": "victory_road",
 			"map_position_x": 12,
 			"map_position_y": 37
 		  },
 		  {
-			"level_name": "indigo_plateau",
+			"location_name": "indigo_plateau",
 			"map_position_x": 12,
 			"map_position_y": 21
 		  },
 		  {
-			"level_name": "power_plant",
+			"location_name": "power_plant",
 			"map_position_x": 132,
 			"map_position_y": 37
 		  }

@@ -52,6 +52,28 @@ void LoadAndPopulateTownMapLocationData
     TownMapLocationDataSingletonComponent&
 );
 
+std::string GetFormattedLocationName
+(
+    const StringId locationName
+);
+
+int GetTownMapLocationCount
+(
+    const ecs::World& world
+);
+
+int GetLocationIndexInTownMap
+(
+    const StringId location,
+    const ecs::World& world
+);
+
+StringId GetLocationFromTownMapIndex
+(
+    const int townMapIndex,
+    const ecs::World& world
+);
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,7 @@
 
 #include "BaseOverworldFlowState.h"
 #include "../../common/utils/MathUtils.h"
+#include "../../common/utils/StringUtils.h"
 #include "../../common/utils/Timer.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -32,11 +33,21 @@ public:
     void VUpdate(const float dt) override;
 
 private:    
+    void CreateLocationNameTextbox(const StringId locationName);
+
+    static const glm::vec3 LOCATION_NAME_TEXTBOX_POSITION;
+    static const std::string CURSOR_BUMP_SFX_NAME;
     static const float CURSOR_BLINKING_DELAY;
-    
-    ecs::EntityId mBackgroundEntityId;
+    static const int LOCATION_NAME_TEXTBOX_COLS;
+    static const int LOCATION_NAME_TEXTBOX_ROWS;
+
+    ecs::EntityId mBackgroundEntityId;    
     ecs::EntityId mPlayerIconEntityId;
+    ecs::EntityId mCursorIconEntityId;
+    ecs::EntityId mLocationNameTextboxEntityId;
+
     Timer mCursorBlinkingTimer;
+    int mCursorMapIndex;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
