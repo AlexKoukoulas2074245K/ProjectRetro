@@ -1162,7 +1162,7 @@ void WriteCharAtTextboxCoords
     (
         textboxTopLeftPoint.x + tileWidth * textboxCol,
         textboxTopLeftPoint.y - tileHeightAccountingForAspect * textboxRow,
-        textboxTransformComponent.mPosition.z -0.05f
+        textboxTransformComponent.mPosition.z -0.06f
      );
     
     world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));
