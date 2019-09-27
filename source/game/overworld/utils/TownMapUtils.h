@@ -16,6 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../components/TownMapLocationDataSingletonComponent.h"
 #include "../../ECS.h"
 #include "../../common/utils/StringUtils.h"
 
@@ -28,8 +29,6 @@ enum class TownMapIconType
     PLAYER_ICON,
     CURSOR_ICON
 };
-
-class TownMapLocationDataSingletonComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +71,18 @@ StringId GetLocationFromTownMapIndex
 (
     const int townMapIndex,
     const ecs::World& world
+);
+
+bool IsLocationInTownMapData
+(
+    const StringId location,
+    const TownMapLocationDataSingletonComponent&
+);
+
+const TownMapLocationEntry& GetTownMapLocationEntry
+(
+    const StringId location,
+    const TownMapLocationDataSingletonComponent&
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

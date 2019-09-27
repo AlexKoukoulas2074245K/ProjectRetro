@@ -14,6 +14,8 @@
 
 #include "../OverworldConstants.h"
 #include "../components/OverworldFlowStateSingletonComponent.h"
+#include "../components/TownMapLocationDataSingletonComponent.h"
+#include "../utils/TownMapUtils.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/GameConstants.h"
 #include "../../ECS.h"
@@ -119,6 +121,20 @@ inline void StartOverworldFlowState(ecs::World& world)
 {
     auto& overworldFlowStateComponent = world.GetSingletonComponent<OverworldFlowStateSingletonComponent>();        
     overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<FlowStateType>(world));
+}
+
+inline StringId GetLevelOwnerNameOfLocation(const StringId locationName, const ecs::World& world)
+{
+    const auto& townMapLocationsData = world.GetSingletonComponent<TownMapLocationDataSingletonComponent>();
+    
+    if (IsLocationInTownMapData(locationName, townMapLocationsData))
+    {
+        return locationName;
+    }
+    else
+    {
+        return townMapLocationsData.mIndoorLocationsToOwnerLocations.at(locationName);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

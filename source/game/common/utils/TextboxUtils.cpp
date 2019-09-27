@@ -334,7 +334,7 @@ ecs::EntityId CreateChatbox
 ecs::EntityId CreateItemMenu
 (
     ecs::World& world,
-    const size_t playerBagSize,
+    const size_t itemCount,
     const int previousCursorRow /* 0 */,
     const int itemOffset /* 0 */
 )
@@ -356,7 +356,7 @@ ecs::EntityId CreateItemMenu
     cursorComponent->mCursorRow = previousCursorRow;
 
     cursorComponent->mCursorColCount = 1;    
-    cursorComponent->mCursorRowCount = math::Min(static_cast<int>(playerBagSize), 3);
+    cursorComponent->mCursorRowCount = math::Min(static_cast<int>(itemCount), 3);
 
     cursorComponent->mCursorDisplayHorizontalTileOffset = 1;
     cursorComponent->mCursorDisplayVerticalTileOffset = 2;

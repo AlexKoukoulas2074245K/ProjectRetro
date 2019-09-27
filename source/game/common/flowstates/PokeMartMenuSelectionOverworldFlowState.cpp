@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokeMartMenuSelectionOverworldFlowState.h"
+#include "PokeMartBuyDialogOverworldFlowState.h"
+#include "PokeMartSellDialogOverworldFlowState.h"
 #include "PokeMartFarewellDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -18,6 +20,13 @@
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../sound/SoundService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string PokeMartMenuSelectionOverworldFlowState::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,12 +50,12 @@ void PokeMartMenuSelectionOverworldFlowState::VUpdate(const float)
         // Buy
         if (menuCursorRow == 0)
         {
-            
+            CompleteAndTransitionTo<PokeMartBuyDialogOverworldFlowState>();
         }
         // Sell
         else if (menuCursorRow == 1)
         {
-            
+            CompleteAndTransitionTo<PokeMartSellDialogOverworldFlowState>();
         }
         // Quit
         else
@@ -56,6 +65,7 @@ void PokeMartMenuSelectionOverworldFlowState::VUpdate(const float)
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
         CompleteAndTransitionTo<PokeMartFarewellDialogOverworldFlowState>();
     }
 }
