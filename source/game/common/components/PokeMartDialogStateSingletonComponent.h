@@ -26,7 +26,7 @@ class PokeMartDialogStateSingletonComponent final: public ecs::IComponent
 {
 public:                
     ecs::EntityId mMoneyTextboxEntityId = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mMenuTextboxEntityId  = ecs::NULL_ENTITY_ID;    
+    ecs::EntityId mMenuTextboxEntityId  = ecs::NULL_ENTITY_ID;        
 
 };
 

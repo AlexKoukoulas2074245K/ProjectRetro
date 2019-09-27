@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string PokeMartSellDialogOverworldFlowState::TEXTBOX_CLICK_SFX_NAME = "general/textbox_click";
-const float PokeMartSellDialogOverworldFlowState::SELL_CHATBOX_Z = -0.1f;
+const float PokeMartSellDialogOverworldFlowState::OVERLAID_CHATBOX_Z = -0.05f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ const float PokeMartSellDialogOverworldFlowState::SELL_CHATBOX_Z = -0.1f;
 PokeMartSellDialogOverworldFlowState::PokeMartSellDialogOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    QueueDialogForChatbox(CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, SELL_CHATBOX_Z)), "What would you#like to sell?.+FREEZE", mWorld);
+    QueueDialogForChatbox(CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, OVERLAID_CHATBOX_Z)), "What would you#like to sell?.+FREEZE", mWorld);
     
     auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;

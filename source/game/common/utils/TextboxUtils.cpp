@@ -42,9 +42,9 @@ static const glm::vec3 POKEDEX_POKEMON_ENTRY_DISPLAY_TEXTBOX_POSITION       = gl
 static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = glm::vec3(0.1337f, 0.167f, -0.1f);
 static const glm::vec3 MART_MONEY_TEXTBOX_POSITION                          = glm::vec3(0.377200305f, 0.836796045f, 0.0f);
 static const glm::vec3 MART_MENU_TEXTBOX_POSITION                           = glm::vec3(-0.309200227f, 0.616698325f, 0.0f);
+static const glm::vec3 MART_ITEM_QUANTITY_TEXTBOX_POSITION                  = glm::vec3(0.232700080, -0.160900041, -0.4f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
-
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
@@ -56,6 +56,9 @@ static const int MART_MENU_TEXTBOX_ROWS = 7;
 
 static const int MART_MONEY_TEXTBOX_COLS = 9;
 static const int MART_MONEY_TEXTBOX_ROWS = 3;
+
+static const int MART_ITEM_QUANTITY_TEXTBOX_COLS = 13;
+static const int MART_ITEM_QUANTITY_TEXTBOX_ROWS = 3;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
@@ -456,6 +459,31 @@ ecs::EntityId CreatePokeMartMoneyTextbox
     WriteTextAtTextboxCoords(moneyTextboxEntityId, moneyString, MART_MONEY_TEXTBOX_COLS - 1 - moneyString.size(), 1, world);
 
     return moneyTextboxEntityId;
+}
+
+ecs::EntityId CreatePokeMartItemQuantityTextbox
+(
+    ecs::World& world,
+    const int itemPrice    
+)
+{
+    const auto itemQuantityTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CHATBOX,
+        MART_ITEM_QUANTITY_TEXTBOX_COLS,
+        MART_ITEM_QUANTITY_TEXTBOX_ROWS,
+        MART_ITEM_QUANTITY_TEXTBOX_POSITION.x,
+        MART_ITEM_QUANTITY_TEXTBOX_POSITION.y,
+        MART_ITEM_QUANTITY_TEXTBOX_POSITION.z,
+        world
+    );
+
+    const auto itemPriceString = "$" + std::to_string(itemPrice);
+
+    WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, "x01", 1, 1, world);
+    WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, itemPriceString, MART_ITEM_QUANTITY_TEXTBOX_COLS - 1 - itemPriceString.size(), 1, world);
+
+    return itemQuantityTextboxEntityId;
 }
 
 ecs::EntityId CreateBlackboardTextbox

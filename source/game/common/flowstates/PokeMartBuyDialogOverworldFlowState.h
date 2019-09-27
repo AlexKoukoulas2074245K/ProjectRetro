@@ -17,6 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../../common/utils/StringUtils.h"
+#include "../../ECS.h"
 
 #include <string>
 
@@ -32,10 +34,20 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    void UpdateItemMenu(const float dt);
+    void UpdateItemQuantityMenu(const float dt);
+    void CancelDialog();
+    void RedrawItemMenu();
+    void SaveLastFramesCursorRow();    
     void DisplayItemsInMenuForCurrentOffset() const;
     
     static const std::string TEXTBOX_CLICK_SFX_NAME;
-    static const float TAKE_YOUR_TIME_CHATBOX_Z;
+    static const float OVERLAID_CHATBOX_Z;
+
+    ecs::EntityId mItemQuantityTextboxEntityId;
+    StringId mSelectedItemName;
+    int mSelectedQuantity;
+    bool mCancellingDialog;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

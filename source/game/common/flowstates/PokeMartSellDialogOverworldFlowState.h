@@ -33,7 +33,7 @@ public:
     
 private:
     static const std::string TEXTBOX_CLICK_SFX_NAME;
-    static const float SELL_CHATBOX_Z;
+    static const float OVERLAID_CHATBOX_Z;
 };
 
 
