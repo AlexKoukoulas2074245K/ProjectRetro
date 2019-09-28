@@ -34,8 +34,10 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    void UpdateIntroFlow();
     void UpdateItemMenu(const float dt);
     void UpdateItemQuantityMenu(const float dt);
+    void UpdateCancellingFlow();
     void CancelDialog();
     void RedrawItemMenu();
     void SaveLastFramesCursorRow();    
@@ -44,10 +46,16 @@ private:
     static const std::string TEXTBOX_CLICK_SFX_NAME;
     static const float OVERLAID_CHATBOX_Z;
 
+    enum class BuyDialogState
+    {
+        INTRO, ITEM_MENU, ITEM_QUANTITY, CANCELLING
+    };
+    
     ecs::EntityId mItemQuantityTextboxEntityId;
     StringId mSelectedItemName;
+    BuyDialogState mBuyDialogState;
     int mSelectedQuantity;
-    bool mCancellingDialog;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

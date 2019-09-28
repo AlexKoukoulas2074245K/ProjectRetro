@@ -39,8 +39,9 @@ PokeMartBuyDialogOverworldFlowState::PokeMartBuyDialogOverworldFlowState(ecs::Wo
     : BaseFlowState(world)
     , mItemQuantityTextboxEntityId(ecs::NULL_ENTITY_ID)
     , mSelectedItemName()
+    , mBuyDialogState(BuyDialogState::INTRO)
     , mSelectedQuantity(0)
-    , mCancellingDialog(false)
+    
 {
     QueueDialogForChatbox(CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, OVERLAID_CHATBOX_Z)), "Take your time.+FREEZE", mWorld);
     
@@ -50,38 +51,39 @@ PokeMartBuyDialogOverworldFlowState::PokeMartBuyDialogOverworldFlowState(ecs::Wo
 
 void PokeMartBuyDialogOverworldFlowState::VUpdate(const float dt)
 {
+    switch (mBuyDialogState)
+    {
+        case BuyDialogState::INTRO:
+        {
+            UpdateIntroFlow();
+        } break;
+            
+        case BuyDialogState::ITEM_MENU:
+        {
+            UpdateItemMenu(dt);
+        } break;
+            
+        case BuyDialogState::ITEM_QUANTITY:
+        {
+            UpdateItemQuantityMenu(dt);
+        } break;
+            
+        case BuyDialogState::CANCELLING:
+        {
+            UpdateCancellingFlow();
+        } break;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void PokeMartBuyDialogOverworldFlowState::UpdateIntroFlow()
+{
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
-    if (mCancellingDialog && guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
-    {
-        auto& pokemartDialogComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
-
-        // Destroy is there anything I can do chatbox
-        DestroyActiveTextbox(mWorld);
-
-        // Destroy menu selection dialog
-        DestroyActiveTextbox(mWorld);
-        pokemartDialogComponent.mMenuTextboxEntityId = ecs::NULL_ENTITY_ID;
-
-        // Destroy may I help you chatbox
-        DestroyActiveTextbox(mWorld);
-
-        const auto activeChatboxEntityId = CreateChatbox(mWorld);
-        WriteTextAtTextboxCoords(activeChatboxEntityId, "Is there anything", 1, 2, mWorld);
-        WriteTextAtTextboxCoords(activeChatboxEntityId, "else I can do?", 1, 4, mWorld);
-
-        // Destroy money textbox
-        DestroyGenericOrBareTextbox(pokemartDialogComponent.mMoneyTextboxEntityId, mWorld);
-        pokemartDialogComponent.mMoneyTextboxEntityId = ecs::NULL_ENTITY_ID;
-
-        CompleteAndTransitionTo<PokeMartMenuSelectionOverworldFlowState>();
-    }
-    // Item menu not yet created
-    else if
-    (
-        guiStateComponent.mActiveTextboxesStack.size() == 3 &&
-        guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN
-    )
+    if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
         // Create and populate item menu
         const auto& activeLevelComponent  = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
@@ -99,28 +101,10 @@ void PokeMartBuyDialogOverworldFlowState::VUpdate(const float dt)
         itemMenuComponent.mPreviousCursorRow       = 0;
         
         DisplayItemsInMenuForCurrentOffset();
-    }
-    // Item menu active
-    else if 
-    (
-        guiStateComponent.mActiveTextboxesStack.size() == 4
-    )
-    {
-        UpdateItemMenu(dt);
-    }
-    // Item quantity selection active
-    else if 
-    (
-        guiStateComponent.mActiveTextboxesStack.size() == 5
-    )
-    {
-        UpdateItemQuantityMenu(dt);
+        
+        mBuyDialogState = BuyDialogState::ITEM_MENU;
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
 
 void PokeMartBuyDialogOverworldFlowState::UpdateItemMenu(const float dt)
 {    
@@ -168,6 +152,8 @@ void PokeMartBuyDialogOverworldFlowState::UpdateItemMenu(const float dt)
             mSelectedQuantity = 1;
             mSelectedItemName = itemName;
             mItemQuantityTextboxEntityId = CreatePokeMartItemQuantityTextbox(mWorld, itemStats.mPrice);
+            mBuyDialogState = BuyDialogState::ITEM_QUANTITY;
+            return;
         }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
@@ -223,6 +209,36 @@ void PokeMartBuyDialogOverworldFlowState::UpdateItemQuantityMenu(const float)
     }
 }
 
+void PokeMartBuyDialogOverworldFlowState::UpdateCancellingFlow()
+{
+    auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    
+    if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+    {
+        auto& pokemartDialogComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
+        
+        // Destroy is there anything I can do chatbox
+        DestroyActiveTextbox(mWorld);
+        
+        // Destroy menu selection dialog
+        DestroyActiveTextbox(mWorld);
+        pokemartDialogComponent.mMenuTextboxEntityId = ecs::NULL_ENTITY_ID;
+        
+        // Destroy may I help you chatbox
+        DestroyActiveTextbox(mWorld);
+        
+        const auto activeChatboxEntityId = CreateChatbox(mWorld);
+        WriteTextAtTextboxCoords(activeChatboxEntityId, "Is there anything", 1, 2, mWorld);
+        WriteTextAtTextboxCoords(activeChatboxEntityId, "else I can do?", 1, 4, mWorld);
+        
+        // Destroy money textbox
+        DestroyGenericOrBareTextbox(pokemartDialogComponent.mMoneyTextboxEntityId, mWorld);
+        pokemartDialogComponent.mMoneyTextboxEntityId = ecs::NULL_ENTITY_ID;
+        
+        CompleteAndTransitionTo<PokeMartMenuSelectionOverworldFlowState>();
+    }
+}
+
 void PokeMartBuyDialogOverworldFlowState::CancelDialog()
 {
     // Destroy item menu textbox
@@ -238,7 +254,7 @@ void PokeMartBuyDialogOverworldFlowState::CancelDialog()
         mWorld
     );
 
-    mCancellingDialog = true;
+    mBuyDialogState = BuyDialogState::CANCELLING;
 }
 
 void PokeMartBuyDialogOverworldFlowState::RedrawItemMenu()
