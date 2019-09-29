@@ -10,8 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokeMartMenuSelectionOverworldFlowState.h"
-#include "PokeMartBuyDialogOverworldFlowState.h"
-#include "PokeMartSellDialogOverworldFlowState.h"
+#include "PokeMartTransactionDialogOverworldFlowState.h"
 #include "PokeMartFarewellDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -37,25 +36,31 @@ PokeMartMenuSelectionOverworldFlowState::PokeMartMenuSelectionOverworldFlowState
 {   
     DisplayMenuTextbox();
     DisplayMoneyTextbox();
+    
+    auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
+    pokeMartDialogStateComponent.mTransactionType = TransactionType::BUY;
 }
 
 void PokeMartMenuSelectionOverworldFlowState::VUpdate(const float)
 {        
-    const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-    const auto menuCursorRow         = cursorComponent.mCursorRow;
+    const auto& inputStateComponent    = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+    const auto menuCursorRow           = cursorComponent.mCursorRow;
+    auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
     
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
         // Buy
         if (menuCursorRow == 0)
         {
-            CompleteAndTransitionTo<PokeMartBuyDialogOverworldFlowState>();
+            pokeMartDialogStateComponent.mTransactionType = TransactionType::BUY;
+            CompleteAndTransitionTo<PokeMartTransactionDialogOverworldFlowState>();
         }
         // Sell
         else if (menuCursorRow == 1)
         {
-            CompleteAndTransitionTo<PokeMartSellDialogOverworldFlowState>();
+            pokeMartDialogStateComponent.mTransactionType = TransactionType::SELL;
+            CompleteAndTransitionTo<PokeMartTransactionDialogOverworldFlowState>();
         }
         // Quit
         else

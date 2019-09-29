@@ -97,14 +97,14 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
                 StartOverworldFlowState<ViridianGymLockedOverworldFlowState>(mWorld);
             }            
         }
-        else if (lastNpcSpokenToLevelIndex == 4)
+        else if (lastNpcSpokenToLevelIndex == 5)
         {
             if (pokedexStateComponent.mPokedexUnlocked == false)
             {
                 StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
             }
         }
-        else if (lastNpcSpokenToLevelIndex == 9)
+        else if (lastNpcSpokenToLevelIndex == 10)
         {
             StartOverworldFlowState<ViridianCaterpieWeedleGuyOverworldFlowState>(mWorld);
         }        

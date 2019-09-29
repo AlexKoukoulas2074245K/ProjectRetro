@@ -464,6 +464,7 @@ ecs::EntityId CreatePokeMartMoneyTextbox
 ecs::EntityId CreatePokeMartItemQuantityTextbox
 (
     ecs::World& world,
+    const int itemQuantity,
     const int itemPrice    
 )
 {
@@ -478,9 +479,10 @@ ecs::EntityId CreatePokeMartItemQuantityTextbox
         world
     );
 
+    const auto quantityString = "*" + (itemQuantity < 10 ? "0" + std::to_string(itemQuantity) : std::to_string(itemQuantity));
     const auto itemPriceString = "$" + std::to_string(itemPrice);
 
-    WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, "x01", 1, 1, world);
+    WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, quantityString, 1, 1, world);
     WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, itemPriceString, MART_ITEM_QUANTITY_TEXTBOX_COLS - 1 - itemPriceString.size(), 1, world);
 
     return itemQuantityTextboxEntityId;

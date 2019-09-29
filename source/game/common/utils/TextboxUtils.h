@@ -119,6 +119,7 @@ ecs::EntityId CreatePokeMartMoneyTextbox
 ecs::EntityId CreatePokeMartItemQuantityTextbox
 (    
     ecs::World& world,
+    const int itemQuantity,
     const int itemPrice    
 );
 
