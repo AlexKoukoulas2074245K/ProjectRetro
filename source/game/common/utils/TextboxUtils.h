@@ -123,6 +123,12 @@ ecs::EntityId CreatePokeMartItemQuantityTextbox
     const int itemPrice    
 );
 
+ecs::EntityId CreatePCMainOptionsTextbox
+(
+    ecs::World& world,
+    const bool billInteractionCompleted
+);
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,

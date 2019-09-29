@@ -43,6 +43,7 @@ static const glm::vec3 ITEM_MENU_TEXTBOX_POSITION                           = gl
 static const glm::vec3 MART_MONEY_TEXTBOX_POSITION                          = glm::vec3(0.377200305f, 0.836796045f, 0.0f);
 static const glm::vec3 MART_MENU_TEXTBOX_POSITION                           = glm::vec3(-0.309200227f, 0.616698325f, 0.0f);
 static const glm::vec3 MART_ITEM_QUANTITY_TEXTBOX_POSITION                  = glm::vec3(0.232700080, -0.160900041, -0.4f);
+static const glm::vec3 PC_MAIN_OPTIONS_TEXTBOX_POSITION                     = glm::vec3(-0.134f, 0.56f, 0.0f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
 static const int CHATBOX_COLS = 20;
@@ -59,6 +60,9 @@ static const int MART_MONEY_TEXTBOX_ROWS = 3;
 
 static const int MART_ITEM_QUANTITY_TEXTBOX_COLS = 13;
 static const int MART_ITEM_QUANTITY_TEXTBOX_ROWS = 3;
+
+static const int PC_MAIN_OPTIONS_TEXTBOX_COLS = 16;
+static const int PC_MAIN_OPTIONS_TEXTBOX_ROWS = 8;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
@@ -486,6 +490,64 @@ ecs::EntityId CreatePokeMartItemQuantityTextbox
     WriteTextAtTextboxCoords(itemQuantityTextboxEntityId, itemPriceString, MART_ITEM_QUANTITY_TEXTBOX_COLS - 1 - itemPriceString.size(), 1, world);
 
     return itemQuantityTextboxEntityId;
+}
+
+ecs::EntityId CreatePCMainOptionsTextbox
+(
+    ecs::World& world,
+    const bool billInteractionCompleted
+)
+{
+    const auto pcMainOptionsTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        PC_MAIN_OPTIONS_TEXTBOX_COLS,
+        PC_MAIN_OPTIONS_TEXTBOX_ROWS,
+        PC_MAIN_OPTIONS_TEXTBOX_POSITION.x,
+        PC_MAIN_OPTIONS_TEXTBOX_POSITION.y,
+        PC_MAIN_OPTIONS_TEXTBOX_POSITION.z,
+        world
+     );
+    
+    if (billInteractionCompleted)
+    {
+        WriteTextAtTextboxCoords(pcMainOptionsTextboxEntityId, "BILL's PC", 2, 2, world);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(pcMainOptionsTextboxEntityId, "SOMEONE's PC", 2, 2, world);
+    }
+    
+    WriteTextAtTextboxCoords(pcMainOptionsTextboxEntityId, "PROF.OAK's PC", 2, 4, world);
+    WriteTextAtTextboxCoords(pcMainOptionsTextboxEntityId, "LOG OFF", 2, 6, world);
+    
+    auto cursorComponent = std::make_unique<CursorComponent>();
+    
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+    
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 3;
+    
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+    
+    WriteCharAtTextboxCoords
+    (
+        pcMainOptionsTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+    
+    cursorComponent->mWarp = false;
+    
+    world.AddComponent<CursorComponent>(pcMainOptionsTextboxEntityId, std::move(cursorComponent));
+    
+    return pcMainOptionsTextboxEntityId;
 }
 
 ecs::EntityId CreateBlackboardTextbox

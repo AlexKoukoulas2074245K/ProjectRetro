@@ -18,6 +18,7 @@
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
+#include "../../common/flowstates/PCIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PokeMartIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/TownMapOverworldFlowState.h"
@@ -80,7 +81,14 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
     const auto lastNpcSpokenToLevelIndex  = playerStateComponent.mLastNpcLevelIndexSpokenTo;
     const auto flowStartedByTileTrigger   = currentPlayerTile.mTileTrait == TileTrait::FLOW_TRIGGER;
 
-    if (activeLevelComponent.mActiveLevelNameId == StringId("in_rivals_home"))
+    if (activeLevelComponent.mActiveLevelNameId == StringId("in_players_home_top"))
+    {
+        if (lastNpcSpokenToLevelIndex == 0)
+        {
+            StartOverworldFlowState<PCIntroDialogOverworldFlowState>(mWorld);
+        }
+    }
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_rivals_home"))
     {
         if (lastNpcSpokenToLevelIndex == 0)
         {
@@ -123,6 +131,11 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         if (lastNpcSpokenToLevelIndex == 2)
         {
             StartOverworldFlowState<PokeCenterHealingIntroDialogOverworldFlowState>(mWorld);
+        }
+        // PC flow
+        else if (lastNpcSpokenToLevelIndex == 7)
+        {
+            StartOverworldFlowState<PCIntroDialogOverworldFlowState>(mWorld);
         }
     }
     else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_poke_mart"))
