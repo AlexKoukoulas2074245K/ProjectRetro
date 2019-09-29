@@ -26,6 +26,7 @@
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
+#include "../../common/utils/OSMessageBox.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +80,14 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
     const auto lastNpcSpokenToLevelIndex  = playerStateComponent.mLastNpcLevelIndexSpokenTo;
     const auto flowStartedByTileTrigger   = currentPlayerTile.mTileTrait == TileTrait::FLOW_TRIGGER;
 
-    if (activeLevelComponent.mActiveLevelNameId == StringId("viridian_city"))
+    if (activeLevelComponent.mActiveLevelNameId == StringId("in_rivals_home"))
+    {
+        if (lastNpcSpokenToLevelIndex == 0)
+        {
+            StartOverworldFlowState<TownMapOverworldFlowState>(mWorld);
+        }
+    }
+    else if (activeLevelComponent.mActiveLevelNameId == StringId("viridian_city"))
     { 
         if (flowStartedByTileTrigger)
         {
@@ -145,6 +153,12 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
         {
             StartOverworldFlowState<ViridianSchoolBookOverworldFlowState>(mWorld);
         }
+    }
+    
+    auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
+    if (overworldFlowStateComponent.mFlowStateManager.HasActiveFlowState() == false)
+    {
+        ShowMessageBox(MessageBoxType::WARNING, "No flow activated", "Flow not hooked properly");
     }
 }
 
