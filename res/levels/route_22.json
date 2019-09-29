@@ -1162,8 +1162,6 @@
         { "editor_col": 59, "editor_row": 24, "game_position_x": 94.4, "game_position_z": 11.2, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 60, "editor_row": 24, "game_position_x": 96.0, "game_position_z": 11.2, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 61, "editor_row": 24, "game_position_x": 97.6, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 62, "editor_row": 24, "game_position_x": 99.2, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 63, "editor_row": 24, "game_position_x": 100.8, "game_position_z": 11.2, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 8, "editor_row": 25, "game_position_x": 12.8, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 9, "editor_row": 25, "game_position_x": 14.4, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 10, "editor_row": 25, "game_position_x": 16.0, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
@@ -1218,8 +1216,6 @@
         { "editor_col": 59, "editor_row": 25, "game_position_x": 94.4, "game_position_z": 9.6, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 60, "editor_row": 25, "game_position_x": 96.0, "game_position_z": 9.6, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 61, "editor_row": 25, "game_position_x": 97.6, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 62, "editor_row": 25, "game_position_x": 99.2, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 63, "editor_row": 25, "game_position_x": 100.8, "game_position_z": 9.6, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 9, "editor_row": 26, "game_position_x": 14.4, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 10, "editor_row": 26, "game_position_x": 16.0, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 11, "editor_row": 26, "game_position_x": 17.6, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
@@ -1273,8 +1269,6 @@
         { "editor_col": 59, "editor_row": 26, "game_position_x": 94.4, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 60, "editor_row": 26, "game_position_x": 96.0, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 61, "editor_row": 26, "game_position_x": 97.6, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 62, "editor_row": 26, "game_position_x": 99.2, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 63, "editor_row": 26, "game_position_x": 100.8, "game_position_z": 8.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 49, "editor_row": 27, "game_position_x": 78.4, "game_position_z": 6.4, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 50, "editor_row": 27, "game_position_x": 80.0, "game_position_z": 6.4, "atlas_col": 6, "atlas_row": 0 },
         { "editor_col": 51, "editor_row": 27, "game_position_x": 81.6, "game_position_z": 6.4, "atlas_col": 6, "atlas_row": 0 },
@@ -1353,7 +1347,7 @@
     ],
     "level_ground_layer_game":
     [
-        { "texture_name": "route22_groundLayer.png", "game_position_x": 51.2, "game_position_z": 25.6 }
+        { "texture_name": "route_22_groundLayer.png", "game_position_x": 51.2, "game_position_z": 25.6 }
     ],
     "level_npc_attributes":
     [
@@ -2302,13 +2296,7 @@
         { "model_name": "sea_tile (1,1)", "editor_col": 36, "editor_row": 15, "game_col": 36, "game_row": 16, "game_position_x": 57.6, "game_position_z": 25.6 },
         { "model_name": "sea_tile (1,1)", "editor_col": 37, "editor_row": 15, "game_col": 37, "game_row": 16, "game_position_x": 59.2, "game_position_z": 25.6 },
         { "model_name": "sea_tile (1,1)", "editor_col": 36, "editor_row": 16, "game_col": 36, "game_row": 15, "game_position_x": 57.6, "game_position_z": 24.0 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 37, "editor_row": 16, "game_col": 37, "game_row": 15, "game_position_x": 59.2, "game_position_z": 24.0 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 62, "editor_row": 24, "game_col": 62, "game_row": 7, "game_position_x": 99.2, "game_position_z": 11.2 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 63, "editor_row": 24, "game_col": 63, "game_row": 7, "game_position_x": 100.8, "game_position_z": 11.2 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 62, "editor_row": 25, "game_col": 62, "game_row": 6, "game_position_x": 99.2, "game_position_z": 9.6 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 63, "editor_row": 25, "game_col": 63, "game_row": 6, "game_position_x": 100.8, "game_position_z": 9.6 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 62, "editor_row": 26, "game_col": 62, "game_row": 5, "game_position_x": 99.2, "game_position_z": 8.0 },
-        { "model_name": "sea_tile (1,1)", "editor_col": 63, "editor_row": 26, "game_col": 63, "game_row": 5, "game_position_x": 100.8, "game_position_z": 8.0 }
+        { "model_name": "sea_tile (1,1)", "editor_col": 37, "editor_row": 16, "game_col": 37, "game_row": 15, "game_position_x": 59.2, "game_position_z": 24.0 }
     ],
     "level_tile_traits":
     [
