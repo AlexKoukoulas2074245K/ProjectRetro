@@ -345,11 +345,11 @@ void PokeMartTransactionDialogOverworldFlowState::UpdateConfirmationDialog()
 
 void PokeMartTransactionDialogOverworldFlowState::UpdateConfirmationYesNoDialog()
 {
-    const auto& inputStateComponent          = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    const auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
-    const auto& cursorComponent              = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-    const auto& itemStats                    = GetItemStats(mSelectedItemName, mWorld);
-    auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& inputStateComponent    = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+    const auto& itemStats              = GetItemStats(mSelectedItemName, mWorld);
+    auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
+    auto& playerStateComponent         = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     const auto yesNoTextboxCursorRow = cursorComponent.mCursorRow;
     
@@ -385,8 +385,7 @@ void PokeMartTransactionDialogOverworldFlowState::UpdateConfirmationYesNoDialog(
                     playerStateComponent.mPokeDollarCredits -= mSelectedQuantity * itemStats.mPrice;
                     AddItemToBag(mSelectedItemName, mWorld, mSelectedQuantity);
                     
-                    // Update money textbox
-                    auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
+                    // Update money textbox                    
                     DestroyGenericOrBareTextbox(pokeMartDialogStateComponent.mMoneyTextboxEntityId, mWorld);
                     pokeMartDialogStateComponent.mMoneyTextboxEntityId = CreatePokeMartMoneyTextbox(mWorld);
                     
@@ -408,8 +407,7 @@ void PokeMartTransactionDialogOverworldFlowState::UpdateConfirmationYesNoDialog(
                 playerStateComponent.mPokeDollarCredits += mSelectedQuantity * (itemStats.mPrice/2);
                 RemoveItemFromBag(mSelectedItemName, mWorld, mSelectedQuantity);
                 
-                // Update money textbox
-                auto& pokeMartDialogStateComponent = mWorld.GetSingletonComponent<PokeMartDialogStateSingletonComponent>();
+                // Update money textbox                
                 DestroyGenericOrBareTextbox(pokeMartDialogStateComponent.mMoneyTextboxEntityId, mWorld);
                 pokeMartDialogStateComponent.mMoneyTextboxEntityId = CreatePokeMartMoneyTextbox(mWorld);
                 
