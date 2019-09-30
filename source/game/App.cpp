@@ -137,12 +137,9 @@ void App::GameLoop()
 
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
+    const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-
-#ifndef NDEBUG
-    const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-#endif
     
     mWorld.OnPreFirstUpdate();
     
@@ -183,7 +180,12 @@ void App::GameLoop()
         
 #else
         mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
-#endif        
+#endif      
+
+        if (IsActionTypeKeyTapped(VirtualActionType::SELECT_BUTTON, inputStateSingletonComponent))
+        {
+            SoundService::GetInstance().ToggleAudioOnOff();
+        }
     }
 }
 

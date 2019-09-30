@@ -33,6 +33,7 @@ class SoundService final
 
 public:
     static SoundService& GetInstance();
+    static const int SFX_CHANNEL_NUMBER;
 
     ~SoundService();
     SoundService(const SoundService&) = delete;
@@ -46,6 +47,9 @@ public:
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
     void MuteMusic();
     void UnmuteMusic();
+    void MuteSfx();
+    void UnmuteSfx();
+    void ToggleAudioOnOff();
 
     void OnMusicFinished();
     void OnMusicIntroFinished();    
@@ -67,14 +71,16 @@ private:
     static const int SOUND_FREQUENCY;
     static const int HARDWARE_CHANNELS;
     static const int CHUNK_SIZE_IN_BYTES;
-    static const int FADE_OUT_DURATION_IN_MILISECONDS;
+    static const int FADE_OUT_DURATION_IN_MILISECONDS;    
 
     MusicResourceId mCurrentlyPlayingMusicResourceId = 0;
     MusicResourceId mQueuedMusicResourceId = 0;
     MusicResourceId mCoreMusicTrackResourceId = 0;    
 
-    StringId mLastPlayedSfxName    = StringId();
-    int mMusicVolumePriorToMuting = -1;
+    StringId mLastPlayedSfxName   = StringId();
+    int mMusicVolumePriorToMuting = -1;   
+    int mSfxVolumePriorToMuting   = -1;
+    bool mAllAudioDisabled        = false;
 
 };
 

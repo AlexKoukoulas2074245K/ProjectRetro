@@ -28,6 +28,7 @@
 const std::string SoundService::MUSIC_FILE_EXTENSION = ".ogg";
 const std::string SoundService::SFX_FILE_EXTENSION   = ".wav";
 
+const int SoundService::SFX_CHANNEL_NUMBER               = 1;
 const int SoundService::SOUND_FREQUENCY                  = 44100;
 const int SoundService::HARDWARE_CHANNELS                = 2;
 const int SoundService::CHUNK_SIZE_IN_BYTES              = 1024;
@@ -49,7 +50,7 @@ static void OnMusicIntroFinishedHook()
 
 static void OnSfxFinishedHook(const int channel)
 {
-    if (channel == 1)
+    if (channel == SoundService::SFX_CHANNEL_NUMBER)
     {
         SoundService::GetInstance().OnSfxFinished();
     }
@@ -114,7 +115,7 @@ void SoundService::PlaySfx(const StringId sfxName, const bool overrideCurrentPla
     if (overrideCurrentPlaying || Mix_Playing(1) == false)
     {
         mLastPlayedSfxName = sfxName;
-        Mix_PlayChannel(1, sfxResource.GetSdlSfxHandle(), 0);
+        Mix_PlayChannel(SFX_CHANNEL_NUMBER, sfxResource.GetSdlSfxHandle(), 0);
         
         if (shouldMuteMusicWhilePlaying)
         {
@@ -201,6 +202,32 @@ void SoundService::UnmuteMusic()
     Mix_VolumeMusic(mMusicVolumePriorToMuting);
 }
 
+void SoundService::MuteSfx()
+{
+    mSfxVolumePriorToMuting = Mix_Volume(SFX_CHANNEL_NUMBER, -1);
+    Mix_Volume(SFX_CHANNEL_NUMBER, 0);
+}
+
+void SoundService::UnmuteSfx()
+{
+    Mix_Volume(SFX_CHANNEL_NUMBER, mMusicVolumePriorToMuting);
+}
+
+void SoundService::ToggleAudioOnOff()
+{
+    mAllAudioDisabled = !mAllAudioDisabled;
+    if (!mAllAudioDisabled)
+    {
+        UnmuteMusic();
+        UnmuteSfx();
+    }
+    else
+    {
+        MuteMusic();
+        MuteSfx();
+    }
+}
+
 void SoundService::OnMusicFinished()
 {
     assert(mQueuedMusicResourceId != 0 && "No queued music to play");
@@ -245,7 +272,7 @@ bool SoundService::IsPlayingMusic() const
 
 bool SoundService::IsPlayingSfx() const
 {
-    return Mix_Playing(1) != 0;
+    return Mix_Playing(SFX_CHANNEL_NUMBER) != 0;
 }
 
 StringId SoundService::GetLastPlayedSfxName() const
