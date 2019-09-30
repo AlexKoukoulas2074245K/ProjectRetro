@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseOverworldFlowState.h"
+#include "../utils/MathUtils.h"
 
 #include <string>
 
@@ -32,7 +33,20 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    void UpdateMainOptionsFlow();
+    void UpdateEnteringPokemonPCFlow();
+    void UpdateEnteringProfOakPCFlow();
+
+    enum class PCSystemType
+    {
+        NONE, BILLS_PC, OAKS_PC
+    };
+
+    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
     static const std::string PC_TURN_OFF_SFX_NAME;
+    static const std::string PC_ENTER_SFX_NAME;
+
+    PCSystemType mPCSystemToEnter;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
