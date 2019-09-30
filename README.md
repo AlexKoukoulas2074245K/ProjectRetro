@@ -63,4 +63,4 @@ Most of the work currently done revolves around the precise emulation of battle 
 * The moves are added to the game incrementally, the more areas and wild encounters are added. All moves with animation folders under res/textures/battle_animations should be working properly in battle.
 
 ### Misc
-* Flows and scripted events are also added incrementally as more levels are built. The major common flows that are currently missing at this stage of content creation are the Poke-mart buying/selling flows, as well as the PC (pokemon deposit/withdrawals, etc..) flow.
+* Flows and scripted events are also added on an ad-hoc fashion as required by the newer levels built. The major flow that is currently being developed is the PC (pokemon deposit/withdrawals, etc..) flow.
