@@ -12,6 +12,7 @@
 #include "PersistenceUtils.h"
 #include "PokemonItemsUtils.h"
 #include "PokemonMoveUtils.h"
+#include "PokedexUtils.h"
 #include "PokemonUtils.h"
 #include "../components/DirectionComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"

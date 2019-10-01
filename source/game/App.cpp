@@ -27,6 +27,7 @@
 #include "common/components/TrainersInfoStatsSingletonComponent.h"
 #include "common/systems/GuiManagementSystem.h"
 #include "common/utils/PersistenceUtils.h"
+#include "common/utils/PokedexUtils.h"
 #include "common/utils/PokemonItemsUtils.h"
 #include "common/utils/PokemonMoveUtils.h"
 #include "common/utils/PokemonUtils.h"

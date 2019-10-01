@@ -583,18 +583,6 @@ const PokemonBaseStats& GetPokemonBaseStats
     return pokemonBaseStatsComponent.mPokemonBaseStats.at(pokemonName);
 }
 
-PokedexEntryType GetPokedexEntryTypeForPokemon
-(
-    const StringId pokemonName,
-    const ecs::World& world
-)
-{
-    const auto& baseStats             = GetPokemonBaseStats(pokemonName, world);
-    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
-
-    return pokedexStateComponent.mPokedexEntries[baseStats.mId - 1];
-}
-
 bool DoesPokemonHaveType
 (
     const StringId type,
@@ -725,18 +713,6 @@ void LoadAndPopulatePokemonBaseStats
     }
 }
 
-void ChangePokedexEntryForPokemon
-(
-    const StringId pokemonName,
-    const PokedexEntryType pokedexEntryType,
-    const ecs::World& world
-)
-{
-    const auto& baseStats       = GetPokemonBaseStats(pokemonName, world);
-    auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
-    pokedexStateComponent.mPokedexEntries[baseStats.mId - 1] = pokedexEntryType;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -797,15 +773,6 @@ int CalculateBallShakeCountBeforePokemonBreaksFree
             return 3;
         }
     }
-}
-
-int GetNumberOfOwnedPokemon
-(
-    const ecs::World& world
-)
-{
-    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
-    return std::count(pokedexStateComponent.mPokedexEntries.cbegin(), pokedexStateComponent.mPokedexEntries.cend(), PokedexEntryType::OWNED);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -10,9 +10,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PCMainOptionsDialogOverworldFlowState.h"
+#include "PCPokemonSystemDialogOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../sound/SoundService.h"
@@ -108,7 +110,15 @@ void PCMainOptionsDialogOverworldFlowState::UpdateMainOptionsFlow()
 
 void PCMainOptionsDialogOverworldFlowState::UpdateEnteringPokemonPCFlow()
 {
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 
+    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
+    {
+        // Destroy options menu
+        DestroyActiveTextbox(mWorld);
+
+        CompleteAndTransitionTo<PCPokemonSystemDialogOverworldFlowState>();
+    }    
 }
 
 void PCMainOptionsDialogOverworldFlowState::UpdateEnteringProfOakPCFlow()
@@ -140,21 +150,23 @@ void PCMainOptionsDialogOverworldFlowState::UpdateEnteringProfOakPCFlow()
         const auto yesNoTextboxCursorRow = cursorComponent.mCursorRow;
 
         if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
-        {            
+        {    
+            // Destroy yes/no textbox
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy chatbox
+            DestroyActiveTextbox(mWorld);
+
             // Yes Selected
             if (yesNoTextboxCursorRow == 0)
-            {
-                
+            {                
+                auto ratingText = GetPokedexCompletionRatingText(mWorld);
+                ratingText += "#@Closed link to#PROF.OAK's PC.";
+                QueueDialogForChatbox(CreateChatbox(mWorld), ratingText, mWorld);
             }
             // No Selected
             else if (yesNoTextboxCursorRow == 1)
-            {
-                // Destroy yes/no textbox
-                DestroyActiveTextbox(mWorld);
-
-                // Destroy chatbox
-                DestroyActiveTextbox(mWorld);
-
+            {                
                 QueueDialogForChatbox(CreateChatbox(mWorld), "Closed link to#PROF.OAK's PC.", mWorld);                
             }
         }

@@ -13,7 +13,7 @@
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PokedexStateSingletonComponent.h"
-#include "../utils/PokedexSpriteUtils.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"

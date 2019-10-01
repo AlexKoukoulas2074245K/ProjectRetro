@@ -15,6 +15,7 @@
 #include "PokedexPokemonEntryDisplayFlowState.h"
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"

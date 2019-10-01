@@ -18,7 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "StringUtils.h"
-#include "../components/PokedexStateSingletonComponent.h"
 #include "../GameConstants.h"
 #include "../../ECS.h"
 
@@ -183,12 +182,6 @@ const PokemonBaseStats& GetPokemonBaseStats
     const ecs::World& world
 );
 
-PokedexEntryType GetPokedexEntryTypeForPokemon
-(
-    const StringId pokemonName,
-    const ecs::World& world
-);
-
 bool DoesPokemonHaveType
 (
     const StringId type,
@@ -204,18 +197,6 @@ bool DoesPokemonHaveType
 void LoadAndPopulatePokemonBaseStats
 (
     PokemonBaseStatsSingletonComponent& pokemonBaseStatsComponent
-);
-
-void ChangePokedexEntryForPokemon
-(
-    const StringId pokemonName,
-    const PokedexEntryType pokedexEntryType,
-    const ecs::World& world
-);
-
-int GetNumberOfOwnedPokemon
-(
-    const ecs::World& world
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

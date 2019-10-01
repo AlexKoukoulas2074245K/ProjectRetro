@@ -11,6 +11,7 @@
 
 #include "OpponentTrainerPokemonSummonTextEncounterFlowState.h"
 #include "PokemonScalingAnimationEncounterFlowState.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"

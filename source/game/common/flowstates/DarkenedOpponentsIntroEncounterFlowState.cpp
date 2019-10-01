@@ -12,6 +12,7 @@
 #include "DarkenedOpponentsIntroEncounterFlowState.h"
 #include "OpponentIntroTextEncounterFlowState.h"
 #include "../components/TransformComponent.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TrainerUtils.h"
 #include "../../ECS.h"

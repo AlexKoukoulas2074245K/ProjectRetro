@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PokedexSpriteUtils.h"
+#include "PokedexUtils.h"
 #include "TextboxUtils.h"
 #include "../../ECS.h"
 #include "../components/CursorComponent.h"
@@ -44,8 +44,12 @@ static const glm::vec3 MART_MONEY_TEXTBOX_POSITION                          = gl
 static const glm::vec3 MART_MENU_TEXTBOX_POSITION                           = glm::vec3(-0.309200227f, 0.616698325f, 0.0f);
 static const glm::vec3 MART_ITEM_QUANTITY_TEXTBOX_POSITION                  = glm::vec3(0.232700080, -0.160900041, -0.4f);
 static const glm::vec3 PC_MAIN_OPTIONS_TEXTBOX_POSITION                     = glm::vec3(-0.134f, 0.56f, 0.0f);
+static const glm::vec3 PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION           = glm::vec3(-0.206199840f, 0.452099757f, -0.1f);
+static const glm::vec3 PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION      = glm::vec3(0.1337f, 0.167f, -0.2f);
+static const glm::vec3 PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION         = glm::vec3(0.304f, -0.561f, -0.4f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
+
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
@@ -63,6 +67,15 @@ static const int MART_ITEM_QUANTITY_TEXTBOX_ROWS = 3;
 
 static const int PC_MAIN_OPTIONS_TEXTBOX_COLS = 16;
 static const int PC_MAIN_OPTIONS_TEXTBOX_ROWS = 8;
+
+static const int PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_COLS = 14;
+static const int PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_ROWS = 10;
+
+static const int PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_COLS = 16;
+static const int PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_ROWS = 11;
+
+static const int PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_COLS = 11;
+static const int PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_ROWS = 8;
 
 static const int YES_NO_TEXTBOX_COLS = 6;
 static const int YES_NO_TEXTBOX_ROWS = 5;
@@ -550,6 +563,157 @@ ecs::EntityId CreatePCMainOptionsTextbox
     return pcMainOptionsTextboxEntityId;
 }
 
+ecs::EntityId CreatePCPokemonSystemOptionsTextbox
+(
+    ecs::World& world
+)
+{
+    const auto pcPokemonSystemOptionsTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_COLS,
+        PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_ROWS,
+        PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION.x,
+        PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION.y,
+        PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(pcPokemonSystemOptionsTextboxEntityId, "WITHDRAW <>", 2, 2, world);
+    WriteTextAtTextboxCoords(pcPokemonSystemOptionsTextboxEntityId, "DEPOSIT <>", 2, 4, world);
+    WriteTextAtTextboxCoords(pcPokemonSystemOptionsTextboxEntityId, "RELEASE <>", 2, 6, world);
+    WriteTextAtTextboxCoords(pcPokemonSystemOptionsTextboxEntityId, "SEE YA!", 2, 8, world);
+    
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 4;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        pcPokemonSystemOptionsTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(pcPokemonSystemOptionsTextboxEntityId, std::move(cursorComponent));
+    
+    return pcPokemonSystemOptionsTextboxEntityId;
+}
+
+ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
+(
+    ecs::World& world,
+    const size_t itemCount,
+    const int previousCursorRow /* 0 */,
+    const int itemOffset /* 0 */
+)
+{
+    const auto pcPokemonSystemPokemonListTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_COLS,
+        PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_ROWS,
+        PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION.x,
+        PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION.y,
+        PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION.z,
+        world
+    );
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = previousCursorRow;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = math::Min(static_cast<int>(itemCount), 3);
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        pcPokemonSystemPokemonListTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(pcPokemonSystemPokemonListTextboxEntityId, std::move(cursorComponent));
+
+    auto itemMenuStateComponent = std::make_unique<ItemMenuStateComponent>();
+    itemMenuStateComponent->mItemMenuOffsetFromStart = itemOffset;
+    world.AddComponent<ItemMenuStateComponent>(pcPokemonSystemPokemonListTextboxEntityId, std::move(itemMenuStateComponent));
+    
+    return pcPokemonSystemPokemonListTextboxEntityId;
+}
+
+ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
+(
+    ecs::World& world
+)
+{
+    const auto pcPokemonSelectedOptionsTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_TEXTBOX,
+        PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_COLS,
+        PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_ROWS,
+        PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION.x,
+        PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION.y,
+        PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION.z,
+        world
+    );
+
+    WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "WITHDRAW", 2, 2, world);
+    WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "STATS", 2, 4, world);
+    WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "CANCEL", 2, 6, world);    
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = 3;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 1;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 2;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        pcPokemonSelectedOptionsTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(pcPokemonSelectedOptionsTextboxEntityId, std::move(cursorComponent));
+
+    return pcPokemonSelectedOptionsTextboxEntityId;
+}
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,
@@ -954,7 +1118,7 @@ ecs::EntityId CreateSaveScreenPlayerStatsTextbox
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto playerName            = playerStateComponent.mPlayerTrainerName.GetString();
     const auto playerBadgesString    = std::to_string(playerStateComponent.mBadgeNamesOwned.size());
-    const auto numPokemonOwnedString = std::to_string(GetNumberOfOwnedPokemon(world));
+    const auto numPokemonOwnedString = std::to_string(GetNumberOfPokemonWithPokedexEntryType(PokedexEntryType::OWNED, world));
     const auto timePlayedString      = GetHoursMinutesStringFromSeconds(playerStateComponent.mSecondsPlayed);
 
     WriteTextAtTextboxCoords(playerStatsTextboxEntityId, "PLAYER", 1, 2, world);

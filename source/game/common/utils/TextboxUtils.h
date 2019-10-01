@@ -129,6 +129,24 @@ ecs::EntityId CreatePCMainOptionsTextbox
     const bool billInteractionCompleted
 );
 
+ecs::EntityId CreatePCPokemonSystemOptionsTextbox
+(
+    ecs::World& world    
+);
+
+ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
+(
+    ecs::World& world,
+    const size_t count,
+    const int previousCursorRow = 0,
+    const int itemOffset = 0
+);
+
+ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
+(
+    ecs::World& world
+);
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,
