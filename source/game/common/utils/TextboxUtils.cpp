@@ -669,6 +669,7 @@ ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
 ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
 (
     ecs::World& world,
+    const PokemonSystemOperationType operationType,
     const int cursorRow /* 0 */
 )
 {
@@ -681,9 +682,9 @@ ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
         PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION.y,
         PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION.z,
         world
-    );
+    );    
 
-    WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "WITHDRAW", 2, 2, world);
+    WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, operationType == PokemonSystemOperationType::DEPOSIT ? "DEPOSIT" : "WITHDRAW", 2, 2, world);
     WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "STATS", 2, 4, world);
     WriteTextAtTextboxCoords(pcPokemonSelectedOptionsTextboxEntityId, "CANCEL", 2, 6, world);    
 

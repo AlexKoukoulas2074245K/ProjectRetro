@@ -24,12 +24,19 @@
 
 enum class PokemonSystemState
 {
-    OPTIONS, POKEMON_LIST, SELECTED_POKEMON_OPTIONS
+    OPTIONS, 
+    POKEMON_LIST, 
+    SELECTED_POKEMON_OPTIONS, 
+    WAIT_FOR_OPTION_FAILURE_TEXT, 
+    WAIT_FOR_POKEMON_CRY, 
+    WAIT_FOR_OPERATION_CONFIRMATION
 };
 
 enum class PokemonSystemOperationType
 {
-    WITHDRAW, DEPOSIT, RELEASE
+    WITHDRAW, 
+    DEPOSIT, 
+    RELEASE
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

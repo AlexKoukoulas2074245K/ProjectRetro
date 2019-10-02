@@ -20,6 +20,7 @@
 #include "../components/TextboxComponent.h"
 #include "../../ECS.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../overworld/components/PCStateSingletonComponent.h"
 
 #include <string>
 #include <vector>
@@ -131,7 +132,7 @@ ecs::EntityId CreatePCMainOptionsTextbox
 
 ecs::EntityId CreatePCPokemonSystemOptionsTextbox
 (
-    ecs::World& world,
+    ecs::World& world,    
     const int cursorRow = 0
 );
 
@@ -146,6 +147,7 @@ ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
 ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
 (
     ecs::World& world,
+    const PokemonSystemOperationType operationType,
     const int cursorRow = 0
 );
 

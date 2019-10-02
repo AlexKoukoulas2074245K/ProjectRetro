@@ -41,10 +41,14 @@ public:
     
 private:
     static const float OVERLAID_CHATBOX_Z;
+    static const float SECOND_OVERLAID_CHATBOX_Z;
 
-    void UpdatePokemonSystemOptionsDialog(const float dt);
+    void UpdatePokemonSystemOptionsDialog();
     void UpdatePokemonListDialog(const float dt);
-    void UpdatePokemonSelectedOptionsDialog(const float dt);
+    void UpdatePokemonSelectedOptionsDialog();
+    void UpdateWaitForOptionFailureText();
+    void UpdateWaitForPokemonCry();
+    void UpdateWaitForOperationConfirmationFlow();
     void CreateAndPopulatePokemonList(const std::vector<std::unique_ptr<Pokemon>>&, const int itemMenuOffsetFromStart = 0, const int previousCursorRow = 0);
     void RedrawPokemonList(const std::vector<std::unique_ptr<Pokemon>>&);
     void DisplayPokemonListForCurrentOffset(const std::vector<std::unique_ptr<Pokemon>>&);
