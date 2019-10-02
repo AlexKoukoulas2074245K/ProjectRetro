@@ -172,6 +172,18 @@
         {
             "from": { "level_name": "route_22", "level_col": 56, "level_row": 15 },
             "to": { "level_name": "viridian_city", "level_col": 8, "level_row": 26 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 10, "level_row": 34 },
+            "to": { "level_name": "in_viridian_forest_building_viridian_side", "level_col": 7, "level_row": 4 }
+        },
+        {
+            "from": { "level_name": "in_viridian_forest_building_viridian_side", "level_col": 7, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 10, "level_row": 34 }
+        },
+        {
+            "from": { "level_name": "in_viridian_forest_building_viridian_side", "level_col": 8, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 10, "level_row": 34 }
         }
 	]
 }
