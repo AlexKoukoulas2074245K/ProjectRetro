@@ -22,15 +22,22 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+enum class PokemonStatsDisplayViewCreationSourceType
+{
+    POKEMON_SELECTION_VIEW, PC
+};
+
 class PokemonStatsDisplayViewStateSingletonComponent final: public ecs::IComponent
 {
 public:    
-    ecs::EntityId mPokemonStatsInvisibleTextboxEntityId = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mBackgroundCoverEntityId              = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mStatsLayoutsEntityId                 = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mPokemonFrontSpriteEntityId           = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mPokemonHealthbarEntityId             = ecs::NULL_ENTITY_ID;
-    bool mIsInScreen1                                   = false;    
+    ecs::EntityId mPokemonStatsInvisibleTextboxEntityId          = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mBackgroundCoverEntityId                       = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mStatsLayoutsEntityId                          = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokemonFrontSpriteEntityId                    = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokemonHealthbarEntityId                      = ecs::NULL_ENTITY_ID;
+    PokemonStatsDisplayViewCreationSourceType mSourceCreatorFlow = PokemonStatsDisplayViewCreationSourceType::POKEMON_SELECTION_VIEW;
+    bool mIsInScreen1                                            = false;    
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

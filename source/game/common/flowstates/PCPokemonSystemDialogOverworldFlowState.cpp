@@ -11,13 +11,16 @@
 
 #include "PCMainOptionsDialogOverworldFlowState.h"
 #include "PCPokemonSystemDialogOverworldFlowState.h"
+#include "PokemonStatsDisplayViewFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/ItemMenuStateComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../components/PokemonStatsDisplayViewStateSingletonComponent.h"
 #include "../utils/PokedexUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../overworld/components/PCStateSingletonComponent.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -31,19 +34,42 @@ const float PCPokemonSystemDialogOverworldFlowState::OVERLAID_CHATBOX_Z = -0.2f;
 ////////////////////////////////////////////////////////////////////////////////////
 
 PCPokemonSystemDialogOverworldFlowState::PCPokemonSystemDialogOverworldFlowState(ecs::World& world)
-    : BaseFlowState(world)
-    , mPokemonSystemState(PokemonSystemState::OPTIONS)
+    : BaseFlowState(world)    
 {    
-    // Create background textbox
-    CreateChatbox(mWorld);
+    auto& pcStateComponent = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
 
-    // Create pc pokemon system options
-    CreatePCPokemonSystemOptionsTextbox(mWorld);
+    if (pcStateComponent.mRestoreFromPokemonStatsFlow == false)
+    {
+        // Create background textbox
+        CreateChatbox(mWorld);
+
+        // Create pc pokemon system options
+        CreatePCPokemonSystemOptionsTextbox(mWorld);
+
+        pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
+        pcStateComponent.mPokemonSystemOperationType = PokemonSystemOperationType::WITHDRAW;
+    }
+    // Means that we do not need to re-instantiate state and dialogs 
+    // e.g. transitioned to pokemon stats and back here
+    else
+    {        
+        pcStateComponent.mRestoreFromPokemonStatsFlow = false;
+
+        // Create pc pokemon system options
+        CreatePCPokemonSystemOptionsTextbox(mWorld, static_cast<int>(pcStateComponent.mPokemonSystemOperationType));
+
+        // Create and rest pokemon list    
+        CreateAndPopulatePokemonList(GetActivePokemonCollectionForCurrentOperation(), pcStateComponent.mLastItemOffsetFromStart, pcStateComponent.mLastCursorRow);
+
+        // Create selected pokemon options
+        CreatePCPokemonSelectedOptionsTextbox(mWorld, 1);
+    }
 }
 
 void PCPokemonSystemDialogOverworldFlowState::VUpdate(const float dt)
 {
-    switch (mPokemonSystemState)
+    const auto& pcStateComponent = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+    switch (pcStateComponent.mPokemonSystemState)
     {
         case PokemonSystemState::OPTIONS:                  UpdatePokemonSystemOptionsDialog(dt); break;
         case PokemonSystemState::POKEMON_LIST:             UpdatePokemonListDialog(dt); break;
@@ -60,8 +86,9 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSystemOptionsDialog(c
     const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();    
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
-
-    const auto menuCursorRow = cursorComponent.mCursorRow;
+    const auto menuCursorRow         = cursorComponent.mCursorRow;
+    
+    auto& pcStateComponent = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
@@ -95,8 +122,8 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSystemOptionsDialog(c
                 else
                 {
                     CreateAndPopulatePokemonList(playerStateComponent.mPlayerBoxedPokemon);
-                    mPokemonSystemState = PokemonSystemState::POKEMON_LIST;
-                    mPokemonSystemOperationType = PokemonSystemOperationType::WITHDRAW;
+                    pcStateComponent.mPokemonSystemState         = PokemonSystemState::POKEMON_LIST;
+                    pcStateComponent.mPokemonSystemOperationType = PokemonSystemOperationType::WITHDRAW;
                 }
             }
         }
@@ -161,15 +188,15 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSystemOptionsDialog(c
 }
 
 void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonListDialog(const float dt)
-{    
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& guiStateComponent             = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+{        
     const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto itemMenuEntityId         = GetActiveTextboxEntityId(mWorld);
     const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(itemMenuEntityId);
     auto& itemMenuStateComponent        = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
-    const auto& activePokemonCollection = (mPokemonSystemOperationType == PokemonSystemOperationType::DEPOSIT) ? playerStateComponent.mPlayerPokemonRoster : playerStateComponent.mPlayerBoxedPokemon;
+    auto& pcStateComponent              = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+    const auto& activePokemonCollection = GetActivePokemonCollectionForCurrentOperation();
 
+    auto& guiStateComponent             = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     guiStateComponent.mMoreItemsCursorTimer->Update(dt);
     if (guiStateComponent.mMoreItemsCursorTimer->HasTicked())
     {
@@ -194,24 +221,28 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonListDialog(const floa
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {            
-        const auto rosterIndex = itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow;
+        const auto rosterIndex                    = itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow;
+        pcStateComponent.mLastCursorRow           = cursorComponent.mCursorRow;
+        pcStateComponent.mLastItemOffsetFromStart = itemMenuStateComponent.mItemMenuOffsetFromStart;
+
         if (rosterIndex == static_cast<int>(activePokemonCollection.size()))
         {
             DestroyActiveTextbox(mWorld);
-            mPokemonSystemState = PokemonSystemState::OPTIONS;
+            pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
             return;
         }
         else
         {
+            pcStateComponent.mLastSelectedPokemonIndex = rosterIndex;
             CreatePCPokemonSelectedOptionsTextbox(mWorld);
-            mPokemonSystemState = PokemonSystemState::SELECTED_POKEMON_OPTIONS;
+            pcStateComponent.mPokemonSystemState = PokemonSystemState::SELECTED_POKEMON_OPTIONS;
             return;
         }        
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
         DestroyActiveTextbox(mWorld);
-        mPokemonSystemState = PokemonSystemState::OPTIONS;
+        pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
         return;
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent))
@@ -248,10 +279,11 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonListDialog(const floa
 
 void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSelectedOptionsDialog(const float)
 {
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    //const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));        
-    const auto& activePokemonCollection = (mPokemonSystemOperationType == PokemonSystemOperationType::DEPOSIT) ? playerStateComponent.mPlayerPokemonRoster : playerStateComponent.mPlayerBoxedPokemon;
+    auto& pcStateComponent              = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+    //const auto& activePokemonCollection = (pcStateComponent.mPokemonSystemOperationType == PokemonSystemOperationType::DEPOSIT) ? playerStateComponent.mPlayerPokemonRoster : playerStateComponent.mPlayerBoxedPokemon;
 
     const auto cursorRow = cursorComponent.mCursorRow;
 
@@ -265,27 +297,52 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSelectedOptionsDialog
         // Pokemon stats
         else if (cursorRow == 1)
         {
+            // Destroy selected options 
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy pokemon list
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy main options textbox
+            DestroyActiveTextbox(mWorld);
+
+            pcStateComponent.mRestoreFromPokemonStatsFlow = true;
+            mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>().mSourceCreatorFlow = PokemonStatsDisplayViewCreationSourceType::PC;
+            CompleteAndTransitionTo<PokemonStatsDisplayViewFlowState>();
         }
         // Cancel
         else
         {
+            // Destroy selected options 
+            DestroyActiveTextbox(mWorld);
+            
+            // Destroy pokemon list
+            DestroyActiveTextbox(mWorld);
 
+            pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
         }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
+        // Destroy selected options 
+        DestroyActiveTextbox(mWorld);
+
+        // Destroy pokemon list
+        DestroyActiveTextbox(mWorld);
+
+        pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
     }
 }
 
-void PCPokemonSystemDialogOverworldFlowState::CreateAndPopulatePokemonList(const std::vector<std::unique_ptr<Pokemon>>& sourcePokemonCollection)
+void PCPokemonSystemDialogOverworldFlowState::CreateAndPopulatePokemonList(const std::vector<std::unique_ptr<Pokemon>>& sourcePokemonCollection, const int itemMenuOffsetFromStart /* 0 */, const int previousCursorRow /* 0 */)
 {
     // + 1 for the cancel button
     const auto textboxCollectionCount = sourcePokemonCollection.size() + 1;
     const auto pokemonListTextboxEntityId = CreatePCPokemonSystemPokemonListTextbox(mWorld, textboxCollectionCount);
 
     auto& itemMenuComponent = mWorld.GetComponent<ItemMenuStateComponent>(pokemonListTextboxEntityId);
-    itemMenuComponent.mItemMenuOffsetFromStart = 0;
-    itemMenuComponent.mPreviousCursorRow       = 0;
+    itemMenuComponent.mItemMenuOffsetFromStart = itemMenuOffsetFromStart;
+    itemMenuComponent.mPreviousCursorRow       = previousCursorRow;
 
     DisplayPokemonListForCurrentOffset(sourcePokemonCollection);
 }
@@ -348,6 +405,13 @@ void PCPokemonSystemDialogOverworldFlowState::SaveLastFramesCursorRow()
     auto& itemMenuStateComponent     = mWorld.GetComponent<ItemMenuStateComponent>(activeTextboxEntityId);
 
     itemMenuStateComponent.mPreviousCursorRow = cursorComponent.mCursorRow;
+}
+
+const std::vector<std::unique_ptr<Pokemon>>& PCPokemonSystemDialogOverworldFlowState::GetActivePokemonCollectionForCurrentOperation() const
+{
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& pcStateComponent     = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+    return pcStateComponent.mPokemonSystemOperationType == PokemonSystemOperationType::DEPOSIT ? playerStateComponent.mPlayerPokemonRoster : playerStateComponent.mPlayerBoxedPokemon;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

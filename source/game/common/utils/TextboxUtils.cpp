@@ -565,7 +565,8 @@ ecs::EntityId CreatePCMainOptionsTextbox
 
 ecs::EntityId CreatePCPokemonSystemOptionsTextbox
 (
-    ecs::World& world
+    ecs::World& world,
+    const int cursorRow /* 0 */
 )
 {
     const auto pcPokemonSystemOptionsTextboxEntityId = CreateTextboxWithDimensions
@@ -587,7 +588,7 @@ ecs::EntityId CreatePCPokemonSystemOptionsTextbox
     auto cursorComponent = std::make_unique<CursorComponent>();
 
     cursorComponent->mCursorCol = 0;
-    cursorComponent->mCursorRow = 0;
+    cursorComponent->mCursorRow = cursorRow;
 
     cursorComponent->mCursorColCount = 1;
     cursorComponent->mCursorRowCount = 4;
@@ -667,7 +668,8 @@ ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
 
 ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
 (
-    ecs::World& world
+    ecs::World& world,
+    const int cursorRow /* 0 */
 )
 {
     const auto pcPokemonSelectedOptionsTextboxEntityId = CreateTextboxWithDimensions
@@ -688,7 +690,7 @@ ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
     auto cursorComponent = std::make_unique<CursorComponent>();
 
     cursorComponent->mCursorCol = 0;
-    cursorComponent->mCursorRow = 0;
+    cursorComponent->mCursorRow = cursorRow;
 
     cursorComponent->mCursorColCount = 1;
     cursorComponent->mCursorRowCount = 3;

@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "PCPokemonSystemDialogOverworldFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -21,6 +22,7 @@
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
+#include "../../overworld/components/PCStateSingletonComponent.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +71,12 @@ void PokemonStatsDisplayViewFlowState::VUpdate(const float)
         {
             DestroyPokemonStatsScreen();
             DestroyPokemonStatsBackground();
-            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();            
+
+            switch (pokemonStatsDisplayViewStateComponent.mSourceCreatorFlow)
+            {
+                case PokemonStatsDisplayViewCreationSourceType::POKEMON_SELECTION_VIEW: CompleteAndTransitionTo<PokemonSelectionViewFlowState>(); break;
+                case PokemonStatsDisplayViewCreationSourceType::PC:                     CompleteAndTransitionTo<PCPokemonSystemDialogOverworldFlowState>(); break;
+            }            
         }
     } 
 }
@@ -90,10 +97,10 @@ void PokemonStatsDisplayViewFlowState::CreatePokemonStatsBackground() const
 }
 
 void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
-{
-    const auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-    const auto& selectedPokemon                    = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex];
+{   
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& selectedPokemon = GetSelectedPokemon();
+
     auto& pokemonStatsDisplayViewStateComponent    = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
 
     pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId = LoadAndCreatePokemonStatsDisplayScreen(true, mWorld);    
@@ -143,10 +150,9 @@ void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen1() const
 
 void PokemonStatsDisplayViewFlowState::LoadAndCreatePokemonStatsScreen2() const
 {    
-    const auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& pokemonSelectionViewStateComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-    const auto& selectedPokemon                    = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex];
-    auto& pokemonStatsDisplayViewStateComponent    = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
+    const auto& selectedPokemon = GetSelectedPokemon();
+
+    auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
 
     pokemonStatsDisplayViewStateComponent.mStatsLayoutsEntityId = LoadAndCreatePokemonStatsDisplayScreen(false, mWorld);    
 
@@ -213,6 +219,36 @@ void PokemonStatsDisplayViewFlowState::DestroyPokemonStatsBackground() const
     auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
     mWorld.DestroyEntity(pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId);
     pokemonStatsDisplayViewStateComponent.mBackgroundCoverEntityId = ecs::NULL_ENTITY_ID;
+}
+
+const Pokemon& PokemonStatsDisplayViewFlowState::GetSelectedPokemon() const
+{
+    const auto& pokemonStatsDisplayViewStateComponent = mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>();
+    const auto& pokemonSelectionViewStateComponent    = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    const auto& pcSystemStateComponent                = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+    const auto& playerStateComponent                  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
+    switch (pokemonStatsDisplayViewStateComponent.mSourceCreatorFlow)
+    {
+        case PokemonStatsDisplayViewCreationSourceType::PC: 
+        {
+            if (pcSystemStateComponent.mPokemonSystemOperationType == PokemonSystemOperationType::DEPOSIT)
+            {
+                return *playerStateComponent.mPlayerPokemonRoster.at(pcSystemStateComponent.mLastSelectedPokemonIndex);
+            }
+            else
+            {
+                return *playerStateComponent.mPlayerBoxedPokemon.at(pcSystemStateComponent.mLastSelectedPokemonIndex);
+            }
+        }
+
+        case PokemonStatsDisplayViewCreationSourceType::POKEMON_SELECTION_VIEW:
+        {
+            return *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex];
+        }
+    }
+
+    return *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

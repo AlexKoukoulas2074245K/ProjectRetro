@@ -54,6 +54,7 @@
 #include "overworld/components/LevelResidentComponent.h"
 #include "overworld/components/LevelModelComponent.h"
 #include "overworld/components/MovementStateComponent.h"
+#include "overworld/components/PCStateSingletonComponent.h"
 #include "overworld/components/PokeCenterHealingAnimationStateSingletonComponent.h"
 #include "overworld/components/TownMapLocationDataSingletonComponent.h"
 #include "overworld/systems/AnimatedFlowersAnimationSystem.h"
@@ -240,6 +241,7 @@ void App::CommonSingletonsInitialization()
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokeCenterHealingAnimationStateSingletonComponent>(std::make_unique<PokeCenterHealingAnimationStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokeMartDialogStateSingletonComponent>(std::make_unique<PokeMartDialogStateSingletonComponent>());
+    mWorld.SetSingletonComponent<PCStateSingletonComponent>(std::make_unique<PCStateSingletonComponent>());
 }
 
 void App::InitializationFromSaveFile()

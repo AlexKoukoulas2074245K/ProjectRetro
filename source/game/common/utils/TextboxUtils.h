@@ -131,7 +131,8 @@ ecs::EntityId CreatePCMainOptionsTextbox
 
 ecs::EntityId CreatePCPokemonSystemOptionsTextbox
 (
-    ecs::World& world    
+    ecs::World& world,
+    const int cursorRow = 0
 );
 
 ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
@@ -144,7 +145,8 @@ ecs::EntityId CreatePCPokemonSystemPokemonListTextbox
 
 ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
 (
-    ecs::World& world
+    ecs::World& world,
+    const int cursorRow = 0
 );
 
 ecs::EntityId CreateBlackboardTextbox

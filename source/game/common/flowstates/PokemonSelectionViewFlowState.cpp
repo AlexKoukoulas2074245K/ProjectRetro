@@ -20,6 +20,7 @@
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
+#include "../components/PokemonStatsDisplayViewStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/MathUtils.h"
 #include "../utils/PokemonSelectionViewSpriteUtils.h"
@@ -441,7 +442,7 @@ void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
     DestroyPokemonSelectionView();
 
     mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>().mPokemonHasBeenSelected = false;
-    
+    mWorld.GetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>().mSourceCreatorFlow = PokemonStatsDisplayViewCreationSourceType::POKEMON_SELECTION_VIEW;
     CompleteAndTransitionTo<PokemonStatsDisplayViewFlowState>();
 }
 
