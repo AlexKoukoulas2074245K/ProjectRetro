@@ -497,11 +497,11 @@ void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntit
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
-        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME, false);
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
-        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME, false);
     }
     else
     {
