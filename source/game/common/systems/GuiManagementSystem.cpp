@@ -497,11 +497,25 @@ void GuiManagementSystem::UpdateCursoredTextbox(const ecs::EntityId textboxEntit
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
-        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME, false);
+        if
+        (
+            SoundService::GetInstance().IsPlayingSfx() == false ||
+            SoundService::GetInstance().GetLastPlayedSfxName() == TEXTBOX_CLICK_SFX_NAME
+        )
+        {
+            SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
-        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME, false);
+        if
+        (
+             SoundService::GetInstance().IsPlayingSfx() == false ||
+             SoundService::GetInstance().GetLastPlayedSfxName() == TEXTBOX_CLICK_SFX_NAME
+        )
+        {
+            SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        }
     }
     else
     {
