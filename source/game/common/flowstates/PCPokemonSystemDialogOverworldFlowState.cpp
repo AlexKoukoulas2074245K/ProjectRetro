@@ -28,6 +28,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+const glm::vec3 PCPokemonSystemDialogOverworldFlowState::RELEASE_YES_NO_TEXTBOX_POSITION = glm::vec3(0.481498629f, -0.065f, -0.4f);
+
 const float PCPokemonSystemDialogOverworldFlowState::OVERLAID_CHATBOX_Z        = -0.2f;
 const float PCPokemonSystemDialogOverworldFlowState::SECOND_OVERLAID_CHATBOX_Z = -0.6f;
 
@@ -76,6 +78,9 @@ void PCPokemonSystemDialogOverworldFlowState::VUpdate(const float dt)
         case PokemonSystemState::OPTIONS:                         UpdatePokemonSystemOptionsDialog(); break;
         case PokemonSystemState::POKEMON_LIST:                    UpdatePokemonListDialog(dt); break;
         case PokemonSystemState::SELECTED_POKEMON_OPTIONS:        UpdatePokemonSelectedOptionsDialog(); break;
+        case PokemonSystemState::RELEASE_EXPLANATION_TEXT:        UpdateReleaseExplanationText(); break;
+        case PokemonSystemState::RELEASE_WAIT_FOR_POKEMON_CRY:    UpdateReleaseWaitForPokemonCry(); break;
+        case PokemonSystemState::RELEASE_WAIT_FOR_GOOD_BYE_TEXT:  UpdateReleaseWaitForGoodByeText(); break;
         case PokemonSystemState::WAIT_FOR_OPTION_FAILURE_TEXT:    UpdateWaitForOptionFailureText(); break;
         case PokemonSystemState::WAIT_FOR_POKEMON_CRY:            UpdateWaitForPokemonCry(); break;
         case PokemonSystemState::WAIT_FOR_OPERATION_CONFIRMATION: UpdateWaitForOperationConfirmationFlow(); break;
@@ -176,6 +181,9 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSystemOptionsDialog()
             // Pokemon available in box
             else
             {
+                CreateAndPopulatePokemonList(playerStateComponent.mPlayerBoxedPokemon);
+                pcStateComponent.mPokemonSystemState         = PokemonSystemState::POKEMON_LIST;
+                pcStateComponent.mPokemonSystemOperationType = PokemonSystemOperationType::RELEASE;
             }
         }
         // See Ya!
@@ -248,10 +256,28 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonListDialog(const floa
         }
         else
         {
-            pcStateComponent.mLastSelectedPokemonIndex = rosterIndex;
-            CreatePCPokemonSelectedOptionsTextbox(mWorld, pcStateComponent.mPokemonSystemOperationType);
-            pcStateComponent.mPokemonSystemState = PokemonSystemState::SELECTED_POKEMON_OPTIONS;
-            return;
+            // Deposit/Withdraw flows
+            if (pcStateComponent.mPokemonSystemOperationType != PokemonSystemOperationType::RELEASE)
+            {
+                pcStateComponent.mLastSelectedPokemonIndex = rosterIndex;
+                CreatePCPokemonSelectedOptionsTextbox(mWorld, pcStateComponent.mPokemonSystemOperationType);
+                pcStateComponent.mPokemonSystemState = PokemonSystemState::SELECTED_POKEMON_OPTIONS;
+                return;
+            }
+            // Release flow
+            else
+            {
+                pcStateComponent.mLastSelectedPokemonIndex = rosterIndex;
+                QueueDialogForChatbox
+                (
+                    CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, SECOND_OVERLAID_CHATBOX_Z)),
+                    "Once released,#" + activePokemonCollection.at(pcStateComponent.mLastSelectedPokemonIndex)->mName.GetString() + " is#gone forever. OK?+FREEZE",
+                    mWorld
+                );
+
+                pcStateComponent.mPokemonSystemState = PokemonSystemState::RELEASE_EXPLANATION_TEXT;
+                return;
+            }
         }        
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
@@ -347,6 +373,104 @@ void PCPokemonSystemDialogOverworldFlowState::UpdatePokemonSelectedOptionsDialog
         DestroyActiveTextbox(mWorld);
 
         // Destroy pokemon list
+        DestroyActiveTextbox(mWorld);
+
+        pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;
+    }
+}
+
+void PCPokemonSystemDialogOverworldFlowState::UpdateReleaseExplanationText()
+{
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+
+    if (guiStateComponent.mActiveTextboxesStack.size() == 4)
+    {
+        if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+        {
+            CreateYesNoTextbox(mWorld, RELEASE_YES_NO_TEXTBOX_POSITION);
+        }
+    }
+    else if (guiStateComponent.mActiveTextboxesStack.size() == 5)
+    {
+        const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+        const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));                
+        const auto yesNoTextboxCursorRow = cursorComponent.mCursorRow;
+
+        auto& pcStateComponent = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+
+        if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+        {
+            // Destroy Yes/No textbox
+            DestroyActiveTextbox(mWorld);
+
+            // Yes Selected
+            if (yesNoTextboxCursorRow == 0)
+            {
+                const auto& activePokemonCollection = GetActivePokemonCollectionForCurrentOperation();
+                const auto& selectedPokemon = *activePokemonCollection.at(pcStateComponent.mLastSelectedPokemonIndex);
+
+                // Play pokemon cry
+                SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(selectedPokemon.mBaseSpeciesStats.mId));
+
+                pcStateComponent.mPokemonSystemState = PokemonSystemState::RELEASE_WAIT_FOR_POKEMON_CRY;
+            }
+            // No Selected
+            else if (yesNoTextboxCursorRow == 1)
+            {
+                // Destroy main chatbox
+                DestroyActiveTextbox(mWorld);
+
+                pcStateComponent.mPokemonSystemState = PokemonSystemState::POKEMON_LIST;
+            }
+        }
+        else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
+        {
+            // Destroy Yes/No textbox
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy main chatbox
+            DestroyActiveTextbox(mWorld);
+
+            pcStateComponent.mPokemonSystemState = PokemonSystemState::POKEMON_LIST;
+        }
+    }
+}
+
+void PCPokemonSystemDialogOverworldFlowState::UpdateReleaseWaitForPokemonCry()
+{
+    if (SoundService::GetInstance().IsPlayingSfx()) return;
+
+    auto& pcStateComponent = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+
+    const auto& activePokemonCollection = GetActivePokemonCollectionForCurrentOperation();
+    const auto& selectedPokemon         = *activePokemonCollection.at(pcStateComponent.mLastSelectedPokemonIndex);
+
+    // Destroy main chatbox
+    DestroyActiveTextbox(mWorld);
+
+    // Create operation confirmation chatbox
+    QueueDialogForChatbox
+    (
+        CreateChatbox(mWorld, glm::vec3(CHATBOX_POSITION.x, CHATBOX_POSITION.y, SECOND_OVERLAID_CHATBOX_Z)),
+        selectedPokemon.mName.GetString() + " was#released outside.#Bye " + selectedPokemon.mName.GetString() + "!#+END",
+        mWorld
+    );
+    
+    pcStateComponent.mPokemonSystemState = PokemonSystemState::RELEASE_WAIT_FOR_GOOD_BYE_TEXT;
+}
+
+void PCPokemonSystemDialogOverworldFlowState::UpdateReleaseWaitForGoodByeText()
+{
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& pcStateComponent     = mWorld.GetSingletonComponent<PCStateSingletonComponent>();
+
+    if (guiStateComponent.mActiveTextboxesStack.size() == 3)
+    {
+        playerStateComponent.mPlayerBoxedPokemon.erase(playerStateComponent.mPlayerBoxedPokemon.begin() + pcStateComponent.mLastSelectedPokemonIndex);        
+
+        // Destroy pokemon selection list
         DestroyActiveTextbox(mWorld);
 
         pcStateComponent.mPokemonSystemState = PokemonSystemState::OPTIONS;

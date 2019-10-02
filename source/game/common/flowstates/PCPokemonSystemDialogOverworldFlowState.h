@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseFlowState.h"
+#include "../../common/utils/MathUtils.h"
 
 #include <memory>
 #include <string>
@@ -40,12 +41,17 @@ public:
     void VUpdate(const float dt) override;
     
 private:
+    static const glm::vec3 RELEASE_YES_NO_TEXTBOX_POSITION;
+
     static const float OVERLAID_CHATBOX_Z;
     static const float SECOND_OVERLAID_CHATBOX_Z;
 
     void UpdatePokemonSystemOptionsDialog();
     void UpdatePokemonListDialog(const float dt);
     void UpdatePokemonSelectedOptionsDialog();
+    void UpdateReleaseExplanationText();
+    void UpdateReleaseWaitForPokemonCry();
+    void UpdateReleaseWaitForGoodByeText();
     void UpdateWaitForOptionFailureText();
     void UpdateWaitForPokemonCry();
     void UpdateWaitForOperationConfirmationFlow();
