@@ -36,25 +36,21 @@ const float PokemonDeathMovementEncounterFlowState::POKEMON_SPRITE_MOVE_SPEED   
 
 PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
-{ 
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+{    
+	const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
-    const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
-
-    if (activeOpponentPokemon.mHp <= 0 && encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-    {
-        SoundService::GetInstance().PlayMusic(WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME, false);
-    }
-    else if (activeOpponentPokemon.mHp <= 0 && encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-    {
-        SoundService::GetInstance().PlaySfx(TRAINER_POKEMON_FAINT_SFX);
-    }
-    else if (activePlayerPokemon.mHp <= 0)
-    {
-        SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(activePlayerPokemon.mBaseSpeciesStats.mId));
-    }
+	const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+	const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+	
+	if (activeOpponentPokemon.mHp <= 0 && encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+	{
+		SoundService::GetInstance().PlaySfx(TRAINER_POKEMON_FAINT_SFX);
+	}
+	else if (activePlayerPokemon.mHp <= 0)
+	{
+		SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(activePlayerPokemon.mBaseSpeciesStats.mId));
+	}
 }
 
 void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
@@ -72,8 +68,13 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
         
         if (transformComponent.mPosition.y <= OPPONENT_POKEMON_DEATH_TARGET_Y)
         {
-            transformComponent.mPosition.y = OPPONENT_POKEMON_DEATH_TARGET_Y;
-            
+            transformComponent.mPosition.y = OPPONENT_POKEMON_DEATH_TARGET_Y;            
+
+			if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+			{
+				SoundService::GetInstance().PlayMusic(WILD_ENCOUNTER_WON_MUSIC_TRACK_NAME, false);
+			}			
+
             const auto mainChatboxEntityId = CreateChatbox(mWorld);
             QueueDialogForChatbox
             (
@@ -93,7 +94,7 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
             encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
 
             CompleteAndTransitionTo<PokemonDeathTextEncounterFlowState>();
-        }
+        }		
     }
     else
     {
@@ -103,7 +104,7 @@ void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
         if (transformComponent.mPosition.y <= PLAYER_POKEMON_DEATH_TARGET_Y)
         {
             transformComponent.mPosition.y = PLAYER_POKEMON_DEATH_TARGET_Y;
-            
+         	
             const auto mainChatboxEntityId = CreateChatbox(mWorld);
             QueueDialogForChatbox
             (

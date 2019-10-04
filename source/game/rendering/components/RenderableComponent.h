@@ -35,7 +35,7 @@ using ResourceId = unsigned int;
 
 enum class RenderableLayer
 {
-    UNDERGROUND, DEFAULT, LEVEL_FLOOR_LEVEL
+    UNDERGROUND, WILD_GRASS, DEFAULT, LEVEL_FLOOR_LEVEL
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

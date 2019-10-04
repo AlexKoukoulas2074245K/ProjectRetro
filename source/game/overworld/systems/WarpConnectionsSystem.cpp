@@ -94,7 +94,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         {
             playerMovementStateComponent.mMoving = true;
             ResumeCurrentlyPlayingAnimation(playerAnimationTimerComponent);
-        }
+        }		
 
         auto& newTile = GetTile
         (

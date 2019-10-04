@@ -624,7 +624,7 @@ void CreateLevelModelEntry
         }
         else if (isWildGrassModel)
         {
-            renderableComponent->mRenderableLayer = RenderableLayer::UNDERGROUND;
+            renderableComponent->mRenderableLayer = RenderableLayer::WILD_GRASS;
         }
         else
         {

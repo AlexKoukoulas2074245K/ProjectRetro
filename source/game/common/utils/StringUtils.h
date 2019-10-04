@@ -69,7 +69,7 @@ inline std::string StringToUpper(const std::string& s)
 {
     auto stringCopy = s;
     std::transform(stringCopy.begin(), stringCopy.end(), stringCopy.begin(),
-        [](unsigned char c) { return std::toupper(c); });
+        [](unsigned char c) { return static_cast<char>(std::toupper(static_cast<int>(c))); });
 
     return stringCopy;
 }
@@ -83,7 +83,7 @@ inline std::string StringToLower(const std::string& s)
 {
     auto stringCopy = s;
     std::transform(stringCopy.begin(), stringCopy.end(), stringCopy.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+                   [](unsigned char c){ return static_cast<char>(std::tolower(static_cast<int>(c))); });
     
     return stringCopy;
 }
