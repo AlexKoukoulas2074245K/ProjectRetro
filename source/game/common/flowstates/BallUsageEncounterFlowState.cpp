@@ -24,26 +24,6 @@
 BallUsageEncounterFlowState::BallUsageEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& itemBagEntry = playerStateComponent.mPlayerBag.at
-    (
-        playerStateComponent.mPreviousItemMenuItemOffset + 
-        playerStateComponent.mPreviousItemMenuCursorRow
-    );
-    
-    const auto mainChatboxEntityId = CreateChatbox(mWorld);
-
-    if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-    {
-        QueueDialogForChatbox
-        (
-            mainChatboxEntityId,
-            playerStateComponent.mPlayerTrainerName.GetString() + " used#" +
-            itemBagEntry.mItemName.GetString() + "!+FREEZE",
-            mWorld
-        );
-    }    
 }
 
 void BallUsageEncounterFlowState::VUpdate(const float)
