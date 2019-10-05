@@ -260,6 +260,22 @@
         {
             "from": { "level_name": "route_2", "level_col": 22, "level_row": 38 },
             "to": { "level_name": "in_digglets_cave_big_house", "level_col": 7, "level_row": 4 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 14, "level_row": 77 },
+            "to": { "level_name": "pewter_city", "level_col": 29, "level_row": 16 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 15, "level_row": 77 },
+            "to": { "level_name": "pewter_city", "level_col": 30, "level_row": 16 }
+        },
+        {
+            "from": { "level_name": "pewter_city", "level_col": 29, "level_row": 15 },
+            "to": { "level_name": "route_2", "level_col": 14, "level_row": 76 }
+        },
+        {
+            "from": { "level_name": "pewter_city", "level_col": 30, "level_row": 15 },
+            "to": { "level_name": "route_2", "level_col": 15, "level_row": 76 }
         }
 	]
 }
