@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseOverworldFlowState.h"
+#include "../../common/GameConstants.h"
 #include "../../common/utils/MathUtils.h"
 #include "../../common/utils/StringUtils.h"
 
@@ -36,13 +37,16 @@ private:
     void UpdateConstructPath();
     void UpdateFollowingNpc();
     void UpdateEndDialog();
+    void UpdateEndPath();
     void CreateScriptedPath();
     
     enum class EventState
     {
-        INTRO_DIALOG, CONSTRUCT_PATH, FOLLOWING, END_DIALOG
+        INTRO_DIALOG, CONSTRUCT_PATH, FOLLOWING, END_DIALOG, END_PATH
     };
     
+    static const TileCoords NPC_INITIAL_COORDS;
+    static const std::string LEVEL_MUSIC_NAME;
     static const std::string FOLLOW_MUSIC_NAME;
     static const glm::vec3 YES_NO_TEXTBOX_POSITION;
     
