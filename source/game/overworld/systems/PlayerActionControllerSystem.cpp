@@ -255,7 +255,6 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
         {
             auto& npcAiComponent         = mWorld.GetComponent<NpcAiComponent>(tile.mTileOccupierEntityId);
             auto& playerStateComponent   = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-            auto& npcTimerComponent      = mWorld.GetComponent<AnimationTimerComponent>(tile.mTileOccupierEntityId);
             auto& npcDirectionComponent  = mWorld.GetComponent<DirectionComponent>(tile.mTileOccupierEntityId);            
             
             const auto newNpcDirection       = GetDirectionFacingDirection(direction);
@@ -270,7 +269,7 @@ void PlayerActionControllerSystem::CheckForNpcInteraction
             QueueDialogForChatbox(CreateChatbox(mWorld), npcAiComponent.mDialog, mWorld);
            
             playerStateComponent.mLastNpcLevelIndexSpokenTo = GetNpcLevelIndexFromEntityId(tile.mTileOccupierEntityId, mWorld);
-            npcTimerComponent.mAnimationTimer->Reset();
+            npcAiComponent.mAiTimer->Reset();
             
             if (npcAiComponent.mIsTrainer && npcAiComponent.mIsDefeated == false)
             {

@@ -32,6 +32,7 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
     
 private:
+    void UpdateScriptedPathMovement(const float dt, const ecs::EntityId) const;
     void UpdateTrainerNpc(const float dt, const ecs::EntityId) const;
     void UpdateStationaryNpc(const float dt, const ecs::EntityId) const;
     void UpdateDynamicNpc(const float dt, const ecs::EntityId) const;

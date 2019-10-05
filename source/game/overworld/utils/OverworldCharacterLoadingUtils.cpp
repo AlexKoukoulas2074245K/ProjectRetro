@@ -101,8 +101,6 @@ std::unique_ptr<RenderableComponent> CreateRenderableComponentForSprite
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, false, CHARACTER_MODEL_NAME, WEST_ANIMATION_NAME_ID, *renderableComponent);
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 2, spriteData.mAtlasRowOffset, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, true, CHARACTER_MODEL_NAME, EAST_ANIMATION_NAME_ID, *renderableComponent);
     
-    if (spriteData.mCharacterMovementType == CharacterMovementType::STATIONARY) return renderableComponent;
-    
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, true, CHARACTER_MODEL_NAME, SOUTH_ANIMATION_NAME_ID, *renderableComponent);
     renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID].push_back(renderableComponent->mAnimationsToMeshes[SOUTH_ANIMATION_NAME_ID][0]);
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(spriteData.mAtlasColOffset + 3, spriteData.mAtlasRowOffset, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, false, CHARACTER_MODEL_NAME, SOUTH_ANIMATION_NAME_ID, *renderableComponent);

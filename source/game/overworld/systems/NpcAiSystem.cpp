@@ -78,7 +78,11 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
             
             const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(entityId);
             
-            if (npcAiComponent.mIsTrainer)
+            if (npcAiComponent.mScriptedPathIndex != -1)
+            {
+                UpdateScriptedPathMovement(dt, entityId);
+            }
+            else if (npcAiComponent.mIsTrainer)
             {
                 UpdateTrainerNpc(dt, entityId);
             }
@@ -97,6 +101,52 @@ void NpcAiSystem::VUpdateAssociatedComponents(const float dt) const
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+void NpcAiSystem::UpdateScriptedPathMovement(const float, const ecs::EntityId npcEntityId) const
+{
+    auto& npcAiComponent          = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
+    auto& movementStateComponent  = mWorld.GetComponent<MovementStateComponent>(npcEntityId);
+    auto& directionComponent      = mWorld.GetComponent<DirectionComponent>(npcEntityId);
+    auto& renderableComponent     = mWorld.GetComponent<RenderableComponent>(npcEntityId);
+    auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(npcEntityId);
+    
+    const auto& nextTargetTileCoords = npcAiComponent.mScriptedPathTileCoords[npcAiComponent.mScriptedPathIndex];
+    
+    if (movementStateComponent.mCurrentCoords == nextTargetTileCoords)
+    {
+        movementStateComponent.mMoving = false;
+        PauseAndResetCurrentlyPlayingAnimation(animationTimerComponent, renderableComponent);
+        
+        if (++npcAiComponent.mScriptedPathIndex >= static_cast<int>(npcAiComponent.mScriptedPathTileCoords.size()))
+        {
+            npcAiComponent.mScriptedPathTileCoords.clear();
+            npcAiComponent.mScriptedPathIndex = -1;
+        }
+    }
+    else
+    {
+        if (nextTargetTileCoords.mCol < movementStateComponent.mCurrentCoords.mCol)
+        {
+            directionComponent.mDirection = Direction::WEST;
+        }
+        else if (nextTargetTileCoords.mCol > movementStateComponent.mCurrentCoords.mCol)
+        {
+            directionComponent.mDirection = Direction::EAST;
+        }
+        else if (nextTargetTileCoords.mRow < movementStateComponent.mCurrentCoords.mRow)
+        {
+            directionComponent.mDirection = Direction::SOUTH;
+        }
+        else
+        {
+            directionComponent.mDirection = Direction::NORTH;
+        }
+        
+        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(directionComponent.mDirection), renderableComponent);
+        ResumeCurrentlyPlayingAnimation(animationTimerComponent);
+        movementStateComponent.mMoving = true;
+    }
+}
 
 void NpcAiSystem::UpdateTrainerNpc(const float dt, const ecs::EntityId npcEntityId) const
 {
@@ -175,12 +225,10 @@ void NpcAiSystem::UpdateTrainerNpc(const float dt, const ecs::EntityId npcEntity
 void NpcAiSystem::UpdateStationaryNpc(const float dt, const ecs::EntityId entityId) const
 {
     // Reset direction to initial one after interacting with player
-    const auto& npcAiComponent    = mWorld.GetComponent<NpcAiComponent>(entityId);
-    auto& animationTimerComponent = mWorld.GetComponent<AnimationTimerComponent>(entityId);
+    const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(entityId);
     
-    animationTimerComponent.mAnimationTimer->Resume();
-    animationTimerComponent.mAnimationTimer->Update(dt);
-    if (animationTimerComponent.mAnimationTimer->HasTicked())
+    npcAiComponent.mAiTimer->Update(dt);
+    if (npcAiComponent.mAiTimer->HasTicked())
     {
         auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
         auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(entityId);

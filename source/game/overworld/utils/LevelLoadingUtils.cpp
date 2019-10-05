@@ -367,6 +367,7 @@ ecs::EntityId CreateNpcAttributes
     aiComponent->mLevelIndex       = npcLevelIndex;
     aiComponent->mOriginalLevelCol = gameCol;
     aiComponent->mOriginalLevelRow = gameRow;
+    aiComponent->mAiTimer          = std::make_unique<Timer>(STATIONARY_NPC_RESET_TIME);
     
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
 
@@ -411,7 +412,7 @@ ecs::EntityId CreateNpcAttributes
     }
 
     auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
-    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(movementType == CharacterMovementType::DYNAMIC ? CHARACTER_ANIMATION_FRAME_TIME : STATIONARY_NPC_RESET_TIME);
+    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
     animationTimerComponent->mAnimationTimer->Pause();
     
     auto directionComponent = std::make_unique<DirectionComponent>();

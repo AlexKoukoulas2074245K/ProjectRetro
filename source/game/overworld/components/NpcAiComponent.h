@@ -35,11 +35,13 @@ class NpcAiComponent final: public ecs::IComponent
 public:
     std::vector<std::unique_ptr<Pokemon>> mPokemonRoster;
     std::vector<std::string> mSideDialogs;
+    std::vector<TileCoords> mScriptedPathTileCoords;
     ecs::EntityId mExclamationMarkEntityId = ecs::NULL_ENTITY_ID;
     std::string mDialog                    = "";
     std::string mTrainerName               = "";
     std::unique_ptr<Timer> mAiTimer        = nullptr;
     int mLevelIndex                        = -1;
+    int mScriptedPathIndex                 = -1;
     int mOriginalLevelCol                  = 0;
     int mOriginalLevelRow                  = 0;
     CharacterMovementType mMovementType    = CharacterMovementType::DYNAMIC;
