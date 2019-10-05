@@ -8,7 +8,12 @@
 		{ "indoor_location_name": "in_viridian_nickname_family", "owner_location_name": "viridian_city" },
 		{ "indoor_location_name": "in_viridian_poke_center", "owner_location_name": "viridian_city" },
 		{ "indoor_location_name": "in_viridian_poke_mart", "owner_location_name": "viridian_city" },
-		{ "indoor_location_name": "in_viridian_school", "owner_location_name": "viridian_city" }
+		{ "indoor_location_name": "in_viridian_school", "owner_location_name": "viridian_city" },
+		{ "indoor_location_name": "in_viridian_forest", "owner_location_name": "viridian_forest" },
+		{ "indoor_location_name": "in_viridian_forest_building_pewter_side", "owner_location_name": "viridian_forest" },
+		{ "indoor_location_name": "in_viridian_forest_building_viridian_side", "owner_location_name": "viridian_forest" },
+        { "indoor_location_name": "in_digletts_cave_small_house", "owner_location_name": "route_2" },
+        { "indoor_location_name": "in_digglets_cave_big_house", "owner_location_name": "route_2" }
 	],
 	
 	"location_coords" :

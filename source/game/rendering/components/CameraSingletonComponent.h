@@ -27,7 +27,7 @@
 
 const unsigned int CAMERA_FRUSTUM_SIDES = 6;
 const float CAMERA_FIELD_OF_VIEW        = math::PI/7.0f;
-const float CAMERA_Z_NEAR               = 17.0f;
+const float CAMERA_Z_NEAR               = 13.0f;
 const float CAMERA_Z_FAR                = 40.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
