@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/PCIntroDialogOverworldFlowState.h"
+#include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumGuideOverworldFlowState.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
@@ -171,15 +172,27 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
     }
     else if (activeLevelComponent.mActiveLevelNameId == StringId("pewter_city"))
     {
-        // Museum guide flow
-        if (lastNpcSpokenToLevelIndex == 5)
+        if (flowStartedByTileTrigger && IsAnyOverworldFlowCurrentlyRunning(mWorld) == false)
         {
-            StartOverworldFlowState<PewterMuseumGuideOverworldFlowState>(mWorld);
+            StartOverworldFlowState<PewterBrockGuideOverworldFlowState>(mWorld);
         }
-        // Farmer flow
-        else if (lastNpcSpokenToLevelIndex == 10)
+        else
         {
-            StartOverworldFlowState<PewterFarmerDialogOverworldFlowState>(mWorld);
+            // Brock guide flow
+            if (lastNpcSpokenToLevelIndex == 2 && IsAnyOverworldFlowCurrentlyRunning(mWorld) == false)
+            {
+                StartOverworldFlowState<PewterBrockGuideOverworldFlowState>(mWorld);
+            }
+            // Museum guide flow
+            else if (lastNpcSpokenToLevelIndex == 5)
+            {
+                StartOverworldFlowState<PewterMuseumGuideOverworldFlowState>(mWorld);
+            }
+            // Farmer flow
+            else if (lastNpcSpokenToLevelIndex == 10)
+            {
+                StartOverworldFlowState<PewterFarmerDialogOverworldFlowState>(mWorld);
+            }
         }
     }
     
