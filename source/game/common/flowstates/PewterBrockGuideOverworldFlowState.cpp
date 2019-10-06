@@ -90,24 +90,23 @@ void PewterBrockGuideOverworldFlowState::UpdateConstructPath()
 
 void PewterBrockGuideOverworldFlowState::UpdateFollowingNpc()
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
     const auto playerEntityId = GetPlayerEntityId(mWorld);
-    const auto npcEntityId    = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
+    const auto npcEntityId    = GetNpcEntityIdFromLevelIndex(NPC_LEVEL_INDEX, mWorld);
     
     auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
     
     if (npcAiComponent.mScriptedPathIndex == -1)
     {
         auto& npcDirectionComponent      = mWorld.GetComponent<DirectionComponent>(npcEntityId);
-        npcDirectionComponent.mDirection = Direction::NORTH;
+        npcDirectionComponent.mDirection = Direction::WEST;
         ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(npcDirectionComponent.mDirection), mWorld.GetComponent<RenderableComponent>(npcEntityId));
         
         mWorld.RemoveComponent<NpcAiComponent>(playerEntityId);
         
         SoundService::GetInstance().PlayMusic(LEVEL_MUSIC_NAME, false);
         
-        QueueDialogForChatbox(CreateChatbox(mWorld), "It's right here!#You have to pay#to get in, but#it's worth it!#See you around!", mWorld);
+        QueueDialogForChatbox(CreateChatbox(mWorld), "If you have the#right stuff, go#take on BROCK!", mWorld);
         
         mEventState = EventState::END_DIALOG;
     }
@@ -115,14 +114,13 @@ void PewterBrockGuideOverworldFlowState::UpdateFollowingNpc()
 
 void PewterBrockGuideOverworldFlowState::UpdateEndDialog()
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 0)
     {
-        const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
+        const auto npcEntityId = GetNpcEntityIdFromLevelIndex(NPC_LEVEL_INDEX, mWorld);
         auto& otherAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
-        otherAiComponent.mScriptedPathTileCoords.emplace_back(23,36);
+        otherAiComponent.mScriptedPathTileCoords.emplace_back(28,33);
         otherAiComponent.mScriptedPathIndex = 0;
         mEventState = EventState::END_PATH;
     }
@@ -130,8 +128,7 @@ void PewterBrockGuideOverworldFlowState::UpdateEndDialog()
 
 void PewterBrockGuideOverworldFlowState::UpdateEndPath()
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto npcEntityId    = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
+    const auto npcEntityId = GetNpcEntityIdFromLevelIndex(NPC_LEVEL_INDEX, mWorld);
     
     auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
     
