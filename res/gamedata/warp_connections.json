@@ -204,6 +204,78 @@
         {
             "from": { "level_name": "in_viridian_forest_building_viridian_side", "level_col": 8, "level_row": 11 },
             "to": { "level_name": "in_viridian_forest", "level_col": 31, "level_row": 8 }
-        }		
+        },
+        {
+            "from": { "level_name": "in_viridian_forest", "level_col": 16, "level_row": 54 },
+            "to": { "level_name": "in_viridian_forest_building_pewter_side", "level_col": 7, "level_row": 4 }
+        },
+        {
+            "from": { "level_name": "in_viridian_forest_building_pewter_side", "level_col": 7, "level_row": 4 },
+            "to": { "level_name": "in_viridian_forest", "level_col": 16, "level_row": 53 }
+        },
+        {
+            "from": { "level_name": "in_viridian_forest_building_pewter_side", "level_col": 8, "level_row": 4 },
+            "to": { "level_name": "in_viridian_forest", "level_col": 16, "level_row": 53 }
+        },
+        {
+            "from": { "level_name": "in_viridian_forest_building_pewter_side", "level_col": 8, "level_row": 11 },
+            "to": { "level_name": "route_2", "level_col": 9, "level_row": 63 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 9, "level_row": 63 },
+            "to": { "level_name": "in_viridian_forest_building_pewter_side", "level_col": 8, "level_row": 10 }
+        },
+        {
+            "from": { "level_name": "in_digletts_cave_small_house", "level_col": 6, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 22, "level_row": 57 }
+        },
+        {
+            "from": { "level_name": "in_digletts_cave_small_house", "level_col": 7, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 22, "level_row": 57 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 22, "level_row": 57 },
+            "to": { "level_name": "in_digletts_cave_small_house", "level_col": 6, "level_row": 4 }
+        },
+        {
+            "from": { "level_name": "in_digglets_cave_big_house", "level_col": 7, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 22, "level_row": 38 }
+        },
+        {
+            "from": { "level_name": "in_digglets_cave_big_house", "level_col": 8, "level_row": 4 },
+            "to": { "level_name": "route_2", "level_col": 22, "level_row": 38 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 23, "level_row": 41 },
+            "to": { "level_name": "in_digglets_cave_big_house", "level_col": 8, "level_row": 10 }
+        },
+        {
+            "from": { "level_name": "in_digglets_cave_big_house", "level_col": 8, "level_row": 11 },
+            "to": { "level_name": "route_2", "level_col": 23, "level_row": 41 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 24, "level_row": 41 },
+            "to": { "level_name": "in_digglets_cave_big_house", "level_col": 8, "level_row": 10 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 22, "level_row": 38 },
+            "to": { "level_name": "in_digglets_cave_big_house", "level_col": 7, "level_row": 4 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 14, "level_row": 77 },
+            "to": { "level_name": "pewter_city", "level_col": 29, "level_row": 16 }
+        },
+        {
+            "from": { "level_name": "route_2", "level_col": 15, "level_row": 77 },
+            "to": { "level_name": "pewter_city", "level_col": 30, "level_row": 16 }
+        },
+        {
+            "from": { "level_name": "pewter_city", "level_col": 29, "level_row": 15 },
+            "to": { "level_name": "route_2", "level_col": 14, "level_row": 76 }
+        },
+        {
+            "from": { "level_name": "pewter_city", "level_col": 30, "level_row": 15 },
+            "to": { "level_name": "route_2", "level_col": 15, "level_row": 76 }
+        }
 	]
 }

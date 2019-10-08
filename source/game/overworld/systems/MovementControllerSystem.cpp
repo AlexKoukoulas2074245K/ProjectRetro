@@ -129,6 +129,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
             }                        
             
             // Cuttable/Pushable/SeaTile group
+#ifdef NDEBUG
             if 
             (
                 targetTile.mTileTrait == TileTrait::CUTTABLE_TREE ||
@@ -144,6 +145,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 movementStateComponent.mMoving = false;
                 continue;
             }
+#endif
 
             // Occupier checks
             if (targetTile.mTileOccupierType == TileOccupierType::NPC && targetTile.mTileOccupierEntityId != entityId)

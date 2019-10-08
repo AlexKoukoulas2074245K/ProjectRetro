@@ -43,6 +43,7 @@ void ItemUsageFlowState::VUpdate(const float)
 {    
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& itemBagEntry         = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
+    const auto itemName              = itemBagEntry.mItemName;
     const auto& selectedItemStats    = GetItemStats(itemBagEntry.mItemName, mWorld);
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
@@ -63,6 +64,16 @@ void ItemUsageFlowState::VUpdate(const float)
                 // Destroy Item Menu
                 DestroyActiveTextbox(mWorld);
 
+                const auto mainChatboxEntityId = CreateChatbox(mWorld);
+                
+                QueueDialogForChatbox
+                (
+                    mainChatboxEntityId,
+                    playerStateComponent.mPlayerTrainerName.GetString() + " used#" +
+                    itemName.GetString() + "!+FREEZE",
+                    mWorld
+                );
+                
                 CompleteAndTransitionTo<BallUsageEncounterFlowState>();
             }
             else if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
