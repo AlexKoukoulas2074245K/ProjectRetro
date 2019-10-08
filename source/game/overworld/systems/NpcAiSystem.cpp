@@ -310,14 +310,14 @@ void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
     encounterStateComponent.mOpponentPokemonRoster.clear();
     
     for (const auto& pokemon: npcAiComponent.mPokemonRoster)
-    {
+    {		
         encounterStateComponent.mOpponentPokemonRoster.push_back(CreatePokemon
         (
             pokemon->mName,
             pokemon->mLevel,
             true,
             mWorld
-        ));
+        ));		
     }
 
     SoundService::GetInstance().PlayMusic

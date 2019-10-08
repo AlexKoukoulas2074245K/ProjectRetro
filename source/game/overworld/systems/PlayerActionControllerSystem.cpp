@@ -65,6 +65,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
     auto& encounterStateComponent        = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     
+	StartPendingPostEncounterConversation();
     AddPendingItemsToBag();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
@@ -177,6 +178,28 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void PlayerActionControllerSystem::StartPendingPostEncounterConversation() const
+{
+	auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
+	// If just defeated gym leader force show chatbox with follow up tm text
+	if (playerStateComponent.mJustDefeatedGymLeader)
+	{
+		playerStateComponent.mJustDefeatedGymLeader = false;
+
+		const auto& gymLeaderNpcAiComponent = mWorld.GetComponent<NpcAiComponent>
+		(
+			GetNpcEntityIdFromLevelIndex
+			(
+				playerStateComponent.mLastNpcLevelIndexSpokenTo,
+				mWorld
+			)
+		);
+
+		QueueDialogForChatbox(CreateChatbox(mWorld), gymLeaderNpcAiComponent.mSideDialogs[2], mWorld);
+	}
+}
+
 void PlayerActionControllerSystem::AddPendingItemsToBag() const
 {
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
@@ -186,6 +209,12 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
 
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
     {
+		// Milestone handling
+		if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
+		{
+			return;
+		}
+
         AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);        
                 
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
@@ -222,7 +251,11 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         {
             if (npcAiComponent.mSideDialogs.size() > 0)
             {
-                npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+				if (npcAiComponent.mIsGymLeader == false)
+				{
+					npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+				}
+                
                 playerStateComponent.mCollectedItemNonDestructibleNpcEntries.emplace_back
                 (
                     activeLevelComponent.mActiveLevelNameId,

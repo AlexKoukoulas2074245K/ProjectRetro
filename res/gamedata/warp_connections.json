@@ -276,6 +276,18 @@
         {
             "from": { "level_name": "pewter_city", "level_col": 30, "level_row": 15 },
             "to": { "level_name": "route_2", "level_col": 15, "level_row": 76 }
+        },
+        {
+            "from": { "level_name": "pewter_city", "level_col": 26, "level_row": 34 },
+            "to": { "level_name": "in_pewter_gym", "level_col": 15, "level_row": 9 }
+        },
+        {
+            "from": { "level_name": "in_pewter_gym", "level_col": 15, "level_row": 9 },
+            "to": { "level_name": "pewter_city", "level_col": 26, "level_row": 34 }
+        },
+        {
+            "from": { "level_name": "in_pewter_gym", "level_col": 16, "level_row": 9 },
+            "to": { "level_name": "pewter_city", "level_col": 26, "level_row": 34 }
         }
 	]
 }

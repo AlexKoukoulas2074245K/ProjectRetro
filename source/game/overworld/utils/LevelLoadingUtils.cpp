@@ -407,7 +407,10 @@ ecs::EntityId CreateNpcAttributes
             collectedItemNonDestructibleNpcEntry.mNpcLevelIndex == npcLevelIndex
         )
         {
-            aiComponent->mDialog = aiComponent->mSideDialogs[0];
+			if (aiComponent->mIsGymLeader == false)
+			{
+				aiComponent->mDialog = aiComponent->mSideDialogs[0];
+			}            
         }
     }
 

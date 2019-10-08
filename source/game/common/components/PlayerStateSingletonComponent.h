@@ -129,6 +129,7 @@ public:
     Direction mLastOverworldDirection      = Direction::SOUTH;
     Direction mLastEngagedTrainerDirection = Direction::SOUTH;
     bool mBillInteractionCompleted         = false;
+	bool mJustDefeatedGymLeader            = false;
 
     ItemDiscoveryType mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
 };

@@ -13,7 +13,8 @@
 		{ "indoor_location_name": "in_viridian_forest_building_pewter_side", "owner_location_name": "viridian_forest" },
 		{ "indoor_location_name": "in_viridian_forest_building_viridian_side", "owner_location_name": "viridian_forest" },
         { "indoor_location_name": "in_digletts_cave_small_house", "owner_location_name": "route_2" },
-        { "indoor_location_name": "in_digglets_cave_big_house", "owner_location_name": "route_2" }
+        { "indoor_location_name": "in_digglets_cave_big_house", "owner_location_name": "route_2" },
+		{ "indoor_location_name": "in_pewter_gym", "owner_location_name": "pewter_city" }
 	],
 	
 	"location_coords" :

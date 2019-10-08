@@ -133,5 +133,13 @@
         "unique": false,
         "effect": "#",
         "price": 9800
+	},
+	
+	"TM34":
+	{
+		"usage": 0,
+		"unique": false,
+		"effect": "technique",
+		"price": 2000
 	}
 }

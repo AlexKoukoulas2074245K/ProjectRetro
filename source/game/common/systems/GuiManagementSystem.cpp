@@ -32,6 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string GuiManagementSystem::TEXTBOX_CLICK_SFX_NAME         = "general/textbox_click";
+const std::string GuiManagementSystem::BADGE_SFX_NAME                 = "general/level_up_or_badge";
 const std::string GuiManagementSystem::KEY_ITEM_RECEIVED_SFX_NAME     = "general/got_key_item";
 const std::string GuiManagementSystem::REGULAR_ITEM_RECEIVED_SFX_NAME = "general/got_or_found_item";
 
@@ -134,6 +135,8 @@ void GuiManagementSystem::PopulateFontEntities(GuiStateSingletonComponent& guiSt
 
 void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, const float dt) const
 {
+	if (SoundService::GetInstance().IsPlayingSfx() && SoundService::GetInstance().GetLastPlayedSfxName() != TEXTBOX_CLICK_SFX_NAME) return;
+
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& textboxComponent    = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
@@ -254,12 +257,19 @@ void GuiManagementSystem::UpdateChatboxNormal(const ecs::EntityId textboxEntityI
 }
 
 void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityId, const float dt) const
-{    
-    if (SoundService::GetInstance().IsPlayingSfx()) return;
-    
+{        
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    
+	auto& textboxComponent    = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+
+	const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
+	if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM && !textboxComponent.mHasPlayedItemReceivedSfx)
+	{
+		OnItemReceived(textboxEntityId, itemDiscoveryType);
+		textboxComponent.mHasPlayedItemReceivedSfx = true;
+		return;
+	}
+
     if
     (
         IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent) ||        
@@ -276,12 +286,7 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
             {
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::SCROLL_ANIM_PHASE_1;                                
 
-                const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
-                if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM)
-                {
-                    OnItemReceived(textboxEntityId, itemDiscoveryType);
-                }
-                else if (DetectedKillSwitch(textboxEntityId))
+                if (DetectedKillSwitch(textboxEntityId))
                 {
                     DestroyActiveTextbox(mWorld);
                     guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::NORMAL;
@@ -292,13 +297,7 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
             } break;
                 
             case ChatboxContentEndState::PARAGRAPH_END:
-            {
-                const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
-                if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM)
-                {
-                    OnItemReceived(textboxEntityId, itemDiscoveryType);
-                }
-                
+            {                
                 DeleteTextAtTextboxRow(textboxEntityId, 2, mWorld);
                 DeleteTextAtTextboxRow(textboxEntityId, 4, mWorld);
                 guiStateComponent.mActiveChatboxDisplayState = ChatboxDisplayState::PARAGRAPH_END_DELAY;
@@ -316,8 +315,7 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
     guiStateComponent.mActiveChatboxTimer->Update(dt);
     if (guiStateComponent.mActiveChatboxTimer->HasTicked())
     {
-        guiStateComponent.mActiveChatboxTimer->Reset();
-        auto& textboxComponent = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+        guiStateComponent.mActiveChatboxTimer->Reset();        
         if
         (
             GetCharAtTextboxCoords
@@ -459,9 +457,14 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, co
         
     auto itemName = StringSplit(textboxFirstLineString, '!')[0];
     StringReplaceAllOccurences(itemName, " ", "_");
-
+	StringReplaceAllOccurences(itemName, "the_", "");
+	
     const auto& itemStats = GetItemStats(itemName, mWorld);
-    if (itemStats.mUnique)
+	if (itemStats.mEffect == StringId("BADGE"))
+	{
+		SoundService::GetInstance().PlaySfx(BADGE_SFX_NAME, true, true);
+	}
+    else if (itemStats.mUnique)
     {        
         SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME, true, true);
     }

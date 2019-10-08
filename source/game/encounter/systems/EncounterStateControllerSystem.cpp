@@ -176,6 +176,8 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
             playerStateComponent.mLastOverworldLevelName,
             playerStateComponent.mLastNpcLevelIndexSpokenTo
         );
+
+		playerStateComponent.mJustDefeatedGymLeader = encounterStateComponent.mIsGymLeaderBattle;		
     }
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);

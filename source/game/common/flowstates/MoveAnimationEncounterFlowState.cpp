@@ -48,7 +48,7 @@ const StringId MoveAnimationEncounterFlowState::DARK_FLIP_HUD_ELEMENTS_SPECIAL_C
 const StringId MoveAnimationEncounterFlowState::TRANSITION_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME = StringId("transition_flip_hud_special_case");
 const StringId MoveAnimationEncounterFlowState::DEFAULT_GUI_SHADER_NAME                               = StringId("gui");
 
-const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED            = 2.0f;
+const float MoveAnimationEncounterFlowState::SPRITE_MOVEMENT_ANIMATION_SPEED            = 1.5f;
 const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_Z                    = -1.0f;
 const float MoveAnimationEncounterFlowState::BATTLE_MOVE_ANIMATION_ENEMY_Y_DISPLACEMENT = 0.55f;
 
