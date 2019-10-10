@@ -31,7 +31,11 @@
 #include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
 #include "../../common/utils/OSMessageBox.h"
+#include "../../common/utils/StringUtils.h"
 #include "../../resources/ResourceLoadingService.h"
+#include "../../resources/DataFileResource.h"
+
+#include <json.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +54,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string EXPOSED_NAMED_FLOW_STATES_FILE_NAME = "exposed_named_flow_states.json";
+const std::string OVERWORLD_FLOW_STATE_MAP_FILE_NAME  = "overworld_flow_state_map.json";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +63,9 @@ const std::string EXPOSED_NAMED_FLOW_STATES_FILE_NAME = "exposed_named_flow_stat
 OverworldFlowControllerSystem::OverworldFlowControllerSystem(ecs::World& world)
     : BaseSystem(world)
 {
-    InitializeOverworldFlowState();
 	RegisterNamedFlowStateFactories();
 	UpdateExposedNamedFlowStatesFile();
+    InitializeOverworldFlowState();
 }
 
 void OverworldFlowControllerSystem::VUpdateAssociatedComponents(const float dt) const
@@ -90,7 +95,41 @@ void OverworldFlowControllerSystem::VUpdateAssociatedComponents(const float dt) 
 
 void OverworldFlowControllerSystem::InitializeOverworldFlowState() const
 {
-    mWorld.SetSingletonComponent<OverworldFlowStateSingletonComponent>(std::make_unique<OverworldFlowStateSingletonComponent>());
+	auto overworldFlorStateComponent = std::make_unique<OverworldFlowStateSingletonComponent>();
+
+	// Load flow state map file
+	const auto overworldFlowStateMapResourceId = ResourceLoadingService::GetInstance().
+		LoadResource(ResourceLoadingService::RES_DATA_ROOT + OVERWORLD_FLOW_STATE_MAP_FILE_NAME);
+
+	const auto& overworldFlowStateMapDataResource = ResourceLoadingService::GetInstance().
+		GetResource<DataFileResource>(overworldFlowStateMapResourceId);
+
+	const auto flowStateMapJson = nlohmann::json::parse(overworldFlowStateMapDataResource.GetContents());
+
+	// Parse flow state npc entries
+	for (const auto& npcFlowStateEntry : flowStateMapJson["npc_flow_states"])
+	{
+		overworldFlorStateComponent->mNpcFlowStateMapEntries.emplace_back
+		(
+			StringId(npcFlowStateEntry["level_name"].get<std::string>()),
+			StringId(npcFlowStateEntry["flow_state_name"].get<std::string>()),
+			npcFlowStateEntry["npc_level_index"].get<int>()
+		);
+	}
+
+	// Parse trigger entries
+	for (const auto& flowTriggerEntry : flowStateMapJson["trigger_flow_States"])
+	{
+		overworldFlorStateComponent->mTriggerFlowStateMapEntries.emplace_back
+		(
+			StringId(flowTriggerEntry["level_name"].get<std::string>()),
+			StringId(flowTriggerEntry["flow_state_name"].get<std::string>()),
+			flowTriggerEntry["level_col"].get<int>(),
+			flowTriggerEntry["level_row"].get<int>()
+		);
+	}	
+
+    mWorld.SetSingletonComponent<OverworldFlowStateSingletonComponent>(std::move(overworldFlorStateComponent));
 }
 
 void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
@@ -136,129 +175,62 @@ void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
 
 void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
 {
-    const auto& activeLevelComponent      = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    const auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& pokedexStateComponent     = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
-    const auto& activeLevelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-    const auto& playerMovementComponent   = mWorld.GetComponent<MovementStateComponent>(GetPlayerEntityId(mWorld));
-    const auto& currentPlayerTileCoords   = playerMovementComponent.mCurrentCoords;
-    const auto& currentPlayerTile         = GetTile(playerMovementComponent.mCurrentCoords, activeLevelModelComponent.mLevelTilemap);
-    const auto lastNpcSpokenToLevelIndex  = playerStateComponent.mLastNpcLevelIndexSpokenTo;
-    const auto flowStartedByTileTrigger   = currentPlayerTile.mTileTrait == TileTrait::FLOW_TRIGGER;
+    const auto& activeLevelComponent        = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    const auto& playerStateComponent        = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activeLevelModelComponent   = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    const auto& playerMovementComponent     = mWorld.GetComponent<MovementStateComponent>(GetPlayerEntityId(mWorld));
+	auto& overworldFlowStateComponent       = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
+    const auto& currentPlayerTileCoords     = playerMovementComponent.mCurrentCoords;
+    const auto& currentPlayerTile           = GetTile(playerMovementComponent.mCurrentCoords, activeLevelModelComponent.mLevelTilemap);
+	const auto currentLevelCol              = currentPlayerTileCoords.mCol;
+	const auto currentLevelRow              = currentPlayerTileCoords.mRow;
+	const auto currentLevelName             = activeLevelComponent.mActiveLevelNameId;
+    const auto lastNpcSpokenToLevelIndex    = playerStateComponent.mLastNpcLevelIndexSpokenTo;
+    const auto flowStartedByTileTrigger     = currentPlayerTile.mTileTrait == TileTrait::FLOW_TRIGGER;
+	
+	if (IsAnyOverworldFlowCurrentlyRunning(mWorld) == false)
+	{
+		if (flowStartedByTileTrigger)
+		{
+			auto findResultIter = std::find_if
+			(
+				overworldFlowStateComponent.mTriggerFlowStateMapEntries.cbegin(),
+				overworldFlowStateComponent.mTriggerFlowStateMapEntries.cend(),
+				[this, currentLevelName, currentLevelCol, currentLevelRow](const TriggerFlowStateMapEntry& triggerFlowStateEntry)
+				{
+				return triggerFlowStateEntry.mLevelName == currentLevelName &&
+					   triggerFlowStateEntry.mLevelCol  == currentLevelCol &&
+					   triggerFlowStateEntry.mLevelRow  == currentLevelRow;
+				}
+			);
+			
+			if (findResultIter != overworldFlowStateComponent.mTriggerFlowStateMapEntries.cend())
+			{
+				auto flowState = mNamedFlowStatesFactory.at(findResultIter->mFlowName)();
+				overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::move(flowState));
+			}
+		}
+		else
+		{
+			auto findResultIter = std::find_if
+			(
+				overworldFlowStateComponent.mNpcFlowStateMapEntries.cbegin(),
+				overworldFlowStateComponent.mNpcFlowStateMapEntries.cend(),
+				[this, currentLevelName, lastNpcSpokenToLevelIndex](const NpcFlowStateMapEntry& npcFlowStateEntry)
+				{
+					return npcFlowStateEntry.mLevelName     == currentLevelName &&
+						   npcFlowStateEntry.mNpcLevelIndex == lastNpcSpokenToLevelIndex;
+				}
+			);
+			
+			if (findResultIter != overworldFlowStateComponent.mNpcFlowStateMapEntries.cend())
+			{
+				auto flowState = mNamedFlowStatesFactory.at(findResultIter->mFlowName)();
+				overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::move(flowState));
+			}
+		}
+	}
 
-    if (activeLevelComponent.mActiveLevelNameId == StringId("in_players_home_top"))
-    {
-        if (lastNpcSpokenToLevelIndex == 0)
-        {
-            StartOverworldFlowState<PCIntroDialogOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_rivals_home"))
-    {
-        if (lastNpcSpokenToLevelIndex == 0)
-        {
-            StartOverworldFlowState<TownMapOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("viridian_city"))
-    { 
-        if (flowStartedByTileTrigger)
-        {
-            // Rude guy trigger
-            if (currentPlayerTileCoords.mCol == 24 && currentPlayerTileCoords.mRow == 34)
-            {
-                if (pokedexStateComponent.mPokedexUnlocked == false)
-                {
-                    StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
-                }                
-            }
-            // Gym trigger
-            else if (currentPlayerTileCoords.mCol == 37 && currentPlayerTileCoords.mRow == 35)
-            {
-                StartOverworldFlowState<ViridianGymLockedOverworldFlowState>(mWorld);
-            }            
-        }
-        else if (lastNpcSpokenToLevelIndex == 5)
-        {
-            if (pokedexStateComponent.mPokedexUnlocked == false)
-            {
-                StartOverworldFlowState<ViridianRudeGuyOverworldFlowState>(mWorld);
-            }
-        }
-        else if (lastNpcSpokenToLevelIndex == 10)
-        {
-            StartOverworldFlowState<ViridianCaterpieWeedleGuyOverworldFlowState>(mWorld);
-        }        
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_poke_center"))
-    {
-        // Joey flow
-        if (lastNpcSpokenToLevelIndex == 2)
-        {
-            StartOverworldFlowState<PokeCenterHealingIntroDialogOverworldFlowState>(mWorld);
-        }
-        // PC flow
-        else if (lastNpcSpokenToLevelIndex == 7)
-        {
-            StartOverworldFlowState<PCIntroDialogOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_poke_mart"))
-    {
-        // Mart flow
-        if (lastNpcSpokenToLevelIndex == 1 || lastNpcSpokenToLevelIndex == 7 || lastNpcSpokenToLevelIndex == 9)
-        {
-            StartOverworldFlowState<PokeMartIntroDialogOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_nickname_family"))
-    {
-        // Town Map Flow
-        if (lastNpcSpokenToLevelIndex == 0)
-        {
-            StartOverworldFlowState<TownMapOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("in_viridian_school"))
-    {
-        // Blackboard flow
-        if (lastNpcSpokenToLevelIndex == 0)
-        {
-            StartOverworldFlowState<ViridianSchoolBlackboardOverworldFlowState>(mWorld);
-        }
-        // Book lesson flow
-        else if (lastNpcSpokenToLevelIndex == 3)
-        {
-            StartOverworldFlowState<ViridianSchoolBookOverworldFlowState>(mWorld);
-        }
-    }
-    else if (activeLevelComponent.mActiveLevelNameId == StringId("pewter_city"))
-    {
-        if (flowStartedByTileTrigger && IsAnyOverworldFlowCurrentlyRunning(mWorld) == false)
-        {
-            StartOverworldFlowState<PewterBrockGuideOverworldFlowState>(mWorld);
-        }
-        else
-        {
-            // Brock guide flow
-            if (lastNpcSpokenToLevelIndex == 2 && IsAnyOverworldFlowCurrentlyRunning(mWorld) == false)
-            {
-                StartOverworldFlowState<PewterBrockGuideOverworldFlowState>(mWorld);
-            }
-            // Museum guide flow
-            else if (lastNpcSpokenToLevelIndex == 5)
-            {
-                StartOverworldFlowState<PewterMuseumGuideOverworldFlowState>(mWorld);
-            }
-            // Farmer flow
-            else if (lastNpcSpokenToLevelIndex == 10)
-            {
-                StartOverworldFlowState<PewterFarmerDialogOverworldFlowState>(mWorld);
-            }
-        }
-    }
-    
-    auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
     if (overworldFlowStateComponent.mFlowStateManager.HasActiveFlowState() == false)
     {
         ShowMessageBox(MessageBoxType::WARNING, "No flow activated", "Flow not hooked properly");

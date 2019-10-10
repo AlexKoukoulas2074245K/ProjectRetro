@@ -47,7 +47,7 @@ private:
     void DetermineWhichFlowToStart() const;
 
 	using FlowStateFactoryFunction = std::function<std::unique_ptr<BaseFlowState>()>;
-	std::unordered_map<StringId, FlowStateFactoryFunction, StringIdHasher> mNamedFlowStatesFactory;
+	std::unordered_map<const StringId, FlowStateFactoryFunction, StringIdHasher> mNamedFlowStatesFactory;
 
 };
 

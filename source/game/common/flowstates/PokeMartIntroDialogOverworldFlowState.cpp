@@ -33,11 +33,15 @@ PokeMartIntroDialogOverworldFlowState::PokeMartIntroDialogOverworldFlowState(ecs
     DestroyActiveTextbox(mWorld);
 
     // Change direction of npc behind counter
+	// We can't use the last npc level index here, as actually we are not talking to the npc behind the counter,
+	// but rather three different invisible npcs arount the mart counter
     auto& npcRenderableComponent   = mWorld.GetComponent<RenderableComponent>(GetNpcEntityIdFromLevelIndex(NPC_BEHIND_COUNTER_LEVEL_INDEX, mWorld));
     auto& playerDirectionComponent = mWorld.GetComponent<DirectionComponent>(GetPlayerEntityId(mWorld));
+	auto& npcAiComponent           = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(NPC_BEHIND_COUNTER_LEVEL_INDEX, mWorld));
 
     const auto directionFacingPlayer = static_cast<Direction>((static_cast<int>(playerDirectionComponent.mDirection) + 2) % 4);
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(directionFacingPlayer), npcRenderableComponent);
+	npcAiComponent.mAiTimer->Reset();
 
     QueueDialogForChatbox(CreateChatbox(mWorld), "Hi there!#May I help you?+FREEZE", mWorld);
 }
