@@ -31,6 +31,25 @@
 #include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
 #include "../../common/utils/OSMessageBox.h"
+#include "../../resources/ResourceLoadingService.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#define CreateFlowStateFactory(StateName) [this]()\
+ ->  std::unique_ptr<BaseFlowState>               \
+{                                                 \
+	return std::make_unique<StateName>(mWorld);   \
+}
+
+#define RegisterNamedFlowState(StateName) mNamedFlowStatesFactory[StringId(#StateName)] = CreateFlowStateFactory(StateName);
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+const std::string EXPOSED_NAMED_FLOW_STATES_FILE_NAME = "exposed_named_flow_states.json";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +59,8 @@ OverworldFlowControllerSystem::OverworldFlowControllerSystem(ecs::World& world)
     : BaseSystem(world)
 {
     InitializeOverworldFlowState();
+	RegisterNamedFlowStateFactories();
+	UpdateExposedNamedFlowStatesFile();
 }
 
 void OverworldFlowControllerSystem::VUpdateAssociatedComponents(const float dt) const
@@ -70,6 +91,47 @@ void OverworldFlowControllerSystem::VUpdateAssociatedComponents(const float dt) 
 void OverworldFlowControllerSystem::InitializeOverworldFlowState() const
 {
     mWorld.SetSingletonComponent<OverworldFlowStateSingletonComponent>(std::make_unique<OverworldFlowStateSingletonComponent>());
+}
+
+void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
+{
+	// Here we expose only the overworld states that we need to expose to the level editor
+
+	RegisterNamedFlowState(PCIntroDialogOverworldFlowState);
+	RegisterNamedFlowState(TownMapOverworldFlowState);
+	RegisterNamedFlowState(ViridianRudeGuyOverworldFlowState);
+	RegisterNamedFlowState(ViridianGymLockedOverworldFlowState);
+	RegisterNamedFlowState(ViridianCaterpieWeedleGuyOverworldFlowState);
+	RegisterNamedFlowState(PokeCenterHealingIntroDialogOverworldFlowState);	
+	RegisterNamedFlowState(PokeMartIntroDialogOverworldFlowState);	
+	RegisterNamedFlowState(ViridianSchoolBlackboardOverworldFlowState);	
+	RegisterNamedFlowState(ViridianSchoolBookOverworldFlowState);		
+	RegisterNamedFlowState(PewterBrockGuideOverworldFlowState);
+	RegisterNamedFlowState(PewterMuseumGuideOverworldFlowState);
+	RegisterNamedFlowState(PewterFarmerDialogOverworldFlowState);	
+}
+
+void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
+{	
+	std::stringstream namedStatesFileString;
+	namedStatesFileString << "{\"named_states\": [";	
+	auto commaToggle = false;
+	for (const auto& namedStateFactoryEntry : mNamedFlowStatesFactory)
+	{
+		if (!commaToggle)
+		{
+			commaToggle = true;
+		}
+		else
+		{
+			namedStatesFileString << ",";
+		}
+
+		namedStatesFileString << "\"" << namedStateFactoryEntry.first.GetString() << "\"";
+	}
+
+	namedStatesFileString << "]}";
+	ResourceLoadingService::GetInstance().WriteStringToFile(namedStatesFileString.str(), ResourceLoadingService::RES_DATA_ROOT + EXPOSED_NAMED_FLOW_STATES_FILE_NAME);
 }
 
 void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
