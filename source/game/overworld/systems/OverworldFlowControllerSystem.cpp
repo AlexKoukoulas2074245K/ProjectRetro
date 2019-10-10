@@ -118,7 +118,7 @@ void OverworldFlowControllerSystem::InitializeOverworldFlowState() const
 	}
 
 	// Parse trigger entries
-	for (const auto& flowTriggerEntry : flowStateMapJson["trigger_flow_States"])
+	for (const auto& flowTriggerEntry : flowStateMapJson["trigger_flow_states"])
 	{
 		overworldFlorStateComponent->mTriggerFlowStateMapEntries.emplace_back
 		(

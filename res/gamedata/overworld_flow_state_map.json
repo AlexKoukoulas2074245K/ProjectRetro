@@ -18,7 +18,7 @@
 		{"level_name": "pewter_city", "npc_level_index": 10, "flow_state_name": "PewterFarmerDialogOverworldFlowState"}
 	],
 	
-	"trigger_flow_States": 
+	"trigger_flow_states": 
 	[
 		{"level_name": "pewter_city", "level_col": 46, "level_row": 34, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "pewter_city", "level_col": 47, "level_row": 33, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
