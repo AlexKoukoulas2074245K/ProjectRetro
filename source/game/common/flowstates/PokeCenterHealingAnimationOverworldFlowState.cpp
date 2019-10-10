@@ -223,6 +223,9 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
             if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
             {                
                 auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(GetJoyEntityId());
+				auto& joyNpcAiComponent      = mWorld.GetComponent<NpcAiComponent>(GetJoyEntityId());
+
+				joyNpcAiComponent.mAiTimer->Reset();
                 ChangeAnimationIfCurrentPlayingIsDifferent(JOY_BOW_ANIMATION_NAME, joyRenderableComponent);
 
                 pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
