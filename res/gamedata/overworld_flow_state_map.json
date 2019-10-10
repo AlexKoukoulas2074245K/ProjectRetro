@@ -1,9 +1,9 @@
 {
-	"npc_flow_states": 
+	"npc_flow_states":
 	[
 		{"level_name": "in_players_home_top", "npc_level_index": 0, "flow_state_name": "PCIntroDialogOverworldFlowState"},
-		{"level_name": "in_rivals_home", "npc_level_index": 0, "flow_state_name": "TownMapOverworldFlowState"},	
-		{"level_name": "viridian_city", "npc_level_index": 5, "flow_state_name": "ViridianRudeGuyOverworldFlowState"},	
+		{"level_name": "in_rivals_home", "npc_level_index": 0, "flow_state_name": "TownMapOverworldFlowState"},
+		{"level_name": "viridian_city", "npc_level_index": 5, "flow_state_name": "ViridianRudeGuyOverworldFlowState"},
 		{"level_name": "viridian_city", "npc_level_index": 10, "flow_state_name": "ViridianCaterpieWeedleGuyOverworldFlowState"},
 		{"level_name": "in_viridian_poke_center", "npc_level_index": 2, "flow_state_name": "PokeCenterHealingIntroDialogOverworldFlowState"},
 		{"level_name": "in_viridian_poke_center", "npc_level_index": 7, "flow_state_name": "PCIntroDialogOverworldFlowState"},
@@ -15,10 +15,12 @@
 		{"level_name": "in_viridian_school", "npc_level_index": 3, "flow_state_name": "ViridianSchoolBookOverworldFlowState"},
 		{"level_name": "pewter_city", "npc_level_index": 2, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "pewter_city", "npc_level_index": 5, "flow_state_name": "PewterMuseumGuideOverworldFlowState"},
-		{"level_name": "pewter_city", "npc_level_index": 10, "flow_state_name": "PewterFarmerDialogOverworldFlowState"}
+		{"level_name": "pewter_city", "npc_level_index": 10, "flow_state_name": "PewterFarmerDialogOverworldFlowState"},
+		{"level_name": "in_pewter_poke_center", "npc_level_index": 2, "flow_state_name": "PokeCenterHealingIntroDialogOverworldFlowState"},
+		{"level_name": "in_pewter_poke_center", "npc_level_index": 7, "flow_state_name": "PCIntroDialogOverworldFlowState"}
 	],
-	
-	"trigger_flow_states": 
+
+	"trigger_flow_states":
 	[
 		{"level_name": "pewter_city", "level_col": 46, "level_row": 34, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "pewter_city", "level_col": 47, "level_row": 33, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
