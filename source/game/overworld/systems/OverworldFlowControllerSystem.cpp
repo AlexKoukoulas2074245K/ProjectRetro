@@ -196,7 +196,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
 			(
 				overworldFlowStateComponent.mTriggerFlowStateMapEntries.cbegin(),
 				overworldFlowStateComponent.mTriggerFlowStateMapEntries.cend(),
-				[this, currentLevelName, currentLevelCol, currentLevelRow](const TriggerFlowStateMapEntry& triggerFlowStateEntry)
+				[currentLevelName, currentLevelCol, currentLevelRow](const TriggerFlowStateMapEntry& triggerFlowStateEntry)
 				{
 				return triggerFlowStateEntry.mLevelName == currentLevelName &&
 					   triggerFlowStateEntry.mLevelCol  == currentLevelCol &&
@@ -216,7 +216,7 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
 			(
 				overworldFlowStateComponent.mNpcFlowStateMapEntries.cbegin(),
 				overworldFlowStateComponent.mNpcFlowStateMapEntries.cend(),
-				[this, currentLevelName, lastNpcSpokenToLevelIndex](const NpcFlowStateMapEntry& npcFlowStateEntry)
+				[currentLevelName, lastNpcSpokenToLevelIndex](const NpcFlowStateMapEntry& npcFlowStateEntry)
 				{
 					return npcFlowStateEntry.mLevelName     == currentLevelName &&
 						   npcFlowStateEntry.mNpcLevelIndex == lastNpcSpokenToLevelIndex;
