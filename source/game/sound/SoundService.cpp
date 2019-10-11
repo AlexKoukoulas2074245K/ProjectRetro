@@ -177,11 +177,15 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
             Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
         }               
 
-        if (mMusicVolumePriorToMuting == -1)
+        if (!mAllAudioDisabled)
         {
-            mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+            if (mMusicVolumePriorToMuting == -1)
+            {
+                mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+            }
+            
+            Mix_VolumeMusic(mMusicVolumePriorToMuting);
         }
-        Mix_VolumeMusic(mMusicVolumePriorToMuting);
     }
     else
     {        
@@ -261,7 +265,10 @@ void SoundService::OnMusicFinished()
         Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
     }        
 
-    Mix_VolumeMusic(mMusicVolumePriorToMuting);
+    if (!mAllAudioDisabled)
+    {
+        Mix_VolumeMusic(mMusicVolumePriorToMuting);
+    }
 }
 
 void SoundService::OnMusicIntroFinished()
@@ -272,7 +279,10 @@ void SoundService::OnMusicIntroFinished()
     mCurrentlyPlayingMusicResourceId = mCoreMusicTrackResourceId;
     Mix_PlayMusic(musicResource.GetSdlMusicHandle(), -1);
 
-    Mix_VolumeMusic(mMusicVolumePriorToMuting);
+    if (!mAllAudioDisabled)
+    {
+        Mix_VolumeMusic(mMusicVolumePriorToMuting);
+    }
 }
 
 void SoundService::OnSfxFinished()
