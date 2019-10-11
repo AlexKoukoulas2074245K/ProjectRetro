@@ -147,10 +147,11 @@ void PewterBrockGuideOverworldFlowState::UpdateEndPath()
         transformComponent.mPosition = TileCoordsToPosition(NPC_INITIAL_COORDS.mCol, NPC_INITIAL_COORDS.mRow);
         
         auto& movementStateComponent = mWorld.GetComponent<MovementStateComponent>(npcEntityId);
-        movementStateComponent.mCurrentCoords = NPC_INITIAL_COORDS;
         
-        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = npcEntityId;
-        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
+        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NONE;
+        
+        movementStateComponent.mCurrentCoords = NPC_INITIAL_COORDS;
         
         GetTile(NPC_INITIAL_COORDS.mCol, NPC_INITIAL_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = npcEntityId;
         GetTile(NPC_INITIAL_COORDS.mCol, NPC_INITIAL_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
