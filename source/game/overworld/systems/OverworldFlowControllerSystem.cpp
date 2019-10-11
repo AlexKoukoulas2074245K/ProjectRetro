@@ -152,10 +152,19 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
 {	
+	std::vector<std::string> stateNames;
+	for (const auto& namedStateEntry : mNamedFlowStatesFactory)
+	{
+		stateNames.emplace_back(namedStateEntry.first.GetString());
+	}
+	std::sort(stateNames.begin(), stateNames.end());
+
 	std::stringstream namedStatesFileString;
-	namedStatesFileString << "{\"named_states\": [";	
+	namedStatesFileString << "{\n";
+	namedStatesFileString << "\t\"named_states\": [";	
+
 	auto commaToggle = false;
-	for (const auto& namedStateFactoryEntry : mNamedFlowStatesFactory)
+	for (const auto& stateName : stateNames)
 	{
 		if (!commaToggle)
 		{
@@ -166,10 +175,12 @@ void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
 			namedStatesFileString << ",";
 		}
 
-		namedStatesFileString << "\"" << namedStateFactoryEntry.first.GetString() << "\"";
+		namedStatesFileString << "\"" << stateName << "\"";
 	}
 
-	namedStatesFileString << "]}";
+	namedStatesFileString << "]\n";
+	namedStatesFileString << "}";
+
 	ResourceLoadingService::GetInstance().WriteStringToFile(namedStatesFileString.str(), ResourceLoadingService::RES_DATA_ROOT + EXPOSED_NAMED_FLOW_STATES_FILE_NAME);
 }
 
