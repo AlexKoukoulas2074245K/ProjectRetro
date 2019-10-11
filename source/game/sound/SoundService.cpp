@@ -193,24 +193,37 @@ void SoundService::PlayMusic(const StringId musicTrackName, const bool fadeOutEn
 
 void SoundService::MuteMusic()
 {
-    mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
-    Mix_VolumeMusic(0);
+	if (!mAllAudioDisabled)
+	{
+		mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+		Mix_VolumeMusic(0);
+	}    
 }
 
 void SoundService::UnmuteMusic()
 {
-    Mix_VolumeMusic(mMusicVolumePriorToMuting);
+	if (!mAllAudioDisabled)
+	{
+		Mix_VolumeMusic(mMusicVolumePriorToMuting);
+	}
+    
 }
 
 void SoundService::MuteSfx()
 {
-    mSfxVolumePriorToMuting = Mix_Volume(SFX_CHANNEL_NUMBER, -1);
-    Mix_Volume(SFX_CHANNEL_NUMBER, 0);
+	if (!mAllAudioDisabled)
+	{
+		mSfxVolumePriorToMuting = Mix_Volume(SFX_CHANNEL_NUMBER, -1);
+		Mix_Volume(SFX_CHANNEL_NUMBER, 0);
+	}    
 }
 
 void SoundService::UnmuteSfx()
 {
-    Mix_Volume(SFX_CHANNEL_NUMBER, mMusicVolumePriorToMuting);
+	if (!mAllAudioDisabled)
+	{
+		Mix_Volume(SFX_CHANNEL_NUMBER, mMusicVolumePriorToMuting);
+	}
 }
 
 void SoundService::ToggleAudioOnOff()
@@ -218,13 +231,15 @@ void SoundService::ToggleAudioOnOff()
     mAllAudioDisabled = !mAllAudioDisabled;
     if (!mAllAudioDisabled)
     {
-        UnmuteMusic();
-        UnmuteSfx();
+		Mix_VolumeMusic(mMusicVolumePriorToMuting);
+		Mix_Volume(SFX_CHANNEL_NUMBER, mMusicVolumePriorToMuting);
     }
     else
     {
-        MuteMusic();
-        MuteSfx();
+		mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+		Mix_VolumeMusic(0);
+		mSfxVolumePriorToMuting = Mix_Volume(SFX_CHANNEL_NUMBER, -1);
+		Mix_Volume(SFX_CHANNEL_NUMBER, 0);
     }
 }
 
