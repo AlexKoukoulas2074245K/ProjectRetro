@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "MilestoneUtils.h"
 #include "PokedexUtils.h"
 #include "TextboxUtils.h"
 #include "../../ECS.h"
@@ -1120,7 +1121,7 @@ ecs::EntityId CreateSaveScreenPlayerStatsTextbox
 
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto playerName            = playerStateComponent.mPlayerTrainerName.GetString();
-    const auto playerBadgesString    = std::to_string(playerStateComponent.mBadgeNamesOwned.size());
+    const auto playerBadgesString    = std::to_string(GetNumberOfBadges(world));
     const auto numPokemonOwnedString = std::to_string(GetNumberOfPokemonWithPokedexEntryType(PokedexEntryType::OWNED, world));
     const auto timePlayedString      = GetHoursMinutesStringFromSeconds(playerStateComponent.mSecondsPlayed);
 

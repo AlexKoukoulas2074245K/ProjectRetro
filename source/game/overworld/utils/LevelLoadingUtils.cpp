@@ -462,10 +462,10 @@ void CreateNpcSprite
     ecs::World& world
 )
 {
-    const auto gameCol      = npcSpriteEntryJsonObject["game_col"].get<int>();
-    const auto gameRow      = npcSpriteEntryJsonObject["game_row"].get<int>();
-    const auto atlasCol     = npcSpriteEntryJsonObject["atlas_col"].get<int>();
-    const auto atlasRow     = npcSpriteEntryJsonObject["atlas_row"].get<int>();
+    const auto gameCol  = npcSpriteEntryJsonObject["game_col"].get<int>();
+    const auto gameRow  = npcSpriteEntryJsonObject["game_row"].get<int>();
+    const auto atlasCol = npcSpriteEntryJsonObject["atlas_col"].get<int>();
+    const auto atlasRow = npcSpriteEntryJsonObject["atlas_row"].get<int>();
     
     auto npcEntityId = ecs::NULL_ENTITY_ID;
     for (const auto npcAttributeEntityId: npcAttributeEntityIdsAdded)

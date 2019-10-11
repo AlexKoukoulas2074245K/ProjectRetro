@@ -16,6 +16,7 @@
 #include "../../common/GameConstants.h"
 #include "../../common/utils/StringUtils.h"
 
+#include <bitset>
 #include <vector>
 #include <memory>
 
@@ -94,13 +95,31 @@ struct CollectedItemNonDestructibleNpcEntry
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+namespace milestones
+{
+	using Milestones = unsigned long;
+
+	static constexpr unsigned long RECEIVED_POKEDEX = 1UL << 0;
+	static constexpr unsigned long BOULDERBADGE     = 1UL << 1;
+	static constexpr unsigned long CASCADEBADGE     = 1UL << 2;
+	static constexpr unsigned long THUNDERBADGE     = 1UL << 3;
+	static constexpr unsigned long RAINBOWBADGE     = 1UL << 4;
+	static constexpr unsigned long SOULBADGE        = 1UL << 5;
+	static constexpr unsigned long MARSHBADGE       = 1UL << 6;
+	static constexpr unsigned long VOLCANOBADGE     = 1UL << 7;
+	static constexpr unsigned long EARTHBADGE       = 1UL << 8;	
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 class PlayerStateSingletonComponent final: public ecs::IComponent
 {
 public:
     std::vector<std::unique_ptr<Pokemon>> mPlayerPokemonRoster;
     std::vector<std::unique_ptr<Pokemon>> mPlayerBoxedPokemon;
-    std::vector<BagItemEntry> mPlayerBag;
-    std::vector<StringId> mBadgeNamesOwned;
+    std::vector<BagItemEntry> mPlayerBag;    
     std::vector<DefeatedNpcEntry> mDefeatedNpcEntries;
     std::vector<CollectedItemNpcEntry> mCollectedNpcItemEntries;        
     std::vector<CollectedItemNonDestructibleNpcEntry> mCollectedItemNonDestructibleNpcEntries;
@@ -111,6 +130,8 @@ public:
     StringId mLastOverworldLevelName   = StringId();
     StringId mPendingItemToBeAdded     = StringId();
     
+	milestones::Milestones mMilestones = 0ULL;
+
     int mSecondsPlayed                     = 0;
     int mLastNpcLevelIndexSpokenTo         = -1;
     int mPokeDollarCredits                 = 0;

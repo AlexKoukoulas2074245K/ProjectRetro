@@ -58,26 +58,14 @@ void SaveGame(const ecs::World& world)
     saveFileString << "    \"player_name\": \"" << playerStateComponent.mPlayerTrainerName.GetString() << "\",\n";
     saveFileString << "    \"rival_name\": \"" << playerStateComponent.mRivalName.GetString() << "\",\n";
     saveFileString << "    \"home_name\": \"" << playerStateComponent.mHomeLevelName.GetString() << "\",\n";
+	saveFileString << "    \"milestones\": " << playerStateComponent.mMilestones << ",\n";
     saveFileString << "    \"current_level_name\": \"" << activeLevelComponent.mActiveLevelNameId.GetString() << "\",\n";
     saveFileString << "    \"current_game_col\": " << movementComponent.mCurrentCoords.mCol << ",\n";
     saveFileString << "    \"current_game_row\": " << movementComponent.mCurrentCoords.mRow << ",\n";
     saveFileString << "    \"current_direction\": " << static_cast<int>(directionComponent.mDirection) << ",\n";
     saveFileString << "    \"seconds_played\": " << playerStateComponent.mSecondsPlayed << ",\n";
     saveFileString << "    \"poke_dollars\": " << playerStateComponent.mPokeDollarCredits << ",\n";
-    saveFileString << "    \"trainer_id\": " << playerStateComponent.mTrainerId << ",\n";
-    saveFileString << "    \"badges\": [";
-    
-    // Serialize badges
-    for (auto i = 0U; i < playerStateComponent.mBadgeNamesOwned.size(); ++i)
-    {
-        if (i != 0)
-        {
-            saveFileString << ", ";
-        }
-        
-        saveFileString << "\"" << playerStateComponent.mBadgeNamesOwned[i].GetString() << "\"";
-    }
-    saveFileString << "],\n";
+    saveFileString << "    \"trainer_id\": " << playerStateComponent.mTrainerId << ",\n"; 
     
     // Serialize defeated npc entries
     saveFileString << "    \"defeated_npc_entries\": [";
@@ -275,15 +263,11 @@ void RestoreGameStateFromSaveFile(ecs::World& world)
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();
     playerStateComponent->mPlayerTrainerName = StringId(saveJson["player_name"].get<std::string>());
     playerStateComponent->mRivalName         = StringId(saveJson["rival_name"].get<std::string>());
+	playerStateComponent->mMilestones        = saveJson["milestones"].get<unsigned long>();
     playerStateComponent->mHomeLevelName     = StringId(saveJson["home_name"].get<std::string>());
     playerStateComponent->mSecondsPlayed     = saveJson["seconds_played"].get<int>();
     playerStateComponent->mPokeDollarCredits = saveJson["poke_dollars"].get<int>();
     playerStateComponent->mTrainerId         = saveJson["trainer_id"].get<int>();
-    
-    for (const auto& badgeEntry: saveJson["badges"])
-    {
-        playerStateComponent->mBadgeNamesOwned.push_back(StringId(badgeEntry.get<std::string>()));
-    }
     
     for (const auto& defeatedNpcEntry: saveJson["defeated_npc_entries"])
     {

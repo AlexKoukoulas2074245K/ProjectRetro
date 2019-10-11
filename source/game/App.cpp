@@ -141,8 +141,8 @@ void App::GameLoop()
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
-    auto& playerStateComponent               = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+
     mWorld.OnPreFirstUpdate();
     
     while (!AppShouldQuit())
