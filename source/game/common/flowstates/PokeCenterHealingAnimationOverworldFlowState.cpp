@@ -237,7 +237,8 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         {            
             pokeCenterHealingAnimationState.mAnimationTimer->Update(dt);
             if (pokeCenterHealingAnimationState.mAnimationTimer->HasTicked())
-            {                
+            {   
+				
                 auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(GetJoyEntityId());
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::SOUTH), joyRenderableComponent);
 
@@ -245,6 +246,8 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
                 {
                     RestorePokemonStats(*pokemon);
                 }
+			
+				SetCurrentPokeCenterAsHome(mWorld);
 
                 pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
                 CompleteAndTransitionTo<PokeCenterHealingFarewellDialogOverworldFlowState>();
