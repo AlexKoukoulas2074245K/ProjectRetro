@@ -17,7 +17,8 @@
 		{"level_name": "pewter_city", "npc_level_index": 5, "flow_state_name": "PewterMuseumGuideOverworldFlowState"},
 		{"level_name": "pewter_city", "npc_level_index": 10, "flow_state_name": "PewterFarmerDialogOverworldFlowState"},
 		{"level_name": "in_pewter_poke_center", "npc_level_index": 2, "flow_state_name": "PokeCenterHealingIntroDialogOverworldFlowState"},
-		{"level_name": "in_pewter_poke_center", "npc_level_index": 7, "flow_state_name": "PCIntroDialogOverworldFlowState"}
+		{"level_name": "in_pewter_poke_center", "npc_level_index": 7, "flow_state_name": "PCIntroDialogOverworldFlowState"},
+		{"level_name": "in_pewter_topright_house", "npc_level_index": 0, "flow_state_name": "TownMapOverworldFlowState"}
 	],
 
 	"trigger_flow_states":
