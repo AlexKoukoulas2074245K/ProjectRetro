@@ -58,6 +58,7 @@
 #include "overworld/components/PokeCenterHealingAnimationStateSingletonComponent.h"
 #include "overworld/components/TownMapLocationDataSingletonComponent.h"
 #include "overworld/systems/AnimatedFlowersAnimationSystem.h"
+#include "overworld/systems/MilestoneAlterationsSystem.h"
 #include "overworld/systems/MovementControllerSystem.h"
 #include "overworld/systems/NpcAiSystem.h"
 #include "overworld/systems/OverworldFlowControllerSystem.h"
@@ -116,6 +117,7 @@ void App::CreateSystems()
     mWorld.AddSystem(std::make_unique<EncounterStateControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<OverworldFlowControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<CameraControlSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<MilestoneAlterationsSystem>(mWorld));
     mWorld.AddSystem(std::move(renderingSystem));
 }
 

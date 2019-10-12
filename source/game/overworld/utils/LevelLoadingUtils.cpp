@@ -17,6 +17,7 @@
 #include "../components/AnimatedFlowerTagComponent.h"
 #include "../components/LevelResidentComponent.h"
 #include "../components/NpcAiComponent.h"
+#include "../components/MilestoneAlterationTagComponent.h"
 #include "../components/MovementStateComponent.h"
 #include "../components/SeaTileTagComponent.h"
 #include "../../common/components/DirectionComponent.h"
@@ -248,6 +249,9 @@ ecs::EntityId LoadAndCreateLevelByName(const StringId levelName, ecs::World& wor
     
     // Associate level component with entity
     world.AddComponent<LevelModelComponent>(levelEntityId, std::move(levelModelComponent));
+    
+    // Signal that the level needs to be checked for milestone alterations
+    world.AddComponent<MilestoneAlterationTagComponent>(levelEntityId, std::make_unique<MilestoneAlterationTagComponent>());
     
     // Unload level file resource
     resourceLoadingService.UnloadResource(levelFilePath);

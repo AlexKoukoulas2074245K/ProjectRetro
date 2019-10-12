@@ -1,0 +1,50 @@
+//
+//  MilestoneAlterationsSystem.cpp
+//  ProjectRetro
+//
+//  Created by Alex Koukoulas on 12/10/2019.
+//
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#include "MilestoneAlterationsSystem.h"
+#include "../components/LevelModelComponent.h"
+#include "../components/MilestoneAlterationTagComponent.h"
+#include "../../common/utils/MilestoneUtils.h"
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+MilestoneAlterationsSystem::MilestoneAlterationsSystem(ecs::World& world)
+    : BaseSystem(world)
+{
+    CalculateAndSetComponentUsageMask<MilestoneAlterationTagComponent>();
+}
+
+void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
+{
+    const auto& activeEntities = mWorld.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            const auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(entityId);
+            const auto& levelName           = levelModelComponent.mLevelName;
+            
+            if (levelName == StringId("viridian_city"))
+            {
+                
+            }
+            
+            mWorld.RemoveComponent<MilestoneAlterationTagComponent>(entityId);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
