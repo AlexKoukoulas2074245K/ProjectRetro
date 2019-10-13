@@ -17,6 +17,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/flowstates/MainMenuOverworldFlowState.h"
+#include "../../common/utils/MilestoneUtils.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonItemsUtils.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -39,7 +40,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string PlayerActionControllerSystem::MENU_OPEN_SFX_NAME = "general/main_menu_open";
+const std::string PlayerActionControllerSystem::MENU_OPEN_SFX_NAME    = "general/main_menu_open";
+const std::string PlayerActionControllerSystem::OAKS_PARCEL_ITEM_NAME = "OAK's_PARCEL";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -214,6 +216,14 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
 		{
 			return;
 		}
+        else if (playerStateComponent.mPendingItemToBeAdded == StringId(OAKS_PARCEL_ITEM_NAME))
+        {
+            SetMilestone(milestones::RECEIVED_OAKS_PARCEL, mWorld);
+            AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+            playerStateComponent.mPendingItemToBeAdded = StringId();
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+            return;
+        }
 
         AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);        
                 

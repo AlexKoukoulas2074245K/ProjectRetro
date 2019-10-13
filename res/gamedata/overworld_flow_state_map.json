@@ -22,7 +22,8 @@
 		{"level_name": "in_pewter_botleft_house", "npc_level_index": 0, "flow_state_name": "TownMapOverworldFlowState"},
 		{"level_name": "in_pewter_poke_mart", "npc_level_index": 0, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
 		{"level_name": "in_pewter_poke_mart", "npc_level_index": 7, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
-		{"level_name": "in_pewter_poke_mart", "npc_level_index": 9, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"}
+		{"level_name": "in_pewter_poke_mart", "npc_level_index": 9, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
+		{"level_name": "in_oaks_lab", "npc_level_index": 10, "flow_state_name": "OakDialogOverworldFlowState"}
 	],
 
 	"trigger_flow_states":
@@ -31,6 +32,7 @@
 		{"level_name": "pewter_city", "level_col": 47, "level_row": 33, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "pewter_city", "level_col": 48, "level_row": 32, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "viridian_city", "level_col": 24, "level_row": 34, "flow_state_name": "ViridianRudeGuyOverworldFlowState"},
-		{"level_name": "viridian_city", "level_col": 37, "level_row": 35, "flow_state_name": "ViridianGymLockedOverworldFlowState"}
+		{"level_name": "viridian_city", "level_col": 37, "level_row": 35, "flow_state_name": "ViridianGymLockedOverworldFlowState"},
+		{"level_name": "in_viridian_poke_mart", "level_col": 7, "level_row": 4, "flow_state_name": "ViridianOaksParcelOverworldFlowState"}
 	]
 }

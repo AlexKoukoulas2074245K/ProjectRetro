@@ -13,6 +13,7 @@
 #include "PokeMartMenuSelectionOverworldFlowState.h"
 #include "../components/DirectionComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../utils/MilestoneUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/utils/AnimationUtils.h"
@@ -28,7 +29,7 @@ const int PokeMartIntroDialogOverworldFlowState::NPC_BEHIND_COUNTER_LEVEL_INDEX 
 ////////////////////////////////////////////////////////////////////////////////////
 
 PokeMartIntroDialogOverworldFlowState::PokeMartIntroDialogOverworldFlowState(ecs::World& world)
-    : BaseFlowState(world)
+    : BaseOverworldFlowState(world)
 {   
     DestroyActiveTextbox(mWorld);
 
@@ -43,7 +44,15 @@ PokeMartIntroDialogOverworldFlowState::PokeMartIntroDialogOverworldFlowState(ecs
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(directionFacingPlayer), npcRenderableComponent);
 	npcAiComponent.mAiTimer->Reset();
 
-    QueueDialogForChatbox(CreateChatbox(mWorld), "Hi there!#May I help you?+FREEZE", mWorld);
+    if (HasMilestone(milestones::RECEIVED_POKEDEX, mWorld))
+    {
+        QueueDialogForChatbox(CreateChatbox(mWorld), "Hi there!#May I help you?+FREEZE", mWorld);
+    }
+    else
+    {
+        QueueDialogForChatbox(CreateChatbox(mWorld), "Okay! Say hi to#PROF. OAK for me!", mWorld);
+        CompleteOverworldFlow();
+    }
 }
 
 void PokeMartIntroDialogOverworldFlowState::VUpdate(const float)

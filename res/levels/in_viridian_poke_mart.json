@@ -361,7 +361,7 @@
         { "tile_traits": "SOLID", "editor_col": 5, "editor_row": 10, "game_col": 5, "game_row": 5, "game_position_x": 8.0, "game_position_z": 8.0 },
         { "tile_traits": "SOLID", "editor_col": 12, "editor_row": 10, "game_col": 12, "game_row": 5, "game_position_x": 19.2, "game_position_z": 8.0 },
         { "tile_traits": "SOLID", "editor_col": 3, "editor_row": 11, "game_col": 3, "game_row": 4, "game_position_x": 4.8, "game_position_z": 6.4 },
-        { "tile_traits": "PRESS_WARP", "editor_col": 7, "editor_row": 11, "game_col": 7, "game_row": 4, "game_position_x": 11.2, "game_position_z": 6.4 },
+        { "tile_traits": "FLOW_TRIGGER", "editor_col": 7, "editor_row": 11, "game_col": 7, "game_row": 4, "game_position_x": 11.2, "game_position_z": 6.4 },
         { "tile_traits": "PRESS_WARP", "editor_col": 8, "editor_row": 11, "game_col": 8, "game_row": 4, "game_position_x": 12.8, "game_position_z": 6.4 },
         { "tile_traits": "SOLID", "editor_col": 12, "editor_row": 11, "game_col": 12, "game_row": 4, "game_position_x": 19.2, "game_position_z": 6.4 },
         { "tile_traits": "SOLID", "editor_col": 3, "editor_row": 12, "game_col": 3, "game_row": 3, "game_position_x": 4.8, "game_position_z": 4.8 },

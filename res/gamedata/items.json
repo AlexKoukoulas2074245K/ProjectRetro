@@ -118,7 +118,15 @@
         "effect": "#",
         "price": 0
     },
-
+    
+    "OAK's_PARCEL":
+    {
+        "usage": -1,
+        "unique": true,
+        "effect": "#",
+        "price": 0
+    },
+    
     "BOULDERBADGE": 
     {
         "usage": -1,

@@ -115,6 +115,11 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         {
             SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
         }
+        
+        if (newTile.mTileTrait == TileTrait::FLOW_TRIGGER)
+        {
+            mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHookTriggered = true;
+        }
     }
 }
 

@@ -18,6 +18,7 @@
 #include "../utils/OverworldUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
+#include "../../common/flowstates/OakDialogOverworldFlowState.h"
 #include "../../common/flowstates/PCIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
@@ -30,6 +31,7 @@
 #include "../../common/flowstates/ViridianRudeGuyOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
+#include "../../common/flowstates/ViridianOaksParcelOverworldFlowState.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -147,7 +149,9 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
 	RegisterNamedFlowState(ViridianSchoolBookOverworldFlowState);		
 	RegisterNamedFlowState(PewterBrockGuideOverworldFlowState);
 	RegisterNamedFlowState(PewterMuseumGuideOverworldFlowState);
-	RegisterNamedFlowState(PewterFarmerDialogOverworldFlowState);	
+	RegisterNamedFlowState(PewterFarmerDialogOverworldFlowState);
+    RegisterNamedFlowState(ViridianOaksParcelOverworldFlowState);
+    RegisterNamedFlowState(OakDialogOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
