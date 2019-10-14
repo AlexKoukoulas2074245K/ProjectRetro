@@ -455,15 +455,24 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, co
         textboxFirstLineString = textboxFirstLineString.substr(1);
     }
         
-    auto itemName = StringSplit(textboxFirstLineString, '!')[0];
-	if (itemName.size() == textboxFirstLineString.size())
-	{
-		itemName = StringSplit(textboxFirstLineString, '.')[0];
-	}
+	auto itemName = textboxFirstLineString;
 
-    StringReplaceAllOccurences(itemName, " ", "_");
-	StringReplaceAllOccurences(itemName, "the_", "");
-	
+	if (StringStartsWith(itemName, POKEDEX_ITEM_NAME.GetString()))
+	{
+		itemName = POKEDEX_ITEM_NAME.GetString();
+	}
+	else
+	{
+		itemName = StringSplit(textboxFirstLineString, '!')[0];
+		if (itemName.size() == textboxFirstLineString.size())
+		{
+			itemName = StringSplit(textboxFirstLineString, '.')[0];
+		}
+
+		StringReplaceAllOccurences(itemName, " ", "_");
+		StringReplaceAllOccurences(itemName, "the_", "");
+	}
+    
     const auto& itemStats = GetItemStats(itemName, mWorld);
 	if (itemStats.mEffect == StringId("BADGE"))
 	{

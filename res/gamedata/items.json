@@ -149,5 +149,13 @@
 		"unique": false,
 		"effect": "technique",
 		"price": 2000
+	},
+	
+	"POK^DEX":
+	{
+		"usage": -1,
+        "unique": true,
+        "effect": "#",
+        "price": 0
 	}
 }

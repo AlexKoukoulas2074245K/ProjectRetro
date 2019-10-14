@@ -55,8 +55,7 @@ private:
         DirectionComponent&
     ) const;
     
-    static const std::string MENU_OPEN_SFX_NAME;
-    static const std::string OAKS_PARCEL_ITEM_NAME;
+    static const std::string MENU_OPEN_SFX_NAME;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

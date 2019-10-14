@@ -17,8 +17,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BaseOverworldFlowState.h"
+#include "../GameConstants.h"
+#include "../utils/Timer.h"
 
 #include <string>
+#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -33,17 +36,31 @@ public:
     
 private:
     static const std::string GARY_MUSIC_NAME;
-    
+	static const std::string OAKS_LAB_MUSIC_NAME;
+	static const TileCoords GARY_ENTRANCE_COORDS;
+	static const TileCoords GARY_OAK_SPEECH_COORDS;
+	static const TileCoords GARY_ATLAS_COORDS;
+	static const TileCoords FIRST_POKEDEX_COORDS;
+	static const TileCoords SECOND_POKEDEX_COORDS;
+	static const float POKEDEX_DISAPPEARING_DELAY;
+
     enum class EventState
     {
-        INTRO_DIALOG, GARY_INTRO, GARY_PATH
+        INTRO_DIALOG, GARY_INTRO, GARY_PATH, POKEDEX_DIALOG, POKEDEX_DISAPPEARING_DELAY
     };
     
     void UpdateIntroDialog();
     void UpdateGaryIntro();
     void UpdateGaryPath();
-    
+	void UpdatePokedexDialog();
+	void UpdatePokedexDisappearingDelay(const float dt);
+    void CreateGarySprite();
+	void CreateGaryPath(const bool isEnteringScene);
+	std::pair<ecs::EntityId, ecs::EntityId> GetPokedexSpriteEntityIds() const;
+
     EventState mEventState;
+	ecs::EntityId mGarySpriteEntityId;
+	Timer mPokedexDisappearingTimer;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

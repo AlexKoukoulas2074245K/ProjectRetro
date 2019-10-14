@@ -59,8 +59,7 @@ public:
     ecs::EntityId mPokedexBackgroundSpriteEntityId = ecs::NULL_ENTITY_ID;
     ecs::EntityId mPokedexInfoTextboxEntityId      = ecs::NULL_ENTITY_ID;
     std::unique_ptr<Timer> mPokedexViewTimer       = nullptr;
-    PokedexPageEntryType mCurrentPageViewType      = PokedexPageEntryType::LOCKED;
-    bool mPokedexUnlocked                          = false;
+    PokedexPageEntryType mCurrentPageViewType      = PokedexPageEntryType::LOCKED;    
     bool mPokedexPokemonDescriptionCursorShowing   = false;
 
 };

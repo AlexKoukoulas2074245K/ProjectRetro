@@ -18,6 +18,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokedexStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
+#include "../utils/MilestoneUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
@@ -39,10 +40,10 @@ MainMenuOverworldFlowState::MainMenuOverworldFlowState(ecs::World& world)
 {
     const auto& guiStateComponent     = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+    
     if (guiStateComponent.mActiveTextboxesStack.size() == 0)
     {
-        CreateOverworldMainMenuTextbox(world, pokedexStateComponent.mPokedexUnlocked, playerStateComponent.mPreviousMainMenuCursorRow);
+        CreateOverworldMainMenuTextbox(world, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
     }
 }
 

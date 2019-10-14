@@ -226,8 +226,7 @@ void App::CommonSingletonsInitialization()
     LoadAndPopulateItemsStats(*itemStatsComponent);
     mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
     
-    auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();
-    pokedexStateComponent->mPokedexUnlocked = true;
+    auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();    
     mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
     
     auto townMapDataComponent = std::make_unique<TownMapLocationDataSingletonComponent>();

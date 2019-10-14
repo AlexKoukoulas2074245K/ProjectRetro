@@ -41,7 +41,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string PlayerActionControllerSystem::MENU_OPEN_SFX_NAME    = "general/main_menu_open";
-const std::string PlayerActionControllerSystem::OAKS_PARCEL_ITEM_NAME = "OAK's_PARCEL";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -216,7 +215,7 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
 		{
 			return;
 		}
-        else if (playerStateComponent.mPendingItemToBeAdded == StringId(OAKS_PARCEL_ITEM_NAME))
+        else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)
         {
             SetMilestone(milestones::RECEIVED_OAKS_PARCEL, mWorld);
             AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
@@ -224,6 +223,13 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
             return;
         }
+		else if (playerStateComponent.mPendingItemToBeAdded == POKEDEX_ITEM_NAME)
+		{
+			SetMilestone(milestones::RECEIVED_POKEDEX, mWorld);
+			playerStateComponent.mPendingItemToBeAdded = StringId();
+			playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+			return;
+		}
 
 		if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
 		{

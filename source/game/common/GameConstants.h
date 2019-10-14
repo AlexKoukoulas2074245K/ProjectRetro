@@ -33,7 +33,9 @@ const float GUI_PIXEL_SIZE                 = 0.00859375f;
 const float CHARACTER_ANIMATION_FRAME_TIME = 0.125f;
 const float STATIONARY_NPC_RESET_TIME      = 1.5f;
 
-static const StringId CANCEL_ITEM_NAME = StringId("CANCEL");
+static const StringId CANCEL_ITEM_NAME      = StringId("CANCEL");
+static const StringId OAKS_PARCEL_ITEM_NAME = StringId("OAK's_PARCEL");
+static const StringId POKEDEX_ITEM_NAME     = StringId("POK^DEX");
 
 static const int MAX_ROSTER_SIZE = 6;
 static const int MAX_POKEMON_ID  = 151;
