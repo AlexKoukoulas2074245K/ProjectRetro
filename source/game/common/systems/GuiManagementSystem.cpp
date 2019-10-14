@@ -456,6 +456,11 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, co
     }
         
     auto itemName = StringSplit(textboxFirstLineString, '!')[0];
+	if (itemName.size() == textboxFirstLineString.size())
+	{
+		itemName = StringSplit(textboxFirstLineString, '.')[0];
+	}
+
     StringReplaceAllOccurences(itemName, " ", "_");
 	StringReplaceAllOccurences(itemName, "the_", "");
 	
@@ -650,11 +655,12 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
         textboxFirstLineString = textboxFirstLineString.substr(1);
     }
     
-    const auto stringStartsWithGot      = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got");
-    const auto stringStartsWithFound    = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found");
-    const auto stringStartsWithReceived = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received");
+    const auto stringStartsWithGot       = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got");
+    const auto stringStartsWithFound     = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found");
+    const auto stringStartsWithReceived  = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received");
+	const auto stringStartsWithDelivered = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " delivered");
 
-    if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived)
+    if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived || stringStartsWithDelivered)
     {
         if (textboxSecondLineString[1] == 'f' && textboxSecondLineString[2] == 'o' && textboxSecondLineString[3] == 'r')
         {
@@ -673,6 +679,10 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
         {
             return ItemDiscoveryType::RECEIVED;
         }
+		else if (stringStartsWithDelivered)
+		{
+			return ItemDiscoveryType::DELIVERED;
+		}
 
         assert(false && "Item discovery type not handled");
     }

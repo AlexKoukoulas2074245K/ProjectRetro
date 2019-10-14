@@ -210,7 +210,7 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
-    {
+    {		
 		// Milestone handling
 		if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
 		{
@@ -225,11 +225,17 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             return;
         }
 
-        AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);        
-                
+		if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
+		{
+			RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+		}
+		else
+		{
+			AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+		}
+                        
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
-        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
-        
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);        
 
         // Found item (pokeball npc)
         if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::FOUND)
@@ -257,7 +263,11 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             npcItemTile.mTileOccupierEntityId = ecs::NULL_ENTITY_ID;            
         }
         // Collected item 
-        else
+        else if 
+		(
+			playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::GOT ||
+			playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::RECEIVED
+		)
         {
             if (npcAiComponent.mSideDialogs.size() > 0)
             {

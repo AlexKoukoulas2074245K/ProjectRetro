@@ -72,7 +72,7 @@ void RemoveItemFromBag
 (
     const StringId itemName,
     const ecs::World& world,
-    const int quantityToRemove /* 1 */
+    const int quantityToRemove = 1
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
