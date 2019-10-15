@@ -137,6 +137,10 @@ inline StringId GetLevelOwnerNameOfLocation(const StringId locationName, const e
     }
 }
 
+void DestroyOverworldNpcEntityAndEraseTileInfo(const ecs::EntityId, ecs::World& world);
+
+ecs::EntityId FindEntityAtLevelCoords(const TileCoords& coords, const ecs::World& world);
+
 void SetCurrentPokeCenterAsHome(ecs::World& world);
 
 ////////////////////////////////////////////////////////////////////////////////////

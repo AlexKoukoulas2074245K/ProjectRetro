@@ -748,14 +748,10 @@ void DestroyAnyCollectedItemNpcs
                 if (world.HasComponent<NpcAiComponent>(npcEntityId))
                 {
                     const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
-                    const auto& movementStateComponent = world.GetComponent<MovementStateComponent>(npcEntityId);
-
+                    
                     if (npcAiComponent.mLevelIndex == collectedItemNpcEntry.mNpcLevelIndex)
                     {
-                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
-                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NONE;
-
-                        world.DestroyEntity(npcEntityId);
+						DestroyOverworldNpcEntityAndEraseTileInfo(npcEntityId, world);                        
                     }
                 }                
             }

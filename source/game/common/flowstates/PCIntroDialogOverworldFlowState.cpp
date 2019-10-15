@@ -39,9 +39,8 @@ PCIntroDialogOverworldFlowState::PCIntroDialogOverworldFlowState(ecs::World& wor
 }
 
 void PCIntroDialogOverworldFlowState::VUpdate(const float)
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         CompleteAndTransitionTo<PCMainOptionsDialogOverworldFlowState>();
     }

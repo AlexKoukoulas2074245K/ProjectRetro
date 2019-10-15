@@ -115,16 +115,15 @@ void PewterMuseumGuideOverworldFlowState::UpdateIntroDialog()
             mEventState = EventState::CONSTRUCT_PATH;
         }
     }
-    else if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    else if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         CompleteOverworldFlow();
     }
 }
 
 void PewterMuseumGuideOverworldFlowState::UpdateConstructPath()
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         SoundService::GetInstance().PlayMusic(FOLLOW_MUSIC_NAME, false);
         CreateScriptedPath();
@@ -159,10 +158,9 @@ void PewterMuseumGuideOverworldFlowState::UpdateFollowingNpc()
 
 void PewterMuseumGuideOverworldFlowState::UpdateEndDialog()
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
     
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
         auto& otherAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);

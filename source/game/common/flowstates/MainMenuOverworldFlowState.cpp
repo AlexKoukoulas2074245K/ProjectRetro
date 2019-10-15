@@ -37,11 +37,10 @@ const std::string MainMenuOverworldFlowState::TEXTBOX_CLICK_SFX_NAME = "general/
 
 MainMenuOverworldFlowState::MainMenuOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
-{
-    const auto& guiStateComponent     = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+{    
     const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         CreateOverworldMainMenuTextbox(world, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
     }

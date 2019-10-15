@@ -67,11 +67,9 @@ void ViridianOaksParcelOverworldFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 
 void ViridianOaksParcelOverworldFlowState::UpdateIntroDialog()
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    
+{    
     // Yes/No textbox active
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         CreateScriptedPath();
         mEventState = EventState::MOVING_TO_COUNTER;
@@ -95,9 +93,8 @@ void ViridianOaksParcelOverworldFlowState::UpdateMovingToCounter()
 }
 
 void ViridianOaksParcelOverworldFlowState::UpdateEndDialog()
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         auto& levelModelComponent        = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));

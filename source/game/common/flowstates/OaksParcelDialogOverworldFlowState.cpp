@@ -37,7 +37,10 @@ const TileCoords OaksParcelDialogOverworldFlowState::GARY_ATLAS_COORDS      = Ti
 const TileCoords OaksParcelDialogOverworldFlowState::FIRST_POKEDEX_COORDS   = TileCoords(5, 11);
 const TileCoords OaksParcelDialogOverworldFlowState::SECOND_POKEDEX_COORDS  = TileCoords(6, 11);
 
-const float OaksParcelDialogOverworldFlowState::POKEDEX_DISAPPEARING_DELAY = 0.5f;
+const int OaksParcelDialogOverworldFlowState::FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
+const int OaksParcelDialogOverworldFlowState::SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
+
+const float OaksParcelDialogOverworldFlowState::POKEDEX_DISAPPEARING_DELAY_IN_SECONDS = 0.5f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -47,12 +50,10 @@ OaksParcelDialogOverworldFlowState::OaksParcelDialogOverworldFlowState(ecs::Worl
     : BaseOverworldFlowState(world)
 	, mEventState(EventState::INTRO_DIALOG)
 	, mGarySpriteEntityId(ecs::NULL_ENTITY_ID)
-	, mPokedexDisappearingTimer(POKEDEX_DISAPPEARING_DELAY)
+	, mPokedexDisappearingTimer(POKEDEX_DISAPPEARING_DELAY_IN_SECONDS)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    
-    DestroyActiveTextbox(mWorld);
-    
+        
     QueueDialogForChatbox
     (
         CreateChatbox(mWorld),
@@ -69,11 +70,14 @@ void OaksParcelDialogOverworldFlowState::VUpdate(const float dt)
 {
     switch (mEventState)
     {
-        case EventState::INTRO_DIALOG: UpdateIntroDialog(); break;
-        case EventState::GARY_INTRO:   UpdateGaryIntro(); break;
-        case EventState::GARY_PATH:    UpdateGaryPath(); break;
-		case EventState::POKEDEX_DIALOG: UpdatePokedexDialog(); break;
+        case EventState::INTRO_DIALOG:               UpdateIntroDialog(); break;
+        case EventState::GARY_INTRO:                 UpdateGaryIntro(); break;
+        case EventState::GARY_ENTRANCE_PATH:         UpdateGaryPath(true); break;
+		case EventState::POKEDEX_DIALOG:             UpdatePokedexDialog(); break;
 		case EventState::POKEDEX_DISAPPEARING_DELAY: UpdatePokedexDisappearingDelay(dt); break;
+		case EventState::OAK_SPEECH:                 UpdateOakSpeech(); break;
+		case EventState::GARY_SPEECH:                UpdateGarySpeech(); break;
+		case EventState::GARY_EXIT_PATH:             UpdateGaryPath(false); break;
     }
 }
 
@@ -83,10 +87,9 @@ void OaksParcelDialogOverworldFlowState::VUpdate(const float dt)
 
 void OaksParcelDialogOverworldFlowState::UpdateIntroDialog()
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
     
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         SoundService::GetInstance().PlayMusic(GARY_MUSIC_NAME, false);
         mEventState = EventState::GARY_INTRO;
@@ -96,18 +99,16 @@ void OaksParcelDialogOverworldFlowState::UpdateIntroDialog()
 }
 
 void OaksParcelDialogOverworldFlowState::UpdateGaryIntro()
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
 		CreateGarySprite();
 		CreateGaryPath(true);
-        mEventState = EventState::GARY_PATH;
+        mEventState = EventState::GARY_ENTRANCE_PATH;
     }
 }
 
-void OaksParcelDialogOverworldFlowState::UpdateGaryPath()
+void OaksParcelDialogOverworldFlowState::UpdateGaryPath(const bool isEnteringScene)
 {
 	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 	auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(mGarySpriteEntityId);
@@ -116,28 +117,38 @@ void OaksParcelDialogOverworldFlowState::UpdateGaryPath()
 	{
 		SoundService::GetInstance().PlayMusic(OAKS_LAB_MUSIC_NAME, false);
 
-		QueueDialogForChatbox
-		(
-			CreateChatbox(mWorld),
-			playerStateComponent.mRivalName.GetString() + ": Gramps,#my POK^MON has#grown stronger!#Check it out!#@" + 
-			"OAK: " + playerStateComponent.mRivalName.GetString() + ",#good timing!#@I needed to ask#both of you to do#something for me.#@" +
-			"On the desk there#is my invention,#POK^DEX!#@It automatically#records data on#POK^MON you've#seen or caught!#@It's a hi-tech#encyclopedia!#@" +
-			"OAK: " + playerStateComponent.mPlayerTrainerName.GetString() + " and#" + playerStateComponent.mRivalName.GetString() + "! Take#these with you!#@" + 
-			playerStateComponent.mPlayerTrainerName.GetString() + " got#POK^DEX from OAK!",
-			mWorld
-		);
+		if (isEnteringScene)
+		{
+			QueueDialogForChatbox
+			(
+				CreateChatbox(mWorld),
+				playerStateComponent.mRivalName.GetString() + ": Gramps,#my POK^MON has#grown stronger!#Check it out!#@" +
+				"OAK: " + playerStateComponent.mRivalName.GetString() + ",#good timing!#@I needed to ask#both of you to do#something for me.#@" +
+				"On the desk there#is my invention,#POK^DEX!#@It automatically#records data on#POK^MON you've#seen or caught!#@It's a hi-tech#encyclopedia!#@" +
+				"OAK: " + playerStateComponent.mPlayerTrainerName.GetString() + " and#" + playerStateComponent.mRivalName.GetString() + "! Take#these with you!#@" +
+				playerStateComponent.mPlayerTrainerName.GetString() + " got#POK^DEX from OAK!",
+				mWorld
+			);
 
-		mEventState = EventState::POKEDEX_DIALOG;
+			mEventState = EventState::POKEDEX_DIALOG;
+		}
+		else
+		{									
+			DestroyOverworldNpcEntityAndEraseTileInfo(mGarySpriteEntityId, mWorld);
+			CompleteOverworldFlow();
+		}
 	}
 }
 
 void OaksParcelDialogOverworldFlowState::UpdatePokedexDialog()
-{
-	const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-	if (guiStateComponent.mActiveTextboxesStack.size() == 0)
-	{
-		const auto& pokedexEntityIds = GetPokedexSpriteEntityIds();
-		(void)pokedexEntityIds;
+{	
+	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+	{				
+		mWorld.DestroyEntity(FindEntityAtLevelCoords(FIRST_POKEDEX_COORDS, mWorld));
+		mWorld.DestroyEntity(FindEntityAtLevelCoords(SECOND_POKEDEX_COORDS, mWorld));
+		DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+		DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+
 		mEventState = EventState::POKEDEX_DISAPPEARING_DELAY;
 	}
 }
@@ -147,7 +158,47 @@ void OaksParcelDialogOverworldFlowState::UpdatePokedexDisappearingDelay(const fl
 	mPokedexDisappearingTimer.Update(dt);
 	if (mPokedexDisappearingTimer.HasTicked())
 	{
+		QueueDialogForChatbox
+		(
+			CreateChatbox(mWorld),
+			"To make a complete#guide on all the#POK^MON in the#world...#@That was my dream!# #@But I'm too old!#I can't do it!#@" + std::string() + 
+			"So, I want you two#to fulfill my#dream for me!#@Get moving, you#two!#@This is a great#undertaking in#POK^MON history!",
+			mWorld
+		);
 
+		mEventState = EventState::OAK_SPEECH;
+	}
+}
+
+void OaksParcelDialogOverworldFlowState::UpdateOakSpeech()
+{
+	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();	
+
+	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+	{
+		auto& garyRenderableComponent = mWorld.GetComponent<RenderableComponent>(mGarySpriteEntityId);
+		ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::EAST), garyRenderableComponent);
+
+		QueueDialogForChatbox
+		(
+			CreateChatbox(mWorld),
+			playerStateComponent.mRivalName.GetString() + ": Alright#Gramps! Leave it#all to me!#@" + 
+			playerStateComponent.mPlayerTrainerName.GetString() + ", I hate to#say it, but I#don't need you!#@I know! I'll#borrow a TOWN MAP#from my sis!#@" + 
+			"I'll tell her not#to lend you one,#" + playerStateComponent.mPlayerTrainerName.GetString() + "! Hahaha!",
+			mWorld
+		);
+
+		mEventState = EventState::GARY_SPEECH;
+	}
+}
+
+void OaksParcelDialogOverworldFlowState::UpdateGarySpeech()
+{		
+	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+	{
+		SoundService::GetInstance().PlayMusic(GARY_MUSIC_NAME, false);
+		CreateGaryPath(false);
+		mEventState = EventState::GARY_EXIT_PATH;
 	}
 }
 
@@ -193,49 +244,21 @@ void OaksParcelDialogOverworldFlowState::CreateGarySprite()
 	mWorld.AddComponent<RenderableComponent>(mGarySpriteEntityId, std::move(renderableComponent));
 }
 
-void OaksParcelDialogOverworldFlowState::CreateGaryPath(const bool)
+void OaksParcelDialogOverworldFlowState::CreateGaryPath(const bool isEnteringScene)
 {
 	auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(mGarySpriteEntityId);
 	garyAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
-	garyAiComponent.mScriptedPathTileCoords.emplace_back(GARY_OAK_SPEECH_COORDS.mCol, GARY_OAK_SPEECH_COORDS.mRow);	
-	garyAiComponent.mScriptedPathIndex = 0;
-}
 
-std::pair<ecs::EntityId, ecs::EntityId> OaksParcelDialogOverworldFlowState::GetPokedexSpriteEntityIds() const
-{
-	std::pair<ecs::EntityId, ecs::EntityId> pokedexEntityIds;
-
-	const auto firstPokedexPosition  = TileCoordsToPosition(FIRST_POKEDEX_COORDS.mCol, FIRST_POKEDEX_COORDS.mRow);
-	const auto secondPokedexPosition = TileCoordsToPosition(SECOND_POKEDEX_COORDS.mCol, SECOND_POKEDEX_COORDS.mRow);
-
-	const auto& activeEntities = mWorld.GetActiveEntities();
-	for (const auto& entityId : activeEntities)
+	if (isEnteringScene)
 	{
-		if (mWorld.HasComponent<TransformComponent>(entityId))
-		{
-			const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
-			if
-			(
-				math::Abs(firstPokedexPosition.x - transformComponent.mPosition.x) < 0.01f &&
-				math::Abs(firstPokedexPosition.y - transformComponent.mPosition.y) < 0.01f &&
-				math::Abs(firstPokedexPosition.z - transformComponent.mPosition.z) < 0.01f
-			)
-			{
-				pokedexEntityIds.first = entityId;
-			}
-			else if 
-			(
-				math::Abs(secondPokedexPosition.x - transformComponent.mPosition.x) < 0.01f &&
-				math::Abs(secondPokedexPosition.y - transformComponent.mPosition.y) < 0.01f &&
-				math::Abs(secondPokedexPosition.z - transformComponent.mPosition.z) < 0.01f
-			)
-			{
-				pokedexEntityIds.second = entityId;
-			}
-		}
+		garyAiComponent.mScriptedPathTileCoords.emplace_back(GARY_OAK_SPEECH_COORDS.mCol, GARY_OAK_SPEECH_COORDS.mRow);
+	}
+	else
+	{
+		garyAiComponent.mScriptedPathTileCoords.emplace_back(GARY_ENTRANCE_COORDS.mCol, GARY_ENTRANCE_COORDS.mRow);
 	}
 
-	return pokedexEntityIds;
+	garyAiComponent.mScriptedPathIndex = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

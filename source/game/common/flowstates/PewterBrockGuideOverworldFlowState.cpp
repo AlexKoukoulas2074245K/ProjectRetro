@@ -71,11 +71,9 @@ void PewterBrockGuideOverworldFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 
 void PewterBrockGuideOverworldFlowState::UpdateIntroDialog()
-{
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    
+{   
     // Intro dialog dismissed
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         mEventState = EventState::CONSTRUCT_PATH;
     }
@@ -113,10 +111,8 @@ void PewterBrockGuideOverworldFlowState::UpdateFollowingNpc()
 }
 
 void PewterBrockGuideOverworldFlowState::UpdateEndDialog()
-{
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    
-    if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(NPC_LEVEL_INDEX, mWorld);
         auto& otherAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);

@@ -82,7 +82,7 @@ void ViridianCaterpieWeedleGuyOverworldFlowState::VUpdate(const float)
             QueueDialogForChatbox(mainChatbox, npcComponent.mSideDialogs[1], mWorld);
         }
     }
-    else if (guiStateComponent.mActiveTextboxesStack.size() == 0)
+    else if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         CompleteOverworldFlow();
     }

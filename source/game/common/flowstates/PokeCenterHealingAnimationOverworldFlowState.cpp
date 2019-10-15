@@ -31,7 +31,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const glm::vec3 PokeCenterHealingAnimationOverworldFlowState::PC_OVERLAY_POSITION         = glm::vec3(16.9049511f, 0.00630000001f, 17.4549999f);
 const glm::vec3 PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_BALL_POSITION = glm::vec3(17.0f, 0.523000658f, 15.0216150f);
 
 const StringId PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_ANIMATION_NAME = StringId("bow");
@@ -43,14 +42,15 @@ const std::string PokeCenterHealingAnimationOverworldFlowState::HEALING_ANIMATIO
 const std::string PokeCenterHealingAnimationOverworldFlowState::POKE_CENTER_MUSIC_TRACK_NAME = "poke_center_mart";
 const std::string PokeCenterHealingAnimationOverworldFlowState::CHARACTER_MODEL_NAME         = "camera_facing_quad_sub_atlas";
 
+const TileCoords PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_MACHINE_GAME_COORDS = TileCoords(11,10);
+
 const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_X_DISTANCE = 0.5799007f;
 const float PokeCenterHealingAnimationOverworldFlowState::HEALING_BALL_Z_DISTANCE = 0.4590192f;
 
 const int PokeCenterHealingAnimationOverworldFlowState::JOY_NPC_LEVEL_INDEX            = 0;
 const int PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_SPRITE_ATLAS_COL       = 7;
 const int PokeCenterHealingAnimationOverworldFlowState::JOY_BOW_SPRITE_ATLAS_ROW       = 4;
-const int PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_MACHINE_GAME_COL = 11;
-const int PokeCenterHealingAnimationOverworldFlowState::FIRST_HEALING_MACHINE_GAME_ROW = 10;
+
 const int PokeCenterHealingAnimationOverworldFlowState::CHARACTER_ATLAS_COLS           = 8;
 const int PokeCenterHealingAnimationOverworldFlowState::CHARACTER_ATLAS_ROWS           = 64;
 
@@ -101,7 +101,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         } break;
         case PokeCenterHealingAnimationState::JOY_FACING_NORTH: 
         {
-            const auto joyEntityId = GetJoyEntityId();
+            const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
             auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), joyRenderableComponent);
 
@@ -115,7 +115,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
 
         case PokeCenterHealingAnimationState::JOY_FACING_WEST:
         {
-            const auto joyEntityId = GetJoyEntityId();
+			const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
             auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::WEST), joyRenderableComponent);
 
@@ -199,7 +199,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         } break;
         case PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH:
         {
-            const auto joyEntityId = GetJoyEntityId();
+			const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
             auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), joyRenderableComponent);
 
@@ -222,8 +222,9 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         {           
             if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
             {                
-                auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(GetJoyEntityId());
-				auto& joyNpcAiComponent      = mWorld.GetComponent<NpcAiComponent>(GetJoyEntityId());
+				const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+                auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
+				auto& joyNpcAiComponent      = mWorld.GetComponent<NpcAiComponent>(joyEntityId);
 
 				joyNpcAiComponent.mAiTimer->Reset();
                 ChangeAnimationIfCurrentPlayingIsDifferent(JOY_BOW_ANIMATION_NAME, joyRenderableComponent);
@@ -238,8 +239,9 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
             pokeCenterHealingAnimationState.mAnimationTimer->Update(dt);
             if (pokeCenterHealingAnimationState.mAnimationTimer->HasTicked())
             {   
-				
-                auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(GetJoyEntityId());
+				const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+
+                auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::SOUTH), joyRenderableComponent);
 
                 for (auto& pokemon : playerStateComponent.mPlayerPokemonRoster)
@@ -260,36 +262,6 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-ecs::EntityId PokeCenterHealingAnimationOverworldFlowState::GetJoyEntityId() const
-{
-    return GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
-}
-
-ecs::EntityId PokeCenterHealingAnimationOverworldFlowState::GetHealingMachineEntityId() const
-{
-    const auto& activeEntities = mWorld.GetActiveEntities();
-    const auto healingMachinePosition = TileCoordsToPosition(FIRST_HEALING_MACHINE_GAME_COL, FIRST_HEALING_MACHINE_GAME_ROW);
-
-    for (const auto& entityId : activeEntities)
-    {
-        if (mWorld.HasComponent<TransformComponent>(entityId))
-        {
-            const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
-            if 
-            (
-                math::Abs(healingMachinePosition.x - transformComponent.mPosition.x) < 0.01f &&
-                math::Abs(healingMachinePosition.y - transformComponent.mPosition.y) < 0.01f &&
-                math::Abs(healingMachinePosition.z - transformComponent.mPosition.z) < 0.01f
-            )
-            {
-                return entityId;
-            }
-        }
-    }
-
-    return ecs::NULL_ENTITY_ID;
-}
-
 void PokeCenterHealingAnimationOverworldFlowState::ShowComputerScreenOverlayEffect(const ComputerScreenOverlayEffect computerScreenOverlayEffect) const
 {            
     auto healingMachineTexturePath = ResourceLoadingService::RES_TEXTURES_ROOT + HEALING_MACHINE_MODEL_NAME;
@@ -305,7 +277,7 @@ void PokeCenterHealingAnimationOverworldFlowState::ShowComputerScreenOverlayEffe
 
     healingMachineTexturePath += ".png";
 
-    auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(GetHealingMachineEntityId());
+    auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(FindEntityAtLevelCoords(FIRST_HEALING_MACHINE_GAME_COORDS, mWorld));
     renderableComponent.mTextureResourceId = ResourceLoadingService::GetInstance().LoadResource(healingMachineTexturePath);            
 }
 
@@ -353,7 +325,7 @@ void PokeCenterHealingAnimationOverworldFlowState::ShowHealingBallWithIndex(cons
 
 void PokeCenterHealingAnimationOverworldFlowState::AddBowAnimationToJoy() const
 {
-    const auto joyEntityId = GetJoyEntityId();
+	const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
     auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
 
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(JOY_BOW_SPRITE_ATLAS_COL, JOY_BOW_SPRITE_ATLAS_ROW, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, false, CHARACTER_MODEL_NAME, JOY_BOW_ANIMATION_NAME, joyRenderableComponent);
