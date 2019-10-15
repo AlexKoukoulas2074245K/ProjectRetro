@@ -25,10 +25,13 @@ namespace
 	const StringId OAKS_LAB_LEVEL_NAME      = StringId("in_oaks_lab");
 	const StringId RIVALS_HOUSE_LEVEL_NAME  = StringId("in_rivals_home");
 	const StringId VIRIDIAN_CITY_LEVEL_NAME = StringId("viridian_city");
+	const StringId ROUTE_22_LEVEL_NAME      = StringId("route_22");
 
-	const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS              = TileCoords(5, 11);
-	const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS             = TileCoords(6, 11);
-	const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS = TileCoords(24, 34);
+	const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS               = TileCoords(5, 11);
+	const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS              = TileCoords(6, 11);
+	const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS  = TileCoords(24, 34);
+	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(42, 20);
+	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS = TileCoords(42, 19);
 
 	const int OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
 	const int OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
@@ -78,6 +81,11 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
 				rudeGuyRelativeAiComponent.mDialog = "When I go shop in#PEWTER CITY, I#have to take the#winding trail in#VIRIDIAN FOREST.";
 				GetTile(VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
 				DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(VIRIDIAN_RUDE_GUY_LEVEL_INDEX, mWorld), mWorld);
+			}
+			else if (levelName == ROUTE_22_LEVEL_NAME && HasMilestone(milestones::FIRST_RIVAL_BATTLE_WON, mWorld))
+			{
+				GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+				GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
 			}
             
             mWorld.RemoveComponent<MilestoneAlterationTagComponent>(entityId);

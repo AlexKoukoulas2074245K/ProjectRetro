@@ -1351,11 +1351,13 @@
     ],
     "level_npc_attributes":
     [
+         { "movement_type": "DYNAMIC", "direction": 1, "is_trainer": true, "is_gym_leader": false, "trainer_name": "RIVAL_1", "dialog": "RIVALNAME: Hey!#PLAYERNAME!#@You're going to#POK^MON LEAGUE?#@Forget it! You#probably don't#have any BADGEs!#The guard won't#let you through!#@By the way, did#your POK^MON#get any stronger?", "side_dialogs": ["RIVALNAME: Awww!#You just lucked#out!#+END","I heard POK^MON#LEAGUE has many#tough trainers!#@I have to figure#out how to get#past them!#@You should quit#dawdling and get#a move on!"], "pokemon_roster": [{ "name": "SPEAROW", "level": 9 },{ "name": "EEVEE", "level": 8 }], "editor_col": 36, "editor_row": 1, "game_col": 36, "game_row": 30, "game_position_x": 57.6, "game_position_z": 48.0 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "POK^MON LEAGUE#Front Gate", "side_dialogs": [], "pokemon_roster": [], "editor_col": 20, "editor_row": 18, "game_col": 20, "game_row": 13, "game_position_x": 32.0, "game_position_z": 20.8 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "a", "side_dialogs": [], "pokemon_roster": [], "editor_col": 59, "editor_row": 22, "game_col": 59, "game_row": 9, "game_position_x": 94.4, "game_position_z": 14.4 }
     ],
     "level_npc_sprites":
     [
+        {  "editor_col": 36, "editor_row": 1, "game_col": 36, "game_row": 30, "game_position_x": 57.6, "game_position_z": 48.0, "atlas_col": 4, "atlas_row": 15 },
         {  "editor_col": 59, "editor_row": 22, "game_col": 59, "game_row": 9, "game_position_x": 94.4, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 }
     ],
     "level_model_list":

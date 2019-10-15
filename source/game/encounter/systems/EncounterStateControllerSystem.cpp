@@ -168,6 +168,7 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
         playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
         playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
+		playerStateComponent.mLastBattleWon                 = false;
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
@@ -178,7 +179,9 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         );
 
 		playerStateComponent.mJustDefeatedGymLeader = encounterStateComponent.mIsGymLeaderBattle;		
+		playerStateComponent.mLastBattleWon         = true;
     }
+	playerStateComponent.mRivalBattleJustEnded = encounterStateComponent.mOpponentTrainerName == playerStateComponent.mRivalName;
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
     encounterStateComponent.mEncounterJustFinished               = false;

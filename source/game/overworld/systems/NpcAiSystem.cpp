@@ -296,13 +296,20 @@ void NpcAiSystem::UpdateDynamicNpc(const float dt, const ecs::EntityId entityId)
 
 void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
 {
+	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
     
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
+	auto opponentName = StringId(npcAiComponent.mTrainerName);
+	if (StringStartsWith(npcAiComponent.mTrainerName, "RIVAL"))
+	{
+		opponentName = playerStateComponent.mRivalName.GetString();
+	}
+
     encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
     encounterStateComponent.mOpponentTrainerSpeciesName       = npcAiComponent.mTrainerName;
-    encounterStateComponent.mOpponentTrainerName              = StringId(npcAiComponent.mTrainerName);
+    encounterStateComponent.mOpponentTrainerName              = opponentName;
     encounterStateComponent.mOpponentTrainerDefeatedText      = npcAiComponent.mSideDialogs[0];
     encounterStateComponent.mIsGymLeaderBattle                = npcAiComponent.mIsGymLeader;
     encounterStateComponent.mActivePlayerPokemonRosterIndex   = 0;
@@ -387,7 +394,7 @@ void NpcAiSystem::CreateExclamationMarkEntity(const ecs::EntityId npcEntityId) c
     exclamationMarkTransformComponent->mRotation = npcTransformComponent.mRotation;
     exclamationMarkTransformComponent->mScale    = npcTransformComponent.mScale;
     
-    exclamationMarkTransformComponent->mPosition.y += 1.6f;
+    exclamationMarkTransformComponent->mPosition.y += GAME_TILE_SIZE;
     
     mWorld.AddComponent<RenderableComponent>(npcAiComponent.mExclamationMarkEntityId, std::move(exclamationMarkRenderableComponent));
     mWorld.AddComponent<TransformComponent>(npcAiComponent.mExclamationMarkEntityId, std::move(exclamationMarkTransformComponent));

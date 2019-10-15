@@ -28,14 +28,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string OaksParcelDialogOverworldFlowState::GARY_MUSIC_NAME     = "gary_trainer";
-const std::string OaksParcelDialogOverworldFlowState::OAKS_LAB_MUSIC_NAME = "oaks_lab";
+const std::string OaksParcelDialogOverworldFlowState::RIVAL_MUSIC_NAME     = "rival_trainer";
+const std::string OaksParcelDialogOverworldFlowState::OAKS_LAB_MUSIC_NAME  = "oaks_lab";
 
-const TileCoords OaksParcelDialogOverworldFlowState::GARY_ENTRANCE_COORDS   = TileCoords(7, 5);
-const TileCoords OaksParcelDialogOverworldFlowState::GARY_OAK_SPEECH_COORDS = TileCoords(7, 10);
-const TileCoords OaksParcelDialogOverworldFlowState::GARY_ATLAS_COORDS      = TileCoords(4, 15);
-const TileCoords OaksParcelDialogOverworldFlowState::FIRST_POKEDEX_COORDS   = TileCoords(5, 11);
-const TileCoords OaksParcelDialogOverworldFlowState::SECOND_POKEDEX_COORDS  = TileCoords(6, 11);
+const TileCoords OaksParcelDialogOverworldFlowState::RIVAL_ENTRANCE_COORDS   = TileCoords(7, 5);
+const TileCoords OaksParcelDialogOverworldFlowState::RIVAL_OAK_SPEECH_COORDS = TileCoords(7, 10);
+const TileCoords OaksParcelDialogOverworldFlowState::RIVAL_ATLAS_COORDS      = TileCoords(4, 15);
+const TileCoords OaksParcelDialogOverworldFlowState::FIRST_POKEDEX_COORDS    = TileCoords(5, 11);
+const TileCoords OaksParcelDialogOverworldFlowState::SECOND_POKEDEX_COORDS   = TileCoords(6, 11);
 
 const int OaksParcelDialogOverworldFlowState::FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
 const int OaksParcelDialogOverworldFlowState::SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
@@ -49,7 +49,7 @@ const float OaksParcelDialogOverworldFlowState::POKEDEX_DISAPPEARING_DELAY_IN_SE
 OaksParcelDialogOverworldFlowState::OaksParcelDialogOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
 	, mEventState(EventState::INTRO_DIALOG)
-	, mGarySpriteEntityId(ecs::NULL_ENTITY_ID)
+	, mRivalSpriteEntityId(ecs::NULL_ENTITY_ID)
 	, mPokedexDisappearingTimer(POKEDEX_DISAPPEARING_DELAY_IN_SECONDS)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
@@ -71,13 +71,13 @@ void OaksParcelDialogOverworldFlowState::VUpdate(const float dt)
     switch (mEventState)
     {
         case EventState::INTRO_DIALOG:               UpdateIntroDialog(); break;
-        case EventState::GARY_INTRO:                 UpdateGaryIntro(); break;
-        case EventState::GARY_ENTRANCE_PATH:         UpdateGaryPath(true); break;
+        case EventState::RIVAL_INTRO:                 UpdateRivalIntro(); break;
+        case EventState::RIVAL_ENTRANCE_PATH:         UpdateRivalPath(true); break;
 		case EventState::POKEDEX_DIALOG:             UpdatePokedexDialog(); break;
 		case EventState::POKEDEX_DISAPPEARING_DELAY: UpdatePokedexDisappearingDelay(dt); break;
 		case EventState::OAK_SPEECH:                 UpdateOakSpeech(); break;
-		case EventState::GARY_SPEECH:                UpdateGarySpeech(); break;
-		case EventState::GARY_EXIT_PATH:             UpdateGaryPath(false); break;
+		case EventState::RIVAL_SPEECH:                UpdateRivalSpeech(); break;
+		case EventState::RIVAL_EXIT_PATH:             UpdateRivalPath(false); break;
     }
 }
 
@@ -91,27 +91,27 @@ void OaksParcelDialogOverworldFlowState::UpdateIntroDialog()
     
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
-        SoundService::GetInstance().PlayMusic(GARY_MUSIC_NAME, false);
-        mEventState = EventState::GARY_INTRO;
+        SoundService::GetInstance().PlayMusic(RIVAL_MUSIC_NAME, false);
+        mEventState = EventState::RIVAL_INTRO;
         
         QueueDialogForChatbox(CreateChatbox(mWorld), playerStateComponent.mRivalName.GetString() + ": Gramps!", mWorld);
     }
 }
 
-void OaksParcelDialogOverworldFlowState::UpdateGaryIntro()
+void OaksParcelDialogOverworldFlowState::UpdateRivalIntro()
 {    
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
-		CreateGarySprite();
-		CreateGaryPath(true);
-        mEventState = EventState::GARY_ENTRANCE_PATH;
+		CreateRivalSprite();
+		CreateRivalPath(true);
+        mEventState = EventState::RIVAL_ENTRANCE_PATH;
     }
 }
 
-void OaksParcelDialogOverworldFlowState::UpdateGaryPath(const bool isEnteringScene)
+void OaksParcelDialogOverworldFlowState::UpdateRivalPath(const bool isEnteringScene)
 {
 	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(mGarySpriteEntityId);
+	auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
 
 	if (npcAiComponent.mScriptedPathIndex == -1)
 	{
@@ -134,7 +134,7 @@ void OaksParcelDialogOverworldFlowState::UpdateGaryPath(const bool isEnteringSce
 		}
 		else
 		{									
-			DestroyOverworldNpcEntityAndEraseTileInfo(mGarySpriteEntityId, mWorld);
+			DestroyOverworldNpcEntityAndEraseTileInfo(mRivalSpriteEntityId, mWorld);
 			CompleteOverworldFlow();
 		}
 	}
@@ -176,8 +176,8 @@ void OaksParcelDialogOverworldFlowState::UpdateOakSpeech()
 
 	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
 	{
-		auto& garyRenderableComponent = mWorld.GetComponent<RenderableComponent>(mGarySpriteEntityId);
-		ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::EAST), garyRenderableComponent);
+		auto& rivalRenderableComponent = mWorld.GetComponent<RenderableComponent>(mRivalSpriteEntityId);
+		ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::EAST), rivalRenderableComponent);
 
 		QueueDialogForChatbox
 		(
@@ -188,26 +188,26 @@ void OaksParcelDialogOverworldFlowState::UpdateOakSpeech()
 			mWorld
 		);
 
-		mEventState = EventState::GARY_SPEECH;
+		mEventState = EventState::RIVAL_SPEECH;
 	}
 }
 
-void OaksParcelDialogOverworldFlowState::UpdateGarySpeech()
+void OaksParcelDialogOverworldFlowState::UpdateRivalSpeech()
 {		
 	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
 	{
-		SoundService::GetInstance().PlayMusic(GARY_MUSIC_NAME, false);
-		CreateGaryPath(false);
-		mEventState = EventState::GARY_EXIT_PATH;
+		SoundService::GetInstance().PlayMusic(RIVAL_MUSIC_NAME, false);
+		CreateRivalPath(false);
+		mEventState = EventState::RIVAL_EXIT_PATH;
 	}
 }
 
-void OaksParcelDialogOverworldFlowState::CreateGarySprite()
+void OaksParcelDialogOverworldFlowState::CreateRivalSprite()
 {
 	const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
 	auto& levelModelComponent        = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
-	mGarySpriteEntityId = mWorld.CreateEntity();
+	mRivalSpriteEntityId = mWorld.CreateEntity();
 	
 	auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
 	animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
@@ -224,41 +224,41 @@ void OaksParcelDialogOverworldFlowState::CreateGarySprite()
 	levelResidentComponent->mLevelNameId = activeLevelComponent.mActiveLevelNameId;
 
 	auto transformComponent       = std::make_unique<TransformComponent>();
-	transformComponent->mPosition = TileCoordsToPosition(GARY_ENTRANCE_COORDS.mCol, GARY_ENTRANCE_COORDS.mRow);
+	transformComponent->mPosition = TileCoordsToPosition(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
 
 	auto movementStateComponent            = std::make_unique<MovementStateComponent>();
-	movementStateComponent->mCurrentCoords = GARY_ENTRANCE_COORDS;
+	movementStateComponent->mCurrentCoords = RIVAL_ENTRANCE_COORDS;
 
-	GetTile(GARY_ENTRANCE_COORDS.mCol, GARY_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = mGarySpriteEntityId;
-	GetTile(GARY_ENTRANCE_COORDS.mCol, GARY_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+	GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = mRivalSpriteEntityId;
+	GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
 
-	auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, GARY_ATLAS_COORDS.mCol, GARY_ATLAS_COORDS.mRow));
+	auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, RIVAL_ATLAS_COORDS.mCol, RIVAL_ATLAS_COORDS.mRow));
 	ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), *renderableComponent);
 
-	mWorld.AddComponent<AnimationTimerComponent>(mGarySpriteEntityId, std::move(animationTimerComponent));
-	mWorld.AddComponent<TransformComponent>(mGarySpriteEntityId, std::move(transformComponent));
-	mWorld.AddComponent<LevelResidentComponent>(mGarySpriteEntityId, std::move(levelResidentComponent));
-	mWorld.AddComponent<NpcAiComponent>(mGarySpriteEntityId, std::move(aiComponent));
-	mWorld.AddComponent<MovementStateComponent>(mGarySpriteEntityId, std::move(movementStateComponent));
-	mWorld.AddComponent<DirectionComponent>(mGarySpriteEntityId, std::move(directionComponent));
-	mWorld.AddComponent<RenderableComponent>(mGarySpriteEntityId, std::move(renderableComponent));
+	mWorld.AddComponent<AnimationTimerComponent>(mRivalSpriteEntityId, std::move(animationTimerComponent));
+	mWorld.AddComponent<TransformComponent>(mRivalSpriteEntityId, std::move(transformComponent));
+	mWorld.AddComponent<LevelResidentComponent>(mRivalSpriteEntityId, std::move(levelResidentComponent));
+	mWorld.AddComponent<NpcAiComponent>(mRivalSpriteEntityId, std::move(aiComponent));
+	mWorld.AddComponent<MovementStateComponent>(mRivalSpriteEntityId, std::move(movementStateComponent));
+	mWorld.AddComponent<DirectionComponent>(mRivalSpriteEntityId, std::move(directionComponent));
+	mWorld.AddComponent<RenderableComponent>(mRivalSpriteEntityId, std::move(renderableComponent));
 }
 
-void OaksParcelDialogOverworldFlowState::CreateGaryPath(const bool isEnteringScene)
+void OaksParcelDialogOverworldFlowState::CreateRivalPath(const bool isEnteringScene)
 {
-	auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(mGarySpriteEntityId);
-	garyAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+	auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
+	rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
 
 	if (isEnteringScene)
 	{
-		garyAiComponent.mScriptedPathTileCoords.emplace_back(GARY_OAK_SPEECH_COORDS.mCol, GARY_OAK_SPEECH_COORDS.mRow);
+		rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_OAK_SPEECH_COORDS.mCol, RIVAL_OAK_SPEECH_COORDS.mRow);
 	}
 	else
 	{
-		garyAiComponent.mScriptedPathTileCoords.emplace_back(GARY_ENTRANCE_COORDS.mCol, GARY_ENTRANCE_COORDS.mRow);
+		rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
 	}
 
-	garyAiComponent.mScriptedPathIndex = 0;
+	rivalAiComponent.mScriptedPathIndex = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
