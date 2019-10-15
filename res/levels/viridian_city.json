@@ -2210,7 +2210,7 @@
     ],
     "level_ground_layer_game":
     [
-        { "texture_name": "viridian_groundLayer.png", "game_position_x": 51.2, "game_position_z": 51.2 }
+        { "texture_name": "viridian_city_groundLayer.png", "game_position_x": 51.2, "game_position_z": 51.2 }
     ],
     "level_npc_attributes":
     [

@@ -218,7 +218,15 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)
         {
             SetMilestone(milestones::RECEIVED_OAKS_PARCEL, mWorld);
-            AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+
+			if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
+			{
+				RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+			}
+			else
+			{
+				AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+			}
             playerStateComponent.mPendingItemToBeAdded = StringId();
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
             return;

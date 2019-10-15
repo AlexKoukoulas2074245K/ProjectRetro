@@ -32,6 +32,7 @@
 #include "../../common/flowstates/ViridianSchoolBlackboardOverworldFlowState.h"
 #include "../../common/flowstates/ViridianSchoolBookOverworldFlowState.h"
 #include "../../common/flowstates/ViridianOaksParcelOverworldFlowState.h"
+#include "../../common/flowstates/RivalRoute22EncounterOverworldFlowState.h"
 #include "../../common/utils/OSMessageBox.h"
 #include "../../common/utils/StringUtils.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -152,6 +153,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
 	RegisterNamedFlowState(PewterFarmerDialogOverworldFlowState);
     RegisterNamedFlowState(ViridianOaksParcelOverworldFlowState);
     RegisterNamedFlowState(OakDialogOverworldFlowState);
+	RegisterNamedFlowState(RivalRoute22EncounterOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const

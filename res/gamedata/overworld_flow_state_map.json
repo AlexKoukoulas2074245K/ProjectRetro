@@ -33,6 +33,8 @@
 		{"level_name": "pewter_city", "level_col": 48, "level_row": 32, "flow_state_name": "PewterBrockGuideOverworldFlowState"},
 		{"level_name": "viridian_city", "level_col": 24, "level_row": 34, "flow_state_name": "ViridianRudeGuyOverworldFlowState"},
 		{"level_name": "viridian_city", "level_col": 37, "level_row": 35, "flow_state_name": "ViridianGymLockedOverworldFlowState"},
-		{"level_name": "in_viridian_poke_mart", "level_col": 7, "level_row": 4, "flow_state_name": "ViridianOaksParcelOverworldFlowState"}
+		{"level_name": "in_viridian_poke_mart", "level_col": 7, "level_row": 4, "flow_state_name": "ViridianOaksParcelOverworldFlowState"},
+		{"level_name": "route_22", "level_col": 42, "level_row": 20, "flow_state_name": "RivalRoute22EncounterOverworldFlowState"},
+		{"level_name": "route_22", "level_col": 42, "level_row": 19, "flow_state_name": "RivalRoute22EncounterOverworldFlowState"}
 	]
 }

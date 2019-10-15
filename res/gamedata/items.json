@@ -157,5 +157,13 @@
         "unique": true,
         "effect": "#",
         "price": 0
+	},
+	
+	"TOWN_MAP":
+	{
+		"usage": 0,
+        "unique": true,
+        "effect": "TOWNMAP",
+        "price": 0
 	}
 }
