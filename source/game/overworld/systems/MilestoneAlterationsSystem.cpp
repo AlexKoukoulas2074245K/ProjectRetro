@@ -22,10 +22,12 @@
 
 namespace
 {
-	const StringId OAKS_LAB_LEVEL_NAME      = StringId("in_oaks_lab");
-	const StringId RIVALS_HOUSE_LEVEL_NAME  = StringId("in_rivals_home");
-	const StringId VIRIDIAN_CITY_LEVEL_NAME = StringId("viridian_city");
-	const StringId ROUTE_22_LEVEL_NAME      = StringId("route_22");
+	const StringId OAKS_LAB_LEVEL_NAME        = StringId("in_oaks_lab");
+	const StringId RIVALS_HOUSE_LEVEL_NAME    = StringId("in_rivals_home");
+	const StringId VIRIDIAN_CITY_LEVEL_NAME   = StringId("viridian_city");
+	const StringId ROUTE_22_LEVEL_NAME        = StringId("route_22");
+	const StringId PEWTER_CITY_LEVEL_NAME     = StringId("pewter_city");
+	const StringId PEWTER_CITY_GYM_LEVEL_NAME = StringId("in_pewter_gym");
 
 	const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS               = TileCoords(5, 11);
 	const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS              = TileCoords(6, 11);
@@ -38,6 +40,7 @@ namespace
 	const int RIVALS_HOME_SISTER_NPC_LEVEL_INDEX                    = 4;
 	const int VIRIDIAN_RUDE_GUY_RELATIVE_LEVEL_INDEX                = 4;
 	const int VIRIDIAN_RUDE_GUY_LEVEL_INDEX                         = 5;
+	const int PEWTER_CITY_GYM_TRAINER                               = 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +89,16 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
 			{
 				GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
 				GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+			}
+			else if (levelName == PEWTER_CITY_LEVEL_NAME && HasMilestone(milestones::BOULDERBADGE, mWorld))
+			{
+
+			}
+			else if (levelName == PEWTER_CITY_GYM_LEVEL_NAME && HasMilestone(milestones::BOULDERBADGE, mWorld))
+			{
+				auto& pewterGymTrainerAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(PEWTER_CITY_GYM_TRAINER, mWorld));
+				pewterGymTrainerAiComponent.mIsDefeated = true;
+				pewterGymTrainerAiComponent.mDialog = pewterGymTrainerAiComponent.mSideDialogs[1];
 			}
             
             mWorld.RemoveComponent<MilestoneAlterationTagComponent>(entityId);

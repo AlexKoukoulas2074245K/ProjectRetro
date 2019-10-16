@@ -123,7 +123,11 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
 	// Get selected pokemons
 	auto& selectedPokemon = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
-    if (guiStateComponent.mActiveTextboxesStack.size() == 4)
+    if
+	(
+		(encounterStateComponent.mActiveEncounterType == EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 4) ||
+		(encounterStateComponent.mActiveEncounterType != EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 3)
+	)
     {
         const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
         if
@@ -133,7 +137,12 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
         )
         {
             RemoveItemFromBag(selectedItemStats.mName, mWorld);
-            DestroyActiveTextbox(mWorld);
+
+			if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
+			{				
+				DestroyActiveTextbox(mWorld);
+			}
+            
             DestroyActiveTextbox(mWorld);
             DestroyPokemonSelectionView();
         
@@ -161,13 +170,7 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
         
         // Destroy "Use item on which pokemon?" textbox
         DestroyActiveTextbox(mWorld);
-        
-        // Create placeholder chatbox for encounters
-        if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
-        {
-            CreateChatbox(mWorld);
-        }
-        
+
         // Recreate pokemon stats textbox
         CreatePokemonStatsInvisibleTextbox();
         
@@ -182,7 +185,7 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
         {
             const int hpRecovered = selectedPokemon.mMaxHp - selectedPokemon.mHp;
             selectedPokemon.mHp = selectedPokemon.mMaxHp;
-            healthToDisplay = selectedPokemon.mHp;
+            healthToDisplay = static_cast<float>(selectedPokemon.mHp);
             
             const auto itemResultChatboxEntityId = CreateChatbox(mWorld, ITEM_USAGE_RESULT_CHATBOX_POSITION);
             WriteTextAtTextboxCoords(itemResultChatboxEntityId, selectedPokemon.mName.GetString(), 1, 2, mWorld);
@@ -191,7 +194,7 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
         else if (pokemonSelectionViewComponent.mHealthToRestoreCapacity <= 0.0f)
         {
             selectedPokemon.mHp = static_cast<int>(pokemonSelectionViewComponent.mFloatPokemonHealth);
-            healthToDisplay = selectedPokemon.mHp;
+            healthToDisplay = static_cast<float>(selectedPokemon.mHp);
             
             const auto itemResultChatboxEntityId = CreateChatbox(mWorld, ITEM_USAGE_RESULT_CHATBOX_POSITION);
             WriteTextAtTextboxCoords(itemResultChatboxEntityId, selectedPokemon.mName.GetString(), 1, 2, mWorld);
@@ -343,7 +346,23 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
         
         SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
         
-        if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
+		if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
+		{
+			DestroyPokemonSelectionView();
+
+			if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+			{				
+				CreateChatbox(mWorld);
+			}
+			else
+			{
+				DestroyActiveTextbox(mWorld);
+				CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
+			}
+
+			CompleteAndTransitionTo<ItemMenuFlowState>();
+		}
+        else if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
         {
             DestroyPokemonSelectionView();
             CompleteAndTransitionTo<MainMenuOverworldFlowState>();
@@ -633,7 +652,7 @@ void PokemonSelectionViewFlowState::TryUseItem()
 
 			pokemonSelectionViewComponent.mOperationState          = PokemonSelectionViewOperationState::HEALING_UP;
 			pokemonSelectionViewComponent.mFloatPokemonHealth      = static_cast<float>(selectedPokemon.mHp);
-			pokemonSelectionViewComponent.mHealthToRestoreCapacity = std::stoi(selectedItemStats.mEffect.GetString().substr(6));
+			pokemonSelectionViewComponent.mHealthToRestoreCapacity = static_cast<float>(std::stoi(selectedItemStats.mEffect.GetString().substr(6)));
 		}
 	}
 	
@@ -934,28 +953,15 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
             pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex == static_cast<int>(i)
         )
         {
-            if (pokemon.mHp == pokemon.mMaxHp)
-            {
-                WriteTextAtTextboxCoords
-                (
-                    pokemonSelectionViewTextboxEntityId,
-                    std::to_string(pokemon.mMaxHp) + "/",
-                    16 - static_cast<int>(std::to_string(pokemon.mHp).size()),
-                    i * 2 + 1,
-                    mWorld
-                );
-            }
-            else
-            {
-                WriteTextAtTextboxCoords
-                (
-                    pokemonSelectionViewTextboxEntityId,
-                    std::to_string(static_cast<int>(pokemonSelectionViewStateComponent.mFloatPokemonHealth)) + "/",
-                    16 - static_cast<int>(std::to_string(pokemon.mHp).size()),
-                    i * 2 + 1,
-                    mWorld
-                );
-            }
+            
+            WriteTextAtTextboxCoords
+            (
+                pokemonSelectionViewTextboxEntityId,
+                std::to_string(math::Min(static_cast<int>(pokemonSelectionViewStateComponent.mFloatPokemonHealth), pokemon.mMaxHp)) + "/",
+                16 - static_cast<int>(std::to_string(pokemon.mHp).size()),
+                i * 2 + 1,
+                mWorld
+            );            
         }
         else
         {

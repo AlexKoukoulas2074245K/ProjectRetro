@@ -213,6 +213,10 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
 		// Milestone handling
 		if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
 		{
+			if (playerStateComponent.mPendingItemToBeAdded == StringId("BOULDERBADGE"))
+			{
+				SetMilestone(milestones::BOULDERBADGE, mWorld);
+			}
 			return;
 		}
         else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)
