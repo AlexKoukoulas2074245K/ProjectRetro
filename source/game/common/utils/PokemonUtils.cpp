@@ -443,6 +443,17 @@ int GetStatWithModifierApplied
     return static_cast<int>(stat * (statModifier > 0 ? (statModifier + 3) / 3.0f : (3.0f / (-statModifier + 3))));
 }
 
+float CalculateHealthDepletionSpeed
+(
+	const Pokemon& pokemon
+)
+{
+	// Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
+	// based on the pokemon level
+	const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.0f, 2.3f, pokemon.mLevel / 100.0f);
+	return pokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
+}
+
 bool AddToStatStage
 (
     const int value,

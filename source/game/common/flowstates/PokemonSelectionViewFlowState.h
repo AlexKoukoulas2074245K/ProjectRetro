@@ -35,11 +35,14 @@ public:
     void VUpdate(const float dt) override;
 
 private:
+	void HealingUpFlow(const float dt);
+	void InvalidOperationFlow();
     void PokemonSelectedFlow();
     void PokemonNotSelectedFlow();
     void PokemonSelectionViewIndexSwapFlow(const float dt);
     void DisplayPokemonDetailedStatsFlow();
-    void SwitchPokemonFlow();
+	void TryUseItem();
+    void TrySwitchPokemon();
     void PokemonRosterIndexSwapFlow();
     void CancelPokemonSelectionFlow();
 
@@ -59,6 +62,7 @@ private:
     
     static const std::string TEXTBOX_CLICK_SFX_NAME;
     static const std::string POKEMON_SWAP_SFX_NAME;
+	static const std::string ITEM_HEAL_UP_SFX_NAME;	
     static const std::string POKEMON_SPRITE_MODEL_NAME;
     static const std::string POKEMON_SPRITE_ATLAS_TEXTURE_FILE_NAME;
 
@@ -66,6 +70,7 @@ private:
     static const glm::vec3 BACKGROUND_SCALE;
     static const glm::vec3 STATS_TEXTBOX_BASE_POSITION;
     static const glm::vec3 OVERWORLD_SPRITE_BASE_POSITION;
+	static const glm::vec3 ITEM_USAGE_RESULT_CHATBOX_POSITION;
 
     static const float SPRITE_ANIMATION_FRAME_DURATION_SLOW;
     static const float SPRITE_ANIMATION_FRAME_DURATION_MEDIUM;

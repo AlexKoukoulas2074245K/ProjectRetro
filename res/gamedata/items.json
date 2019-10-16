@@ -27,7 +27,7 @@
     {
         "usage": 2,
         "unique": false,
-        "effect": "20HP",
+        "effect": "POTION20",
         "price": 300
     },
 
@@ -35,7 +35,7 @@
     {
         "usage": 2,
         "unique": false,
-        "effect": "50HP",
+        "effect": "POTION50",
         "price": 700
     },
  

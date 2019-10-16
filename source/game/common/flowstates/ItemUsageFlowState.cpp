@@ -12,8 +12,10 @@
 #include "BallUsageEncounterFlowState.h"
 #include "ItemMenuFlowState.h"
 #include "ItemUsageFlowState.h"
+#include "PokemonSelectionViewFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/PokemonItemsUtils.h"
 #include "../utils/TextboxUtils.h"
 
@@ -53,14 +55,15 @@ void ItemUsageFlowState::VUpdate(const float)
         if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
             encounterStateComponent.mIsOpponentsTurn = false;
-        }
+        }        
 
-        RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
-
+		// Ball flow
         if (selectedItemStats.mEffect == StringId("BALL"))
         {
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
+				RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
+
                 // Destroy Item Menu
                 DestroyActiveTextbox(mWorld);
 
@@ -87,9 +90,19 @@ void ItemUsageFlowState::VUpdate(const float)
                 CompleteAndTransitionTo<BallUsageEncounterFlowState>();
             }
         }
-        else
+		// Potion flow
+        else if (StringStartsWith(selectedItemStats.mEffect.GetString(), "POTION"))
         {
-            assert(false);
+			// Destroy Use/Toss textbox
+			DestroyActiveTextbox(mWorld);
+
+			// Destroy Item Menu
+			DestroyActiveTextbox(mWorld);			
+
+			auto& pokemonSelectionViewState = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+			pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ITEM_USAGE;
+
+			CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
         }
     }
     else

@@ -13,7 +13,7 @@
     "defeated_npc_entries": [],
     "collected_npc_item_entries": [],
     "collected_npc_item_non_destructible_entries": [],
-    "bag": [{ "item_name": "CANCEL", "item_quantity": 2 }],
+    "bag": [{ "item_name": "OAK's_PARCEL", "item_quantity": 1}, { "item_name": "POK^_BALL", "item_quantity": 1}, { "item_name": "POK^_BALL", "item_quantity": 1}, { "item_name": "POTION", "item_quantity": 5}, { "item_name": "CANCEL", "item_quantity": 2 }],
     "pokedex": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "box_pokemon": [],
     "pokemon": [{ "species_name": "PIKACHU", "nickname": "PIKACHU", "level": 13, "current_hp": 15, "xp_points": 2681, "status": 0, "rounds_to_awake": 0, "hp_iv": 7, "attack_iv": 14, "defense_iv": 9, "speed_iv": 5, "special_iv": 11, "hp_ev": 0, "attack_ev": 591, "defense_ev": 785, "speed_ev": 704, "special_ev": 385, "moveset": [{ "move_name": "THUNDERSHOCK", "pp_left": 14 }, { "move_name": "QUICK_ATTACK", "pp_left": 25 }, { "move_name": "TAIL_WHIP", "pp_left": 30 }, { "move_name": "THUNDER_WAVE", "pp_left": 19 }] }]

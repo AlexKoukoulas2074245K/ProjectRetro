@@ -36,8 +36,7 @@ public:
     void VUpdate(const float dt) override;
     
 private:
-    Pokemon& GetDefendingPokemon() const;
-    float CalculateHealthDepletionSpeed() const;
+    Pokemon& GetDefendingPokemon() const;    
     void RefreshHurtPokemonStats() const;
     void RefreshPlayerPokemonStats() const;
     void RefreshOpponentPokemonStats() const;

@@ -53,7 +53,7 @@ void HealthDepletionEncounterFlowState::VUpdate(const float dt)
         return;
     }
 
-    const auto healthDepletionSpeed = CalculateHealthDepletionSpeed();
+    const auto healthDepletionSpeed = CalculateHealthDepletionSpeed(GetDefendingPokemon());
 
     encounterStateComponent.mDefenderFloatHealth    -= healthDepletionSpeed * dt;
     encounterStateComponent.mOutstandingFloatDamage -= healthDepletionSpeed * dt;
@@ -122,16 +122,6 @@ Pokemon& HealthDepletionEncounterFlowState::GetDefendingPokemon() const
             return *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
         }
     }
-}
-
-float HealthDepletionEncounterFlowState::CalculateHealthDepletionSpeed() const
-{    
-    const auto& defendingPokemon = GetDefendingPokemon();
-
-    // Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
-    // based on the pokemon level
-    const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.0f, 2.3f, defendingPokemon.mLevel / 100.0f);
-    return defendingPokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
 }
 
 void HealthDepletionEncounterFlowState::RefreshHurtPokemonStats() const

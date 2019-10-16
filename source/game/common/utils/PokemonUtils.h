@@ -139,6 +139,11 @@ int GetStatWithModifierApplied
     const int statModifier
 );
 
+float CalculateHealthDepletionSpeed
+(
+	const Pokemon& pokemon
+);
+
 // Returns true if the value changed 
 // post addition or false otherwise
 bool AddToStatStage
