@@ -29,17 +29,21 @@ namespace
 	const StringId PEWTER_CITY_LEVEL_NAME     = StringId("pewter_city");
 	const StringId PEWTER_CITY_GYM_LEVEL_NAME = StringId("in_pewter_gym");
 
-	const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS               = TileCoords(5, 11);
-	const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS              = TileCoords(6, 11);
-	const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS  = TileCoords(24, 34);
-	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(42, 20);
-	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS = TileCoords(42, 19);
+	const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS                 = TileCoords(5, 11);
+	const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS                = TileCoords(6, 11);
+	const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS    = TileCoords(24, 34);
+	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS   = TileCoords(42, 20);
+	const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS   = TileCoords(42, 19);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_1_TILE_COORDS = TileCoords(46, 34);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_2_TILE_COORDS = TileCoords(47, 33);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_3_TILE_COORDS = TileCoords(48, 32);
 
 	const int OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
 	const int OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
 	const int RIVALS_HOME_SISTER_NPC_LEVEL_INDEX                    = 4;
 	const int VIRIDIAN_RUDE_GUY_RELATIVE_LEVEL_INDEX                = 4;
 	const int VIRIDIAN_RUDE_GUY_LEVEL_INDEX                         = 5;
+    const int PEWTER_CITY_BROCK_GUIDE_LEVEL_INDEX                   = 2;
 	const int PEWTER_CITY_GYM_TRAINER                               = 1;
 }
 
@@ -92,7 +96,10 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
 			}
 			else if (levelName == PEWTER_CITY_LEVEL_NAME && HasMilestone(milestones::BOULDERBADGE, mWorld))
 			{
-
+                DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(PEWTER_CITY_BROCK_GUIDE_LEVEL_INDEX, mWorld), mWorld);
+                GetTile(PEWTER_CITY_BROCK_GUIDE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(PEWTER_CITY_BROCK_GUIDE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(PEWTER_CITY_BROCK_GUIDE_TRIGGER_3_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
 			}
 			else if (levelName == PEWTER_CITY_GYM_LEVEL_NAME && HasMilestone(milestones::BOULDERBADGE, mWorld))
 			{
