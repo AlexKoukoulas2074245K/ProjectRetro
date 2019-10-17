@@ -321,8 +321,8 @@ void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
     glm::vec4 playerPrimaryLightColor, playerPrimaryDarkColor;
     GetPrimaryLightAndPrimaryDarkColorsFromSet(playerTextureResource.GetColorSet(), playerPrimaryLightColor, playerPrimaryDarkColor);
 
-    playerPokemonSpriteRenderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
-    playerPokemonSpriteRenderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;    
+    playerPokemonSpriteRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+    playerPokemonSpriteRenderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;    
 
     auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
     const auto& opponentTextureResource = ResourceLoadingService::GetInstance().GetResource<TextureResource>(opponentPokemonSpriteRenderableComponent.mTextureResourceId);
@@ -330,38 +330,40 @@ void MoveAnimationEncounterFlowState::PrepareAllGuiSpritesForWhiteFlip() const
     glm::vec4 opponentPrimaryLightColor, opponentPrimaryDarkColor;
     GetPrimaryLightAndPrimaryDarkColorsFromSet(opponentTextureResource.GetColorSet(), opponentPrimaryLightColor, opponentPrimaryDarkColor);
 
-    opponentPokemonSpriteRenderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
-    opponentPokemonSpriteRenderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;    
+    opponentPokemonSpriteRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+    opponentPokemonSpriteRenderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor;    
+
     const auto& playerPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
     for (const auto& entityId : playerPokemonInfoTextboxEntities)
     {
-        auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
-        renderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
-        renderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;        
+        auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;        
     }
-    auto& playerPokemonStatusDisplayRenderableComponent                            = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-    playerPokemonStatusDisplayRenderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
-    playerPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;    
+    auto& playerPokemonStatusDisplayRenderableComponent                 = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+    playerPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;    
 
     const auto& opponentPokemonInfoTextboxEntities = GetAllTextboxResidentComponents(encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId, mWorld);
     for (const auto& entityId : opponentPokemonInfoTextboxEntities)
     {
-        auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
-        renderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
-        renderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;        
+        auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
+        renderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+        renderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor;        
     }
 
-    auto& opponentPokemonStatusDisplayRenderableComponent                            = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
-    opponentPokemonStatusDisplayRenderableComponent.mOverriddenLightColor            = opponentPrimaryLightColor;
-    opponentPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor             = opponentPrimaryDarkColor;    
+    auto& opponentPokemonStatusDisplayRenderableComponent                 = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId);
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenLightColor = opponentPrimaryLightColor;
+    opponentPokemonStatusDisplayRenderableComponent.mOverriddenDarkColor  = opponentPrimaryDarkColor; 
+
     const auto& mainChatboxEntities = GetAllTextboxResidentComponents(GetActiveTextboxEntityId(mWorld), mWorld);
     for (const auto& entityId : mainChatboxEntities)
     {
         if (mWorld.HasComponent<RenderableComponent>(entityId))
         {
-            auto& renderableComponent                            = mWorld.GetComponent<RenderableComponent>(entityId);
-            renderableComponent.mOverriddenLightColor            = playerPrimaryLightColor;
-            renderableComponent.mOverriddenDarkColor             = playerPrimaryDarkColor;            
+            auto& renderableComponent                 = mWorld.GetComponent<RenderableComponent>(entityId);
+            renderableComponent.mOverriddenLightColor = playerPrimaryLightColor;
+            renderableComponent.mOverriddenDarkColor  = playerPrimaryDarkColor;            
         }        
     }
 }
