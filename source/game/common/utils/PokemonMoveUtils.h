@@ -56,14 +56,30 @@ const PokemonMoveStats& GetMoveStats
     const ecs::World& world
 );
 
-bool isMoveSpecial
+bool IsMoveSpecial
 (
     const StringId moveType   
 );
 
-bool isMoveNonShake
+bool IsMoveNonShake
 (
     const StringId moveName
+);
+
+bool IsMoveAffectedByWhiteFlipEffect
+(
+	const StringId moveName
+);
+
+bool ShouldSfxBeSkippedForMove
+(
+	const StringId moveName
+);
+
+
+bool DoesMoveHaveSpeciallyHandledAnimation
+(
+	const StringId moveName
 );
 
 bool DoesMovesetHaveMove
@@ -100,11 +116,6 @@ bool ShouldOpponentGoFirst
     const int opponentsPokemonSpeed,
     const PokemonStatus playerPokemonStatus,
     const PokemonStatus opponentPokemonStatus
-);
-
-bool DoesMoveHaveSpeciallyHandledAnimation
-(
-    const StringId moveName
 );
 
 int CalculateDamage

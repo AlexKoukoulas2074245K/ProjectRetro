@@ -78,7 +78,7 @@ void MoveShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
     
     auto& shakeComponent = mWorld.GetSingletonComponent<EncounterShakeSingletonComponent>();
     
-    if (isMoveNonShake(lastMoveUsedStats.mName))
+    if (IsMoveNonShake(lastMoveUsedStats.mName))
     {
         return;
     }

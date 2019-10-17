@@ -118,38 +118,64 @@ const PokemonMoveStats& GetMoveStats
     return moveStatsComponent.mMoveStats.at(moveName);
 }
 
-bool isMoveSpecial
+bool IsMoveSpecial
 (
     const StringId moveType
 )
 {
-    static const std::unordered_set<StringId, StringIdHasher> specialMoves =
-    {
-        StringId("WATER"),
-        StringId("GRASS"),
-        StringId("FIRE"),
-        StringId("ICE"),
-        StringId("ELECTRIC"),
-        StringId("PSYCHIC"),
-        StringId("DRAGON")
-    };
-
-    return specialMoves.count(moveType) != 0;
+	return moveType == StringId("WATER")
+		|| moveType == StringId("GRASS")
+		|| moveType == StringId("FIRE")
+		|| moveType == StringId("ICE")
+		|| moveType == StringId("ELECTRIC")
+		|| moveType == StringId("PSYCHIC")
+		|| moveType == StringId("DRAGON")
+		;    
 }
 
-bool isMoveNonShake
+bool IsMoveNonShake
 (
     const StringId moveName
 )
 {
-    static const std::unordered_set<StringId, StringIdHasher> noShakeMoves =
-    {
-        POISON_TICK_MOVE_NAME,
-        StringId("THUNDER_WAVE"),
-        StringId("HARDEN"),
-    };
+	return moveName == POISON_TICK_MOVE_NAME
+		|| moveName == StringId("THUNDER_WAVE")
+		|| moveName == StringId("HARDEN")
+		;
+}
 
-    return noShakeMoves.count(moveName) != 0;
+
+bool DoesMoveHaveSpeciallyHandledAnimation
+(
+	const StringId moveName
+)
+{
+	return moveName == StringId("LEER")
+		|| moveName == StringId("HARDEN")
+		|| moveName == StringId("BIDE")
+		|| moveName == StringId("QUICK_ATTACK")
+		|| moveName == StringId("TACKLE")
+		|| moveName == StringId("TAIL_WHIP")
+		|| moveName == StringId("CONFUSION")
+		;
+}
+
+bool IsMoveAffectedByWhiteFlipEffect
+(
+	const StringId moveName
+)
+{
+	return moveName == StringId("BIDE")
+		;
+}
+
+bool ShouldSfxBeSkippedForMove
+(
+	const StringId moveName
+)
+{
+	return moveName == StringId("BIDE")
+		;
 }
 
 bool DoesMovesetHaveMove
@@ -274,21 +300,6 @@ bool ShouldOpponentGoFirst
     {
         return modifiedOpponentSpeed > modifiedPlayerSpeed;
     }
-}
-
-bool DoesMoveHaveSpeciallyHandledAnimation
-(
-    const StringId moveName
-)
-{
-    return moveName == StringId("LEER")
-        || moveName == StringId("HARDEN")
-		|| moveName == StringId("BIDE")
-        || moveName == StringId("QUICK_ATTACK")
-        || moveName == StringId("TACKLE")
-        || moveName == StringId("TAIL_WHIP")
-        || moveName == StringId("CONFUSION")
-        ;
 }
 
 int CalculateDamage

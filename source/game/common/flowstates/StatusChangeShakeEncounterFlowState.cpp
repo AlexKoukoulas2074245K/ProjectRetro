@@ -68,7 +68,7 @@ void StatusChangeShakeEncounterFlowState::DetermineStatusShakeSequence() const
 
     if 
     (
-        isMoveNonShake(lastMoveUsedStats.mName) ||
+        IsMoveNonShake(lastMoveUsedStats.mName) ||
         (
             encounterComponent.mPendingStatusToBeAppliedToPlayerPokemon == PokemonStatus::CONFUSED ||
             encounterComponent.mPendingStatusToBeAppliedToOpponentPokemon == PokemonStatus::CONFUSED

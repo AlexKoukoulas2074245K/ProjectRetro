@@ -101,10 +101,13 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     }
     else
     {
-        SoundService::GetInstance().PlaySfx
-        (
-            "encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
-        );
+		if (ShouldSfxBeSkippedForMove(encounterStateComponent.mLastMoveSelected) == false)
+		{
+			SoundService::GetInstance().PlaySfx
+			(
+				"encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
+			);
+		}        
     }
 }
 
@@ -424,7 +427,21 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
         auto renderableComponent = std::make_unique<RenderableComponent>();
         renderableComponent->mTextureResourceId = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
         renderableComponent->mActiveAnimationNameId = StringId("default");
-        renderableComponent->mShaderNameId = StringId("gui_unaffected_by_white_flip");
+
+		if (IsMoveAffectedByWhiteFlipEffect(encounterStateComponent.mLastMoveSelected))
+		{
+			OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
+			(
+				encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId,
+				encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId,
+				mWorld
+			);
+		}
+		else
+		{
+			renderableComponent->mShaderNameId = StringId("gui_unaffected_by_white_flip");
+		}
+
         renderableComponent->mAffectedByPerspective = false;
 
         const auto frameModelPath = ResourceLoadingService::RES_MODELS_ROOT + BATTLE_ANIMATION_MODEL_FILE_NAME;

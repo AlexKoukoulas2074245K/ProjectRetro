@@ -111,7 +111,7 @@ void DamageCalculationEncounterFlowState::CalculateDamageInternal
             return;
         }
 
-        const auto isSpecialMove = isMoveSpecial(selectedMoveStats.mType);
+        const auto isSpecialMove = IsMoveSpecial(selectedMoveStats.mType);
 
         const auto effectiveAttackStat  = isSpecialMove ? attackingPokemon.mSpecial : attackingPokemon.mAttack;
         const auto effectiveDefenseStat = isSpecialMove ? defendingPokemon.mSpecial : defendingPokemon.mDefense;
