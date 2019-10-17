@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "DamageCalculationEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "PokemonJustWokeUpEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -56,26 +56,48 @@ void PokemonJustWokeUpEncounterFlowState::VUpdate(const float)
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
-        DeleteTextAtTextboxRow
-        (
-            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-            1,
-            mWorld
-        );
-
-        WriteTextAtTextboxCoords
-        (
-            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-            "=" + std::to_string(activePlayerPokemon.mLevel),
-            4,
-            1,
-            mWorld
-        );
+        if (encounterStateComponent.mIsOpponentsTurn == false)
+        {
+            DeleteTextAtTextboxRow
+            (
+                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+                1,
+                mWorld
+            );
+            
+            WriteTextAtTextboxCoords
+            (
+                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+                "=" + std::to_string(activePlayerPokemon.mLevel),
+                4,
+                1,
+                mWorld
+            );
+        }
+        else
+        {
+            DeleteTextAtTextboxRow
+            (
+                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                1,
+                mWorld
+            );
+            
+            WriteTextAtTextboxCoords
+            (
+                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                "=" + std::to_string(activeOpponentPokemon.mLevel),
+                3,
+                1,
+                mWorld
+            );
+        }
         
-        CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
+        CompleteAndTransitionTo<TurnOverEncounterFlowState>();
     }
 }
 
