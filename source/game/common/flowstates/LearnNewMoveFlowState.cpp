@@ -38,23 +38,12 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
-    const auto& moveStats         = GetMoveStats(activePlayerPokemon.mMoveToBeLearned, world);
-    
-    playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-    
-    activePlayerPokemon.mMoveSet[activePlayerPokemon.mMovesetIndexForNewMove] = std::make_unique<PokemonMoveStats>
-    (
-        moveStats.mName,
-        moveStats.mType,
-        moveStats.mEffect,
-        moveStats.mPower,
-        moveStats.mAccuracy,
-        moveStats.mTotalPowerPoints
-    );
-    
-    activePlayerPokemon.mMoveToBeLearned = StringId();
-    
+    auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];    
+	
+	AddMoveToIndex(activePlayerPokemon.mMoveToBeLearned, activePlayerPokemon.mMovesetIndexForNewMove, mWorld, activePlayerPokemon);
+
+	playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
+
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {
         DestroyActiveTextbox(mWorld);
@@ -64,9 +53,11 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     QueueDialogForChatbox
     (
         mainChatboxEntityId,
-        activePlayerPokemon.mName.GetString() + " learned#" + moveStats.mName.GetString() + "!#+FREEZE",
+        activePlayerPokemon.mName.GetString() + " learned#" + activePlayerPokemon.mMoveToBeLearned.GetString() + "!#+FREEZE",
         mWorld
     );
+
+    activePlayerPokemon.mMoveToBeLearned = StringId();
 }
 
 void LearnNewMoveFlowState::VUpdate(const float)

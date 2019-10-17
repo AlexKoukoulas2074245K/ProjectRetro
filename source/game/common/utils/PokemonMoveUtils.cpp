@@ -312,7 +312,7 @@ int CalculateDamage
     const auto denominatorTerm   = static_cast<int>(50 * modifiedDefensiveStat);
     const auto fractionResult    = static_cast<int>(numeratorTerm / static_cast<float>(denominatorTerm)) + 2;
     const auto modifiers         = (isStab ? 1.5f : 1.0f) * effectivenessFactor * (math::RandomInt(217, 255) / 255.0f);    
-    return static_cast<int>(fractionResult * modifiers);
+    return math::Max(1, static_cast<int>(fractionResult * modifiers));
 }
 
 int CalculatePokemonHurtingItselfDamage
@@ -329,6 +329,39 @@ int CalculatePokemonHurtingItselfDamage
     const auto fractionResult    = static_cast<int>(numeratorTerm / static_cast<float>(denominatorTerm)) + 2;
     const auto modifiers         = math::RandomInt(217, 255) / 255.0f;
     return static_cast<int>(fractionResult * modifiers);
+}
+
+void AddMoveToIndex
+(
+	const StringId moveName,
+	const size_t moveIndex,
+	const ecs::World& world,
+	Pokemon& pokemon
+)
+{
+	const auto& moveStats = GetMoveStats(moveName, world);
+
+	assert(moveIndex != pokemon.mMoveSet.size() && "Moveset is full");
+
+	pokemon.mMoveSet[moveIndex] = std::make_unique<PokemonMoveStats>
+	(
+		moveStats.mName,
+		moveStats.mType,
+		moveStats.mEffect,
+		moveStats.mPower,
+		moveStats.mAccuracy,
+		moveStats.mTotalPowerPoints
+	);
+}
+
+void AddMoveToFirstUnusedIndex
+(
+	const StringId moveName,
+	const ecs::World& world,
+	Pokemon& pokemon
+)
+{		
+	AddMoveToIndex(moveName, FindFirstUnusedMoveIndex(pokemon.mMoveSet), world, pokemon);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

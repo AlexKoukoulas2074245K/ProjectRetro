@@ -17,6 +17,7 @@
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
+#include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../common/utils/Timer.h"
@@ -33,7 +34,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const float EncounterStateControllerSystem::ENCOUNTER_END_ANIMATION_STEP_DURATION = 0.12f;
+namespace
+{
+	const StringId PEWTER_GYM_LEVEL_NAME   = StringId("in_pewter_gym");
+	const StringId CERULEAN_GYM_LEVEL_NAME = StringId("in_cerulean_gym");
+
+	const float ENCOUNTER_END_ANIMATION_STEP_DURATION = 0.12f;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +146,8 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
         }
     }
         
+	InjectGymLeaderSpecificPokemonMoves();
+
     CreateChatbox(mWorld);
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(std::make_unique<DarkenedOpponentsIntroEncounterFlowState>(mWorld));
@@ -212,6 +222,23 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     );    
 
     SoundService::GetInstance().PlayMusic(overworldLevelModelComponent.mLevelMusicTrackName);
+}
+
+void EncounterStateControllerSystem::InjectGymLeaderSpecificPokemonMoves() const
+{
+	const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+	
+	if (!encounterStateComponent.mIsGymLeaderBattle) return;
+
+	const auto& gymLeaderPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
+
+	if (playerStateComponent.mLastOverworldLevelName == PEWTER_GYM_LEVEL_NAME)
+	{
+		auto& brocksOnix = *gymLeaderPokemonRoster[1];
+		AddMoveToFirstUnusedIndex(StringId("BIND"), mWorld, brocksOnix);
+		AddMoveToFirstUnusedIndex(StringId("BIDE"), mWorld, brocksOnix);
+	}	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

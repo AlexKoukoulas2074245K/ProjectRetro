@@ -33,8 +33,8 @@ private:
     void InitializeEncounterState() const;
     void DestroyCurrentAndCreateEncounterLevel() const;
     void DestroyEncounterAndCreateLastPlayedLevel() const;
+    void InjectGymLeaderSpecificPokemonMoves() const;
     
-    static const float ENCOUNTER_END_ANIMATION_STEP_DURATION;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

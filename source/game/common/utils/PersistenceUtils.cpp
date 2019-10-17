@@ -390,19 +390,9 @@ std::unique_ptr<Pokemon> CreatePokemonFromJson(const nlohmann::basic_json<>& pok
     {
         const auto& moveName = StringId(moveEntry["move_name"].get<std::string>());
         const auto& ppLeft = moveEntry["pp_left"].get<int>();
-        
-        const auto& moveStats = GetMoveStats(moveName, world);
-        
-        pokemonInstance->mMoveSet[moveIndex] = std::make_unique<PokemonMoveStats>
-        (
-            moveStats.mName,
-            moveStats.mType,
-            moveStats.mEffect,
-            moveStats.mPower,
-            moveStats.mAccuracy,
-            moveStats.mTotalPowerPoints
-        );
-        
+                
+		AddMoveToIndex(moveName, moveIndex, world, *pokemonInstance);
+
         pokemonInstance->mMoveSet[moveIndex++]->mPowerPointsLeft = ppLeft;
     }
     

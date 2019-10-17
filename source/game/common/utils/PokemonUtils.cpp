@@ -14,7 +14,6 @@
 #include "PokemonMoveUtils.h"
 #include "MathUtils.h"
 #include "../GameConstants.h"
-#include "../components/MoveStatsSingletonComponent.h"
 #include "../components/PokemonBaseStatsSingletonComponent.h"
 #include "../../resources/DataFileResource.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -159,15 +158,7 @@ std::unique_ptr<Pokemon> CreatePokemon
 
             const auto& move = priorPokemonEvolvedFrom->mMoveSet[i];
 
-            pokemonInstance->mMoveSet[i] = std::make_unique<PokemonMoveStats>
-            (
-                move->mName,
-                move->mType,
-                move->mEffect,
-                move->mPower,
-                move->mAccuracy,
-                move->mTotalPowerPoints
-            );
+			AddMoveToIndex(move->mName, i, world, *pokemonInstance);
 
             pokemonInstance->mMoveSet[i]->mPowerPointsLeft = move->mPowerPointsLeft;
         }        
@@ -185,20 +176,10 @@ std::unique_ptr<Pokemon> CreatePokemon
             )
             {
                 continue;
-            }
+            }            
 
-            const auto& moveStats = GetMoveStats(moveLearnInfo.mMoveName, world);
-
-            pokemonInstance->mMoveSet[nextInsertedMoveIndex] = std::make_unique<PokemonMoveStats>
-            (
-                moveStats.mName,
-                moveStats.mType,
-                moveStats.mEffect,
-                moveStats.mPower,
-                moveStats.mAccuracy,
-                moveStats.mTotalPowerPoints
-            );
-
+			AddMoveToIndex(moveLearnInfo.mMoveName, nextInsertedMoveIndex, world, *pokemonInstance);
+           
             nextInsertedMoveIndex = (nextInsertedMoveIndex + 1) % 4;
         }
     }
