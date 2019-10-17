@@ -43,6 +43,27 @@ bool IsMeshInsideCameraFrustum
     return true;
 }
 
+void OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors
+(
+    RenderableComponent& renderableComponent,
+    const ecs::EntityId entityToExtractPrimarColorsFrom,
+    const ecs::World& world
+)
+{
+    const auto& otherRenderingComponent = world.GetComponent<RenderableComponent>(entityToExtractPrimarColorsFrom);
+    const auto& otherTextureResource    = ResourceLoadingService::GetInstance().GetResource<TextureResource>(otherRenderingComponent.mTextureResourceId);
+    
+    const auto& colorSet  = otherTextureResource.GetColorSet();
+    
+    glm::vec4 primaryLightColor, primaryDarkColor;
+    
+    GetPrimaryLightAndPrimaryDarkColorsFromSet(colorSet, primaryLightColor, primaryDarkColor);
+    
+    renderableComponent.mShouldOverrideDarkAndLightColor = true;
+    renderableComponent.mOverriddenLightColor            = primaryLightColor;
+    renderableComponent.mOverriddenDarkColor             = primaryDarkColor;
+}
+
 void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
 (
     const ecs::EntityId entityToOverridePrimaryColors,
@@ -51,19 +72,7 @@ void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
 )
 {
     auto& overridenRenderableComponent = world.GetComponent<RenderableComponent>(entityToOverridePrimaryColors);
-    
-    const auto& otherRenderingComponent = world.GetComponent<RenderableComponent>(entityToExtractPrimarColorsFrom);
-    const auto& otherTextureResource    = ResourceLoadingService::GetInstance().GetResource<TextureResource>(otherRenderingComponent.mTextureResourceId);
-
-    const auto& colorSet  = otherTextureResource.GetColorSet();
-    
-    glm::vec4 primaryLightColor, primaryDarkColor;
-
-    GetPrimaryLightAndPrimaryDarkColorsFromSet(colorSet, primaryLightColor, primaryDarkColor);
-
-    overridenRenderableComponent.mShouldOverrideDarkAndLightColor = true;
-    overridenRenderableComponent.mOverriddenLightColor            = primaryLightColor;
-    overridenRenderableComponent.mOverriddenDarkColor             = primaryDarkColor;
+    OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors(overridenRenderableComponent, entityToExtractPrimarColorsFrom, world);
 }
 
 void GetPrimaryLightAndPrimaryDarkColorsFromSet

@@ -33,6 +33,8 @@ namespace ecs
     class World;
 }
 
+class RenderableComponent;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +45,13 @@ bool IsMeshInsideCameraFrustum
     const glm::vec3& meshScale,
     const glm::vec3& meshDimensions,
     const CameraFrustum& cameraFrustum
+);
+
+void OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors
+(
+    RenderableComponent&,
+    const ecs::EntityId entityToExtractPrimarColorsFrom,
+    const ecs::World& world
 );
 
 void OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors

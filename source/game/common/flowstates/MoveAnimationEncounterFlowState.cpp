@@ -430,12 +430,14 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
 
 		if (IsMoveAffectedByWhiteFlipEffect(encounterStateComponent.mLastMoveSelected))
 		{
-			OverrideEntityPrimaryColorsBasedOnAnotherEntityPrimaryColors
+			OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors
 			(
-				encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId,
+				*renderableComponent,
 				encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId,
 				mWorld
 			);
+            
+            renderableComponent->mShaderNameId = StringId("gui");
 		}
 		else
 		{
