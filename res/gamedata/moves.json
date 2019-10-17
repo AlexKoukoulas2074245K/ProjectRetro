@@ -79,7 +79,15 @@
         "pp": 10,
         "effect": "User takes damage for two turns then strikes back double."
     },
-
+	
+	"BIDE_UNLEASHED":
+	{
+		"type": "NORMAL",	
+        "power": 1,
+        "accuracy": 255,
+        "pp": 10        
+	},
+	
     "BIND":
     {
         "type": "NORMAL",

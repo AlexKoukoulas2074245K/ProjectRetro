@@ -283,6 +283,10 @@ struct Pokemon
     int mDefenseIv; int mDefenseEv;
     int mSpeedIv;   int mSpeedEv;
     int mSpecialIv; int mSpecialEv;
+
+	// Move-specific attributes
+	int mBideCounter;
+    int mBideAccumulatedDamage;
 };
 
 struct TrainerInfo

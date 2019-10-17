@@ -40,7 +40,12 @@ HealthDepletionEncounterFlowState::HealthDepletionEncounterFlowState(ecs::World&
     auto& defendingPokemon = GetDefendingPokemon();
 
     defendingPokemon.mHp -= static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
-    defendingPokemon.mHp = math::Max(0, defendingPokemon.mHp);        
+    defendingPokemon.mHp = math::Max(0, defendingPokemon.mHp);    
+
+    if (defendingPokemon.mBideCounter > -1)
+    {
+        defendingPokemon.mBideAccumulatedDamage += static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+    }
 }
 
 void HealthDepletionEncounterFlowState::VUpdate(const float dt)

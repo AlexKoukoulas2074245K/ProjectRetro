@@ -49,7 +49,8 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
     if 
     (
         encounterStateComponent.mLastMoveSelected != CONFUSION_HURT_ITSELF_MOVE_NAME &&
-        encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME
+        encounterStateComponent.mLastMoveSelected != POISON_TICK_MOVE_NAME && 
+        encounterStateComponent.mLastMoveSelected != BIDE_UNLEASHED_MOVE_NAME
     )
     {        
         effectivenessFactor = GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mFirstType, mWorld);
@@ -59,7 +60,6 @@ MoveEffectivenessTextEncounterFlowState::MoveEffectivenessTextEncounterFlowState
             effectivenessFactor *= GetTypeEffectiveness(selectedMoveStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
         }
     }
-    
     
     if (encounterStateComponent.mNothingHappenedFromMoveExecution)
     {

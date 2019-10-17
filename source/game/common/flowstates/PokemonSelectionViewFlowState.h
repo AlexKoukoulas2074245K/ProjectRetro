@@ -60,6 +60,8 @@ private:
         const int row
     ) const;
     
+    void RefreshPlayerPokemonDisplayStats() const;
+
     static const std::string TEXTBOX_CLICK_SFX_NAME;
     static const std::string POKEMON_SWAP_SFX_NAME;
 	static const std::string ITEM_HEAL_UP_SFX_NAME;	

@@ -34,6 +34,7 @@ class MoveStatsSingletonComponent;
 
 static const StringId POISON_TICK_MOVE_NAME           = StringId("POISON_TICK");
 static const StringId CONFUSION_HURT_ITSELF_MOVE_NAME = StringId("CONFUSION_HURT_ITSELF");
+static const StringId BIDE_UNLEASHED_MOVE_NAME        = StringId("BIDE_UNLEASHED");
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

@@ -9,12 +9,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "PokemonJustWokeUpEncounterFlowState.h"
-#include "PreDamageCalculationChecksEncounterFlowState.h"
+#include "BideUnleashTextEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "PokemonConfusedTextEncounterFlowState.h"
-#include "PokemonSnappedOutOfConfusionEncounterFlowState.h"
 #include "PokemonFastAsleepTextEncounterFlowState.h"
+#include "PokemonJustWokeUpEncounterFlowState.h"
+#include "PokemonSnappedOutOfConfusionEncounterFlowState.h"
+#include "PreDamageCalculationChecksEncounterFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 
@@ -131,6 +133,38 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
             CompleteAndTransitionTo<PokemonFastAsleepTextEncounterFlowState>();
         }
     }
+	else if 
+	(
+		encounterStateComponent.mIsOpponentsTurn && 
+		activeOpponentPokemon.mBideCounter > -1
+	)
+	{
+		if (--activeOpponentPokemon.mBideCounter == -1)
+		{
+			CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
+		}
+		else
+		{
+			encounterStateComponent.mIsOpponentsTurn = true;
+			CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+		}		
+	}
+	else if
+	(
+		encounterStateComponent.mIsOpponentsTurn == false &&
+		activePlayerPokemon.mBideCounter > -1
+	)
+	{
+		if (--activePlayerPokemon.mBideCounter == -1)
+		{
+			CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
+		}
+		else
+		{
+			encounterStateComponent.mIsOpponentsTurn = false;
+			CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+		}		
+	}
     else
     {
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();

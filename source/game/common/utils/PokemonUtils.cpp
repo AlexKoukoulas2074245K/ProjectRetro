@@ -184,6 +184,10 @@ std::unique_ptr<Pokemon> CreatePokemon
         }
     }
 
+	// Move-specific attributes reset
+	pokemonInstance->mBideCounter = -1;
+    pokemonInstance->mBideAccumulatedDamage = 0;
+
     return pokemonInstance;
 }
 

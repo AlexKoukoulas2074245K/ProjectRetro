@@ -132,7 +132,8 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
         auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
         
         pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
-        
+		pokemon.mBideCounter = -1;
+
         if (pokemon.mStatus == PokemonStatus::CONFUSED)
         {
             pokemon.mStatus = PokemonStatus::NORMAL;
@@ -178,7 +179,9 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
         playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
         playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
+        playerStateComponent.mLastOverworldDirection        = Direction::SOUTH;
 		playerStateComponent.mLastBattleWon                 = false;
+
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {

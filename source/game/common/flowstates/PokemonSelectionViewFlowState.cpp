@@ -17,6 +17,7 @@
 #include "PlayerPokemonWithdrawTextEncounterFlowState.h"
 #include "PokemonStatsDisplayViewFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
+#include "TurnOverEncounterFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -110,9 +111,9 @@ void PokemonSelectionViewFlowState::VUpdate(const float dt)
 
 void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
 	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 	auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
 	// Get selected item stats
@@ -149,13 +150,15 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
                 CreateChatbox(mWorld);
+                encounterStateComponent.mIsOpponentsTurn = false;
+                RefreshPlayerPokemonDisplayStats();
+                CompleteAndTransitionTo<TurnOverEncounterFlowState>();
             }
             else
             {
                 CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
-            }
-            
-            CompleteAndTransitionTo<ItemMenuFlowState>();
+                CompleteAndTransitionTo<ItemMenuFlowState>();
+            }            
         }
     }
     else
@@ -1169,6 +1172,78 @@ ecs::EntityId PokemonSelectionViewFlowState::CreatePokemonOverworldSprite
     mWorld.AddComponent<TransformComponent>(spriteEntityId, std::move(transformComponent));
 
     return spriteEntityId;
+}
+
+void PokemonSelectionViewFlowState::RefreshPlayerPokemonDisplayStats() const
+{
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+
+    mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
+
+    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+    (
+        static_cast<float>(activePlayerPokemon.mHp) / activePlayerPokemon.mMaxHp,
+        false,
+        mWorld
+    );
+
+    // Write player's pokemon new current hp
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 1, 3, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 2, 3, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 3, 3, mWorld);
+
+    WriteTextAtTextboxCoords
+    (
+        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+        std::to_string(activePlayerPokemon.mHp) + "/",
+        4 - static_cast<int>(std::to_string(activePlayerPokemon.mHp).size()),
+        3,
+        mWorld
+    );
+
+    // Write player's pokemon new max hp
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 5, 3, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 6, 3, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 7, 3, mWorld);
+
+    WriteTextAtTextboxCoords
+    (
+        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+        std::to_string(activePlayerPokemon.mMaxHp),
+        8 - static_cast<int>(std::to_string(activePlayerPokemon.mMaxHp).size()),
+        3,
+        mWorld
+    );
+
+    // Write player's pokemon new level
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 4, 1, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 5, 1, mWorld);
+    DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 6, 1, mWorld);
+
+    if (activePlayerPokemon.mStatus == PokemonStatus::NORMAL || activePlayerPokemon.mStatus == PokemonStatus::CONFUSED)
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            "=" + std::to_string(activePlayerPokemon.mLevel),
+            4,
+            1,
+            mWorld
+        );
+    }
+    else
+    {
+        WriteTextAtTextboxCoords
+        (
+            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
+            GetFormattedPokemonStatus(activePlayerPokemon.mHp, activePlayerPokemon.mStatus),
+            4,
+            1,
+            mWorld
+        );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

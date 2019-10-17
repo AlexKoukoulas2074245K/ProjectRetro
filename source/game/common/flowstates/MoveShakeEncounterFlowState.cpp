@@ -92,20 +92,26 @@ void MoveShakeEncounterFlowState::DetermineShakeTypeToBeInitiated() const
             effectivenessFactor *= GetTypeEffectiveness(lastMoveUsedStats.mType, defendingPokemon.mBaseSpeciesStats.mSecondType, mWorld);
         }
         
-        if (effectivenessFactor < 0.9f && effectivenessFactor > 0.1f)
-        {
-            SoundService::GetInstance().PlaySfx(NOT_VERY_EFFECTIVE_MOVE_SFX);
-        }
-        else if (effectivenessFactor > 1.1f)
-        {
-            SoundService::GetInstance().PlaySfx(SUPER_EFFECTIVE_MOVE_SFX);
-        }
-        else
+        if (encounterStateComponent.mLastMoveSelected == BIDE_UNLEASHED_MOVE_NAME)
         {
             SoundService::GetInstance().PlaySfx(NORMAL_EFFECTIVE_MOVE_SFX);
         }
-    }
-    
+        else
+        {
+            if (effectivenessFactor < 0.9f && effectivenessFactor > 0.1f)
+            {
+                SoundService::GetInstance().PlaySfx(NOT_VERY_EFFECTIVE_MOVE_SFX);
+            }
+            else if (effectivenessFactor > 1.1f)
+            {
+                SoundService::GetInstance().PlaySfx(SUPER_EFFECTIVE_MOVE_SFX);
+            }
+            else
+            {
+                SoundService::GetInstance().PlaySfx(NORMAL_EFFECTIVE_MOVE_SFX);
+            }
+        }        
+    }    
     
     
     shakeComponent.mShakeProgressionStep = 0;
