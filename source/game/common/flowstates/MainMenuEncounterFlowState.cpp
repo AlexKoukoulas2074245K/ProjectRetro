@@ -91,7 +91,6 @@ bool MainMenuEncounterFlowState::ShouldSkipMoveSelection() const
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
-    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
     if
     (
@@ -100,25 +99,6 @@ bool MainMenuEncounterFlowState::ShouldSkipMoveSelection() const
             activePlayerPokemon.mNumberOfRoundsUntilSleepEnds > 0 ||
             activePlayerPokemon.mStatus == PokemonStatus::ASLEEP
         )
-    )
-    {
-        return true;
-    }
-    else if
-    (
-        encounterStateComponent.mIsOpponentsTurn &&
-        (
-            activeOpponentPokemon.mNumberOfRoundsUntilSleepEnds > 0 ||
-            activeOpponentPokemon.mStatus == PokemonStatus::ASLEEP
-        )
-    )
-    {
-        return true;
-    }
-    else if 
-    (
-        encounterStateComponent.mIsOpponentsTurn && 
-        activeOpponentPokemon.mBideCounter > -1
     )
     {
         return true;
