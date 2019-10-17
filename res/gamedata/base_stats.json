@@ -1404,7 +1404,7 @@
           "ovimagetype": "NORMAL",
           "type": [ { "name": "ROCK"}, { "name": "GROUND" } ],
           "evolution": [ { "name": "GRAVELER", "method": "25" } ],
-          "moveset": [{ "level": 1, "movename": "TACKLE"},{ "level": 11, "movename": "DEFENSE_CURL"},{ "level": 16, "movename": "ROCK_THROW"},{ "level": 21, "movename": "SELFDESTRUCT"},{ "level": 26, "movename": "HARDEN"},{ "level": 31, "movename": "EARTHQUAKE"},{ "level": 36, "movename": "EXPLOSION"}],
+          "moveset": [{ "level": 1, "movename": "HARDEN"},{ "level": 11, "movename": "DEFENSE_CURL"},{ "level": 16, "movename": "ROCK_THROW"},{ "level": 21, "movename": "SELFDESTRUCT"},{ "level": 26, "movename": "HARDEN"},{ "level": 31, "movename": "EARTHQUAKE"},{ "level": 36, "movename": "EXPLOSION"}],
 	      "text": "Commonly found near mountain trails, etc. If you step on one by accident, it gets angry.",
 		  "dextype": "ROCK",
 		  "body": "1 04 44" 

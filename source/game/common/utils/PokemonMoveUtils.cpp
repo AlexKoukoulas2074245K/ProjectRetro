@@ -283,6 +283,7 @@ bool DoesMoveHaveSpeciallyHandledAnimation
 {
     return moveName == StringId("LEER")
         || moveName == StringId("HARDEN")
+		|| moveName == StringId("BIDE")
         || moveName == StringId("QUICK_ATTACK")
         || moveName == StringId("TACKLE")
         || moveName == StringId("TAIL_WHIP")

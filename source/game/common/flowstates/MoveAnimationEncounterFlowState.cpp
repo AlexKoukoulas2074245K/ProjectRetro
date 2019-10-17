@@ -387,6 +387,10 @@ void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation(const 
             {
                 UpdateHardenAnimation();
             }
+			else if (encounterStateComponent.mLastMoveSelected == StringId("BIDE"))
+			{
+				UpdateBideAnimation();
+			}
             else if (encounterStateComponent.mLastMoveSelected == StringId("LEER"))
             {
                 UpdateLeerAnimation();
@@ -561,6 +565,69 @@ void MoveAnimationEncounterFlowState::UpdateConfusionAnimation()
 }
 
 void MoveAnimationEncounterFlowState::UpdateHardenAnimation()
+{   
+    auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+        case 0:
+        {
+            PrepareAllGuiSpritesForWhiteFlip();
+            transitionStateComponent.mWhiteFlipProgressionStep = 1;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 1:
+        {
+            UpdateNormalFrameBasedMoveAnimation();
+
+            if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() == 0)
+            {
+                encounterStateComponent.mSpecialMoveAnimationStep++;
+            }
+        } break;
+        case 2:
+        {
+            if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+            {
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+                encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+            }
+
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 3:
+        case 4:
+        {
+            transitionStateComponent.mWhiteFlipProgressionStep = 2;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 5:
+        case 6:
+        {
+            transitionStateComponent.mWhiteFlipProgressionStep = 3;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 7:
+        {
+            transitionStateComponent.mWhiteFlipProgressionStep = 1;
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        } break;
+
+        case 8:
+        {
+            transitionStateComponent.mWhiteFlipProgressionStep = 0;
+            encounterStateComponent.mSpecialMoveAnimationStep  = 0;
+            CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+        } break;
+    }    
+}
+
+void MoveAnimationEncounterFlowState::UpdateBideAnimation()
 {   
     auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();

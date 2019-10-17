@@ -324,10 +324,7 @@ void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
             pokemon->mLevel,
             true,
             mWorld
-        ));		
-
-
-		encounterStateComponent.mOpponentPokemonRoster.back()->mHp = 1;
+        ));				
     }
 
     SoundService::GetInstance().PlayMusic
