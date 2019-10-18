@@ -38,6 +38,7 @@ private:
     void UpdateHardenAnimation();
     void UpdateBideAnimation();
     void UpdateLeerAnimation();    
+    void UpdateDoubleTeamAnimation();
     void UpdateQuickAttackAnimation(const float dt);
     void UpdateTackleAnimation();
     void UpdateTailWhipAnimation();

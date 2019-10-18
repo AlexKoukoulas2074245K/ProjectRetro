@@ -306,7 +306,7 @@
         "power": 0,
         "accuracy": 255,
         "pp": 15,
-        "effect": "Raises user's Evasiveness."
+        "effect": "PE+1"
     },
 
     "DOUBLE-EDGE":

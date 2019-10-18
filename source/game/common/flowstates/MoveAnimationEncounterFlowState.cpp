@@ -400,6 +400,10 @@ void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation(const 
             {
                 UpdateLeerAnimation();
             }
+            else if (encounterStateComponent.mLastMoveSelected == StringId("DOUBLE_TEAM"))
+            {
+                UpdateDoubleTeamAnimation();
+            }
             else if (encounterStateComponent.mLastMoveSelected == StringId("TACKLE"))
             {
                 UpdateTackleAnimation();
@@ -762,6 +766,106 @@ void MoveAnimationEncounterFlowState::UpdateLeerAnimation()
 
             encounterStateComponent.mSpecialMoveAnimationStep      = 0;
         } break;
+    }
+}
+
+void MoveAnimationEncounterFlowState::UpdateDoubleTeamAnimation()
+{
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& transitionStateComponent = mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>();    
+    auto attackingPokemonSpriteEntityId = encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId;
+    auto& attackerTransformComponent = mWorld.GetComponent<TransformComponent>(attackingPokemonSpriteEntityId);
+
+    switch (encounterStateComponent.mSpecialMoveAnimationStep)
+    {
+    case 0:
+    case 3:
+    {
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+        transitionStateComponent.mDarkFlipProgressionStep = 1;
+
+        auto& playerPokemonSpriteRenderableComponent   = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+        // The active player, opponent and chatbox sprites during dark flip animations change their colors differently 
+        // from other HUD elements.
+        playerPokemonSpriteRenderableComponent.mShaderNameId = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+        opponentPokemonSpriteRenderableComponent.mShaderNameId = DARK_FLIP_HUD_ELEMENTS_SPECIAL_CASE_SHADER_NAME;
+
+    } break;
+
+    case 1:    
+    {
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+        transitionStateComponent.mDarkFlipProgressionStep = 2;
+    } break;
+
+    case 2:    
+    {
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+        transitionStateComponent.mDarkFlipProgressionStep = 3;
+    } break;
+
+    case 4:
+    {
+        transitionStateComponent.mDarkFlipProgressionStep = 0;
+
+        auto& playerPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        auto& opponentPokemonSpriteRenderableComponent = mWorld.GetComponent<RenderableComponent>(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+
+        playerPokemonSpriteRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+        opponentPokemonSpriteRenderableComponent.mShaderNameId = DEFAULT_GUI_SHADER_NAME;
+
+        encounterStateComponent.mSpecialMoveAnimationStep++;        
+
+        
+    } break;
+
+    case 5: case 7: case 9: case 11: case 13: case 15: case 17: case 19: case 21: case 23: case 25: case 27: case 29: case 31: case 33: case 35:
+    {
+        attackerTransformComponent.mPosition.x += encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 16 : GUI_PIXEL_SIZE * 16;
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+    } break;
+
+    case 6: case 8: case 10: case 12: case 14: case 16: case 18: case 20: case 22: case 24: case 26: case 28: case 30: case 32: case 34: case 36:
+    {
+        attackerTransformComponent.mPosition.x -= encounterStateComponent.mIsOpponentsTurn ? -GUI_PIXEL_SIZE * 16 : GUI_PIXEL_SIZE * 16;
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+    } break;
+
+    case 37:
+    {
+        SoundService::GetInstance().PlaySfx(StringId("encounter/double_team_second"));
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+    } break;
+
+    case 38:
+    {
+        UpdateNormalFrameBasedMoveAnimation();
+
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.size() == 0)
+        {
+            encounterStateComponent.mSpecialMoveAnimationStep++;
+        }                
+    } break;
+
+    case 39:
+    {
+        if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+        {
+            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+            encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+        }
+
+        encounterStateComponent.mSpecialMoveAnimationStep++;
+    } break;
+
+    case 40:
+    {
+        encounterStateComponent.mSpecialMoveAnimationStep = 0;
+        CompleteAndTransitionTo<MoveShakeEncounterFlowState>();
+    } break;
+
     }
 }
 

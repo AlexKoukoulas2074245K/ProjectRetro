@@ -141,6 +141,7 @@ bool IsMoveNonShake
     return moveName == POISON_TICK_MOVE_NAME
         || moveName == StringId("THUNDER_WAVE")
         || moveName == StringId("HARDEN")
+        || moveName == StringId("DOUBLE_TEAM")
         ;
 }
 
@@ -157,6 +158,7 @@ bool DoesMoveHaveSpeciallyHandledAnimation
         || moveName == StringId("TACKLE")
         || moveName == StringId("TAIL_WHIP")
         || moveName == StringId("CONFUSION")
+        || moveName == StringId("DOUBLE_TEAM")
         ;
 }
 
