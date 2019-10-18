@@ -173,46 +173,46 @@ void RenderingSystem::VUpdateAssociatedComponents(const float) const
         previousRenderingStateComponent
     );
 
-	// Then check and render any wild grass entities 
-	for (const auto& entityId : activeEntities)
-	{
-		if (ShouldProcessEntity(entityId))
-		{
-			const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
-			if (renderableComponent.mRenderableLayer == RenderableLayer::WILD_GRASS)
-			{
-				const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
-				const auto& activeMeshes = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
-				const auto& currentMesh = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
+    // Then check and render any wild grass entities 
+    for (const auto& entityId : activeEntities)
+    {
+        if (ShouldProcessEntity(entityId))
+        {
+            const auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(entityId);
+            if (renderableComponent.mRenderableLayer == RenderableLayer::WILD_GRASS)
+            {
+                const auto& transformComponent = mWorld.GetComponent<TransformComponent>(entityId);
+                const auto& activeMeshes = renderableComponent.mAnimationsToMeshes.at(renderableComponent.mActiveAnimationNameId);
+                const auto& currentMesh = ResourceLoadingService::GetInstance().GetResource<MeshResource>(activeMeshes[renderableComponent.mActiveMeshIndex]);
 
-				// Frustum culling
-				if (!IsMeshInsideCameraFrustum
-				(
-					transformComponent.mPosition,
-					transformComponent.mScale,
-					currentMesh.GetDimensions(),
-					cameraComponent.mFrustum
-				))
-				{
-					renderingContextComponent.mFrustumCulledEntities++;
-					continue;
-				}
+                // Frustum culling
+                if (!IsMeshInsideCameraFrustum
+                (
+                    transformComponent.mPosition,
+                    transformComponent.mScale,
+                    currentMesh.GetDimensions(),
+                    cameraComponent.mFrustum
+                ))
+                {
+                    renderingContextComponent.mFrustumCulledEntities++;
+                    continue;
+                }
 
-				RenderEntityInternal
-				(
-					entityId,
-					renderableComponent,
-					currentLevel.mLevelColor,
-					cameraComponent,
-					shaderStoreComponent,
-					windowComponent,
-					transitionAnimationComponent,
-					renderingContextComponent,
-					previousRenderingStateComponent
-				);
-			}
-		}
-	}
+                RenderEntityInternal
+                (
+                    entityId,
+                    renderableComponent,
+                    currentLevel.mLevelColor,
+                    cameraComponent,
+                    shaderStoreComponent,
+                    windowComponent,
+                    transitionAnimationComponent,
+                    renderingContextComponent,
+                    previousRenderingStateComponent
+                );
+            }
+        }
+    }
     
     for (const auto& entityId: activeEntities)
     {

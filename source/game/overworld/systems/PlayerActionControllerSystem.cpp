@@ -66,7 +66,7 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
     auto& encounterStateComponent        = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& inputStateComponent            = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     
-	StartPendingPostEncounterConversation();
+    StartPendingPostEncounterConversation();
     AddPendingItemsToBag();
     
     for (const auto& entityId : mWorld.GetActiveEntities())
@@ -181,24 +181,24 @@ void PlayerActionControllerSystem::VUpdateAssociatedComponents(const float) cons
 
 void PlayerActionControllerSystem::StartPendingPostEncounterConversation() const
 {
-	auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
-	// If just defeated gym leader force show chatbox with follow up tm text
-	if (playerStateComponent.mJustDefeatedGymLeader)
-	{
-		playerStateComponent.mJustDefeatedGymLeader = false;
+    // If just defeated gym leader force show chatbox with follow up tm text
+    if (playerStateComponent.mJustDefeatedGymLeader)
+    {
+        playerStateComponent.mJustDefeatedGymLeader = false;
 
-		const auto& gymLeaderNpcAiComponent = mWorld.GetComponent<NpcAiComponent>
-		(
-			GetNpcEntityIdFromLevelIndex
-			(
-				playerStateComponent.mLastNpcLevelIndexSpokenTo,
-				mWorld
-			)
-		);
+        const auto& gymLeaderNpcAiComponent = mWorld.GetComponent<NpcAiComponent>
+        (
+            GetNpcEntityIdFromLevelIndex
+            (
+                playerStateComponent.mLastNpcLevelIndexSpokenTo,
+                mWorld
+            )
+        );
 
-		QueueDialogForChatbox(CreateChatbox(mWorld), gymLeaderNpcAiComponent.mSideDialogs[2], mWorld);
-	}
+        QueueDialogForChatbox(CreateChatbox(mWorld), gymLeaderNpcAiComponent.mSideDialogs[2], mWorld);
+    }
 }
 
 void PlayerActionControllerSystem::AddPendingItemsToBag() const
@@ -209,48 +209,48 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
-    {		
-		// Milestone handling
-		if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
-		{
-			if (playerStateComponent.mPendingItemToBeAdded == StringId("BOULDERBADGE"))
-			{
-				SetMilestone(milestones::BOULDERBADGE, mWorld);
-			}
-			return;
-		}
+    {        
+        // Milestone handling
+        if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
+        {
+            if (playerStateComponent.mPendingItemToBeAdded == StringId("BOULDERBADGE"))
+            {
+                SetMilestone(milestones::BOULDERBADGE, mWorld);
+            }
+            return;
+        }
         else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)
         {
             SetMilestone(milestones::RECEIVED_OAKS_PARCEL, mWorld);
 
-			if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
-			{
-				RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-			}
-			else
-			{
-				AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-			}
+            if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
+            {
+                RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+            }
+            else
+            {
+                AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+            }
             playerStateComponent.mPendingItemToBeAdded = StringId();
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
             return;
         }
-		else if (playerStateComponent.mPendingItemToBeAdded == POKEDEX_ITEM_NAME)
-		{
-			SetMilestone(milestones::RECEIVED_POKEDEX, mWorld);
-			playerStateComponent.mPendingItemToBeAdded = StringId();
-			playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
-			return;
-		}
+        else if (playerStateComponent.mPendingItemToBeAdded == POKEDEX_ITEM_NAME)
+        {
+            SetMilestone(milestones::RECEIVED_POKEDEX, mWorld);
+            playerStateComponent.mPendingItemToBeAdded = StringId();
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+            return;
+        }
 
-		if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
-		{
-			RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-		}
-		else
-		{
-			AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
-		}
+        if (playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::DELIVERED)
+        {
+            RemoveItemFromBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+        }
+        else
+        {
+            AddItemToBag(playerStateComponent.mPendingItemToBeAdded, mWorld);
+        }
                         
         const auto npcEntityId = GetNpcEntityIdFromLevelIndex(playerStateComponent.mLastNpcLevelIndexSpokenTo, mWorld);
         auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);        
@@ -282,17 +282,17 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         }
         // Collected item 
         else if 
-		(
-			playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::GOT ||
-			playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::RECEIVED
-		)
+        (
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::GOT ||
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType == ItemDiscoveryType::RECEIVED
+        )
         {
             if (npcAiComponent.mSideDialogs.size() > 0)
             {
-				if (npcAiComponent.mIsGymLeader == false)
-				{
-					npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
-				}
+                if (npcAiComponent.mIsGymLeader == false)
+                {
+                    npcAiComponent.mDialog = npcAiComponent.mSideDialogs[0];
+                }
                 
                 playerStateComponent.mCollectedItemNonDestructibleNpcEntries.emplace_back
                 (

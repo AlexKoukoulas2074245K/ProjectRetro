@@ -39,10 +39,10 @@ LearnNewMoveFlowState::LearnNewMoveFlowState(ecs::World& world)
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& activePlayerPokemon     = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];    
-	
-	AddMoveToIndex(activePlayerPokemon.mMoveToBeLearned, activePlayerPokemon.mMovesetIndexForNewMove, mWorld, activePlayerPokemon);
+    
+    AddMoveToIndex(activePlayerPokemon.mMoveToBeLearned, activePlayerPokemon.mMovesetIndexForNewMove, mWorld, activePlayerPokemon);
 
-	playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
+    playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
 
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)
     {

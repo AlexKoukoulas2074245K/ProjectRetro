@@ -411,10 +411,10 @@ ecs::EntityId CreateNpcAttributes
             collectedItemNonDestructibleNpcEntry.mNpcLevelIndex == npcLevelIndex
         )
         {
-			if (aiComponent->mIsGymLeader == false)
-			{
-				aiComponent->mDialog = aiComponent->mSideDialogs[0];
-			}            
+            if (aiComponent->mIsGymLeader == false)
+            {
+                aiComponent->mDialog = aiComponent->mSideDialogs[0];
+            }            
         }
     }
 
@@ -477,7 +477,7 @@ void CreateNpcSprite
         const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcAttributeEntityId);
         if
         (
-         	npcAiComponent.mOriginalLevelCol == gameCol &&
+             npcAiComponent.mOriginalLevelCol == gameCol &&
             npcAiComponent.mOriginalLevelRow == gameRow
         )
         {
@@ -751,7 +751,7 @@ void DestroyAnyCollectedItemNpcs
                     
                     if (npcAiComponent.mLevelIndex == collectedItemNpcEntry.mNpcLevelIndex)
                     {
-						DestroyOverworldNpcEntityAndEraseTileInfo(npcEntityId, world);                        
+                        DestroyOverworldNpcEntityAndEraseTileInfo(npcEntityId, world);                        
                     }
                 }                
             }

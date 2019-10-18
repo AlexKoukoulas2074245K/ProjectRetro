@@ -133,38 +133,38 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
             CompleteAndTransitionTo<PokemonFastAsleepTextEncounterFlowState>();
         }
     }
-	else if 
-	(
-		encounterStateComponent.mIsOpponentsTurn && 
-		activeOpponentPokemon.mBideCounter > -1
-	)
-	{
-		if (--activeOpponentPokemon.mBideCounter == -1)
-		{
-			CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
-		}
-		else
-		{
-			encounterStateComponent.mIsOpponentsTurn = true;
-			CompleteAndTransitionTo<TurnOverEncounterFlowState>();
-		}		
-	}
-	else if
-	(
-		encounterStateComponent.mIsOpponentsTurn == false &&
-		activePlayerPokemon.mBideCounter > -1
-	)
-	{
-		if (--activePlayerPokemon.mBideCounter == -1)
-		{
-			CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
-		}
-		else
-		{
-			encounterStateComponent.mIsOpponentsTurn = false;
-			CompleteAndTransitionTo<TurnOverEncounterFlowState>();
-		}		
-	}
+    else if 
+    (
+        encounterStateComponent.mIsOpponentsTurn && 
+        activeOpponentPokemon.mBideCounter > -1
+    )
+    {
+        if (--activeOpponentPokemon.mBideCounter == -1)
+        {
+            CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
+        }
+        else
+        {
+            encounterStateComponent.mIsOpponentsTurn = true;
+            CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        }        
+    }
+    else if
+    (
+        encounterStateComponent.mIsOpponentsTurn == false &&
+        activePlayerPokemon.mBideCounter > -1
+    )
+    {
+        if (--activePlayerPokemon.mBideCounter == -1)
+        {
+            CompleteAndTransitionTo<BideUnleashTextEncounterFlowState>();
+        }
+        else
+        {
+            encounterStateComponent.mIsOpponentsTurn = false;
+            CompleteAndTransitionTo<TurnOverEncounterFlowState>();
+        }        
+    }
     else
     {
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();

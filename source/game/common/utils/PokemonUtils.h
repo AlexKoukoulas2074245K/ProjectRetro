@@ -141,7 +141,7 @@ int GetStatWithModifierApplied
 
 float CalculateHealthDepletionSpeed
 (
-	const Pokemon& pokemon
+    const Pokemon& pokemon
 );
 
 // Returns true if the value changed 

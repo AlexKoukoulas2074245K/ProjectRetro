@@ -42,12 +42,12 @@ public:
  
 private:
     void InitializeOverworldFlowState() const;
-	void RegisterNamedFlowStateFactories();
-	void UpdateExposedNamedFlowStatesFile() const;
+    void RegisterNamedFlowStateFactories();
+    void UpdateExposedNamedFlowStatesFile() const;
     void DetermineWhichFlowToStart() const;
 
-	using FlowStateFactoryFunction = std::function<std::unique_ptr<BaseFlowState>()>;
-	std::unordered_map<const StringId, FlowStateFactoryFunction, StringIdHasher> mNamedFlowStatesFactory;
+    using FlowStateFactoryFunction = std::function<std::unique_ptr<BaseFlowState>()>;
+    std::unordered_map<const StringId, FlowStateFactoryFunction, StringIdHasher> mNamedFlowStatesFactory;
 
 };
 

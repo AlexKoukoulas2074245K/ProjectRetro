@@ -25,7 +25,7 @@
 BideUnleashTextEncounterFlowState::BideUnleashTextEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-	const auto mainChatboxEntityId = CreateChatbox(mWorld);
+    const auto mainChatboxEntityId = CreateChatbox(mWorld);
     QueueDialogForChatbox(mainChatboxEntityId, GetUnleashEnergyText(), mWorld);    
 }
 
@@ -37,8 +37,8 @@ void BideUnleashTextEncounterFlowState::VUpdate(const float)
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
-		const auto unleashEnergyText = GetUnleashEnergyText();
-		const auto unleashEnergyTextSplitByHash = StringSplit(unleashEnergyText, '#');
+        const auto unleashEnergyText = GetUnleashEnergyText();
+        const auto unleashEnergyTextSplitByHash = StringSplit(unleashEnergyText, '#');
 
         WriteTextAtTextboxCoords(mainChatboxEntityId, unleashEnergyTextSplitByHash[0], 1, 2, mWorld);
         WriteTextAtTextboxCoords(mainChatboxEntityId, unleashEnergyTextSplitByHash[1], 1, 4, mWorld);
@@ -53,23 +53,23 @@ void BideUnleashTextEncounterFlowState::VUpdate(const float)
 
 std::string BideUnleashTextEncounterFlowState::GetUnleashEnergyText() const
 {
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-	const auto activePokemonName = encounterStateComponent.mIsOpponentsTurn ?
-		encounterStateComponent.mOpponentPokemonRoster.at(encounterStateComponent.mActiveOpponentPokemonRosterIndex)->mName :
-		playerStateComponent.mPlayerPokemonRoster.at(encounterStateComponent.mActivePlayerPokemonRosterIndex)->mName;
-	
-	std::string unleashEnergyText = "";
+    const auto activePokemonName = encounterStateComponent.mIsOpponentsTurn ?
+        encounterStateComponent.mOpponentPokemonRoster.at(encounterStateComponent.mActiveOpponentPokemonRosterIndex)->mName :
+        playerStateComponent.mPlayerPokemonRoster.at(encounterStateComponent.mActivePlayerPokemonRosterIndex)->mName;
+    
+    std::string unleashEnergyText = "";
 
-	if (encounterStateComponent.mIsOpponentsTurn)
-	{
-		unleashEnergyText += "Enemy ";
-	}
+    if (encounterStateComponent.mIsOpponentsTurn)
+    {
+        unleashEnergyText += "Enemy ";
+    }
 
-	unleashEnergyText += activePokemonName.GetString() + "#unleashed energy!#+END";
+    unleashEnergyText += activePokemonName.GetString() + "#unleashed energy!#+END";
 
-	return unleashEnergyText;
+    return unleashEnergyText;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

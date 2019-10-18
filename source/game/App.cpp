@@ -236,7 +236,7 @@ void App::CommonSingletonsInitialization()
     auto marketStocksComponent = std::make_unique<MarketStocksSingletonComponent>();
     LoadAndPopulateMarketStocks(*marketStocksComponent);
     mWorld.SetSingletonComponent<MarketStocksSingletonComponent>(std::move(marketStocksComponent));
-	
+    
     mWorld.SetSingletonComponent<PokemonSelectionViewStateSingletonComponent>(std::make_unique<PokemonSelectionViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<PokemonStatsDisplayViewStateSingletonComponent>(std::make_unique<PokemonStatsDisplayViewStateSingletonComponent>());
     mWorld.SetSingletonComponent<EvolutionAnimationStateSingletonComponent>(std::make_unique<EvolutionAnimationStateSingletonComponent>());

@@ -40,7 +40,7 @@ public:
     
 private:
     static const std::string TEXTBOX_CLICK_SFX_NAME;
-	static const std::string BADGE_SFX_NAME;
+    static const std::string BADGE_SFX_NAME;
     static const std::string KEY_ITEM_RECEIVED_SFX_NAME;
     static const std::string REGULAR_ITEM_RECEIVED_SFX_NAME;
     

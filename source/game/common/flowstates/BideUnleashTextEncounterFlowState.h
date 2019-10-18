@@ -21,12 +21,12 @@
 class BideUnleashTextEncounterFlowState final: public BaseFlowState
 {
 public:
-	BideUnleashTextEncounterFlowState(ecs::World&);
+    BideUnleashTextEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
    
 private:
-	std::string GetUnleashEnergyText() const;
+    std::string GetUnleashEnergyText() const;
 
 };
 

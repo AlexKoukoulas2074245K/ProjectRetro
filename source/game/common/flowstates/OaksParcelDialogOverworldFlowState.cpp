@@ -48,9 +48,9 @@ const float OaksParcelDialogOverworldFlowState::POKEDEX_DISAPPEARING_DELAY_IN_SE
 
 OaksParcelDialogOverworldFlowState::OaksParcelDialogOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
-	, mEventState(EventState::INTRO_DIALOG)
-	, mRivalSpriteEntityId(ecs::NULL_ENTITY_ID)
-	, mPokedexDisappearingTimer(POKEDEX_DISAPPEARING_DELAY_IN_SECONDS)
+    , mEventState(EventState::INTRO_DIALOG)
+    , mRivalSpriteEntityId(ecs::NULL_ENTITY_ID)
+    , mPokedexDisappearingTimer(POKEDEX_DISAPPEARING_DELAY_IN_SECONDS)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         
@@ -73,11 +73,11 @@ void OaksParcelDialogOverworldFlowState::VUpdate(const float dt)
         case EventState::INTRO_DIALOG:               UpdateIntroDialog(); break;
         case EventState::RIVAL_INTRO:                 UpdateRivalIntro(); break;
         case EventState::RIVAL_ENTRANCE_PATH:         UpdateRivalPath(true); break;
-		case EventState::POKEDEX_DIALOG:             UpdatePokedexDialog(); break;
-		case EventState::POKEDEX_DISAPPEARING_DELAY: UpdatePokedexDisappearingDelay(dt); break;
-		case EventState::OAK_SPEECH:                 UpdateOakSpeech(); break;
-		case EventState::RIVAL_SPEECH:                UpdateRivalSpeech(); break;
-		case EventState::RIVAL_EXIT_PATH:             UpdateRivalPath(false); break;
+        case EventState::POKEDEX_DIALOG:             UpdatePokedexDialog(); break;
+        case EventState::POKEDEX_DISAPPEARING_DELAY: UpdatePokedexDisappearingDelay(dt); break;
+        case EventState::OAK_SPEECH:                 UpdateOakSpeech(); break;
+        case EventState::RIVAL_SPEECH:                UpdateRivalSpeech(); break;
+        case EventState::RIVAL_EXIT_PATH:             UpdateRivalPath(false); break;
     }
 }
 
@@ -102,163 +102,163 @@ void OaksParcelDialogOverworldFlowState::UpdateRivalIntro()
 {    
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
-		CreateRivalSprite();
-		CreateRivalPath(true);
+        CreateRivalSprite();
+        CreateRivalPath(true);
         mEventState = EventState::RIVAL_ENTRANCE_PATH;
     }
 }
 
 void OaksParcelDialogOverworldFlowState::UpdateRivalPath(const bool isEnteringScene)
 {
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
 
-	if (npcAiComponent.mScriptedPathIndex == -1)
-	{
-		SoundService::GetInstance().PlayMusic(OAKS_LAB_MUSIC_NAME, false);
+    if (npcAiComponent.mScriptedPathIndex == -1)
+    {
+        SoundService::GetInstance().PlayMusic(OAKS_LAB_MUSIC_NAME, false);
 
-		if (isEnteringScene)
-		{
-			QueueDialogForChatbox
-			(
-				CreateChatbox(mWorld),
-				playerStateComponent.mRivalName.GetString() + ": Gramps,#my POK^MON has#grown stronger!#Check it out!#@" +
-				"OAK: " + playerStateComponent.mRivalName.GetString() + ",#good timing!#@I needed to ask#both of you to do#something for me.#@" +
-				"On the desk there#is my invention,#POK^DEX!#@It automatically#records data on#POK^MON you've#seen or caught!#@It's a hi-tech#encyclopedia!#@" +
-				"OAK: " + playerStateComponent.mPlayerTrainerName.GetString() + " and#" + playerStateComponent.mRivalName.GetString() + "! Take#these with you!#@" +
-				playerStateComponent.mPlayerTrainerName.GetString() + " got#POK^DEX from OAK!",
-				mWorld
-			);
+        if (isEnteringScene)
+        {
+            QueueDialogForChatbox
+            (
+                CreateChatbox(mWorld),
+                playerStateComponent.mRivalName.GetString() + ": Gramps,#my POK^MON has#grown stronger!#Check it out!#@" +
+                "OAK: " + playerStateComponent.mRivalName.GetString() + ",#good timing!#@I needed to ask#both of you to do#something for me.#@" +
+                "On the desk there#is my invention,#POK^DEX!#@It automatically#records data on#POK^MON you've#seen or caught!#@It's a hi-tech#encyclopedia!#@" +
+                "OAK: " + playerStateComponent.mPlayerTrainerName.GetString() + " and#" + playerStateComponent.mRivalName.GetString() + "! Take#these with you!#@" +
+                playerStateComponent.mPlayerTrainerName.GetString() + " got#POK^DEX from OAK!",
+                mWorld
+            );
 
-			mEventState = EventState::POKEDEX_DIALOG;
-		}
-		else
-		{									
-			DestroyOverworldNpcEntityAndEraseTileInfo(mRivalSpriteEntityId, mWorld);
-			CompleteOverworldFlow();
-		}
-	}
+            mEventState = EventState::POKEDEX_DIALOG;
+        }
+        else
+        {                                    
+            DestroyOverworldNpcEntityAndEraseTileInfo(mRivalSpriteEntityId, mWorld);
+            CompleteOverworldFlow();
+        }
+    }
 }
 
 void OaksParcelDialogOverworldFlowState::UpdatePokedexDialog()
-{	
-	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
-	{				
-		mWorld.DestroyEntity(FindEntityAtLevelCoords(FIRST_POKEDEX_COORDS, mWorld));
-		mWorld.DestroyEntity(FindEntityAtLevelCoords(SECOND_POKEDEX_COORDS, mWorld));
-		DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
-		DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {                
+        mWorld.DestroyEntity(FindEntityAtLevelCoords(FIRST_POKEDEX_COORDS, mWorld));
+        mWorld.DestroyEntity(FindEntityAtLevelCoords(SECOND_POKEDEX_COORDS, mWorld));
+        DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+        DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
 
-		mEventState = EventState::POKEDEX_DISAPPEARING_DELAY;
-	}
+        mEventState = EventState::POKEDEX_DISAPPEARING_DELAY;
+    }
 }
 
 void OaksParcelDialogOverworldFlowState::UpdatePokedexDisappearingDelay(const float dt)
 {
-	mPokedexDisappearingTimer.Update(dt);
-	if (mPokedexDisappearingTimer.HasTicked())
-	{
-		QueueDialogForChatbox
-		(
-			CreateChatbox(mWorld),
-			"To make a complete#guide on all the#POK^MON in the#world...#@That was my dream!# #@But I'm too old!#I can't do it!#@" + std::string() + 
-			"So, I want you two#to fulfill my#dream for me!#@Get moving, you#two!#@This is a great#undertaking in#POK^MON history!",
-			mWorld
-		);
+    mPokedexDisappearingTimer.Update(dt);
+    if (mPokedexDisappearingTimer.HasTicked())
+    {
+        QueueDialogForChatbox
+        (
+            CreateChatbox(mWorld),
+            "To make a complete#guide on all the#POK^MON in the#world...#@That was my dream!# #@But I'm too old!#I can't do it!#@" + std::string() + 
+            "So, I want you two#to fulfill my#dream for me!#@Get moving, you#two!#@This is a great#undertaking in#POK^MON history!",
+            mWorld
+        );
 
-		mEventState = EventState::OAK_SPEECH;
-	}
+        mEventState = EventState::OAK_SPEECH;
+    }
 }
 
 void OaksParcelDialogOverworldFlowState::UpdateOakSpeech()
 {
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();	
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
 
-	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
-	{
-		auto& rivalRenderableComponent = mWorld.GetComponent<RenderableComponent>(mRivalSpriteEntityId);
-		ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::EAST), rivalRenderableComponent);
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        auto& rivalRenderableComponent = mWorld.GetComponent<RenderableComponent>(mRivalSpriteEntityId);
+        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::EAST), rivalRenderableComponent);
 
-		QueueDialogForChatbox
-		(
-			CreateChatbox(mWorld),
-			playerStateComponent.mRivalName.GetString() + ": Alright#Gramps! Leave it#all to me!#@" + 
-			playerStateComponent.mPlayerTrainerName.GetString() + ", I hate to#say it, but I#don't need you!#@I know! I'll#borrow a TOWN MAP#from my sis!#@" + 
-			"I'll tell her not#to lend you one,#" + playerStateComponent.mPlayerTrainerName.GetString() + "! Hahaha!",
-			mWorld
-		);
+        QueueDialogForChatbox
+        (
+            CreateChatbox(mWorld),
+            playerStateComponent.mRivalName.GetString() + ": Alright#Gramps! Leave it#all to me!#@" + 
+            playerStateComponent.mPlayerTrainerName.GetString() + ", I hate to#say it, but I#don't need you!#@I know! I'll#borrow a TOWN MAP#from my sis!#@" + 
+            "I'll tell her not#to lend you one,#" + playerStateComponent.mPlayerTrainerName.GetString() + "! Hahaha!",
+            mWorld
+        );
 
-		mEventState = EventState::RIVAL_SPEECH;
-	}
+        mEventState = EventState::RIVAL_SPEECH;
+    }
 }
 
 void OaksParcelDialogOverworldFlowState::UpdateRivalSpeech()
-{		
-	if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
-	{
-		SoundService::GetInstance().PlayMusic(RIVAL_MUSIC_NAME, false);
-		CreateRivalPath(false);
-		mEventState = EventState::RIVAL_EXIT_PATH;
-	}
+{        
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        SoundService::GetInstance().PlayMusic(RIVAL_MUSIC_NAME, false);
+        CreateRivalPath(false);
+        mEventState = EventState::RIVAL_EXIT_PATH;
+    }
 }
 
 void OaksParcelDialogOverworldFlowState::CreateRivalSprite()
 {
-	const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-	auto& levelModelComponent        = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& levelModelComponent        = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
-	mRivalSpriteEntityId = mWorld.CreateEntity();
-	
-	auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
-	animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
-	animationTimerComponent->mAnimationTimer->Pause();
+    mRivalSpriteEntityId = mWorld.CreateEntity();
+    
+    auto animationTimerComponent             = std::make_unique<AnimationTimerComponent>();
+    animationTimerComponent->mAnimationTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    animationTimerComponent->mAnimationTimer->Pause();
 
-	auto aiComponent = std::make_unique<NpcAiComponent>();
-	aiComponent->mMovementType  = CharacterMovementType::STATIC;	
-	aiComponent->mInitDirection = Direction::NORTH;
+    auto aiComponent = std::make_unique<NpcAiComponent>();
+    aiComponent->mMovementType  = CharacterMovementType::STATIC;    
+    aiComponent->mInitDirection = Direction::NORTH;
 
-	auto directionComponent        = std::make_unique<DirectionComponent>();
-	directionComponent->mDirection = Direction::NORTH;
+    auto directionComponent        = std::make_unique<DirectionComponent>();
+    directionComponent->mDirection = Direction::NORTH;
 
-	auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
-	levelResidentComponent->mLevelNameId = activeLevelComponent.mActiveLevelNameId;
+    auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
+    levelResidentComponent->mLevelNameId = activeLevelComponent.mActiveLevelNameId;
 
-	auto transformComponent       = std::make_unique<TransformComponent>();
-	transformComponent->mPosition = TileCoordsToPosition(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = TileCoordsToPosition(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
 
-	auto movementStateComponent            = std::make_unique<MovementStateComponent>();
-	movementStateComponent->mCurrentCoords = RIVAL_ENTRANCE_COORDS;
+    auto movementStateComponent            = std::make_unique<MovementStateComponent>();
+    movementStateComponent->mCurrentCoords = RIVAL_ENTRANCE_COORDS;
 
-	GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = mRivalSpriteEntityId;
-	GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+    GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = mRivalSpriteEntityId;
+    GetTile(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
 
-	auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, RIVAL_ATLAS_COORDS.mCol, RIVAL_ATLAS_COORDS.mRow));
-	ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), *renderableComponent);
+    auto renderableComponent = CreateRenderableComponentForSprite(CharacterSpriteData(CharacterMovementType::DYNAMIC, RIVAL_ATLAS_COORDS.mCol, RIVAL_ATLAS_COORDS.mRow));
+    ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), *renderableComponent);
 
-	mWorld.AddComponent<AnimationTimerComponent>(mRivalSpriteEntityId, std::move(animationTimerComponent));
-	mWorld.AddComponent<TransformComponent>(mRivalSpriteEntityId, std::move(transformComponent));
-	mWorld.AddComponent<LevelResidentComponent>(mRivalSpriteEntityId, std::move(levelResidentComponent));
-	mWorld.AddComponent<NpcAiComponent>(mRivalSpriteEntityId, std::move(aiComponent));
-	mWorld.AddComponent<MovementStateComponent>(mRivalSpriteEntityId, std::move(movementStateComponent));
-	mWorld.AddComponent<DirectionComponent>(mRivalSpriteEntityId, std::move(directionComponent));
-	mWorld.AddComponent<RenderableComponent>(mRivalSpriteEntityId, std::move(renderableComponent));
+    mWorld.AddComponent<AnimationTimerComponent>(mRivalSpriteEntityId, std::move(animationTimerComponent));
+    mWorld.AddComponent<TransformComponent>(mRivalSpriteEntityId, std::move(transformComponent));
+    mWorld.AddComponent<LevelResidentComponent>(mRivalSpriteEntityId, std::move(levelResidentComponent));
+    mWorld.AddComponent<NpcAiComponent>(mRivalSpriteEntityId, std::move(aiComponent));
+    mWorld.AddComponent<MovementStateComponent>(mRivalSpriteEntityId, std::move(movementStateComponent));
+    mWorld.AddComponent<DirectionComponent>(mRivalSpriteEntityId, std::move(directionComponent));
+    mWorld.AddComponent<RenderableComponent>(mRivalSpriteEntityId, std::move(renderableComponent));
 }
 
 void OaksParcelDialogOverworldFlowState::CreateRivalPath(const bool isEnteringScene)
 {
-	auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
-	rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(mRivalSpriteEntityId);
+    rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
 
-	if (isEnteringScene)
-	{
-		rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_OAK_SPEECH_COORDS.mCol, RIVAL_OAK_SPEECH_COORDS.mRow);
-	}
-	else
-	{
-		rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
-	}
+    if (isEnteringScene)
+    {
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_OAK_SPEECH_COORDS.mCol, RIVAL_OAK_SPEECH_COORDS.mRow);
+    }
+    else
+    {
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_ENTRANCE_COORDS.mCol, RIVAL_ENTRANCE_COORDS.mRow);
+    }
 
-	rivalAiComponent.mScriptedPathIndex = 0;
+    rivalAiComponent.mScriptedPathIndex = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

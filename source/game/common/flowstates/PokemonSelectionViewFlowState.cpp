@@ -77,16 +77,16 @@ PokemonSelectionViewFlowState::PokemonSelectionViewFlowState(ecs::World& world)
 }
 
 void PokemonSelectionViewFlowState::VUpdate(const float dt)
-{   	
+{       
     auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-	if (pokemonSelectionViewComponent.mOperationState == PokemonSelectionViewOperationState::HEALING_UP)
-	{
-		HealingUpFlow(dt);
-	}
+    if (pokemonSelectionViewComponent.mOperationState == PokemonSelectionViewOperationState::HEALING_UP)
+    {
+        HealingUpFlow(dt);
+    }
     else if (pokemonSelectionViewComponent.mOperationState == PokemonSelectionViewOperationState::INVALID_OPERATION)
     {
-		InvalidOperationFlow();
+        InvalidOperationFlow();
     }
     else if (pokemonSelectionViewComponent.mOperationState == PokemonSelectionViewOperationState::INDEX_SWAP_FLOW)
     {
@@ -112,23 +112,23 @@ void PokemonSelectionViewFlowState::VUpdate(const float dt)
 void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-	auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-	// Get selected item stats
-	const auto& itemBagEntry = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
-	const auto itemName = itemBagEntry.mItemName;
-	const auto& selectedItemStats = GetItemStats(itemBagEntry.mItemName, mWorld);
+    // Get selected item stats
+    const auto& itemBagEntry = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
+    const auto itemName = itemBagEntry.mItemName;
+    const auto& selectedItemStats = GetItemStats(itemBagEntry.mItemName, mWorld);
 
-	// Get selected pokemons
-	auto& selectedPokemon = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
+    // Get selected pokemons
+    auto& selectedPokemon = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
     if
-	(
-		(encounterStateComponent.mActiveEncounterType == EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 4) ||
-		(encounterStateComponent.mActiveEncounterType != EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 3)
-	)
+    (
+        (encounterStateComponent.mActiveEncounterType == EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 4) ||
+        (encounterStateComponent.mActiveEncounterType != EncounterType::NONE && guiStateComponent.mActiveTextboxesStack.size() == 3)
+    )
     {
         const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
         if
@@ -139,10 +139,10 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
         {
             RemoveItemFromBag(selectedItemStats.mName, mWorld);
 
-			if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
-			{				
-				DestroyActiveTextbox(mWorld);
-			}
+            if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
+            {                
+                DestroyActiveTextbox(mWorld);
+            }
             
             DestroyActiveTextbox(mWorld);
             DestroyPokemonSelectionView();
@@ -219,41 +219,41 @@ void PokemonSelectionViewFlowState::HealingUpFlow(const float dt)
 
 void PokemonSelectionViewFlowState::InvalidOperationFlow()
 {
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-	const auto& guiStateSingletonComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-	auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& guiStateSingletonComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-	if (guiStateSingletonComponent.mActiveTextboxesStack.size() == 2)
-	{
-		pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;
-		pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
+    if (guiStateSingletonComponent.mActiveTextboxesStack.size() == 2)
+    {
+        pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;
+        pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
 
-		if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
-		{
-			DestroyPokemonSelectionView();
+        if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
+        {
+            DestroyPokemonSelectionView();
 
-			if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
-			{
-				CreateChatbox(mWorld);
-			}
-			else
-			{
-				CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
-			}
+            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {
+                CreateChatbox(mWorld);
+            }
+            else
+            {
+                CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
+            }
 
-			CompleteAndTransitionTo<ItemMenuFlowState>();
-		}
-		else
-		{
-			// Destroy pokemon attributes textbox
-			DestroyActiveTextbox(mWorld);
+            CompleteAndTransitionTo<ItemMenuFlowState>();
+        }
+        else
+        {
+            // Destroy pokemon attributes textbox
+            DestroyActiveTextbox(mWorld);
 
-			// Recreate view
-			CreatePokemonSelectionViewMainTextbox();
-			CreatePokemonStatsInvisibleTextbox();
-		}
-	}
+            // Recreate view
+            CreatePokemonSelectionViewMainTextbox();
+            CreatePokemonStatsInvisibleTextbox();
+        }
+    }
 }
 
 void PokemonSelectionViewFlowState::PokemonSelectedFlow()
@@ -269,7 +269,7 @@ void PokemonSelectionViewFlowState::PokemonSelectedFlow()
         {
             if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
             {
-				pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INDEX_SWAP_FLOW;                
+                pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INDEX_SWAP_FLOW;                
                 PokemonRosterIndexSwapFlow();
             }
             else
@@ -322,10 +322,10 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
 
         pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex = pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex;
         
-		if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
-		{
-			TryUseItem();
-		}
+        if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
+        {
+            TryUseItem();
+        }
         else if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
             TrySwitchPokemon();
@@ -349,22 +349,22 @@ void PokemonSelectionViewFlowState::PokemonNotSelectedFlow()
         
         SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
         
-		if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
-		{
-			DestroyPokemonSelectionView();
+        if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
+        {
+            DestroyPokemonSelectionView();
 
-			if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
-			{				
-				CreateChatbox(mWorld);
-			}
-			else
-			{
-				DestroyActiveTextbox(mWorld);
-				CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
-			}
+            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {                
+                CreateChatbox(mWorld);
+            }
+            else
+            {
+                DestroyActiveTextbox(mWorld);
+                CreateOverworldMainMenuTextbox(mWorld, HasMilestone(milestones::RECEIVED_POKEDEX, mWorld), playerStateComponent.mPreviousMainMenuCursorRow);
+            }
 
-			CompleteAndTransitionTo<ItemMenuFlowState>();
-		}
+            CompleteAndTransitionTo<ItemMenuFlowState>();
+        }
         else if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::OVERWORLD)
         {
             DestroyPokemonSelectionView();
@@ -526,7 +526,7 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
         {
             SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
             
-			pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;            
+            pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;            
             pokemonSelectionViewComponent.mPokemonHasBeenSelected = false;
             
             // Destroy invisible textbox
@@ -587,13 +587,13 @@ void PokemonSelectionViewFlowState::PokemonSelectionViewIndexSwapFlow(const floa
                 
                 WriteCharAtTextboxCoords
                 (
-					pokemonSelectionTextboxEntityId,
-					'{',
-					cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex,
-					cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex,
-					mWorld
+                    pokemonSelectionTextboxEntityId,
+                    '{',
+                    cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex,
+                    cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * pokemonSelectionViewComponent.mIndexSwapOriginPokemonCursorIndex,
+                    mWorld
                 );
-			}
+            }
         }
     }
 }
@@ -612,53 +612,53 @@ void PokemonSelectionViewFlowState::DisplayPokemonDetailedStatsFlow()
 
 void PokemonSelectionViewFlowState::TryUseItem()
 {
-	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-	const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
 
-	// Get selected item stats
-	const auto& itemBagEntry      = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
-	const auto itemName           = itemBagEntry.mItemName;
-	const auto& selectedItemStats = GetItemStats(itemBagEntry.mItemName, mWorld);
+    // Get selected item stats
+    const auto& itemBagEntry      = playerStateComponent.mPlayerBag.at(playerStateComponent.mPreviousItemMenuItemOffset + playerStateComponent.mPreviousItemMenuCursorRow);
+    const auto itemName           = itemBagEntry.mItemName;
+    const auto& selectedItemStats = GetItemStats(itemBagEntry.mItemName, mWorld);
 
-	// Get selected pokemons
-	auto& selectedPokemon = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
+    // Get selected pokemons
+    auto& selectedPokemon = *playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex];
 
-	if (StringStartsWith(selectedItemStats.mEffect.GetString(), "POTION"))
-	{
-		if (selectedPokemon.mHp <= 0 || selectedPokemon.mHp == selectedPokemon.mMaxHp)
-		{
-			pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INVALID_OPERATION;
+    if (StringStartsWith(selectedItemStats.mEffect.GetString(), "POTION"))
+    {
+        if (selectedPokemon.mHp <= 0 || selectedPokemon.mHp == selectedPokemon.mMaxHp)
+        {
+            pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INVALID_OPERATION;
 
-			// Destroy pokemon stats textbox
-			DestroyActiveTextbox(mWorld);
+            // Destroy pokemon stats textbox
+            DestroyActiveTextbox(mWorld);
 
-			// Destroy "Use item on which pokemon?" textbox
-			DestroyActiveTextbox(mWorld);
+            // Destroy "Use item on which pokemon?" textbox
+            DestroyActiveTextbox(mWorld);
 
-			// Create placeholder chatbox for encounters
-			if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
-			{
-				CreateChatbox(mWorld);
-			}
+            // Create placeholder chatbox for encounters
+            if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
+            {
+                CreateChatbox(mWorld);
+            }
 
-			// Recreate pokemon stats textbox
-			CreatePokemonStatsInvisibleTextbox();
+            // Recreate pokemon stats textbox
+            CreatePokemonStatsInvisibleTextbox();
 
-			const auto mainChatboxEntityId = CreateChatbox(mWorld);
+            const auto mainChatboxEntityId = CreateChatbox(mWorld);
 
-			QueueDialogForChatbox(mainChatboxEntityId, "It won't have any#effect.#+END", mWorld);			
-		}
-		else
-		{
-			SoundService::GetInstance().PlaySfx(ITEM_HEAL_UP_SFX_NAME, true);
+            QueueDialogForChatbox(mainChatboxEntityId, "It won't have any#effect.#+END", mWorld);            
+        }
+        else
+        {
+            SoundService::GetInstance().PlaySfx(ITEM_HEAL_UP_SFX_NAME, true);
 
-			pokemonSelectionViewComponent.mOperationState          = PokemonSelectionViewOperationState::HEALING_UP;
-			pokemonSelectionViewComponent.mFloatPokemonHealth      = static_cast<float>(selectedPokemon.mHp);
-			pokemonSelectionViewComponent.mHealthToRestoreCapacity = static_cast<float>(std::stoi(selectedItemStats.mEffect.GetString().substr(6)));
-		}
-	}
-	
+            pokemonSelectionViewComponent.mOperationState          = PokemonSelectionViewOperationState::HEALING_UP;
+            pokemonSelectionViewComponent.mFloatPokemonHealth      = static_cast<float>(selectedPokemon.mHp);
+            pokemonSelectionViewComponent.mHealthToRestoreCapacity = static_cast<float>(std::stoi(selectedItemStats.mEffect.GetString().substr(6)));
+        }
+    }
+    
 }
 
 void PokemonSelectionViewFlowState::TrySwitchPokemon()
@@ -682,7 +682,7 @@ void PokemonSelectionViewFlowState::TrySwitchPokemon()
         // Destroy Choose a pokemon textbox
         DestroyActiveTextbox(mWorld);
 
-		pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INVALID_OPERATION;		
+        pokemonSelectionViewComponent.mOperationState = PokemonSelectionViewOperationState::INVALID_OPERATION;        
 
         // Recreate pokemon stats textbox
         CreatePokemonStatsInvisibleTextbox();
@@ -805,7 +805,7 @@ void PokemonSelectionViewFlowState::CreateIndividualPokemonSprites() const
         pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex
     );
 
-	pokemonSelectionViewStateComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;
+    pokemonSelectionViewStateComponent.mOperationState = PokemonSelectionViewOperationState::NORMAL;
 
     for (auto i = 0U; i < pokemonSpriteEntityIds.size(); ++i)
     {
@@ -855,11 +855,11 @@ void PokemonSelectionViewFlowState::CreatePokemonSelectionViewMainTextbox() cons
     const auto& pokemonSelectionViewComponent = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
     const auto mainChatboxEntityId            = CreateChatbox(mWorld);
 
-	if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
-	{
-		WriteTextAtTextboxCoords(mainChatboxEntityId, "Use item on which", 1, 2, mWorld);
-		WriteTextAtTextboxCoords(mainChatboxEntityId, "POK^MON?", 1, 4, mWorld);
-	}
+    if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ITEM_USAGE)
+    {
+        WriteTextAtTextboxCoords(mainChatboxEntityId, "Use item on which", 1, 2, mWorld);
+        WriteTextAtTextboxCoords(mainChatboxEntityId, "POK^MON?", 1, 4, mWorld);
+    }
     else if (pokemonSelectionViewComponent.mCreationSourceType == PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
     {
         WriteTextAtTextboxCoords(mainChatboxEntityId, "Bring out which", 1, 2, mWorld);
@@ -1019,11 +1019,11 @@ void PokemonSelectionViewFlowState::CreatePokemonStatsInvisibleTextbox() const
     auto& animationTimerComponent    = mWorld.GetComponent<AnimationTimerComponent>(pokemonSpriteEntityId);
 
     if 
-	(
+    (
         pokemonSelectionViewStateComponent.mOperationState != PokemonSelectionViewOperationState::HEALING_UP &&
-		pokemonSelectionViewStateComponent.mOperationState != PokemonSelectionViewOperationState::INVALID_OPERATION &&
-		playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex]->mHp > 0
-	)
+        pokemonSelectionViewStateComponent.mOperationState != PokemonSelectionViewOperationState::INVALID_OPERATION &&
+        playerStateComponent.mPlayerPokemonRoster[pokemonSelectionViewStateComponent.mLastSelectedPokemonRosterIndex]->mHp > 0
+    )
     {
         animationTimerComponent.mAnimationTimer->Resume();
     }    

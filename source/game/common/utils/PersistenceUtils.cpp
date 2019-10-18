@@ -58,7 +58,7 @@ void SaveGame(const ecs::World& world)
     saveFileString << "    \"player_name\": \"" << playerStateComponent.mPlayerTrainerName.GetString() << "\",\n";
     saveFileString << "    \"rival_name\": \"" << playerStateComponent.mRivalName.GetString() << "\",\n";
     saveFileString << "    \"home_name\": \"" << playerStateComponent.mHomeLevelName.GetString() << "\",\n";
-	saveFileString << "    \"milestones\": " << playerStateComponent.mMilestones << ",\n";
+    saveFileString << "    \"milestones\": " << playerStateComponent.mMilestones << ",\n";
     saveFileString << "    \"current_level_name\": \"" << activeLevelComponent.mActiveLevelNameId.GetString() << "\",\n";
     saveFileString << "    \"current_game_col\": " << movementComponent.mCurrentCoords.mCol << ",\n";
     saveFileString << "    \"current_game_row\": " << movementComponent.mCurrentCoords.mRow << ",\n";
@@ -263,7 +263,7 @@ void RestoreGameStateFromSaveFile(ecs::World& world)
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();
     playerStateComponent->mPlayerTrainerName = StringId(saveJson["player_name"].get<std::string>());
     playerStateComponent->mRivalName         = StringId(saveJson["rival_name"].get<std::string>());
-	playerStateComponent->mMilestones        = saveJson["milestones"].get<unsigned long>();
+    playerStateComponent->mMilestones        = saveJson["milestones"].get<unsigned long>();
     playerStateComponent->mHomeLevelName     = StringId(saveJson["home_name"].get<std::string>());
     playerStateComponent->mSecondsPlayed     = saveJson["seconds_played"].get<int>();
     playerStateComponent->mPokeDollarCredits = saveJson["poke_dollars"].get<int>();
@@ -391,7 +391,7 @@ std::unique_ptr<Pokemon> CreatePokemonFromJson(const nlohmann::basic_json<>& pok
         const auto& moveName = StringId(moveEntry["move_name"].get<std::string>());
         const auto& ppLeft = moveEntry["pp_left"].get<int>();
                 
-		AddMoveToIndex(moveName, moveIndex, world, *pokemonInstance);
+        AddMoveToIndex(moveName, moveIndex, world, *pokemonInstance);
 
         pokemonInstance->mMoveSet[moveIndex++]->mPowerPointsLeft = ppLeft;
     }

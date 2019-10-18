@@ -296,16 +296,16 @@ void NpcAiSystem::UpdateDynamicNpc(const float dt, const ecs::EntityId entityId)
 
 void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
 {
-	const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     const auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(npcEntityId);
     
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-	auto opponentName = StringId(npcAiComponent.mTrainerName);
-	if (StringStartsWith(npcAiComponent.mTrainerName, "RIVAL"))
-	{
-		opponentName = playerStateComponent.mRivalName.GetString();
-	}
+    auto opponentName = StringId(npcAiComponent.mTrainerName);
+    if (StringStartsWith(npcAiComponent.mTrainerName, "RIVAL"))
+    {
+        opponentName = playerStateComponent.mRivalName.GetString();
+    }
 
     encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
     encounterStateComponent.mOpponentTrainerSpeciesName       = npcAiComponent.mTrainerName;
@@ -317,14 +317,14 @@ void NpcAiSystem::StartEncounter(const ecs::EntityId npcEntityId) const
     encounterStateComponent.mOpponentPokemonRoster.clear();
     
     for (const auto& pokemon: npcAiComponent.mPokemonRoster)
-    {		
+    {        
         encounterStateComponent.mOpponentPokemonRoster.push_back(CreatePokemon
         (
             pokemon->mName,
             pokemon->mLevel,
             true,
             mWorld
-        ));				
+        ));                
     }
 
     SoundService::GetInstance().PlayMusic

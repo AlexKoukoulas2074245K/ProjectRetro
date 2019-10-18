@@ -36,10 +36,10 @@
 
 namespace
 {
-	const StringId PEWTER_GYM_LEVEL_NAME   = StringId("in_pewter_gym");
-	const StringId CERULEAN_GYM_LEVEL_NAME = StringId("in_cerulean_gym");
+    const StringId PEWTER_GYM_LEVEL_NAME   = StringId("in_pewter_gym");
+    const StringId CERULEAN_GYM_LEVEL_NAME = StringId("in_cerulean_gym");
 
-	const float ENCOUNTER_END_ANIMATION_STEP_DURATION = 0.12f;
+    const float ENCOUNTER_END_ANIMATION_STEP_DURATION = 0.12f;
 }
 
 
@@ -132,7 +132,7 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
         auto& pokemon = *playerStateComponent.mPlayerPokemonRoster[i];
         
         pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
-		pokemon.mBideCounter = -1;
+        pokemon.mBideCounter = -1;
 
         if (pokemon.mStatus == PokemonStatus::CONFUSED)
         {
@@ -147,7 +147,7 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
         }
     }
         
-	InjectGymLeaderSpecificPokemonMoves();
+    InjectGymLeaderSpecificPokemonMoves();
 
     CreateChatbox(mWorld);
     
@@ -180,7 +180,7 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
         playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
         playerStateComponent.mLastOverworldDirection        = Direction::SOUTH;
-		playerStateComponent.mLastBattleWon                 = false;
+        playerStateComponent.mLastBattleWon                 = false;
 
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
@@ -191,10 +191,10 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
             playerStateComponent.mLastNpcLevelIndexSpokenTo
         );
 
-		playerStateComponent.mJustDefeatedGymLeader = encounterStateComponent.mIsGymLeaderBattle;		
-		playerStateComponent.mLastBattleWon         = true;
+        playerStateComponent.mJustDefeatedGymLeader = encounterStateComponent.mIsGymLeaderBattle;        
+        playerStateComponent.mLastBattleWon         = true;
     }
-	playerStateComponent.mRivalBattleJustEnded = encounterStateComponent.mOpponentTrainerName == playerStateComponent.mRivalName;
+    playerStateComponent.mRivalBattleJustEnded = encounterStateComponent.mOpponentTrainerName == playerStateComponent.mRivalName;
     
     encounterStateComponent.mFlowStateManager.SetActiveFlowState(nullptr);
     encounterStateComponent.mEncounterJustFinished               = false;
@@ -229,19 +229,19 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
 
 void EncounterStateControllerSystem::InjectGymLeaderSpecificPokemonMoves() const
 {
-	const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-	const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-	
-	if (!encounterStateComponent.mIsGymLeaderBattle) return;
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (!encounterStateComponent.mIsGymLeaderBattle) return;
 
-	const auto& gymLeaderPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
+    const auto& gymLeaderPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
 
-	if (playerStateComponent.mLastOverworldLevelName == PEWTER_GYM_LEVEL_NAME)
-	{
-		auto& brocksOnix = *gymLeaderPokemonRoster[1];
-		AddMoveToFirstUnusedIndex(StringId("BIND"), mWorld, brocksOnix);
-		AddMoveToFirstUnusedIndex(StringId("BIDE"), mWorld, brocksOnix);
-	}	
+    if (playerStateComponent.mLastOverworldLevelName == PEWTER_GYM_LEVEL_NAME)
+    {
+        auto& brocksOnix = *gymLeaderPokemonRoster[1];
+        AddMoveToFirstUnusedIndex(StringId("BIND"), mWorld, brocksOnix);
+        AddMoveToFirstUnusedIndex(StringId("BIDE"), mWorld, brocksOnix);
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

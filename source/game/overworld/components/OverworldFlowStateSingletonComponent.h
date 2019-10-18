@@ -26,38 +26,38 @@
 
 struct NpcFlowStateMapEntry
 {
-	NpcFlowStateMapEntry(const StringId levelName, const StringId flowName, const int npcLevelIndex)
-		: mLevelName(levelName)
-		, mFlowName(flowName)
-		, mNpcLevelIndex(npcLevelIndex)
-	{}
+    NpcFlowStateMapEntry(const StringId levelName, const StringId flowName, const int npcLevelIndex)
+        : mLevelName(levelName)
+        , mFlowName(flowName)
+        , mNpcLevelIndex(npcLevelIndex)
+    {}
 
-	const StringId mLevelName;
-	const StringId mFlowName;
-	const int mNpcLevelIndex;
+    const StringId mLevelName;
+    const StringId mFlowName;
+    const int mNpcLevelIndex;
 };
 
 struct TriggerFlowStateMapEntry
 {
-	TriggerFlowStateMapEntry(const StringId levelName, const StringId flowName, const int levelCol, const int levelRow)
-		: mLevelName(levelName)
-		, mFlowName(flowName)
-		, mLevelCol(levelCol)
-		, mLevelRow(levelRow)
-	{}
+    TriggerFlowStateMapEntry(const StringId levelName, const StringId flowName, const int levelCol, const int levelRow)
+        : mLevelName(levelName)
+        , mFlowName(flowName)
+        , mLevelCol(levelCol)
+        , mLevelRow(levelRow)
+    {}
 
-	const StringId mLevelName;
-	const StringId mFlowName;
-	const int mLevelCol;
-	const int mLevelRow;
+    const StringId mLevelName;
+    const StringId mFlowName;
+    const int mLevelCol;
+    const int mLevelRow;
 };
 
 class OverworldFlowStateSingletonComponent final: public ecs::IComponent
 {
 public:
     FlowStateManager mFlowStateManager;
-	std::vector<NpcFlowStateMapEntry> mNpcFlowStateMapEntries;
-	std::vector<TriggerFlowStateMapEntry> mTriggerFlowStateMapEntries;
+    std::vector<NpcFlowStateMapEntry> mNpcFlowStateMapEntries;
+    std::vector<TriggerFlowStateMapEntry> mTriggerFlowStateMapEntries;
     bool mFlowHasJustFinished = false;
     bool mFlowHookTriggered   = false;
 };

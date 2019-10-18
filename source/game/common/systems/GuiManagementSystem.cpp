@@ -135,7 +135,7 @@ void GuiManagementSystem::PopulateFontEntities(GuiStateSingletonComponent& guiSt
 
 void GuiManagementSystem::UpdateChatbox(const ecs::EntityId textboxEntityId, const float dt) const
 {
-	if (SoundService::GetInstance().IsPlayingSfx() && SoundService::GetInstance().GetLastPlayedSfxName() != TEXTBOX_CLICK_SFX_NAME) return;
+    if (SoundService::GetInstance().IsPlayingSfx() && SoundService::GetInstance().GetLastPlayedSfxName() != TEXTBOX_CLICK_SFX_NAME) return;
 
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
@@ -260,15 +260,15 @@ void GuiManagementSystem::UpdateChatboxFilled(const ecs::EntityId textboxEntityI
 {        
     auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-	auto& textboxComponent    = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& textboxComponent    = mWorld.GetComponent<TextboxComponent>(textboxEntityId);
 
-	const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
-	if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM && !textboxComponent.mHasPlayedItemReceivedSfx)
-	{
-		OnItemReceived(textboxEntityId, itemDiscoveryType);
-		textboxComponent.mHasPlayedItemReceivedSfx = true;
-		return;
-	}
+    const auto itemDiscoveryType = DetectedItemReceivedText(textboxEntityId);
+    if (itemDiscoveryType != ItemDiscoveryType::NO_ITEM && !textboxComponent.mHasPlayedItemReceivedSfx)
+    {
+        OnItemReceived(textboxEntityId, itemDiscoveryType);
+        textboxComponent.mHasPlayedItemReceivedSfx = true;
+        return;
+    }
 
     if
     (
@@ -455,29 +455,29 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, co
         textboxFirstLineString = textboxFirstLineString.substr(1);
     }
         
-	auto itemName = textboxFirstLineString;
+    auto itemName = textboxFirstLineString;
 
-	if (StringStartsWith(itemName, POKEDEX_ITEM_NAME.GetString()))
-	{
-		itemName = POKEDEX_ITEM_NAME.GetString();
-	}
-	else
-	{
-		itemName = StringSplit(textboxFirstLineString, '!')[0];
-		if (itemName.size() == textboxFirstLineString.size())
-		{
-			itemName = StringSplit(textboxFirstLineString, '.')[0];
-		}
+    if (StringStartsWith(itemName, POKEDEX_ITEM_NAME.GetString()))
+    {
+        itemName = POKEDEX_ITEM_NAME.GetString();
+    }
+    else
+    {
+        itemName = StringSplit(textboxFirstLineString, '!')[0];
+        if (itemName.size() == textboxFirstLineString.size())
+        {
+            itemName = StringSplit(textboxFirstLineString, '.')[0];
+        }
 
-		StringReplaceAllOccurences(itemName, " ", "_");
-		StringReplaceAllOccurences(itemName, "the_", "");
-	}
+        StringReplaceAllOccurences(itemName, " ", "_");
+        StringReplaceAllOccurences(itemName, "the_", "");
+    }
     
     const auto& itemStats = GetItemStats(itemName, mWorld);
-	if (itemStats.mEffect == StringId("BADGE"))
-	{
-		SoundService::GetInstance().PlaySfx(BADGE_SFX_NAME, true, true);
-	}
+    if (itemStats.mEffect == StringId("BADGE"))
+    {
+        SoundService::GetInstance().PlaySfx(BADGE_SFX_NAME, true, true);
+    }
     else if (itemStats.mUnique)
     {        
         SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME, true, true);
@@ -667,7 +667,7 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
     const auto stringStartsWithGot       = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " got");
     const auto stringStartsWithFound     = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found");
     const auto stringStartsWithReceived  = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received");
-	const auto stringStartsWithDelivered = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " delivered");
+    const auto stringStartsWithDelivered = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " delivered");
 
     if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived || stringStartsWithDelivered)
     {
@@ -688,10 +688,10 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
         {
             return ItemDiscoveryType::RECEIVED;
         }
-		else if (stringStartsWithDelivered)
-		{
-			return ItemDiscoveryType::DELIVERED;
-		}
+        else if (stringStartsWithDelivered)
+        {
+            return ItemDiscoveryType::DELIVERED;
+        }
 
         assert(false && "Item discovery type not handled");
     }

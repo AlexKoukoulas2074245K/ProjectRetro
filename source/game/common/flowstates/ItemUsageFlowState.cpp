@@ -57,12 +57,12 @@ void ItemUsageFlowState::VUpdate(const float)
             encounterStateComponent.mIsOpponentsTurn = false;
         }        
 
-		// Ball flow
+        // Ball flow
         if (selectedItemStats.mEffect == StringId("BALL"))
         {
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
-				RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
+                RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
 
                 // Destroy Item Menu
                 DestroyActiveTextbox(mWorld);
@@ -90,19 +90,19 @@ void ItemUsageFlowState::VUpdate(const float)
                 CompleteAndTransitionTo<BallUsageEncounterFlowState>();
             }
         }
-		// Potion flow
+        // Potion flow
         else if (StringStartsWith(selectedItemStats.mEffect.GetString(), "POTION"))
         {
-			// Destroy Use/Toss textbox
-			DestroyActiveTextbox(mWorld);
+            // Destroy Use/Toss textbox
+            DestroyActiveTextbox(mWorld);
 
-			// Destroy Item Menu
-			DestroyActiveTextbox(mWorld);			
+            // Destroy Item Menu
+            DestroyActiveTextbox(mWorld);            
 
-			auto& pokemonSelectionViewState = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
-			pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ITEM_USAGE;
+            auto& pokemonSelectionViewState = mWorld.GetSingletonComponent<PokemonSelectionViewStateSingletonComponent>();
+            pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ITEM_USAGE;
 
-			CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
         }
     }
     else

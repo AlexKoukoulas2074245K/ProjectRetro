@@ -158,7 +158,7 @@ std::unique_ptr<Pokemon> CreatePokemon
 
             const auto& move = priorPokemonEvolvedFrom->mMoveSet[i];
 
-			AddMoveToIndex(move->mName, i, world, *pokemonInstance);
+            AddMoveToIndex(move->mName, i, world, *pokemonInstance);
 
             pokemonInstance->mMoveSet[i]->mPowerPointsLeft = move->mPowerPointsLeft;
         }        
@@ -178,14 +178,14 @@ std::unique_ptr<Pokemon> CreatePokemon
                 continue;
             }            
 
-			AddMoveToIndex(moveLearnInfo.mMoveName, nextInsertedMoveIndex, world, *pokemonInstance);
+            AddMoveToIndex(moveLearnInfo.mMoveName, nextInsertedMoveIndex, world, *pokemonInstance);
            
             nextInsertedMoveIndex = (nextInsertedMoveIndex + 1) % 4;
         }
     }
 
-	// Move-specific attributes reset
-	pokemonInstance->mBideCounter = -1;
+    // Move-specific attributes reset
+    pokemonInstance->mBideCounter = -1;
     pokemonInstance->mBideAccumulatedDamage = 0;
 
     return pokemonInstance;
@@ -430,13 +430,13 @@ int GetStatWithModifierApplied
 
 float CalculateHealthDepletionSpeed
 (
-	const Pokemon& pokemon
+    const Pokemon& pokemon
 )
 {
-	// Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
-	// based on the pokemon level
-	const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.0f, 2.3f, pokemon.mLevel / 100.0f);
-	return pokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
+    // Depletion of a full hp bar is approximately linear to the parametric t from 1.5secs to 3.0secs
+    // based on the pokemon level
+    const auto targetDelayInSecsUntilFullHpIsDepleted = math::Lerp(1.0f, 2.3f, pokemon.mLevel / 100.0f);
+    return pokemon.mMaxHp / targetDelayInSecsUntilFullHpIsDepleted;
 }
 
 bool AddToStatStage

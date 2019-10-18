@@ -36,7 +36,7 @@ private:
     void UpdateNormalFrameBasedMoveAnimation();
     void UpdateConfusionAnimation();
     void UpdateHardenAnimation();
-	void UpdateBideAnimation();
+    void UpdateBideAnimation();
     void UpdateLeerAnimation();    
     void UpdateQuickAttackAnimation(const float dt);
     void UpdateTackleAnimation();

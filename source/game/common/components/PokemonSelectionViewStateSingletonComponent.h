@@ -33,15 +33,15 @@ enum class PokemonSelectionViewCreationSourceType
     ENCOUNTER_AFTER_POKEMON_FAINTED,
     ENCOUNTER_FROM_MAIN_MENU,
     OVERWORLD,
-	ITEM_USAGE
+    ITEM_USAGE
 };
 
 enum class PokemonSelectionViewOperationState
 {
-	INVALID_OPERATION,
-	INDEX_SWAP_FLOW,
-	HEALING_UP,
-	NORMAL
+    INVALID_OPERATION,
+    INDEX_SWAP_FLOW,
+    HEALING_UP,
+    NORMAL
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -57,10 +57,10 @@ public:
     int mLastSelectedPokemonRosterIndex                        = 0;
     int mIndexSwapOriginPokemonCursorIndex                     = 0;
     int mSwapAnimationStep                                     = 0;
-	float mFloatPokemonHealth                                  = 0.0f;
-	float mHealthToRestoreCapacity                             = 0.0f;
+    float mFloatPokemonHealth                                  = 0.0f;
+    float mHealthToRestoreCapacity                             = 0.0f;
     PokemonSelectionViewCreationSourceType mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
-	PokemonSelectionViewOperationState mOperationState         = PokemonSelectionViewOperationState::NORMAL;
+    PokemonSelectionViewOperationState mOperationState         = PokemonSelectionViewOperationState::NORMAL;
     bool mPokemonHasBeenSelected                               = false;
     
 };

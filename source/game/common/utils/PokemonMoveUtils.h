@@ -69,18 +69,18 @@ bool IsMoveNonShake
 
 bool IsMoveAffectedByWhiteFlipEffect
 (
-	const StringId moveName
+    const StringId moveName
 );
 
 bool ShouldSfxBeSkippedForMove
 (
-	const StringId moveName
+    const StringId moveName
 );
 
 
 bool DoesMoveHaveSpeciallyHandledAnimation
 (
-	const StringId moveName
+    const StringId moveName
 );
 
 bool DoesMovesetHaveMove
@@ -141,17 +141,17 @@ int CalculatePokemonHurtingItselfDamage
 
 void AddMoveToIndex
 (
-	const StringId moveName,
-	const size_t moveIndex,
-	const ecs::World& world,
-	Pokemon& pokemon
+    const StringId moveName,
+    const size_t moveIndex,
+    const ecs::World& world,
+    Pokemon& pokemon
 );
 
 void AddMoveToFirstUnusedIndex
 (
-	const StringId moveName,
-	const ecs::World& world,
-	Pokemon& pokemon
+    const StringId moveName,
+    const ecs::World& world,
+    Pokemon& pokemon
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

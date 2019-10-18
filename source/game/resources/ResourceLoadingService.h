@@ -99,17 +99,17 @@ public:
     
     // Both full paths, relative paths including the Resource Root, and relative
     // paths not including the Resource Root are supported
-	template<class ResourceType>
-	inline ResourceType& GetResource(const std::string& resourcePath)
-	{
-		return static_cast<ResourceType&>(GetResource(resourcePath));
-	}
+    template<class ResourceType>
+    inline ResourceType& GetResource(const std::string& resourcePath)
+    {
+        return static_cast<ResourceType&>(GetResource(resourcePath));
+    }
 
-	template<class ResourceType>
-	inline ResourceType& GetResource(const ResourceId resourceId)
-	{
-		return static_cast<ResourceType&>(GetResource(resourceId));
-	}
+    template<class ResourceType>
+    inline ResourceType& GetResource(const ResourceId resourceId)
+    {
+        return static_cast<ResourceType&>(GetResource(resourceId));
+    }
 
     // Opens a file based on the relative file path given, and writes the string str to it
     void WriteStringToFile(const std::string& str, const std::string& relativeFilePath);

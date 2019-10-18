@@ -41,9 +41,9 @@ set(JSON_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/extern/json-3.5.0")
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL_MIXER_INCLUDE_DIRS} ${SDL2main_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ${GLM_INCLUDE_DIRS} ${JSON_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCE_DIR
-	    "*.h"
-	    "*.cpp"
-)	
+        "*.h"
+        "*.cpp"
+)    
 add_executable(${PROJECT_NAME} ${SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBS} ${SDL2_IMAGE_LIBRARIES} ${SDL_MIXER_LIBRARIES} ${OPENGL_LIBRARIES})
 

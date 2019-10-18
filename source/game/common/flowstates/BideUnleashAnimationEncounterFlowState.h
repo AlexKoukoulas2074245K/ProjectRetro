@@ -22,7 +22,7 @@
 class BideUnleashAnimationEncounterFlowState final: public BaseFlowState
 {
 public:
-	BideUnleashAnimationEncounterFlowState(ecs::World&);
+    BideUnleashAnimationEncounterFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
 

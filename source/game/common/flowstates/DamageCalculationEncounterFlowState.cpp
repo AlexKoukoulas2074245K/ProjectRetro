@@ -156,11 +156,11 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     encounterStateComponent.mPendingStatusToBeAppliedToPlayerPokemon   = PokemonStatus::NORMAL;
     encounterStateComponent.mPendingStatusToBeAppliedToOpponentPokemon = PokemonStatus::NORMAL;
 
-	if (encounterStateComponent.mLastMoveSelected == StringId("BIDE"))
-	{
-		attackingPokemon.mBideCounter = 2;
+    if (encounterStateComponent.mLastMoveSelected == StringId("BIDE"))
+    {
+        attackingPokemon.mBideCounter = 2;
         attackingPokemon.mBideAccumulatedDamage = 0;
-	}
+    }
     else if (fullMoveEffectString == "ESLP")
     {
         if (encounterStateComponent.mIsOpponentsTurn == true)

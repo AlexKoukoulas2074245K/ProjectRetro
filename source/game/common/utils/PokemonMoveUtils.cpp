@@ -123,14 +123,14 @@ bool IsMoveSpecial
     const StringId moveType
 )
 {
-	return moveType == StringId("WATER")
-		|| moveType == StringId("GRASS")
-		|| moveType == StringId("FIRE")
-		|| moveType == StringId("ICE")
-		|| moveType == StringId("ELECTRIC")
-		|| moveType == StringId("PSYCHIC")
-		|| moveType == StringId("DRAGON")
-		;    
+    return moveType == StringId("WATER")
+        || moveType == StringId("GRASS")
+        || moveType == StringId("FIRE")
+        || moveType == StringId("ICE")
+        || moveType == StringId("ELECTRIC")
+        || moveType == StringId("PSYCHIC")
+        || moveType == StringId("DRAGON")
+        ;    
 }
 
 bool IsMoveNonShake
@@ -138,44 +138,44 @@ bool IsMoveNonShake
     const StringId moveName
 )
 {
-	return moveName == POISON_TICK_MOVE_NAME
-		|| moveName == StringId("THUNDER_WAVE")
-		|| moveName == StringId("HARDEN")
-		;
+    return moveName == POISON_TICK_MOVE_NAME
+        || moveName == StringId("THUNDER_WAVE")
+        || moveName == StringId("HARDEN")
+        ;
 }
 
 
 bool DoesMoveHaveSpeciallyHandledAnimation
 (
-	const StringId moveName
+    const StringId moveName
 )
 {
-	return moveName == StringId("LEER")
-		|| moveName == StringId("HARDEN")
-		|| moveName == StringId("BIDE")
-		|| moveName == StringId("QUICK_ATTACK")
-		|| moveName == StringId("TACKLE")
-		|| moveName == StringId("TAIL_WHIP")
-		|| moveName == StringId("CONFUSION")
-		;
+    return moveName == StringId("LEER")
+        || moveName == StringId("HARDEN")
+        || moveName == StringId("BIDE")
+        || moveName == StringId("QUICK_ATTACK")
+        || moveName == StringId("TACKLE")
+        || moveName == StringId("TAIL_WHIP")
+        || moveName == StringId("CONFUSION")
+        ;
 }
 
 bool IsMoveAffectedByWhiteFlipEffect
 (
-	const StringId moveName
+    const StringId moveName
 )
 {
-	return moveName == StringId("BIDE")
-		;
+    return moveName == StringId("BIDE")
+        ;
 }
 
 bool ShouldSfxBeSkippedForMove
 (
-	const StringId moveName
+    const StringId moveName
 )
 {
-	return moveName == StringId("BIDE")
-		;
+    return moveName == StringId("BIDE")
+        ;
 }
 
 bool DoesMovesetHaveMove
@@ -345,35 +345,35 @@ int CalculatePokemonHurtingItselfDamage
 
 void AddMoveToIndex
 (
-	const StringId moveName,
-	const size_t moveIndex,
-	const ecs::World& world,
-	Pokemon& pokemon
+    const StringId moveName,
+    const size_t moveIndex,
+    const ecs::World& world,
+    Pokemon& pokemon
 )
 {
-	const auto& moveStats = GetMoveStats(moveName, world);
+    const auto& moveStats = GetMoveStats(moveName, world);
 
-	assert(moveIndex != pokemon.mMoveSet.size() && "Moveset is full");
+    assert(moveIndex != pokemon.mMoveSet.size() && "Moveset is full");
 
-	pokemon.mMoveSet[moveIndex] = std::make_unique<PokemonMoveStats>
-	(
-		moveStats.mName,
-		moveStats.mType,
-		moveStats.mEffect,
-		moveStats.mPower,
-		moveStats.mAccuracy,
-		moveStats.mTotalPowerPoints
-	);
+    pokemon.mMoveSet[moveIndex] = std::make_unique<PokemonMoveStats>
+    (
+        moveStats.mName,
+        moveStats.mType,
+        moveStats.mEffect,
+        moveStats.mPower,
+        moveStats.mAccuracy,
+        moveStats.mTotalPowerPoints
+    );
 }
 
 void AddMoveToFirstUnusedIndex
 (
-	const StringId moveName,
-	const ecs::World& world,
-	Pokemon& pokemon
+    const StringId moveName,
+    const ecs::World& world,
+    Pokemon& pokemon
 )
-{		
-	AddMoveToIndex(moveName, FindFirstUnusedMoveIndex(pokemon.mMoveSet), world, pokemon);
+{        
+    AddMoveToIndex(moveName, FindFirstUnusedMoveIndex(pokemon.mMoveSet), world, pokemon);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

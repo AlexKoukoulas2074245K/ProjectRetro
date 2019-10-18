@@ -115,7 +115,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
 
         case PokeCenterHealingAnimationState::JOY_FACING_WEST:
         {
-			const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+            const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
             auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::WEST), joyRenderableComponent);
 
@@ -199,7 +199,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         } break;
         case PokeCenterHealingAnimationState::HEALING_FINISHED_JOY_FACING_NORTH:
         {
-			const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+            const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
             auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
             ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), joyRenderableComponent);
 
@@ -222,11 +222,11 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
         {           
             if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
             {                
-				const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+                const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
                 auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
-				auto& joyNpcAiComponent      = mWorld.GetComponent<NpcAiComponent>(joyEntityId);
+                auto& joyNpcAiComponent      = mWorld.GetComponent<NpcAiComponent>(joyEntityId);
 
-				joyNpcAiComponent.mAiTimer->Reset();
+                joyNpcAiComponent.mAiTimer->Reset();
                 ChangeAnimationIfCurrentPlayingIsDifferent(JOY_BOW_ANIMATION_NAME, joyRenderableComponent);
 
                 pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
@@ -239,7 +239,7 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
             pokeCenterHealingAnimationState.mAnimationTimer->Update(dt);
             if (pokeCenterHealingAnimationState.mAnimationTimer->HasTicked())
             {   
-				const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+                const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
 
                 auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
                 ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::SOUTH), joyRenderableComponent);
@@ -248,8 +248,8 @@ void PokeCenterHealingAnimationOverworldFlowState::VUpdate(const float dt)
                 {
                     RestorePokemonStats(*pokemon);
                 }
-			
-				SetCurrentPokeCenterAsHome(mWorld);
+            
+                SetCurrentPokeCenterAsHome(mWorld);
 
                 pokeCenterHealingAnimationState.mHealingAnimationStateQueue.pop();
                 CompleteAndTransitionTo<PokeCenterHealingFarewellDialogOverworldFlowState>();
@@ -325,7 +325,7 @@ void PokeCenterHealingAnimationOverworldFlowState::ShowHealingBallWithIndex(cons
 
 void PokeCenterHealingAnimationOverworldFlowState::AddBowAnimationToJoy() const
 {
-	const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
+    const auto joyEntityId = GetNpcEntityIdFromLevelIndex(JOY_NPC_LEVEL_INDEX, mWorld);
     auto& joyRenderableComponent = mWorld.GetComponent<RenderableComponent>(joyEntityId);
 
     LoadMeshFromAtlasTexCoordsAndAddToRenderableAnimations(JOY_BOW_SPRITE_ATLAS_COL, JOY_BOW_SPRITE_ATLAS_ROW, CHARACTER_ATLAS_COLS, CHARACTER_ATLAS_ROWS, false, CHARACTER_MODEL_NAME, JOY_BOW_ANIMATION_NAME, joyRenderableComponent);

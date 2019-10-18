@@ -284,8 +284,8 @@ struct Pokemon
     int mSpeedIv;   int mSpeedEv;
     int mSpecialIv; int mSpecialEv;
 
-	// Move-specific attributes
-	int mBideCounter;
+    // Move-specific attributes
+    int mBideCounter;
     int mBideAccumulatedDamage;
 };
 

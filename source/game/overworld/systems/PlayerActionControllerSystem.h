@@ -39,7 +39,7 @@ public:
     void VUpdateAssociatedComponents(const float dt) const override;
 
 private:
-	void StartPendingPostEncounterConversation() const;
+    void StartPendingPostEncounterConversation() const;
     void AddPendingItemsToBag() const;
     
     void CheckForNpcInteraction

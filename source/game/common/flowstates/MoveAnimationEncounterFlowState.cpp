@@ -101,13 +101,13 @@ MoveAnimationEncounterFlowState::MoveAnimationEncounterFlowState(ecs::World& wor
     }
     else
     {
-		if (ShouldSfxBeSkippedForMove(encounterStateComponent.mLastMoveSelected) == false)
-		{
-			SoundService::GetInstance().PlaySfx
-			(
-				"encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
-			);
-		}        
+        if (ShouldSfxBeSkippedForMove(encounterStateComponent.mLastMoveSelected) == false)
+        {
+            SoundService::GetInstance().PlaySfx
+            (
+                "encounter/" + StringToLower(encounterStateComponent.mLastMoveSelected.GetString())
+            );
+        }        
     }
 }
 
@@ -392,10 +392,10 @@ void MoveAnimationEncounterFlowState::UpdateSpeciallyHandledMoveAnimation(const 
             {
                 UpdateHardenAnimation();
             }
-			else if (encounterStateComponent.mLastMoveSelected == StringId("BIDE"))
-			{
-				UpdateBideAnimation();
-			}
+            else if (encounterStateComponent.mLastMoveSelected == StringId("BIDE"))
+            {
+                UpdateBideAnimation();
+            }
             else if (encounterStateComponent.mLastMoveSelected == StringId("LEER"))
             {
                 UpdateLeerAnimation();
@@ -430,21 +430,21 @@ void MoveAnimationEncounterFlowState::UpdateNormalFrameBasedMoveAnimation()
         renderableComponent->mTextureResourceId = encounterStateComponent.mViewObjects.mBattleAnimationFrameResourceIdQueue.front();
         renderableComponent->mActiveAnimationNameId = StringId("default");
 
-		if (IsMoveAffectedByWhiteFlipEffect(encounterStateComponent.mLastMoveSelected))
-		{
-			OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors
-			(
-				*renderableComponent,
-				encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId,
-				mWorld
-			);
+        if (IsMoveAffectedByWhiteFlipEffect(encounterStateComponent.mLastMoveSelected))
+        {
+            OverridePrimaryColorsBasedOnAnotherEntityPrimaryColors
+            (
+                *renderableComponent,
+                encounterStateComponent.mIsOpponentsTurn ? encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId : encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId,
+                mWorld
+            );
             
             renderableComponent->mShaderNameId = StringId("gui");
-		}
-		else
-		{
-			renderableComponent->mShaderNameId = StringId("gui_unaffected_by_white_flip");
-		}
+        }
+        else
+        {
+            renderableComponent->mShaderNameId = StringId("gui_unaffected_by_white_flip");
+        }
 
         renderableComponent->mAffectedByPerspective = false;
 
