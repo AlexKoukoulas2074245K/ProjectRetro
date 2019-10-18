@@ -343,6 +343,33 @@ int CalculatePokemonHurtingItselfDamage
     return static_cast<int>(fractionResult * modifiers);
 }
 
+int CalculateBindOrWrapRoundDuration
+(
+
+)
+{
+    //https://bulbapedia.bulbagarden.net/wiki/Bind_(move)
+    //https://bulbapedia.bulbagarden.net/wiki/Wrap_(move)
+    const auto rng = math::RandomInt(0, 1000);
+
+    if (rng <= 375)
+    {
+        return 1;
+    }    
+    else if (rng <= 750)
+    {
+        return 2;
+    }
+    else if (rng <= 875)
+    {
+        return 3;
+    }
+    else
+    {
+        return 4;
+    }
+}
+
 void AddMoveToIndex
 (
     const StringId moveName,

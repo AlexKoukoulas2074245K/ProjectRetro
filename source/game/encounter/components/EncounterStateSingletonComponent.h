@@ -47,6 +47,11 @@ enum class OverworldEncounterAnimationState
     NONE, SCREEN_FLASH, ENCOUNTER_INTRO_ANIMATION, ENCOUNTER_INTRO_ANIMATION_COMPLETE
 };
 
+enum class BindOrWrapState
+{
+    NOT_APPLICABLE, FIRST_ROUND, CONTINUATION
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +118,7 @@ public:
     EncounterType mActiveEncounterType                                   = EncounterType::NONE;
     OverworldEncounterAnimationState mOverworldEncounterAnimationState   = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected              = MainMenuActionType::FIGHT;
+    BindOrWrapState mBindOrWrapState                                     = BindOrWrapState::NOT_APPLICABLE;
     int mActivePlayerPokemonRosterIndex                                  = 0;
     int mActiveOpponentPokemonRosterIndex                                = 0;
     int mSpecialMoveAnimationStep                                        = 0;
@@ -136,6 +142,7 @@ public:
     bool mWasPokemonCaught                                               = false;
     bool mHasPokemonEvolvedInBattle                                      = false;    
     bool mIsGymLeaderBattle                                              = false;
+    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -80,11 +80,15 @@ void MoveSideEffectTextEncounterFlowState::ConstructAndDisplayMoveSideEffectText
         return;
     }
 
-    if (selectedMoveStats.mName == StringId("BIDE"))
+    if 
+    (
+        selectedMoveStats.mName == StringId("BIDE") ||
+        selectedMoveStats.mName == StringId("BIND")
+    )
     {
         return;
     }
-
+    
     if (std::isdigit(moveEffectString[0]))
     {
         const auto probability = std::stoi(moveEffectString.substr(0, 2));

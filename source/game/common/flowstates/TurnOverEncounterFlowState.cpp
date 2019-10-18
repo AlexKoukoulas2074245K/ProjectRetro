@@ -66,7 +66,7 @@ void TurnOverEncounterFlowState::VUpdate(const float)
     }
     
     // Both player turns are over
-    if (++encounterStateComponent.mTurnsCompleted >= 2)
+    if (++encounterStateComponent.mTurnsCompleted >= 2 || encounterStateComponent.mBindOrWrapState == BindOrWrapState::CONTINUATION)
     {
         encounterStateComponent.mTurnsCompleted = 0;
         CompleteAndTransitionTo<MainMenuEncounterFlowState>();

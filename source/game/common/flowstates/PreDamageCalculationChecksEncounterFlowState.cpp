@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "BideUnleashTextEncounterFlowState.h"
+#include "BindWrapContinuationEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "PokemonConfusedTextEncounterFlowState.h"
 #include "PokemonFastAsleepTextEncounterFlowState.h"
@@ -165,8 +166,26 @@ void PreDamageCalculationChecksEncounterFlowState::VUpdate(const float)
             CompleteAndTransitionTo<TurnOverEncounterFlowState>();
         }        
     }
-    else
+    else if 
+    (
+        activePlayerPokemon.mBindingOrWrappingOpponentCounter > -1  && 
+        encounterStateComponent.mBindOrWrapState == BindOrWrapState::CONTINUATION
+    )
     {
+        activePlayerPokemon.mBindingOrWrappingOpponentCounter--;
+        CompleteAndTransitionTo<BindWrapContinuationEncounterFlowState>();
+    }
+    else if
+    (
+        activeOpponentPokemon.mBindingOrWrappingOpponentCounter > -1 &&
+        encounterStateComponent.mBindOrWrapState == BindOrWrapState::CONTINUATION
+    )
+    {
+        activeOpponentPokemon.mBindingOrWrappingOpponentCounter--;
+        CompleteAndTransitionTo<BindWrapContinuationEncounterFlowState>();      
+    }
+    else
+    {        
         CompleteAndTransitionTo<DamageCalculationEncounterFlowState>();
     }
 }

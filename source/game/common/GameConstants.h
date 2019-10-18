@@ -287,6 +287,8 @@ struct Pokemon
     // Move-specific attributes
     int mBideCounter;
     int mBideAccumulatedDamage;
+    int mBindingOrWrappingOpponentCounter;
+    int mBindingOrWrappingContinuationDamage;
 };
 
 struct TrainerInfo

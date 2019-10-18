@@ -133,6 +133,8 @@ void EncounterStateControllerSystem::DestroyCurrentAndCreateEncounterLevel() con
         
         pokemon.mNumberOfRoundsUntilConfusionEnds = 0;
         pokemon.mBideCounter = -1;
+        pokemon.mBindingOrWrappingOpponentCounter = -1;
+        pokemon.mBindingOrWrappingContinuationDamage = 0;
 
         if (pokemon.mStatus == PokemonStatus::CONFUSED)
         {

@@ -48,7 +48,7 @@ void MainMenuEncounterFlowState::VUpdate(const float)
         DestroyActiveTextbox(mWorld);
 
         if (cursorCol == 0 && cursorRow == 0)
-        {
+        {            
             // Destroy encounter main menu
             encounterStateComponent.mLastEncounterMainMenuActionSelected = MainMenuActionType::FIGHT;
             if (ShouldSkipMoveSelection())
@@ -88,9 +88,26 @@ void MainMenuEncounterFlowState::VUpdate(const float)
 bool MainMenuEncounterFlowState::ShouldSkipMoveSelection() const
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+
+    if (encounterStateComponent.mBindOrWrapState == BindOrWrapState::FIRST_ROUND)
+    {
+        encounterStateComponent.mBindOrWrapState = BindOrWrapState::CONTINUATION;
+    }
+
+    if (activePlayerPokemon.mBindingOrWrappingOpponentCounter == 0)
+    {
+        activePlayerPokemon.mBindingOrWrappingOpponentCounter = -1;        
+        encounterStateComponent.mBindOrWrapState = BindOrWrapState::NOT_APPLICABLE;        
+    }
+    else if (activeOpponentPokemon.mBindingOrWrappingOpponentCounter == 0)
+    {
+        activeOpponentPokemon.mBindingOrWrappingOpponentCounter = -1;
+        encounterStateComponent.mBindOrWrapState = BindOrWrapState::NOT_APPLICABLE;
+    }
 
     if
     (
@@ -111,7 +128,13 @@ bool MainMenuEncounterFlowState::ShouldSkipMoveSelection() const
     {
         return true;
     }
-
+    else if
+    (
+        encounterStateComponent.mBindOrWrapState == BindOrWrapState::CONTINUATION
+    )
+    {
+        return true;
+    }
     return false;
 }
 

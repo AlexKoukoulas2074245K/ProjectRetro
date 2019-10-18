@@ -139,6 +139,11 @@ int CalculatePokemonHurtingItselfDamage
     const int pokemonDefendingStat
 );
 
+int CalculateBindOrWrapRoundDuration
+(
+
+);
+
 void AddMoveToIndex
 (
     const StringId moveName,

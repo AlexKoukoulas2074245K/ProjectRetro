@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "BindOrWrapBlockedAttackTextEncounterFlowState.h"
 #include "DamageCalculationEncounterFlowState.h"
 #include "FullParalysisTextEncounterFlowState.h"
 #include "MoveAnnouncementEncounterFlowState.h"
@@ -36,18 +37,26 @@ DamageCalculationEncounterFlowState::DamageCalculationEncounterFlowState(ecs::Wo
     auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
     auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
 
-    CalculateDamageInternal
-    (
-        encounterStateComponent.mIsOpponentsTurn ? activeOpponentPokemon : activePlayerPokemon,
-        encounterStateComponent.mIsOpponentsTurn ? activePlayerPokemon : activeOpponentPokemon
-    );
-
-    if (encounterStateComponent.mIsOpponentsTurn == false)
+    if (encounterStateComponent.mBindOrWrapState == BindOrWrapState::FIRST_ROUND)
     {
-        encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap
-        [encounterStateComponent.mActivePlayerPokemonRosterIndex]
-        [encounterStateComponent.mActiveOpponentPokemonRosterIndex] += encounterStateComponent.mOutstandingFloatDamage;
+        encounterStateComponent.mBindOrWrapState = BindOrWrapState::CONTINUATION;
+        CompleteAndTransitionTo<BindOrWrapBlockedAttackTextEncounterFlowState>();
     }
+    else
+    {
+        CalculateDamageInternal
+        (
+            encounterStateComponent.mIsOpponentsTurn ? activeOpponentPokemon : activePlayerPokemon,
+            encounterStateComponent.mIsOpponentsTurn ? activePlayerPokemon : activeOpponentPokemon
+        );
+
+        if (encounterStateComponent.mIsOpponentsTurn == false)
+        {
+            encounterStateComponent.mPlayerPokemonToOpponentPokemonDamageMap
+                [encounterStateComponent.mActivePlayerPokemonRosterIndex]
+            [encounterStateComponent.mActiveOpponentPokemonRosterIndex] += encounterStateComponent.mOutstandingFloatDamage;
+        }
+    }    
 }
 
 void DamageCalculationEncounterFlowState::VUpdate(const float)
@@ -56,7 +65,7 @@ void DamageCalculationEncounterFlowState::VUpdate(const float)
     if (encounterStateComponent.mAttackingPokemonIsFullyParalyzed)
     {
         CompleteAndTransitionTo<FullParalysisTextEncounterFlowState>();
-    }    
+    }      
     else
     {
         CompleteAndTransitionTo<MoveAnnouncementEncounterFlowState>();
@@ -160,6 +169,12 @@ void DamageCalculationEncounterFlowState::HandleMoveEffect
     {
         attackingPokemon.mBideCounter = 2;
         attackingPokemon.mBideAccumulatedDamage = 0;
+    }
+    else if (encounterStateComponent.mLastMoveSelected == StringId("BIND"))
+    {
+        attackingPokemon.mBindingOrWrappingOpponentCounter = CalculateBindOrWrapRoundDuration();
+        attackingPokemon.mBindingOrWrappingContinuationDamage = static_cast<int>(encounterStateComponent.mOutstandingFloatDamage);
+        encounterStateComponent.mBindOrWrapState = BindOrWrapState::FIRST_ROUND;
     }
     else if (fullMoveEffectString == "ESLP")
     {

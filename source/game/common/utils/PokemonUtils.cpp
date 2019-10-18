@@ -187,6 +187,8 @@ std::unique_ptr<Pokemon> CreatePokemon
     // Move-specific attributes reset
     pokemonInstance->mBideCounter = -1;
     pokemonInstance->mBideAccumulatedDamage = 0;
+    pokemonInstance->mBindingOrWrappingOpponentCounter = -1;
+    pokemonInstance->mBindingOrWrappingContinuationDamage = 0;
 
     return pokemonInstance;
 }

@@ -37,8 +37,8 @@ const float PokemonDeathMovementEncounterFlowState::POKEMON_SPRITE_MOVE_SPEED   
 PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {    
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     const auto& activePlayerPokemon   = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
@@ -51,6 +51,8 @@ PokemonDeathMovementEncounterFlowState::PokemonDeathMovementEncounterFlowState(e
     {
         SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(activePlayerPokemon.mBaseSpeciesStats.mId));
     }
+
+    encounterStateComponent.mBindOrWrapState = BindOrWrapState::NOT_APPLICABLE;
 }
 
 void PokemonDeathMovementEncounterFlowState::VUpdate(const float dt)
