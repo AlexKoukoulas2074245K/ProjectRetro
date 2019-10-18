@@ -716,8 +716,12 @@ void PokemonSelectionViewFlowState::TrySwitchPokemon()
             currentlyActivePokemon.mNumberOfRoundsUntilConfusionEnds = 0;
         }
         
-        currentlyActivePokemon.mBindingOrWrappingOpponentCounter = 0;
-        currentlyActivePokemon.mBindingOrWrappingContinuationDamage = 0;
+        if (currentlyActivePokemon.mBindingOrWrappingOpponentCounter != -1)
+        {
+            currentlyActivePokemon.mBindingOrWrappingOpponentCounter = 0;
+            currentlyActivePokemon.mBindingOrWrappingContinuationDamage = 0;
+        }
+        
         
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
