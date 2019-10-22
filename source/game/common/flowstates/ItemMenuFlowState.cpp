@@ -122,7 +122,6 @@ void ItemMenuFlowState::UpdateItemMenu(const float dt)
         }
         else
         {            
-            const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
                 TransitionToItemUsageFlow();

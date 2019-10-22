@@ -16,6 +16,7 @@
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
+#include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 
@@ -52,10 +53,15 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-     auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& encounterStateComponent   = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
     if (encounterStateComponent.mIsPikachuCaptureFlowActive)
     {
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId);
+        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+
+        DestroyEncounterSprites(mWorld);
+
         encounterStateComponent.mEncounterJustFinished = true;
         return;
     }

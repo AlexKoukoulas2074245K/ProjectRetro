@@ -170,7 +170,7 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
     transitionAnimationStateComponent.mTransitionAnimationType  = TransitionAnimationType::ENCOUNTER_END;
     transitionAnimationStateComponent.mBlackAndWhiteModeEnabled = false;
     
-    if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) == 0)
+    if (GetNumberOfNonFaintedPokemonInParty(playerStateComponent.mPlayerPokemonRoster) == 0 && encounterStateComponent.mIsPikachuCaptureFlowActive == false)
     {
         for (auto& pokemon: playerStateComponent.mPlayerPokemonRoster)
         {

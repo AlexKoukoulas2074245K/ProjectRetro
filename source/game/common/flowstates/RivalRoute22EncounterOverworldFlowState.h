@@ -54,9 +54,7 @@ private:
     static const TileCoords EXCLAMATION_MARK_ATLAS_COORDS;
     static const TileCoords RIVAL_ENTRANCE_COORDS;
     static const TileCoords RIVAL_SPEECH_COORDS_1;
-    static const TileCoords RIVAL_SPEECH_COORDS_2;
-    static const TileCoords RIVAL_EXIT_COORDS_1;
-    static const TileCoords RIVAL_EXIT_COORDS_2;
+    static const TileCoords RIVAL_SPEECH_COORDS_2;    
     
     static const int RIVAL_1_LEVEL_INDEX;
     

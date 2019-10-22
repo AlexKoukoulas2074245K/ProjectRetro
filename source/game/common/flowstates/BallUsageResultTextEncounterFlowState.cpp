@@ -55,14 +55,22 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
             return;
         }
     }
-    if (guiStateComponent.mActiveTextboxesStack.size() == 1)
+    if (guiStateComponent.mActiveTextboxesStack.size() == 1 || guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
     {
+        if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+        {
+            DestroyActiveTextbox(mWorld);
+        }
+
         if (encounterStateComponent.mWasPokemonCaught)
         {
             if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
             {
-                // Destroy all encounter sprites
-                DestroyEncounterSprites(mWorld);
+                if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
+                {
+                    // Destroy all encounter sprites
+                    DestroyEncounterSprites(mWorld);
+                }                
 
                 // Destroy main chatbox
                 DestroyActiveTextbox(mWorld);
@@ -125,19 +133,19 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
     if (encounterStateComponent.mWasPokemonCaught)
     {
         catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#";
-                
-        if
+             
+        if 
         (
-            encounterStateComponent.mIsPikachuCaptureFlowActive == false &&
-            GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED
+            encounterStateComponent.mIsPikachuCaptureFlowActive || 
+            GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) == PokedexEntryType::OWNED
         )
         {
-            catchResultText += "@New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
+            catchResultText += "@+FREEZE";
         }
         else
         {
-            catchResultText += "+END";
-        }        
+            catchResultText += "@New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
+        }             
     }
     else if (encounterStateComponent.mBallThrownShakeCount == -1)
     {

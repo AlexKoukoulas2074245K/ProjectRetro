@@ -39,8 +39,6 @@ const TileCoords RivalRoute22EncounterOverworldFlowState::EXCLAMATION_MARK_ATLAS
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_ENTRANCE_COORDS         = TileCoords(36, 19);
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_SPEECH_COORDS_1         = TileCoords(41, 19);
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_SPEECH_COORDS_2         = TileCoords(42, 19);
-const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_EXIT_COORDS_1           = TileCoords(44, 19);
-const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_EXIT_COORDS_2           = TileCoords(44, 14);
 
 const int RivalRoute22EncounterOverworldFlowState::RIVAL_1_LEVEL_INDEX = 0;
 
@@ -242,8 +240,18 @@ void RivalRoute22EncounterOverworldFlowState::CreateScriptedPath(const bool isEn
     }
     else
     {
-        rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_EXIT_COORDS_1.mCol, RIVAL_EXIT_COORDS_1.mRow);
-        rivalAiComponent.mScriptedPathTileCoords.emplace_back(RIVAL_EXIT_COORDS_2.mCol, RIVAL_EXIT_COORDS_2.mRow);
+        if (mIsPlayerOnBottomTile)
+        {
+            rivalAiComponent.mScriptedPathTileCoords.emplace_back(41, 20);
+            rivalAiComponent.mScriptedPathTileCoords.emplace_back(44, 20);
+            
+        }
+        else
+        {            
+            rivalAiComponent.mScriptedPathTileCoords.emplace_back(44, 19);
+        }   
+
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(44, 14);
     }
 
     rivalAiComponent.mScriptedPathIndex = 0;
