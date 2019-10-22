@@ -46,6 +46,8 @@ private:
 
     static const int PLAYER_TRAINER_SPRITE_ATLAS_COL;
     static const int PLAYER_TRAINER_SPRITE_ATLAS_ROW;
+    static const int OAK_TRAINER_SPRITE_ATLAS_COL;
+    static const int OAK_TRAINER_SPRITE_ATLAS_ROW;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

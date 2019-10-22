@@ -48,89 +48,31 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
-    (
-        PLAYER_ROSTER_DISPLAY_POSITION,
-        PLAYER_ROSTER_DISPLAY_SCALE,
-        mWorld
-    );
-
-    // Pokemon party pokeball rendering
-    encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
-    (
-        TextboxType::BARE_TEXTBOX,
-        PLAYER_POKEMON_INFO_TEXTBOX_COLS,
-        PLAYER_POKEMON_INFO_TEXTBOX_ROWS,
-        PLAYER_POKEMON_INFO_TEXTBOX_POSITION.x,
-        PLAYER_POKEMON_INFO_TEXTBOX_POSITION.y,
-        PLAYER_POKEMON_INFO_TEXTBOX_POSITION.z,
-        mWorld
-    );
-    
-    const auto& playerPokemonRoster = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster;
-    for (auto i = 0U; i < playerPokemonRoster.size(); ++i)
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
     {
-        const auto& pokemon = *playerPokemonRoster[i];
-        
-        std::string statusString = "~"; // normal status
-        
-        if (pokemon.mHp <= 0)
-        {
-            statusString = "+";
-        }
-        else if (pokemon.mStatus != PokemonStatus::NORMAL)
-        {
-            statusString = "`";
-        }
-
-        // select normal pokeball, status or faint
-        WriteTextAtTextboxCoords
+        encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = LoadAndCreatePlayerRosterDisplay
         (
-            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-            statusString,
-            1 + i,
-            3,
-            mWorld
-        );
-    }
-    
-    for (auto i = playerPokemonRoster.size(); i < 6; ++i)
-    {
-        WriteTextAtTextboxCoords
-        (
-            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
-            "\"",
-            1 + i,
-            3,
-            mWorld
-        );
-    }
-
-    if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-    {
-        encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentRosterDisplay
-        (
-            OPPONENT_ROSTER_DISPLAY_POSITION,
-            OPPONENT_ROSTER_DISPLAY_SCALE,
+            PLAYER_ROSTER_DISPLAY_POSITION,
+            PLAYER_ROSTER_DISPLAY_SCALE,
             mWorld
         );
 
         // Pokemon party pokeball rendering
-        encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+        encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
         (
             TextboxType::BARE_TEXTBOX,
-            20,
-            2,
-            OPPONENT_INFO_TEXTBOX_POSITION.x,
-            OPPONENT_INFO_TEXTBOX_POSITION.y,
-            OPPONENT_INFO_TEXTBOX_POSITION.z,
+            PLAYER_POKEMON_INFO_TEXTBOX_COLS,
+            PLAYER_POKEMON_INFO_TEXTBOX_ROWS,
+            PLAYER_POKEMON_INFO_TEXTBOX_POSITION.x,
+            PLAYER_POKEMON_INFO_TEXTBOX_POSITION.y,
+            PLAYER_POKEMON_INFO_TEXTBOX_POSITION.z,
             mWorld
         );
 
-        const auto& opponentPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
-        for (auto i = 0U; i < opponentPokemonRoster.size(); ++i)
+        const auto& playerPokemonRoster = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mPlayerPokemonRoster;
+        for (auto i = 0U; i < playerPokemonRoster.size(); ++i)
         {
-            const auto& pokemon = *opponentPokemonRoster[i];
+            const auto& pokemon = *playerPokemonRoster[i];
 
             std::string statusString = "~"; // normal status
 
@@ -146,28 +88,89 @@ OpponentIntroTextEncounterFlowState::OpponentIntroTextEncounterFlowState(ecs::Wo
             // select normal pokeball, status or faint
             WriteTextAtTextboxCoords
             (
-                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
                 statusString,
-                10 - i,
-                1,
+                1 + i,
+                3,
                 mWorld
             );
         }
-        
-        for (auto i = opponentPokemonRoster.size(); i < 6U; ++i)
+
+        for (auto i = playerPokemonRoster.size(); i < 6; ++i)
         {
-            // select normal pokeball, status or faint
             WriteTextAtTextboxCoords
             (
-                encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId,
                 "\"",
-                10 - i,
-                1,
+                1 + i,
+                3,
                 mWorld
             );
         }
-    }
 
+        if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+        {
+            encounterStateComponent.mViewObjects.mOpponentStatusDisplayEntityId = LoadAndCreateOpponentRosterDisplay
+            (
+                OPPONENT_ROSTER_DISPLAY_POSITION,
+                OPPONENT_ROSTER_DISPLAY_SCALE,
+                mWorld
+            );
+
+            // Pokemon party pokeball rendering
+            encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId = CreateTextboxWithDimensions
+            (
+                TextboxType::BARE_TEXTBOX,
+                20,
+                2,
+                OPPONENT_INFO_TEXTBOX_POSITION.x,
+                OPPONENT_INFO_TEXTBOX_POSITION.y,
+                OPPONENT_INFO_TEXTBOX_POSITION.z,
+                mWorld
+            );
+
+            const auto& opponentPokemonRoster = encounterStateComponent.mOpponentPokemonRoster;
+            for (auto i = 0U; i < opponentPokemonRoster.size(); ++i)
+            {
+                const auto& pokemon = *opponentPokemonRoster[i];
+
+                std::string statusString = "~"; // normal status
+
+                if (pokemon.mHp <= 0)
+                {
+                    statusString = "+";
+                }
+                else if (pokemon.mStatus != PokemonStatus::NORMAL)
+                {
+                    statusString = "`";
+                }
+
+                // select normal pokeball, status or faint
+                WriteTextAtTextboxCoords
+                (
+                    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                    statusString,
+                    10 - i,
+                    1,
+                    mWorld
+                );
+            }
+
+            for (auto i = opponentPokemonRoster.size(); i < 6U; ++i)
+            {
+                // select normal pokeball, status or faint
+                WriteTextAtTextboxCoords
+                (
+                    encounterStateComponent.mViewObjects.mOpponentPokemonInfoTextboxEntityId,
+                    "\"",
+                    10 - i,
+                    1,
+                    mWorld
+                );
+            }
+        }
+    }
+    
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
@@ -190,13 +193,16 @@ void OpponentIntroTextEncounterFlowState::VUpdate(const float)
     {
         if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
         {
-            mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
-            
-            DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
-            
-            encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId      = ecs::NULL_ENTITY_ID;
-            encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
-            
+            if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
+            {
+                mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId);
+
+                DestroyGenericOrBareTextbox(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, mWorld);
+
+                encounterStateComponent.mViewObjects.mPlayerStatusDisplayEntityId = ecs::NULL_ENTITY_ID;
+                encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId = ecs::NULL_ENTITY_ID;
+            }
+                        
             CompleteAndTransitionTo<OpponentPokemonStatusDisplayEncounterFlowState>();
         }
         else

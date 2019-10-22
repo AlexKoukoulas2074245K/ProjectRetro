@@ -23,6 +23,7 @@
 #include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumGuideOverworldFlowState.h"
+#include "../../common/flowstates/PikachuCatchIntroSequenceOverworldFlowState.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PokeMartIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/TownMapOverworldFlowState.h"
@@ -137,8 +138,7 @@ void OverworldFlowControllerSystem::InitializeOverworldFlowState() const
 
 void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
 {
-    // Here we expose only the overworld states that we need to expose to the level editor
-
+    // Here we expose only the overworld states that we need the level editor to have visibility of
     RegisterNamedFlowState(PCIntroDialogOverworldFlowState);
     RegisterNamedFlowState(TownMapOverworldFlowState);
     RegisterNamedFlowState(ViridianRudeGuyOverworldFlowState);
@@ -154,6 +154,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(ViridianOaksParcelOverworldFlowState);
     RegisterNamedFlowState(OakDialogOverworldFlowState);
     RegisterNamedFlowState(RivalRoute22EncounterOverworldFlowState);
+    RegisterNamedFlowState(PikachuCatchIntroSequenceOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const

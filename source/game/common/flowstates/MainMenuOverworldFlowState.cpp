@@ -60,15 +60,19 @@ void MainMenuOverworldFlowState::VUpdate(const float)
         }
         else if (StringStartsWith(mainMenuItem, "POK^MO"))
         {
+            
             const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
             auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
             playerStateComponent.mPreviousMainMenuCursorRow = cursorComponent.mCursorRow;
 
-            // Destory main menu textbox
-            DestroyActiveTextbox(mWorld);
+            if (playerStateComponent.mPlayerPokemonRoster.size() > 0)
+            {
+                // Destory main menu textbox
+                DestroyActiveTextbox(mWorld);
                         
-            pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
-            CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+                pokemonSelectionViewStateComponent.mCreationSourceType = PokemonSelectionViewCreationSourceType::OVERWORLD;
+                CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+            }
         }
         else if (StringStartsWith(mainMenuItem, "ITEM"))
         {

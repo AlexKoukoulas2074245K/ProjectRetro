@@ -995,12 +995,11 @@
         { "editor_col": 27, "editor_row": 31, "game_position_x": 43.2, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 28, "editor_row": 31, "game_position_x": 44.8, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 },
         { "editor_col": 29, "editor_row": 31, "game_position_x": 46.4, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 30, "editor_row": 31, "game_position_x": 48.0, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 },
-        { "editor_col": 31, "editor_row": 31, "game_position_x": 49.6, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 }
+        { "editor_col": 30, "editor_row": 31, "game_position_x": 48.0, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 }
     ],
     "level_ground_layer_game":
     [
-        { "texture_name": "pallet_groundLayer.png", "game_position_x": 25.6, "game_position_z": 25.6 }
+        { "texture_name": "pallet_town_groundLayer.png", "game_position_x": 25.6, "game_position_z": 25.6 }
     ],
     "level_npc_attributes":
     [
@@ -1009,12 +1008,14 @@
          { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "I'm raising#POK^MON too!#@When they get#strong, they can#protect me!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "PALLET TOWN#Shades of your#journey await!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 13, "editor_row": 17, "game_col": 13, "game_row": 14, "game_position_x": 20.8, "game_position_z": 22.4 },
          { "movement_type": "STATIC", "direction": -1, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "OAK POK^MON#RESEARCH LAB", "side_dialogs": [], "pokemon_roster": [], "editor_col": 19, "editor_row": 21, "game_col": 19, "game_row": 10, "game_position_x": 30.4, "game_position_z": 16.0 },
-         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POK^MON as#data via PC!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4 }
+         { "movement_type": "DYNAMIC", "direction": 2, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "Technology is#incredible!#@You can now store#and recall items#and POK^MON as#data via PC!", "side_dialogs": [], "pokemon_roster": [], "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4 },
+         { "movement_type": "DYNAMIC", "direction": 0, "is_trainer": false, "is_gym_leader": false, "trainer_name": "", "dialog": "", "side_dialogs": [], "pokemon_roster": [], "editor_col": 30, "editor_row": 30, "game_col": 30, "game_row": 1, "game_position_x": 48.0, "game_position_z": 1.6 }
     ],
     "level_npc_sprites":
     [
         {  "editor_col": 8, "editor_row": 16, "game_col": 8, "game_row": 15, "game_position_x": 12.8, "game_position_z": 24.0, "atlas_col": 6, "atlas_row": 23 },
-        {  "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 }
+        {  "editor_col": 18, "editor_row": 22, "game_col": 18, "game_row": 9, "game_position_x": 28.8, "game_position_z": 14.4, "atlas_col": 7, "atlas_row": 6 },
+        {  "editor_col": 30, "editor_row": 30, "game_col": 30, "game_row": 1, "game_position_x": 48.0, "game_position_z": 1.6, "atlas_col": 2, "atlas_row": 16 }
     ],
     "level_model_list":
     [
@@ -1614,7 +1615,6 @@
         { "model_name": "out_grass_wild (1,1)", "editor_col": 28, "editor_row": 31, "game_col": 28, "game_row": 0, "game_position_x": 44.8, "game_position_z": 0.0 },
         { "model_name": "out_grass_wild (1,1)", "editor_col": 29, "editor_row": 31, "game_col": 29, "game_row": 0, "game_position_x": 46.4, "game_position_z": 0.0 },
         { "model_name": "out_grass_wild (1,1)", "editor_col": 30, "editor_row": 31, "game_col": 30, "game_row": 0, "game_position_x": 48.0, "game_position_z": 0.0 },
-        { "model_name": "out_grass_wild (1,1)", "editor_col": 31, "editor_row": 31, "game_col": 31, "game_row": 0, "game_position_x": 49.6, "game_position_z": 0.0 },
         { "model_name": "out_sign (1,1)", "editor_col": 9, "editor_row": 13, "game_col": 9, "game_row": 18, "game_position_x": 14.4, "game_position_z": 28.8 },
         { "model_name": "out_sign (1,1)", "editor_col": 17, "editor_row": 13, "game_col": 17, "game_row": 18, "game_position_x": 27.2, "game_position_z": 28.8 },
         { "model_name": "out_sign (1,1)", "editor_col": 13, "editor_row": 17, "game_col": 13, "game_row": 14, "game_position_x": 20.8, "game_position_z": 22.4 },
@@ -1700,6 +1700,8 @@
         { "tile_traits": "SOLID", "editor_col": 24, "editor_row": 7, "game_col": 24, "game_row": 24, "game_position_x": 38.4, "game_position_z": 38.4 },
         { "tile_traits": "SOLID", "editor_col": 9, "editor_row": 8, "game_col": 9, "game_row": 23, "game_position_x": 14.4, "game_position_z": 36.8 },
         { "tile_traits": "SOLID", "editor_col": 15, "editor_row": 8, "game_col": 15, "game_row": 23, "game_position_x": 24.0, "game_position_z": 36.8 },
+        { "tile_traits": "FLOW_TRIGGER", "editor_col": 16, "editor_row": 8, "game_col": 16, "game_row": 23, "game_position_x": 25.6, "game_position_z": 36.8 },
+        { "tile_traits": "FLOW_TRIGGER", "editor_col": 17, "editor_row": 8, "game_col": 17, "game_row": 23, "game_position_x": 27.2, "game_position_z": 36.8 },
         { "tile_traits": "SOLID", "editor_col": 18, "editor_row": 8, "game_col": 18, "game_row": 23, "game_position_x": 28.8, "game_position_z": 36.8 },
         { "tile_traits": "SOLID", "editor_col": 24, "editor_row": 8, "game_col": 24, "game_row": 23, "game_position_x": 38.4, "game_position_z": 36.8 },
         { "tile_traits": "SOLID", "editor_col": 6, "editor_row": 9, "game_col": 6, "game_row": 22, "game_position_x": 9.6, "game_position_z": 35.2 },
@@ -1852,13 +1854,20 @@
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 10, "editor_row": 29, "game_col": 10, "game_row": 2, "game_position_x": 16.0, "game_position_z": 3.2 },
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 13, "editor_row": 29, "game_col": 13, "game_row": 2, "game_position_x": 20.8, "game_position_z": 3.2 },
         { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 29, "game_col": 20, "game_row": 2, "game_position_x": 32.0, "game_position_z": 3.2 },
+        { "tile_traits": "SOLID", "editor_col": 29, "editor_row": 29, "game_col": 29, "game_row": 2, "game_position_x": 46.4, "game_position_z": 3.2 },
+        { "tile_traits": "SOLID", "editor_col": 30, "editor_row": 29, "game_col": 30, "game_row": 2, "game_position_x": 48.0, "game_position_z": 3.2 },
+        { "tile_traits": "SOLID", "editor_col": 31, "editor_row": 29, "game_col": 31, "game_row": 2, "game_position_x": 49.6, "game_position_z": 3.2 },
         { "tile_traits": "SOLID", "editor_col": 9, "editor_row": 30, "game_col": 9, "game_row": 1, "game_position_x": 14.4, "game_position_z": 1.6 },
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 10, "editor_row": 30, "game_col": 10, "game_row": 1, "game_position_x": 16.0, "game_position_z": 1.6 },
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 13, "editor_row": 30, "game_col": 13, "game_row": 1, "game_position_x": 20.8, "game_position_z": 1.6 },
         { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 30, "game_col": 20, "game_row": 1, "game_position_x": 32.0, "game_position_z": 1.6 },
+        { "tile_traits": "SOLID", "editor_col": 29, "editor_row": 30, "game_col": 29, "game_row": 1, "game_position_x": 46.4, "game_position_z": 1.6 },
+        { "tile_traits": "SOLID", "editor_col": 31, "editor_row": 30, "game_col": 31, "game_row": 1, "game_position_x": 49.6, "game_position_z": 1.6 },
         { "tile_traits": "SOLID", "editor_col": 9, "editor_row": 31, "game_col": 9, "game_row": 0, "game_position_x": 14.4, "game_position_z": 0.0 },
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 10, "editor_row": 31, "game_col": 10, "game_row": 0, "game_position_x": 16.0, "game_position_z": 0.0 },
         { "tile_traits": "SEA_TILE_EDGE", "editor_col": 13, "editor_row": 31, "game_col": 13, "game_row": 0, "game_position_x": 20.8, "game_position_z": 0.0 },
-        { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 31, "game_col": 20, "game_row": 0, "game_position_x": 32.0, "game_position_z": 0.0 }
+        { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 31, "game_col": 20, "game_row": 0, "game_position_x": 32.0, "game_position_z": 0.0 },
+        { "tile_traits": "SOLID", "editor_col": 29, "editor_row": 31, "game_col": 29, "game_row": 0, "game_position_x": 46.4, "game_position_z": 0.0 },
+        { "tile_traits": "SOLID", "editor_col": 30, "editor_row": 31, "game_col": 30, "game_row": 0, "game_position_x": 48.0, "game_position_z": 0.0 }
     ]
 }

@@ -257,14 +257,7 @@ void App::DummyInitialization()
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
     playerStateComponent->mPlayerTrainerName = StringId("Alex");
-    playerStateComponent->mRivalName  = StringId("Gary");
-    playerStateComponent->mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 10, false, mWorld));
-    playerStateComponent->mPlayerPokemonRoster.back()->mXpPoints += 330;
-    
-    for (const auto& pokemonEntry : playerStateComponent->mPlayerPokemonRoster)
-    {
-        ChangePokedexEntryForPokemon(pokemonEntry->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);
-    }
+    playerStateComponent->mRivalName  = StringId("Gary");    
 
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
@@ -277,7 +270,7 @@ void App::DummyInitialization()
     activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
     mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
 
-    CreatePlayerOverworldSprite(levelEntityId, Direction::SOUTH, 7, 5, mWorld);
+    CreatePlayerOverworldSprite(levelEntityId, Direction::NORTH, 7, 5, mWorld);
 
     SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
 }

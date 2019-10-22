@@ -97,6 +97,11 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
             mWorld
         );
     }
+
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+    {
+        CompleteAndTransitionTo<MainMenuEncounterFlowState>();
+    }
 }
 
 void OpponentPokemonStatusDisplayEncounterFlowState::VUpdate(const float dt)

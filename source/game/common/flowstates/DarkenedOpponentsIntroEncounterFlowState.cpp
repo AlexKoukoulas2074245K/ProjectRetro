@@ -37,6 +37,8 @@ const float DarkenedOpponentsIntroEncounterFlowState::SPRITE_ANIMATION_SPEED = 1
 
 const int DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_ATLAS_COL = 6;
 const int DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_ATLAS_ROW = 4;
+const int DarkenedOpponentsIntroEncounterFlowState::OAK_TRAINER_SPRITE_ATLAS_COL    = 8;
+const int DarkenedOpponentsIntroEncounterFlowState::OAK_TRAINER_SPRITE_ATLAS_ROW    = 4;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -108,14 +110,29 @@ void DarkenedOpponentsIntroEncounterFlowState::CreateEncounterOpponentsSprites()
 {    
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
-    (
-        PLAYER_TRAINER_SPRITE_ATLAS_COL,
-        PLAYER_TRAINER_SPRITE_ATLAS_ROW,
-        PLAYER_TRAINER_SPRITE_INIT_POS,
-        SPRITE_SCALE,
-        mWorld
-    );
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+    {
+        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
+        (
+            OAK_TRAINER_SPRITE_ATLAS_COL,
+            OAK_TRAINER_SPRITE_ATLAS_ROW,
+            PLAYER_TRAINER_SPRITE_INIT_POS,
+            SPRITE_SCALE,
+            mWorld
+        );
+    }
+    else
+    {
+        encounterStateComponent.mViewObjects.mPlayerActiveSpriteEntityId = LoadAndCreateTrainerSprite
+        (
+            PLAYER_TRAINER_SPRITE_ATLAS_COL,
+            PLAYER_TRAINER_SPRITE_ATLAS_ROW,
+            PLAYER_TRAINER_SPRITE_INIT_POS,
+            SPRITE_SCALE,
+            mWorld
+        );
+    }
+    
     
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {

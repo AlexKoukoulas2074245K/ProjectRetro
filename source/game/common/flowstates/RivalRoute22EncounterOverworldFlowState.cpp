@@ -36,7 +36,6 @@ const std::string RivalRoute22EncounterOverworldFlowState::RIVAL_TRAINER_MUSIC_N
 const std::string RivalRoute22EncounterOverworldFlowState::LEVEL_MUSIC_NAME         = "route22";
 
 const TileCoords RivalRoute22EncounterOverworldFlowState::EXCLAMATION_MARK_ATLAS_COORDS = TileCoords(7, 46);
-const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_SPRITE_ATLAS_COORDS     = TileCoords(4, 15);
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_ENTRANCE_COORDS         = TileCoords(36, 19);
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_SPEECH_COORDS_1         = TileCoords(41, 19);
 const TileCoords RivalRoute22EncounterOverworldFlowState::RIVAL_SPEECH_COORDS_2         = TileCoords(42, 19);

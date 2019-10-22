@@ -142,7 +142,7 @@ public:
     bool mWasPokemonCaught                                               = false;
     bool mHasPokemonEvolvedInBattle                                      = false;    
     bool mIsGymLeaderBattle                                              = false;
-    
+    bool mIsPikachuCaptureFlowActive                                     = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
