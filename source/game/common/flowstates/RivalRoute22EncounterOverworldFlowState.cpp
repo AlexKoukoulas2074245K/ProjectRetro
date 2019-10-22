@@ -60,7 +60,7 @@ RivalRoute22EncounterOverworldFlowState::RivalRoute22EncounterOverworldFlowState
     (
         HasMilestone(milestones::RECEIVED_POKEDEX, mWorld) && 
         !HasMilestone(milestones::BOULDERBADGE, mWorld) && 
-        !HasMilestone(milestones::FIRST_RIVAL_BATTLE_WON, mWorld))
+        !HasMilestone(milestones::SECOND_RIVAL_BATTLE_WON, mWorld))
     {
         mIsPlayerOnBottomTile = playerMovementState.mCurrentCoords == TileCoords(RIVAL_SPEECH_COORDS_2.mCol, RIVAL_SPEECH_COORDS_2.mRow);
         CreateExlamationMark();
@@ -139,7 +139,7 @@ void RivalRoute22EncounterOverworldFlowState::UpdateWaitForRivalBattleToEnd()
     {
         if (playerStateComponent.mLastBattleWon)
         {
-            SetMilestone(milestones::FIRST_RIVAL_BATTLE_WON, mWorld);
+            SetMilestone(milestones::SECOND_RIVAL_BATTLE_WON, mWorld);
             
             const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(RIVAL_1_LEVEL_INDEX, mWorld);
             auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);

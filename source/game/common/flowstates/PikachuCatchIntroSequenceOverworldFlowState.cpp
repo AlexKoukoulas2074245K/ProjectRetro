@@ -73,6 +73,9 @@ void PikachuCatchIntroSequenceOverworldFlowState::VUpdate(const float dt)
         case EventState::OAK_ENTRANCE:              UpdateOakEntrance(); break;
         case EventState::OAK_THAT_WAS_CLOSE_DIALOG: UpdateOakThatWasCloseDialog(); break;        
         case EventState::WAIT_FOR_PIKACHU_CAPTURE:  UpdateWaitForPikachuCapture(); break;
+        case EventState::OAK_PHEW_DIALOG:           UpdateOakPhewDialog(); break;
+        case EventState::OAK_TALL_GRASS_DIALOG:     UpdateOakTallGrassDialog(); break;
+        case EventState::FOLLOWING_OAK_TO_LAB:      UpdateFollowingOakToLab(); break;
     }   
 }
 
@@ -98,7 +101,7 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateExclamationMark(const fl
                 mWorld.DestroyEntity(mExclamationMarkEntityId);         
                 DestroyActiveTextbox(mWorld);
                 ChangeCharacterDirection(Character::PLAYER, Direction::SOUTH);
-                PositionOakSprite();
+                PositionOakSprite(false);
                 CreateOakEntranceScriptedPath();
 
                 mEventState = EventState::OAK_ENTRANCE;
@@ -159,6 +162,40 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakThatWasCloseDialog()
 
 void PikachuCatchIntroSequenceOverworldFlowState::UpdateWaitForPikachuCapture()
 {
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
+    {
+        PositionOakSprite(true);
+        QueueDialogForChatbox(CreateChatbox(mWorld), "OAK: Whew..", mWorld);
+        mEventState = EventState::OAK_PHEW_DIALOG;
+    }
+}
+
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakPhewDialog()
+{    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        ChangeCharacterDirection(Character::OAK, Direction::NORTH);
+        QueueDialogForChatbox
+        (
+            CreateChatbox(mWorld), 
+            "OAK: A POK^MON can#appear anytime in#tall grass.#@You need your own#POK^MON for your#protection.#I know!#@Here, come with#me!", 
+            mWorld
+        );
+        mEventState = EventState::OAK_TALL_GRASS_DIALOG;
+    }
+}
+
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakTallGrassDialog()
+{
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        mEventState = EventState::FOLLOWING_OAK_TO_LAB;
+    }
+}
+
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateFollowingOakToLab()
+{
 
 }
 
@@ -189,21 +226,50 @@ void PikachuCatchIntroSequenceOverworldFlowState::CreateExlamationMark()
     mWorld.AddComponent<TransformComponent>(mExclamationMarkEntityId, std::move(exclamationMarkTransformComponent));
 }
 
-void PikachuCatchIntroSequenceOverworldFlowState::PositionOakSprite()
-{
+void PikachuCatchIntroSequenceOverworldFlowState::PositionOakSprite(const bool postBattle)
+{    
     const auto oakEntityId = GetNpcEntityIdFromLevelIndex(OAK_LEVEL_INDEX, mWorld);
 
-    auto& transformComponent = mWorld.GetComponent<TransformComponent>(oakEntityId);
-    transformComponent.mPosition = TileCoordsToPosition(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow);
-
+    auto& transformComponent     = mWorld.GetComponent<TransformComponent>(oakEntityId);
     auto& movementStateComponent = mWorld.GetComponent<MovementStateComponent>(oakEntityId);
-    movementStateComponent.mCurrentCoords = OAK_ENTRANCE_COORDS;
 
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+    auto& levelModelComponent        = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
-    GetTile(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = oakEntityId;
-    GetTile(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+    if (postBattle)
+    {
+        if (mIsPlayerOnLeftTile)
+        {
+            transformComponent.mPosition = TileCoordsToPosition(OAK_SPEECH_COORDS_1.mCol, OAK_SPEECH_COORDS_1.mRow);
+
+            movementStateComponent.mCurrentCoords = OAK_SPEECH_COORDS_1;
+
+            GetTile(OAK_SPEECH_COORDS_1.mCol, OAK_SPEECH_COORDS_1.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = oakEntityId;
+            GetTile(OAK_SPEECH_COORDS_1.mCol, OAK_SPEECH_COORDS_1.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+
+            ChangeCharacterDirection(Character::OAK, Direction::EAST);
+        }
+        else
+        {
+            transformComponent.mPosition = TileCoordsToPosition(OAK_SPEECH_COORDS_2.mCol, OAK_SPEECH_COORDS_2.mRow);
+
+            movementStateComponent.mCurrentCoords = OAK_SPEECH_COORDS_2;
+
+            GetTile(OAK_SPEECH_COORDS_2.mCol, OAK_SPEECH_COORDS_2.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = oakEntityId;
+            GetTile(OAK_SPEECH_COORDS_2.mCol, OAK_SPEECH_COORDS_2.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NPC;
+
+            ChangeCharacterDirection(Character::OAK, Direction::WEST);
+        }        
+    }
+    else
+    {
+        transformComponent.mPosition = TileCoordsToPosition(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow);
+
+        movementStateComponent.mCurrentCoords = OAK_ENTRANCE_COORDS;
+
+        GetTile(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = oakEntityId;
+        GetTile(OAK_ENTRANCE_COORDS.mCol, OAK_ENTRANCE_COORDS.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+    }
 }
 
 void PikachuCatchIntroSequenceOverworldFlowState::CreateOakEntranceScriptedPath()

@@ -102,7 +102,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 GetTile(VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(VIRIDIAN_RUDE_GUY_LEVEL_INDEX, mWorld), mWorld);
             }
-            else if (levelName == ROUTE_22_LEVEL_NAME && HasMilestone(milestones::FIRST_RIVAL_BATTLE_WON, mWorld))
+            else if (levelName == ROUTE_22_LEVEL_NAME && HasMilestone(milestones::SECOND_RIVAL_BATTLE_WON, mWorld))
             {
                 GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
                 GetTile(ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;

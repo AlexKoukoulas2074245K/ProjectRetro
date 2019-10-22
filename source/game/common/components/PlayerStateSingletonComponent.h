@@ -99,18 +99,19 @@ namespace milestones
 {
     using Milestones = unsigned long;
 
-    static constexpr unsigned long SEEN_OAK_FIRST_TIME    = 1UL << 0;    
-    static constexpr unsigned long RECEIVED_OAKS_PARCEL   = 1UL << 1;
-    static constexpr unsigned long RECEIVED_POKEDEX       = 1UL << 2;
-    static constexpr unsigned long FIRST_RIVAL_BATTLE_WON = 1UL << 3;
-    static constexpr unsigned long BOULDERBADGE           = 1UL << 4;
-    static constexpr unsigned long CASCADEBADGE           = 1UL << 5;
-    static constexpr unsigned long THUNDERBADGE           = 1UL << 6;
-    static constexpr unsigned long RAINBOWBADGE           = 1UL << 7;
-    static constexpr unsigned long SOULBADGE              = 1UL << 8;
-    static constexpr unsigned long MARSHBADGE             = 1UL << 9;
-    static constexpr unsigned long VOLCANOBADGE           = 1UL << 10;
-    static constexpr unsigned long EARTHBADGE             = 1UL << 11;
+    static constexpr unsigned long SEEN_OAK_FIRST_TIME     = 1UL << 0;    
+    static constexpr unsigned long RECEIVED_OAKS_PARCEL    = 1UL << 1;
+    static constexpr unsigned long RECEIVED_POKEDEX        = 1UL << 2;
+    static constexpr unsigned long FIRST_RIVAL_BATTLE_WON  = 1UL << 3;
+    static constexpr unsigned long SECOND_RIVAL_BATTLE_WON = 1UL << 4;
+    static constexpr unsigned long BOULDERBADGE            = 1UL << 5;
+    static constexpr unsigned long CASCADEBADGE            = 1UL << 6;
+    static constexpr unsigned long THUNDERBADGE            = 1UL << 7;
+    static constexpr unsigned long RAINBOWBADGE            = 1UL << 8;
+    static constexpr unsigned long SOULBADGE               = 1UL << 9;
+    static constexpr unsigned long MARSHBADGE              = 1UL << 10;
+    static constexpr unsigned long VOLCANOBADGE            = 1UL << 11;
+    static constexpr unsigned long EARTHBADGE              = 1UL << 12;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -43,18 +43,23 @@ private:
     void UpdateOakEntrance();
     void UpdateOakThatWasCloseDialog();
     void UpdateWaitForPikachuCapture();
+    void UpdateOakPhewDialog();
+    void UpdateOakTallGrassDialog();
+    void UpdateFollowingOakToLab();
     void CreateExlamationMark();
-    void PositionOakSprite();
+    void PositionOakSprite(const bool postBattle);
     void CreateOakEntranceScriptedPath();   
     void ChangeCharacterDirection(const Character, const Direction) const;
-        
-    /*
-    void UpdateRivalDefeatedDialog();
-    void UpdateRivalExit();
-    */
+    
     enum class EventState
     {
-        EXCLAMATION_MARK, OAK_ENTRANCE, OAK_THAT_WAS_CLOSE_DIALOG, WAIT_FOR_PIKACHU_CAPTURE
+        EXCLAMATION_MARK,
+        OAK_ENTRANCE, 
+        OAK_THAT_WAS_CLOSE_DIALOG, 
+        WAIT_FOR_PIKACHU_CAPTURE,
+        OAK_PHEW_DIALOG,
+        OAK_TALL_GRASS_DIALOG,
+        FOLLOWING_OAK_TO_LAB
     };
    
     static const std::string OAK_APPEARS_MUSIC_NAME;
