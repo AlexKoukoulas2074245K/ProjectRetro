@@ -28,15 +28,29 @@ BallUsageEncounterFlowState::BallUsageEncounterFlowState(ecs::World& world)
 
 void BallUsageEncounterFlowState::VUpdate(const float)
 {          
-    const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& itemBagEntry         = playerStateComponent.mPlayerBag.at
+    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& encounterStateComponent       = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+    {
+        if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+        {
+            encounterStateComponent.mWasPokemonCaught     = true;
+            encounterStateComponent.mBallThrownShakeCount = 3;
+            
+            CompleteAndTransitionTo<BallAnimationEncounterFlowState>();
+        }
+        
+        return;
+    }
+    
+    const auto& itemBagEntry = playerStateComponent.mPlayerBag.at
     (
         playerStateComponent.mPreviousItemMenuItemOffset +
         playerStateComponent.mPreviousItemMenuCursorRow
     );
 
-    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
         encounterStateComponent.mWasPokemonCaught = false;

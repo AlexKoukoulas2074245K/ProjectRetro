@@ -82,12 +82,13 @@ void ItemMenuFlowState::VUpdate(const float dt)
 
 void ItemMenuFlowState::UpdateItemMenu(const float dt)
 {
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& inputStateComponent  = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
-    const auto itemMenuEntityId      = GetActiveTextboxEntityId(mWorld);
-    const auto& cursorComponent      = mWorld.GetComponent<CursorComponent>(itemMenuEntityId);
-    auto& itemMenuStateComponent     = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
-    auto& guiStateComponent          = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& inputStateComponent     = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto itemMenuEntityId         = GetActiveTextboxEntityId(mWorld);
+    const auto& cursorComponent         = mWorld.GetComponent<CursorComponent>(itemMenuEntityId);
+    auto& itemMenuStateComponent        = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
+    auto& guiStateComponent             = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
 
     guiStateComponent.mMoreItemsCursorTimer->Update(dt);
@@ -114,7 +115,7 @@ void ItemMenuFlowState::UpdateItemMenu(const float dt)
     {
         SaveItemMenuState();
         const auto& itemBagEntry = playerStateComponent.mPlayerBag.at(itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow);
-        if (itemBagEntry.mItemName == CANCEL_ITEM_NAME)
+        if (itemBagEntry.mItemName == CANCEL_ITEM_NAME && encounterStateComponent.mIsPikachuCaptureFlowActive == false)
         {
             CancelItemMenu();
             return;
@@ -248,28 +249,38 @@ void ItemMenuFlowState::RedrawItemMenu() const
 
 void ItemMenuFlowState::DisplayItemsInMenuForCurrentOffset() const
 {
-    const auto& itemMenuEntityId     = GetActiveTextboxEntityId(mWorld);
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& itemMenuComponent    = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);    
-    
-    auto cursorRowIndex = 0U;
-    for 
-    (
-        auto i = itemMenuComponent.mItemMenuOffsetFromStart;
-        i < math::Min(itemMenuComponent.mItemMenuOffsetFromStart + 4, static_cast<int>(playerStateComponent.mPlayerBag.size()));
-        ++i
-    )
+    const auto& itemMenuEntityId        = GetActiveTextboxEntityId(mWorld);
+    const auto& itemMenuComponent       = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+   
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
     {
-        const auto& itemBagEntry = playerStateComponent.mPlayerBag[i];
-        WriteTextAtTextboxCoords(itemMenuEntityId, itemBagEntry.mItemName.GetString(), 2, 2 + cursorRowIndex * 2, mWorld);
-
-        if (GetItemStats(itemBagEntry.mItemName, mWorld).mUnique == false)
+        WriteTextAtTextboxCoords(itemMenuEntityId, "POK^_BALL", 2, 2, mWorld);
+        WriteTextAtTextboxCoords(itemMenuEntityId, "*", 11, 3, mWorld);
+        WriteTextAtTextboxCoords(itemMenuEntityId, "1", 13, 3, mWorld);
+    }
+    else
+    {
+        auto cursorRowIndex = 0U;
+        for
+        (
+             auto i = itemMenuComponent.mItemMenuOffsetFromStart;
+             i < math::Min(itemMenuComponent.mItemMenuOffsetFromStart + 4, static_cast<int>(playerStateComponent.mPlayerBag.size()));
+             ++i
+        )
         {
-            WriteTextAtTextboxCoords(itemMenuEntityId, "*", 11, 3 + cursorRowIndex * 2, mWorld);
-            WriteTextAtTextboxCoords(itemMenuEntityId, std::to_string(itemBagEntry.mQuantity), (itemBagEntry.mQuantity >= 10 ? 12 : 13), 3 + cursorRowIndex * 2, mWorld);
+            const auto& itemBagEntry = playerStateComponent.mPlayerBag[i];
+            WriteTextAtTextboxCoords(itemMenuEntityId, itemBagEntry.mItemName.GetString(), 2, 2 + cursorRowIndex * 2, mWorld);
+            
+            if (GetItemStats(itemBagEntry.mItemName, mWorld).mUnique == false)
+            {
+                WriteTextAtTextboxCoords(itemMenuEntityId, "*", 11, 3 + cursorRowIndex * 2, mWorld);
+                WriteTextAtTextboxCoords(itemMenuEntityId, std::to_string(itemBagEntry.mQuantity), (itemBagEntry.mQuantity >= 10 ? 12 : 13), 3 + cursorRowIndex * 2, mWorld);
+            }
+            
+            cursorRowIndex++;
         }
-        
-        cursorRowIndex++;
     }
 }
 

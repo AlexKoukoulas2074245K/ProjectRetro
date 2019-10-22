@@ -20,6 +20,7 @@
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../input/utils/InputUtils.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,7 @@ BallUsageResultTextEncounterFlowState::BallUsageResultTextEncounterFlowState(ecs
     : BaseFlowState(world)
 {
     DisplayCatchResultText();
+    SetAiInputController(AiInputControllerType::NONE, mWorld);
 }
 
 void BallUsageResultTextEncounterFlowState::VUpdate(const float)
@@ -72,9 +74,16 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
                     encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
                 }
 
-                auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
-                pokedexStateComponent.mSelectedPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName;
-                CompleteAndTransitionTo<PokedexPokemonEntryDisplayFlowState>();
+                if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+                {
+                    CompleteAndTransitionTo<PokemonNicknameQuestionTextEncounterFlowState>();
+                }
+                else
+                {
+                    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+                    pokedexStateComponent.mSelectedPokemonName = encounterStateComponent.mOpponentPokemonRoster.front()->mName;
+                    CompleteAndTransitionTo<PokedexPokemonEntryDisplayFlowState>();
+                }
             }
             else
             {
@@ -117,7 +126,11 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
     {
         catchResultText += "All right!#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + " was#caught!#";
                 
-        if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
+        if
+        (
+            encounterStateComponent.mIsPikachuCaptureFlowActive == false &&
+            GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED
+        )
         {
             catchResultText += "@New POK^DEX data#will be added for#" + encounterStateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() + "!#+END";
         }

@@ -36,7 +36,7 @@
 #include "encounter/systems/EncounterShakeControllerSystem.h"
 #include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
-#include "input/systems/AIInputControlSystem.h"
+#include "input/systems/AiInputControlSystem.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "input/utils/InputUtils.h"
 #include "rendering/components/AnimationTimerComponent.h"

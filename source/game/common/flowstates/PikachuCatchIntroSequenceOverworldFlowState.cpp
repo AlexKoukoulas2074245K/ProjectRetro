@@ -37,7 +37,7 @@ const std::string PikachuCatchIntroSequenceOverworldFlowState::OAK_APPEARS_MUSIC
 const std::string PikachuCatchIntroSequenceOverworldFlowState::FOLLOW_MUSIC_NAME      = "follow";
 const std::string PikachuCatchIntroSequenceOverworldFlowState::WILD_BATTLE_MUSIC_NAME = "wild_battle";
 
-const StringId PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_NAME = "PIKACHU";
+const StringId PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_NAME = StringId("PIKACHU");
 
 const TileCoords PikachuCatchIntroSequenceOverworldFlowState::EXCLAMATION_MARK_ATLAS_COORDS = TileCoords(7, 46);
 const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_ENTRANCE_COORDS           = TileCoords(16, 18);

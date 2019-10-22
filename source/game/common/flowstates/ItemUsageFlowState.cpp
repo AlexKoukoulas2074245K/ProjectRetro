@@ -50,7 +50,7 @@ void ItemUsageFlowState::VUpdate(const float)
     const auto& guiStateComponent    = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& encounterStateComponent    = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    if (ItemCanBeUsed())
+    if (ItemCanBeUsed() || encounterStateComponent.mIsPikachuCaptureFlowActive)
     {
         if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
@@ -58,24 +58,39 @@ void ItemUsageFlowState::VUpdate(const float)
         }        
 
         // Ball flow
-        if (selectedItemStats.mEffect == StringId("BALL"))
+        if (selectedItemStats.mEffect == StringId("BALL") || encounterStateComponent.mIsPikachuCaptureFlowActive)
         {
             if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
             {
-                RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
+                if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
+                {
+                    RemoveItemFromBag(itemBagEntry.mItemName, mWorld, 1);
+                }
 
                 // Destroy Item Menu
                 DestroyActiveTextbox(mWorld);
 
                 const auto mainChatboxEntityId = CreateChatbox(mWorld);
                 
-                QueueDialogForChatbox
-                (
-                    mainChatboxEntityId,
-                    playerStateComponent.mPlayerTrainerName.GetString() + " used#" +
-                    itemName.GetString() + "!+FREEZE",
-                    mWorld
-                );
+                if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+                {
+                    QueueDialogForChatbox
+                    (
+                        mainChatboxEntityId,
+                        "PROF.OAK used#POK^_BALL!+FREEZE",
+                        mWorld
+                    );
+                }
+                else
+                {
+                    QueueDialogForChatbox
+                    (
+                        mainChatboxEntityId,
+                        playerStateComponent.mPlayerTrainerName.GetString() + " used#" +
+                        itemName.GetString() + "!+FREEZE",
+                        mWorld
+                    );
+                }
                 
                 CompleteAndTransitionTo<BallUsageEncounterFlowState>();
             }

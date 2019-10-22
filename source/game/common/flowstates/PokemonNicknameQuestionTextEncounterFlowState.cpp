@@ -35,20 +35,30 @@ PokemonNicknameQuestionTextEncounterFlowState::PokemonNicknameQuestionTextEncoun
     const auto& encounterStsateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     const auto mainChatboxEntityId       = CreateChatbox(mWorld);
     
-    QueueDialogForChatbox
-    (
-        mainChatboxEntityId,
-        "Do you want to#give a nickname#to " +
-        encounterStsateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() +
-        "?+FREEZE",
-        mWorld
-    );
+    if (encounterStsateComponent.mIsPikachuCaptureFlowActive == false)
+    {
+        QueueDialogForChatbox
+        (
+            mainChatboxEntityId,
+            "Do you want to#give a nickname#to " +
+            encounterStsateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() +
+            "?+FREEZE",
+            mWorld
+        );
+    }
 }
 
 void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
 {
     const auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+     auto& encounterStateComponent  = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+    {
+        encounterStateComponent.mEncounterJustFinished = true;
+        return;
+    }
     
     // Nickname question chatbox active
     if (guiStateComponent.mActiveTextboxesStack.size() == 2)

@@ -58,7 +58,7 @@ void AiInputControlSystem::UpdateAiOakPikachuCaptureController(const float dt) c
         {
             aiInputControlStateComponent.mAiControllerInputDelayTimer = std::make_unique<Timer>(OAK_PIKACHU_CAPTURE_INPUT_DELAY);
             aiInputControlStateComponent.mAiControllerInputProgressionStep++;
-        }
+        } break;
 
         // Down arrow key to item Menu
         case 1:
@@ -69,9 +69,8 @@ void AiInputControlSystem::UpdateAiOakPikachuCaptureController(const float dt) c
                 aiInputControlStateComponent.mAiControllerInputDelayTimer->Reset();
                 inputStateComponent.mCurrentInputState[VirtualActionType::DOWN_ARROW] = VirtualActionInputState::TAPPED;
                 aiInputControlStateComponent.mAiControllerInputProgressionStep++;
-                
             }
-        }
+        } break;
 
         // A-button to open item menu        
         case 2:
@@ -83,6 +82,23 @@ void AiInputControlSystem::UpdateAiOakPikachuCaptureController(const float dt) c
                 inputStateComponent.mCurrentInputState[VirtualActionType::A_BUTTON] = VirtualActionInputState::TAPPED;
                 aiInputControlStateComponent.mAiControllerInputProgressionStep++;
             }
+        } break;
+            
+        // A-button to select pokeball
+        case 3:
+        {
+            aiInputControlStateComponent.mAiControllerInputDelayTimer->Update(dt);
+            if (aiInputControlStateComponent.mAiControllerInputDelayTimer->HasTicked())
+            {
+                aiInputControlStateComponent.mAiControllerInputDelayTimer->Reset();
+                inputStateComponent.mCurrentInputState[VirtualActionType::A_BUTTON] = VirtualActionInputState::TAPPED;
+                aiInputControlStateComponent.mAiControllerInputProgressionStep++;
+            }
+        } break;
+            
+        default:
+        {
+            inputStateComponent.mCurrentInputState[VirtualActionType::A_BUTTON] = VirtualActionInputState::PRESSED;
         }
     }
 }
