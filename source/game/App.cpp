@@ -36,6 +36,7 @@
 #include "encounter/systems/EncounterShakeControllerSystem.h"
 #include "encounter/systems/EncounterStateControllerSystem.h"
 #include "input/components/InputStateSingletonComponent.h"
+#include "input/systems/AIInputControlSystem.h"
 #include "input/systems/RawInputHandlingSystem.h"
 #include "input/utils/InputUtils.h"
 #include "rendering/components/AnimationTimerComponent.h"
@@ -104,6 +105,7 @@ void App::CreateSystems()
     auto renderingSystem = std::make_unique<RenderingSystem>(mWorld);
 
     mWorld.AddSystem(std::make_unique<RawInputHandlingSystem>(mWorld));
+    mWorld.AddSystem(std::make_unique<AiInputControlSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<GuiManagementSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<PlayerActionControllerSystem>(mWorld));
     mWorld.AddSystem(std::make_unique<NpcAiSystem>(mWorld));

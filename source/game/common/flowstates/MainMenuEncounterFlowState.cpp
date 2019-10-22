@@ -32,6 +32,12 @@ MainMenuEncounterFlowState::MainMenuEncounterFlowState(ecs::World& world)
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
     CreateEncounterMainMenuTextbox(encounterStateComponent.mLastEncounterMainMenuActionSelected, world);
+
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+    {   
+        // We activate the controller here, since the player actually has input over previous chatboxes
+        SetAiInputController(AiInputControllerType::AI_OAK_PIKACHU_CAPTURE, mWorld);
+    }
 }
 
 void MainMenuEncounterFlowState::VUpdate(const float)

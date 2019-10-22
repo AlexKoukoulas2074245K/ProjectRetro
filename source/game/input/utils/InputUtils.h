@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "../components/AiInputControlStateSingletonComponent.h"
 #include "../components/InputStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,11 @@ inline bool IsActionTypeKeyPressed(const VirtualActionType actionType, const Inp
 inline bool IsActionTypeKeyReleased(const VirtualActionType actionType, const InputStateSingletonComponent& inputStateComponent)
 {
     return inputStateComponent.mCurrentInputState.at(actionType) == VirtualActionInputState::RELEASED;
+}
+
+inline void SetAiInputController(const AiInputControllerType inputController, ecs::World& world)
+{
+    world.GetSingletonComponent<AiInputControlStateSingletonComponent>().mAIInputControllerType = inputController;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
