@@ -271,7 +271,7 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateGaryComplainingConversat
             (
                 CreateChatbox(mWorld),
                 "OAK: Hmm? " + playerStateComponent.mRivalName.GetString() + "?#Why are you here#already?#@I said for you to#come by later...#@" + 
-                "Ah, whatever!#Just wait there.#@Look, " + playerStateComponent.mPlayerTrainerName.GetString() + "!Do#you see that ball#on the table?#@" + 
+                "Ah, whatever!#Just wait there.#@Look, " + playerStateComponent.mPlayerTrainerName.GetString() + "! Do#you see that ball#on the table?#@" + 
                 "It's called a POK^#BALL. It holds a#POK^MON inside.#@You may have it!#Go on, take it!", 
                 mWorld
             );
