@@ -249,11 +249,11 @@ void OverworldFlowControllerSystem::DetermineWhichFlowToStart() const
                 overworldFlowStateComponent.mFlowStateManager.SetActiveFlowState(std::move(flowState));
             }
         }
-    }
-
-    if (overworldFlowStateComponent.mFlowStateManager.HasActiveFlowState() == false)
-    {
-        ShowMessageBox(MessageBoxType::WARNING, "No flow activated", "Flow not hooked properly");
+        
+        if (overworldFlowStateComponent.mFlowStateManager.HasActiveFlowState() == false)
+        {
+            ShowMessageBox(MessageBoxType::WARNING, "No flow activated", "Flow not hooked properly");
+        }
     }
 }
 
