@@ -479,6 +479,15 @@ void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, co
         StringReplaceAllOccurences(itemName, "the_", "");
     }
     
+    // Collected pokemon
+    if (StringStartsWith(itemName, "a_"))
+    {
+        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME, true, true);
+        playerStateComponent.mPendingItemToBeAddedDiscoveryType = discoveryType;
+        playerStateComponent.mPendingItemToBeAdded = StringId(StringSplit(itemName, '_')[1]);
+        return;
+    }
+    
     const auto& itemStats = GetItemStats(itemName, mWorld);
     if (itemStats.mEffect == StringId("BADGE"))
     {

@@ -51,7 +51,7 @@ const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_GARY_LEVEL_INDEX
 const int PikachuCatchIntroSequenceOverworldFlowState::PALLET_OAK_LEVEL_INDEX    = 6;
 const int PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_LEVEL             = 5;
 
-const float PikachuCatchIntroSequenceOverworldFlowState::EXCLAMATION_MARK_LIFE_TIME = 1.0f;
+const float PikachuCatchIntroSequenceOverworldFlowState::EXCLAMATION_MARK_LIFE_TIME = 0.5f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -431,7 +431,7 @@ void PikachuCatchIntroSequenceOverworldFlowState::PositionOakSprite(const Timeli
 
         case TimelinePoint::OAKS_LAB_FINAL:
         {
-            const auto oaksLabMidCoords = TileCoords(8, 8);
+            const auto oaksLabMidCoords = TileCoords(8, 9);
 
             GetTile(oaksLabMidCoords, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
             GetTile(oaksLabMidCoords, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NONE;
@@ -510,7 +510,7 @@ void PikachuCatchIntroSequenceOverworldFlowState::CreateOakPathInLab()
     const auto oakEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_LEVEL_INDEX, mWorld);
     auto& oakAiComponent   = mWorld.GetComponent<NpcAiComponent>(oakEntityId);
 
-    oakAiComponent.mScriptedPathTileCoords.emplace_back(8, 8);
+    oakAiComponent.mScriptedPathTileCoords.emplace_back(8, 9);
     oakAiComponent.mScriptedPathIndex = 0;
 }
 

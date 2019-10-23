@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const TileCoords OaksLabPokeBallDialogOverworldFlowState::EXCLAMATION_MARK_ATLAS_COORDS = TileCoords(7, 46);
-const TileCoords OaksLabPokeBallDialogOverworldFlowState::EXCLAMATION_MARK_GAME_COORDS  = TileCoords(10, 9);
 const TileCoords OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_POKEBALL_COORDS      = TileCoords(10, 10);
 
 const int OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_OAK_LEVEL_INDEX             = 10;
@@ -231,9 +230,9 @@ void OaksLabPokeBallDialogOverworldFlowState::CreateExlamationMark()
     );
 
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::SOUTH), *exclamationMarkRenderableComponent);
-
+    const auto& garyMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld));
     auto exclamationMarkTransformComponent = std::make_unique<TransformComponent>();
-    exclamationMarkTransformComponent->mPosition = TileCoordsToPosition(EXCLAMATION_MARK_GAME_COORDS);        
+    exclamationMarkTransformComponent->mPosition = TileCoordsToPosition(garyMovementStateComponent.mCurrentCoords);
     exclamationMarkTransformComponent->mPosition.y += GAME_TILE_SIZE;
 
     mWorld.AddComponent<RenderableComponent>(mExclamationMarkEntityId, std::move(exclamationMarkRenderableComponent));
@@ -247,7 +246,7 @@ void OaksLabPokeBallDialogOverworldFlowState::CreateGaryMovingToPlayerPath()
     auto& garyAiComponent    = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
     garyAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
     garyAiComponent.mScriptedPathTileCoords.emplace_back(7, 9);
-    garyAiComponent.mScriptedPathTileCoords.emplace_back(10, 9);
+    garyAiComponent.mScriptedPathTileCoords.emplace_back(9, 9);
     garyAiComponent.mScriptedPathIndex = 0;
 }
 
@@ -259,6 +258,11 @@ void OaksLabPokeBallDialogOverworldFlowState::CreatePlayerMovingToWallPath()
     playerNpcAiComponent->mScriptedPathTileCoords.emplace_back(12, 9);    
     playerNpcAiComponent->mScriptedPathIndex = 0;    
 
+    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+    auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
+    garyAiComponent.mScriptedPathTileCoords.emplace_back(10, 9);
+    garyAiComponent.mScriptedPathIndex = 0;
+    
     mWorld.AddComponent<NpcAiComponent>(playerEntityId, std::move(playerNpcAiComponent));
 }
 

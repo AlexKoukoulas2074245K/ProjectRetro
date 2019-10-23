@@ -193,6 +193,12 @@ bool DoesPokemonHaveType
     const Pokemon& pokemon
 );
 
+bool DoesPokemonExistWithName
+(
+    const StringId pokemonName,
+    const ecs::World& world
+);
+
 bool DoesPokemonHaveType
 (
     const PokemonType type,

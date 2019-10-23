@@ -599,6 +599,16 @@ bool DoesPokemonHaveType
     return sPokemonTypesToStrings.at(type) == pokemon.mBaseSpeciesStats.mFirstType || sPokemonTypesToStrings.at(type) == pokemon.mBaseSpeciesStats.mSecondType;
 }
 
+bool DoesPokemonExistWithName
+(
+    const StringId pokemonName,
+    const ecs::World& world
+)
+{
+    const auto& pokemonBaseStatsComponent = world.GetSingletonComponent<PokemonBaseStatsSingletonComponent>();
+    return pokemonBaseStatsComponent.mPokemonBaseStats.count(pokemonName) > 0;
+}
+
 void LoadAndPopulatePokemonBaseStats
 (
     PokemonBaseStatsSingletonComponent& pokemonBaseStatsComponent

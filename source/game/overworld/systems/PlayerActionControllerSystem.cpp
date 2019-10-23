@@ -209,14 +209,28 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     if (playerStateComponent.mPendingItemToBeAdded != StringId())
-    {        
+    {
+        // Pokemon collection handling
+        if (DoesPokemonExistWithName(playerStateComponent.mPendingItemToBeAdded, mWorld))
+        {
+            //TODO: Handle more than 6?
+            //TODO: level?
+            playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, false, mWorld));
+            playerStateComponent.mPendingItemToBeAdded = StringId();
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+            return;
+        }
         // Milestone handling
-        if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
+        else if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("BADGE"))
         {
             if (playerStateComponent.mPendingItemToBeAdded == StringId("BOULDERBADGE"))
             {
                 SetMilestone(milestones::BOULDERBADGE, mWorld);
             }
+            
+            playerStateComponent.mPendingItemToBeAdded = StringId();
+            playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+            
             return;
         }
         else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)

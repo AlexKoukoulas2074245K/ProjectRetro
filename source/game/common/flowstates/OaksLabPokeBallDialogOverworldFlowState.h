@@ -56,7 +56,6 @@ private:
     void CreatePlayerMovingToOakPath();
 
     static const TileCoords EXCLAMATION_MARK_ATLAS_COORDS;
-    static const TileCoords EXCLAMATION_MARK_GAME_COORDS;
     static const TileCoords OAKS_LAB_POKEBALL_COORDS;
 
     static const int OAKS_LAB_OAK_LEVEL_INDEX;
