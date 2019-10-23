@@ -80,7 +80,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_SECOND_POKEDEX_COORDS, mWorld));
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
-            }
+            }            
             else if (levelName == OAKS_LAB_LEVEL_NAME && !HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
             {
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_ENTITY_LEVEL_INDEX, mWorld), mWorld);

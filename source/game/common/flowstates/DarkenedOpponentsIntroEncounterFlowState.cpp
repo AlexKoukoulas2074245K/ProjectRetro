@@ -25,7 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const std::string DarkenedOpponentsIntroEncounterFlowState::TRAINER_CLICK_SFX_NAME = "encounter/trainer_click";
+const std::string DarkenedOpponentsIntroEncounterFlowState::TRAINER_CLICK_SFX_NAME        = "encounter/trainer_click";
+const std::string DarkenedOpponentsIntroEncounterFlowState::PIKACHU_BATTLE_SUMMON_CRY_SFX = "cries/pikachu_battle_summon_cry";
 
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_INIT_POS   = glm::vec3(0.9f, 0.06f, 0.1f);
 const glm::vec3 DarkenedOpponentsIntroEncounterFlowState::PLAYER_TRAINER_SPRITE_TARGET_POS = glm::vec3(-0.39f, 0.06f, 0.1f);
@@ -81,13 +82,21 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
         
         mWorld.GetSingletonComponent<TransitionAnimationStateSingletonComponent>().mBlackAndWhiteModeEnabled = false;
 
-        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)        
         {
-            SoundService::GetInstance().PlaySfx
-            (
-                "cries/" +
-                GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
-            );
+            if (encounterStateComponent.mIsPikachuCaptureFlowActive)
+            {
+                SoundService::GetInstance().PlaySfx(PIKACHU_BATTLE_SUMMON_CRY_SFX);
+                
+            }
+            else
+            {                
+                SoundService::GetInstance().PlaySfx
+                (
+                    "cries/" +
+                    GetFormattedPokemonIdString(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mId)
+                );
+            }
             
             const auto pokedexEntryType = GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, mWorld);
             if (pokedexEntryType != PokedexEntryType::OWNED)

@@ -373,6 +373,11 @@ ecs::EntityId CreateNpcAttributes
     aiComponent->mOriginalLevelRow = gameRow;
     aiComponent->mAiTimer          = std::make_unique<Timer>(STATIONARY_NPC_RESET_TIME);
     
+    if (movementType == CharacterMovementType::DYNAMIC)
+    {
+        aiComponent->mAiTimer = nullptr;
+    }
+
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
 
     for (const auto& defeatedNpcEntry: playerStateComponent.mDefeatedNpcEntries)

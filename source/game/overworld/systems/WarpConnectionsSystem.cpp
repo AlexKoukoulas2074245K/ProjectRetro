@@ -18,6 +18,7 @@
 #include "../utils/LevelLoadingUtils.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
+#include "../../common/utils/MilestoneUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
@@ -110,6 +111,12 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         warpConnectionsComponent.mHasPendingWarpConnection = false;
         
         mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mLastOverworldLevelName = targetWarp.mLevelName;
+
+        // Only on the scripted event of pikachu's capture, skip the music update
+        if (HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld) && !HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
+        {
+            return;
+        }
 
         if (oldMusicTrackName != levelModelComponent.mLevelMusicTrackName)
         {

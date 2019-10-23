@@ -19,6 +19,8 @@
 #include "BaseFlowState.h"
 #include "../utils/MathUtils.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +37,7 @@ private:
     void CreateEncounterEdges() const;
     
     static const std::string TRAINER_CLICK_SFX_NAME;
+    static const std::string PIKACHU_BATTLE_SUMMON_CRY_SFX;
 
     static const glm::vec3 PLAYER_TRAINER_SPRITE_INIT_POS;
     static const glm::vec3 PLAYER_TRAINER_SPRITE_TARGET_POS;

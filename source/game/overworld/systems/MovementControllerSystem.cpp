@@ -244,35 +244,44 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 // Warp tile flow
                 if 
                 (
-                    (targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP) && 
-                    hasPlayerTag
+                    targetTile.mTileTrait == TileTrait::WARP || targetTile.mTileTrait == TileTrait::NO_ANIM_WARP                     
                 )
                 {
-                    auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
-                    warpConnectionsComponent.mHasPendingWarpConnection = true;
-                    warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
-
-                    WarpInfo currentWarp
-                    (
-                        activeLevelComponent.mActiveLevelNameId.GetString(),
-                        TileCoords(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow)
-                    );
-
-                    assert(warpConnectionsComponent.mWarpConnections.count(currentWarp) != 0 &&
-                        "Warp for current tile not found");
-
-                    auto& targetWarp = warpConnectionsComponent.mWarpConnections.at(currentWarp);
-
-                    const auto isCurrentLevelIndoors = IsLevelIndoors(activeLevelComponent.mActiveLevelNameId);
-                    const auto isTargetLevelIndoors  = IsLevelIndoors(targetWarp.mLevelName);
-
-                    if (isCurrentLevelIndoors == false && isTargetLevelIndoors == true)
+                    if (hasPlayerTag)
                     {
-                        SoundService::GetInstance().PlaySfx(OUTSIDE_DOOR_ENTERED_SFX_NAME);
+                        auto& warpConnectionsComponent = mWorld.GetSingletonComponent<WarpConnectionsSingletonComponent>();
+                        warpConnectionsComponent.mHasPendingWarpConnection = true;
+                        warpConnectionsComponent.mShouldPlayTransitionAnimation = targetTile.mTileTrait == TileTrait::WARP;
+
+                        WarpInfo currentWarp
+                        (
+                            activeLevelComponent.mActiveLevelNameId.GetString(),
+                            TileCoords(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow)
+                        );
+
+                        assert(warpConnectionsComponent.mWarpConnections.count(currentWarp) != 0 &&
+                            "Warp for current tile not found");
+
+                        auto& targetWarp = warpConnectionsComponent.mWarpConnections.at(currentWarp);
+
+                        const auto isCurrentLevelIndoors = IsLevelIndoors(activeLevelComponent.mActiveLevelNameId);
+                        const auto isTargetLevelIndoors = IsLevelIndoors(targetWarp.mLevelName);
+
+                        if (isCurrentLevelIndoors == false && isTargetLevelIndoors == true)
+                        {
+                            SoundService::GetInstance().PlaySfx(OUTSIDE_DOOR_ENTERED_SFX_NAME);
+                        }
+                        else if (isCurrentLevelIndoors == true && isTargetLevelIndoors == true)
+                        {
+                            SoundService::GetInstance().PlaySfx(INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME);
+                        }
                     }
-                    else if (isCurrentLevelIndoors == true && isTargetLevelIndoors == true)
+                    // Any npc actually entering a warp should be destroyed, as it will always happen as part of 
+                    // a follow event
+                    else
                     {
-                        SoundService::GetInstance().PlaySfx(INSIDE_DOOR_ENTERED_OR_EXITED_SFX_NAME);
+                        DestroyOverworldNpcEntityAndEraseTileInfo(entityId, mWorld);
+                        continue;
                     }
                 }
                 // Encounter tile flow
@@ -311,7 +320,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                     
                     SoundService::GetInstance().PlayMusic(WILD_BATTLE_MUSIC_NAME, false);
 
-                    return;
+                    continue;
                 }
                 // Trigger flow
                 else if 
@@ -322,7 +331,7 @@ void MovementControllerSystem::VUpdateAssociatedComponents(const float dt) const
                 {
                     auto& overworldFlowStateComponent = mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>();
                     overworldFlowStateComponent.mFlowHookTriggered = true;
-                    return;
+                    continue;
                 }
 
                 // Jumping ledge tile flow
