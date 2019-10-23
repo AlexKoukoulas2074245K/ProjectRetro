@@ -76,7 +76,7 @@ enum class OverworldPokemonSpriteType
 
 enum ItemDiscoveryType
 {
-    NO_ITEM, FOUND, GOT, RECEIVED, DELIVERED
+    NO_ITEM, FOUND, GOT, RECEIVED, DELIVERED, SNATCHED
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

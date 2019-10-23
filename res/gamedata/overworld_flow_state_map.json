@@ -23,7 +23,8 @@
 		{"level_name": "in_pewter_poke_mart", "npc_level_index": 0, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
 		{"level_name": "in_pewter_poke_mart", "npc_level_index": 7, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
 		{"level_name": "in_pewter_poke_mart", "npc_level_index": 9, "flow_state_name": "PokeMartIntroDialogOverworldFlowState"},
-		{"level_name": "in_oaks_lab", "npc_level_index": 10, "flow_state_name": "OakDialogOverworldFlowState"}
+		{"level_name": "in_oaks_lab", "npc_level_index": 10, "flow_state_name": "OakDialogOverworldFlowState"},
+		{"level_name": "in_oaks_lab", "npc_level_index": 12, "flow_state_name": "OaksLabPokeBallDialogOverworldFlowState"}
 	],
 
 	"trigger_flow_states":

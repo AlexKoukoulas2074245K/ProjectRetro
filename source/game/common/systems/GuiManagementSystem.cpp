@@ -448,6 +448,12 @@ void GuiManagementSystem::OnTextboxQueuedCharacterRemoval(const ecs::EntityId te
 
 void GuiManagementSystem::OnItemReceived(const ecs::EntityId textboxEntityId, const ItemDiscoveryType discoveryType) const
 {
+    if (discoveryType == ItemDiscoveryType::SNATCHED)
+    {
+        SoundService::GetInstance().PlaySfx(KEY_ITEM_RECEIVED_SFX_NAME, true, true);
+        return;
+    }
+
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto textboxFirstLineString = GetTextboxRowString(textboxEntityId, 4, mWorld);
     if (textboxFirstLineString[0] == '\0')
@@ -668,8 +674,9 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
     const auto stringStartsWithFound     = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " found");
     const auto stringStartsWithReceived  = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " received");
     const auto stringStartsWithDelivered = StringStartsWith(textboxFirstLineString, playerStateComponent.mPlayerTrainerName.GetString() + " delivered");
+    const auto stringStartsWithSnatched  = StringStartsWith(textboxFirstLineString, playerStateComponent.mRivalName.GetString() + " snatched");
 
-    if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived || stringStartsWithDelivered)
+    if (stringStartsWithGot || stringStartsWithFound || stringStartsWithReceived || stringStartsWithDelivered || stringStartsWithSnatched)
     {
         if (textboxSecondLineString[1] == 'f' && textboxSecondLineString[2] == 'o' && textboxSecondLineString[3] == 'r')
         {
@@ -691,6 +698,10 @@ ItemDiscoveryType GuiManagementSystem::DetectedItemReceivedText(const ecs::Entit
         else if (stringStartsWithDelivered)
         {
             return ItemDiscoveryType::DELIVERED;
+        }
+        else if (stringStartsWithSnatched)
+        {
+            return ItemDiscoveryType::SNATCHED;
         }
 
         assert(false && "Item discovery type not handled");

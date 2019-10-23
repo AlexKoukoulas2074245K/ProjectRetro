@@ -40,6 +40,14 @@ OakDialogOverworldFlowState::OakDialogOverworldFlowState(ecs::World& world)
     {
         CompleteAndTransitionTo<OaksParcelDialogOverworldFlowState>();
     }                       
+    else if (HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
+    {
+        QueueDialogForChatbox(CreateChatbox(mWorld), "OAK: If a wild#POK^MON appears,#your POK^MON can#fight against it!#@Afterward, go on#to the next town.", mWorld);
+    }
+    else if (HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
+    {
+        QueueDialogForChatbox(CreateChatbox(mWorld), "OAK: Go ahead, #it's yours!", mWorld);        
+    }
 }
 
 void OakDialogOverworldFlowState::VUpdate(const float)

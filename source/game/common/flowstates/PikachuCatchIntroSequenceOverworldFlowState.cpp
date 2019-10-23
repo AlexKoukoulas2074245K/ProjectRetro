@@ -46,11 +46,10 @@ const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_ENTRANCE_COORD
 const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_SPEECH_COORDS_1           = TileCoords(16, 22);
 const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_SPEECH_COORDS_2           = TileCoords(17, 22);
 
-const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_OAK_LEVEL_INDEX = 10;
+const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_OAK_LEVEL_INDEX  = 10;
 const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_GARY_LEVEL_INDEX = 11;
-const int PikachuCatchIntroSequenceOverworldFlowState::PALLET_OAK_LEVEL_INDEX = 6;
-
-const int PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_LEVEL   = 5;
+const int PikachuCatchIntroSequenceOverworldFlowState::PALLET_OAK_LEVEL_INDEX    = 6;
+const int PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_LEVEL             = 5;
 
 const float PikachuCatchIntroSequenceOverworldFlowState::EXCLAMATION_MARK_LIFE_TIME = 1.0f;
 
@@ -538,15 +537,22 @@ void PikachuCatchIntroSequenceOverworldFlowState::ChangeCharacterDirection(const
         {
             characterEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_LEVEL_INDEX, mWorld);
         }
+
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(characterEntityId);
+        npcAiComponent.mInitDirection = direction;
+
     }
     else if (character == Character::GARY)
     {
         characterEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(characterEntityId);
+        npcAiComponent.mInitDirection = direction;
     }
 
     auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(characterEntityId);
     auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(characterEntityId);
-
+        
     directionComponent.mDirection = direction;
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(direction), renderableComponent);
 }

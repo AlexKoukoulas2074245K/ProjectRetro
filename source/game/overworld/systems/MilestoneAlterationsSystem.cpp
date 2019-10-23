@@ -32,6 +32,7 @@ namespace
 
     const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS                    = TileCoords(5, 11);
     const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS                   = TileCoords(6, 11);
+    const TileCoords OAKS_LAB_POKEBALL_COORDS                         = TileCoords(10, 10);
     const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_1_TILE_COORDS = TileCoords(16,23);
     const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_2_TILE_COORDS = TileCoords(17, 23);
     const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS       = TileCoords(24, 34);
@@ -44,6 +45,8 @@ namespace
     const int OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
     const int OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
     const int OAKS_LAB_OAK_ENTITY_LEVEL_INDEX                       = 10;
+    const int OAKS_LAB_GARY_ENTITY_LEVEL_INDEX                      = 11;
+    const int OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX                  = 12;
     const int RIVALS_HOME_SISTER_NPC_LEVEL_INDEX                    = 4;
     const int VIRIDIAN_RUDE_GUY_RELATIVE_LEVEL_INDEX                = 4;
     const int VIRIDIAN_RUDE_GUY_LEVEL_INDEX                         = 5;
@@ -78,9 +81,24 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
             {
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_FIRST_POKEDEX_COORDS, mWorld));
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_SECOND_POKEDEX_COORDS, mWorld));
+                mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
-            }            
+                DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+            }    
+            else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
+            {
+                mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
+                DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+
+                auto& garyNpcAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_ENTITY_LEVEL_INDEX, mWorld));
+                garyNpcAiComponent.mDialog = playerStateComponent.mPlayerTrainerName.GetString() + ": Heh, my#POK^MON looks a#lot stronger.";
+            }
+            else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
+            {                                
+                auto& garyNpcAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_ENTITY_LEVEL_INDEX, mWorld));                
+                garyNpcAiComponent.mDialog = playerStateComponent.mRivalName.GetString() + + ": Humph!#I'll get a better#POK^MON  than you!";
+            }
             else if (levelName == OAKS_LAB_LEVEL_NAME && !HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
             {
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_ENTITY_LEVEL_INDEX, mWorld), mWorld);
