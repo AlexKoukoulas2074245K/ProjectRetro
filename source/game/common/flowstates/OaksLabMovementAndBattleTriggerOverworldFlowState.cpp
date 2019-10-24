@@ -59,8 +59,8 @@ OaksLabMovementAndBattleTriggerOverworldFlowState::OaksLabMovementAndBattleTrigg
         
         const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
 
-        auto& garyDirectionComponent = mWorld.GetComponent<DirectionComponent>(playerEntityId);
-        auto& garyRenderableComponent = mWorld.GetComponent<RenderableComponent>(playerEntityId);
+        auto& garyDirectionComponent = mWorld.GetComponent<DirectionComponent>(garyEntityId);
+        auto& garyRenderableComponent = mWorld.GetComponent<RenderableComponent>(garyEntityId);
 
         garyDirectionComponent.mDirection = Direction::SOUTH;
         ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(garyDirectionComponent.mDirection), garyRenderableComponent);
@@ -117,17 +117,19 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::VUpdate(const float)
 void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForGaryToReachPlayer()
 {
     const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
-    const auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
+    auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
 
     if (garyAiComponent.mScriptedPathIndex == -1)
     {        
-        const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+        auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+        
+        playerStateComponent.mLastNpcLevelIndexSpokenTo = OAKS_LAB_GARY_LEVEL_INDEX;
         
         encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
         encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
         encounterStateComponent.mOpponentTrainerName = playerStateComponent.mRivalName.GetString();
-        encounterStateComponent.mOpponentTrainerDefeatedText = playerStateComponent.mRivalName.GetString() + ": WHAT?#Unbelievable!I picked the#wrong POK^MON!#+END";
+        encounterStateComponent.mOpponentTrainerDefeatedText = playerStateComponent.mRivalName.GetString() + ": WHAT?#Unbelievable!#I picked the#wrong POK^MON!#+END";
         encounterStateComponent.mIsGymLeaderBattle = false;        
         encounterStateComponent.mActivePlayerPokemonRosterIndex = 0;
         encounterStateComponent.mActiveOpponentPokemonRosterIndex = 0;

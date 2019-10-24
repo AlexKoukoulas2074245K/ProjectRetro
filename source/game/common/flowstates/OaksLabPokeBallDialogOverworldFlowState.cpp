@@ -17,6 +17,8 @@
 #include "../utils/MilestoneUtils.h"
 #include "../utils/PokedexUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelModelComponent.h"
 #include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/OverworldCharacterLoadingUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
@@ -140,7 +142,13 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
             playerStateComponent.mRivalName.GetString() + " snatched#the POK^MON!",
             mWorld
         );
-
+        
+        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+        auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+        
+        GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = garyEntityId;
+        GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
+        
         mEventState = EventState::GARY_SNATCHING_POKEMON_CONVERSATION;
     }
 

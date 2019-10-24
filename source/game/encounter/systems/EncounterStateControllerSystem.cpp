@@ -17,6 +17,7 @@
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/flowstates/DarkenedOpponentsIntroEncounterFlowState.h"
+#include "../../common/utils/MilestoneUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -177,13 +178,23 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
             RestorePokemonStats(*pokemon);
         }
         
-        transitionAnimationStateComponent.mAnimationProgressionStep = 4;
-        playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
-        playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
-        playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
-        playerStateComponent.mLastOverworldDirection        = Direction::SOUTH;
-        playerStateComponent.mLastBattleWon                 = false;
-
+        if (HasMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld))
+        {
+            transitionAnimationStateComponent.mAnimationProgressionStep = 4;
+            playerStateComponent.mLastOverworldLevelName        = playerStateComponent.mHomeLevelName;
+            playerStateComponent.mLastOverworldLevelOccupiedCol = playerStateComponent.mHomeLevelOccupiedCol;
+            playerStateComponent.mLastOverworldLevelOccupiedRow = playerStateComponent.mHomeLevelOccupiedRow;
+            playerStateComponent.mLastOverworldDirection        = Direction::SOUTH;
+            playerStateComponent.mLastBattleWon                 = false;
+        }
+        else
+        {
+            playerStateComponent.mDefeatedNpcEntries.emplace_back
+            (
+                playerStateComponent.mLastOverworldLevelName,
+                playerStateComponent.mLastNpcLevelIndexSpokenTo
+            );
+        }
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
     {
