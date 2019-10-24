@@ -40,6 +40,7 @@ private:
     };
 
     static const std::string TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME;
+    static const std::string RIVAL_TRAINER_MUSIC_NAME;
     static const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS;
     static const int OAKS_LAB_GARY_LEVEL_INDEX;
     

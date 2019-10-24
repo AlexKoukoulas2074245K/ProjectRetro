@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME = "trainer_battle";
+const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::RIVAL_TRAINER_MUSIC_NAME = "rival_trainer";
 
 const TileCoords OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(7, 6);
 
@@ -73,6 +74,8 @@ OaksLabMovementAndBattleTriggerOverworldFlowState::OaksLabMovementAndBattleTrigg
         );
 
         CreateGaryPathToPlayer();
+
+        SoundService::GetInstance().PlayMusic(RIVAL_TRAINER_MUSIC_NAME, false);
 
         mEventState = EventState::WAITING_FOR_GARY_TO_REACH_PLAYER;
     }
