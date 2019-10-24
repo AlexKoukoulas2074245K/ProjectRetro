@@ -45,6 +45,7 @@ private:
     static const std::string RIVAL_TRAINER_MUSIC_NAME;
     static const std::string LEVEL_MUSIC_NAME;
     static const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS;
+    static const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS;
     static const int OAKS_LAB_RIVAL_LEVEL_INDEX;
     
     void UpdateWaitForRivalToReachPlayer();

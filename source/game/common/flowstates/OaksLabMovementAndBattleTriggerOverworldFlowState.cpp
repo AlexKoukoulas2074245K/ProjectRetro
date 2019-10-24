@@ -15,6 +15,9 @@
 #include "../utils/TextboxUtils.h"
 #include "../../common/utils/MilestoneUtils.h"
 #include "../../overworld/components/MovementStateComponent.h"
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/components/LevelModelComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
@@ -30,6 +33,7 @@ const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::RIVAL_TRAIN
 const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::LEVEL_MUSIC_NAME                     = "oaks_lab";
 
 const TileCoords OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(7, 6);
+const TileCoords OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS = TileCoords(8, 6);
 
 const int OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_RIVAL_LEVEL_INDEX = 11;
 
@@ -157,8 +161,12 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForBattleToFin
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
     {
-        SetMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld);
-
+        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+        auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+        
+        GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+        GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+        
         QueueDialogForChatbox
         (
             CreateChatbox(mWorld),
@@ -192,6 +200,8 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForRivalToReac
         DestroyOverworldNpcEntityAndEraseTileInfo(rivalEntityId, mWorld);
         SoundService::GetInstance().PlayMusic(LEVEL_MUSIC_NAME, false);
 
+        SetMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld);
+        
         CompleteOverworldFlow();
     }
 }

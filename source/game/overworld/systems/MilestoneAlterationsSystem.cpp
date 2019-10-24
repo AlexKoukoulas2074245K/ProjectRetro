@@ -88,14 +88,16 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
 
                 GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
-                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
             }   
             else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld))
             {
+                DestroyOverworldNpcEntityAndEraseTileInfo(OAKS_LAB_RIVAL_ENTITY_LEVEL_INDEX, mWorld);
+                
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
 
                 GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
-                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
             }
             else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
             {
@@ -114,7 +116,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_ENTITY_LEVEL_INDEX, mWorld), mWorld);
 
                 GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
-                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
             }
             else if (levelName == PALLET_TOWN_LEVEL_NAME && HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
             {
