@@ -26,7 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME = "trainer_battle";
-const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::RIVAL_TRAINER_MUSIC_NAME = "rival_trainer";
+const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::RIVAL_TRAINER_MUSIC_NAME             = "rival_trainer";
+const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::LEVEL_MUSIC_NAME                     = "oaks_lab";
 
 const TileCoords OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(7, 6);
 
@@ -105,7 +106,9 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::VUpdate(const float)
         switch (mEventState)
         {
             case EventState::WAITING_FOR_RIVAL_TO_REACH_PLAYER: UpdateWaitForRivalToReachPlayer(); break;
-            case EventState::WAITING_FOR_BATTLE_TO_FINISH:     UpdateWaitForBattleToFinish(); break;
+            case EventState::WAITING_FOR_BATTLE_TO_FINISH:      UpdateWaitForBattleToFinish(); break;
+            case EventState::RIVAL_FAREWELL_TEXT:               UpdateRivalFarewellText(); break;
+            case EventState::WAITING_FOR_RIVAL_TO_REACH_EXIT:   UpdateWaitForRivalToReachExit(); break;
         }        
     }
 }
@@ -163,6 +166,33 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForBattleToFin
             playerStateComponent.mPlayerTrainerName.GetString() + "! Gramps!#Smell you later!", 
             mWorld
         );
+        
+        mEventState = EventState::RIVAL_FAREWELL_TEXT;
+    }
+}
+
+void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateRivalFarewellText()
+{
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        SoundService::GetInstance().PlayMusic(RIVAL_TRAINER_MUSIC_NAME, false);
+        CreateRivalPathToExit();
+        
+        mEventState = EventState::WAITING_FOR_RIVAL_TO_REACH_EXIT;
+    }
+}
+
+void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForRivalToReachExit()
+{
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
+    auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+
+    if (rivalAiComponent.mScriptedPathIndex == -1)
+    {
+        DestroyOverworldNpcEntityAndEraseTileInfo(rivalEntityId, mWorld);
+        SoundService::GetInstance().PlayMusic(LEVEL_MUSIC_NAME, false);
+
+        CompleteOverworldFlow();
     }
 }
 
@@ -182,6 +212,27 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::CreateRivalPathToPlayer(
     {
         rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 9);
         rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 7);
+    }
+
+    rivalAiComponent.mScriptedPathIndex = 0;
+}
+
+void OaksLabMovementAndBattleTriggerOverworldFlowState::CreateRivalPathToExit()
+{
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
+
+    auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+    rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+
+    if (mIsPlayerOnLeftTile)
+    {
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 7);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 2);
+    }
+    else
+    {
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(7, 7);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(7, 2);
     }
 
     rivalAiComponent.mScriptedPathIndex = 0;

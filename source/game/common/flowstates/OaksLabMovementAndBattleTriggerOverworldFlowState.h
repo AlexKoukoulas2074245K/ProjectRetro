@@ -36,17 +36,23 @@ private:
     enum class EventState
     {
         WAITING_FOR_RIVAL_TO_REACH_PLAYER,
-        WAITING_FOR_BATTLE_TO_FINISH
+        WAITING_FOR_BATTLE_TO_FINISH,
+        RIVAL_FAREWELL_TEXT,
+        WAITING_FOR_RIVAL_TO_REACH_EXIT
     };
 
     static const std::string TRAINER_BATTLE_MAIN_MUSIC_TRACK_NAME;
     static const std::string RIVAL_TRAINER_MUSIC_NAME;
+    static const std::string LEVEL_MUSIC_NAME;
     static const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS;
     static const int OAKS_LAB_RIVAL_LEVEL_INDEX;
     
     void UpdateWaitForRivalToReachPlayer();
     void UpdateWaitForBattleToFinish();
+    void UpdateRivalFarewellText();
+    void UpdateWaitForRivalToReachExit();
     void CreateRivalPathToPlayer();
+    void CreateRivalPathToExit();
 
     EventState mEventState;
     bool mIsPlayerOnLeftTile;
