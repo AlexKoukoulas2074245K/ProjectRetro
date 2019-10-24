@@ -120,9 +120,11 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
 
     if (playerNpcAiComponent.mScriptedPathIndex == -1)
     {
+        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+        auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
+
         mWorld.RemoveComponent<NpcAiComponent>(playerEntityId);
-        mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
-        DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+        mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));                
 
         const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
@@ -142,10 +144,8 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
             playerStateComponent.mRivalName.GetString() + " snatched#the POK^MON!",
             mWorld
         );
-        
-        const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-        auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
-        
+
+        GetTile(OAKS_LAB_POKEBALL_COORDS, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NONE;
         GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = rivalEntityId;
         GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
         

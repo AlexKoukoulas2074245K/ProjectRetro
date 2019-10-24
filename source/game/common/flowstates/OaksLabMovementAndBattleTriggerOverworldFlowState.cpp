@@ -184,6 +184,7 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateRivalFarewellText(
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
         SoundService::GetInstance().PlayMusic(RIVAL_TRAINER_MUSIC_NAME, false);
+
         CreateRivalPathToExit();
         
         mEventState = EventState::WAITING_FOR_RIVAL_TO_REACH_EXIT;
