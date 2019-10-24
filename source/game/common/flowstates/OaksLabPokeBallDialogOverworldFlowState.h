@@ -35,23 +35,23 @@ private:
     enum class EventState
     {
         EXCLAMATION_MARK,
-        GARY_MOVING_TOWARD_PLAYER,        
+        RIVAL_MOVING_TOWARD_PLAYER,        
         PLAYER_MOVING_TOWARD_WALL,
-        GARY_SNATCHING_POKEMON_CONVERSATION,
+        RIVAL_SNATCHING_POKEMON_CONVERSATION,
         OAK_POST_SNATCH_CONVERSATION,
         PLAYER_MOVING_TOWARD_OAK,
         PIKACHU_RECEPTION_CONVERSATION
     };
 
     void UpdateExclamationMark(const float dt);
-    void UpdateGaryMovingTowardPlayer();
+    void UpdateRivalMovingTowardPlayer();
     void UpdatePlayerMovingTowardWall();
-    void UpdateGarySnatchingPokemonConversation();
+    void UpdateRivalSnatchingPokemonConversation();
     void UpdateOakPostSnatchConversation();
     void UpdatePlayerMovingTowardOak();
     void UpdatePikachuReceptionConversation();
     void CreateExlamationMark();
-    void CreateGaryMovingToPlayerPath();
+    void CreateRivalMovingToPlayerPath();
     void CreatePlayerMovingToWallPath();
     void CreatePlayerMovingToOakPath();
 
@@ -59,7 +59,7 @@ private:
     static const TileCoords OAKS_LAB_POKEBALL_COORDS;
 
     static const int OAKS_LAB_OAK_LEVEL_INDEX;
-    static const int OAKS_LAB_GARY_LEVEL_INDEX;    
+    static const int OAKS_LAB_RIVAL_LEVEL_INDEX;    
     static const int OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX;
     static const float EXCLAMATION_MARK_LIFE_TIME;
 

@@ -47,7 +47,7 @@ const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_SPEECH_COORDS_
 const TileCoords PikachuCatchIntroSequenceOverworldFlowState::OAK_SPEECH_COORDS_2           = TileCoords(17, 22);
 
 const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_OAK_LEVEL_INDEX  = 10;
-const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_GARY_LEVEL_INDEX = 11;
+const int PikachuCatchIntroSequenceOverworldFlowState::OAKS_LAB_RIVAL_LEVEL_INDEX = 11;
 const int PikachuCatchIntroSequenceOverworldFlowState::PALLET_OAK_LEVEL_INDEX    = 6;
 const int PikachuCatchIntroSequenceOverworldFlowState::PIKACHU_LEVEL             = 5;
 
@@ -86,10 +86,10 @@ void PikachuCatchIntroSequenceOverworldFlowState::VUpdate(const float dt)
         case EventState::FOLLOWING_OAK_TO_LAB:                           UpdateFollowingOakToLab(); break;
         case EventState::OAK_MOVING_IN_LAB:                              UpdateOakMovingInLab(); break;
         case EventState::PLAYER_MOVING_TO_OAK_IN_LAB:                    UpdatePlayerMovingToOakInLab(); break;
-        case EventState::GARY_COMPLAINING_CONVERSATION:                  UpdateGaryComplainingConversation(dt); break;
+        case EventState::RIVAL_COMPLAINING_CONVERSATION:                  UpdateRivalComplainingConversation(dt); break;
         case EventState::OAK_URGING_PLAYER_TO_TAKE_BALL_CONVERSATION:    UpdateOakUrgingPlayerToTakeBallConversation(dt); break;
-        case EventState::GARY_COMPLAINING_AGAIN_CONVERSATION:            UpdateGaryComplainingAgainConversation(dt); break;
-        case EventState::OAK_RESPONDING_TO_GARY_COMPLAINTS_CONVERSATION: UpdateOakComplainingToGaryComplaintsConversation(dt); break;
+        case EventState::RIVAL_COMPLAINING_AGAIN_CONVERSATION:            UpdateRivalComplainingAgainConversation(dt); break;
+        case EventState::OAK_RESPONDING_TO_RIVAL_COMPLAINTS_CONVERSATION: UpdateOakComplainingToRivalComplaintsConversation(dt); break;
     }   
 }
 
@@ -233,7 +233,7 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakMovingInLab()
     if (npcAiComponent.mScriptedPathIndex == -1)
     {
         PositionOakSprite(TimelinePoint::OAKS_LAB_FINAL);
-        ChangeCharacterDirection(Character::GARY, TimelinePoint::OAKS_LAB_FINAL, Direction::NORTH);
+        ChangeCharacterDirection(Character::RIVAL, TimelinePoint::OAKS_LAB_FINAL, Direction::NORTH);
         CreatePlayerMovingToOakPathInLab();
         mEventState = EventState::PLAYER_MOVING_TO_OAK_IN_LAB;
     }
@@ -254,11 +254,11 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdatePlayerMovingToOakInLab()
         QueueDialogForChatbox(CreateChatbox(mWorld), playerStateComponent.mRivalName.GetString() + ": Gramps!#I'm fed up with#waiting!", mWorld);
         mTimer.Reset();
 
-        mEventState = EventState::GARY_COMPLAINING_CONVERSATION;
+        mEventState = EventState::RIVAL_COMPLAINING_CONVERSATION;
     }
 }
 
-void PikachuCatchIntroSequenceOverworldFlowState::UpdateGaryComplainingConversation(const float dt)
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateRivalComplainingConversation(const float dt)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
@@ -298,12 +298,12 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakUrgingPlayerToTakeBal
             
             mTimer.Reset();
 
-            mEventState = EventState::GARY_COMPLAINING_AGAIN_CONVERSATION;
+            mEventState = EventState::RIVAL_COMPLAINING_AGAIN_CONVERSATION;
         }
     }
 }
 
-void PikachuCatchIntroSequenceOverworldFlowState::UpdateGaryComplainingAgainConversation(const float dt)
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateRivalComplainingAgainConversation(const float dt)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
@@ -320,12 +320,12 @@ void PikachuCatchIntroSequenceOverworldFlowState::UpdateGaryComplainingAgainConv
 
             mTimer.Reset();
 
-            mEventState = EventState::OAK_RESPONDING_TO_GARY_COMPLAINTS_CONVERSATION;
+            mEventState = EventState::OAK_RESPONDING_TO_RIVAL_COMPLAINTS_CONVERSATION;
         }
     }
 }
 
-void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakComplainingToGaryComplaintsConversation(const float dt)
+void PikachuCatchIntroSequenceOverworldFlowState::UpdateOakComplainingToRivalComplaintsConversation(const float dt)
 {    
     if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
     {
@@ -542,9 +542,9 @@ void PikachuCatchIntroSequenceOverworldFlowState::ChangeCharacterDirection(const
         npcAiComponent.mInitDirection = direction;
 
     }
-    else if (character == Character::GARY)
+    else if (character == Character::RIVAL)
     {
-        characterEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+        characterEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
         auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(characterEntityId);
         npcAiComponent.mInitDirection = direction;

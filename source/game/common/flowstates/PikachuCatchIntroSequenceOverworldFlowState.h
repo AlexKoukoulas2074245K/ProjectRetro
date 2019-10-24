@@ -36,7 +36,7 @@ public:
 private:
     enum class Character
     {
-        PLAYER, OAK, GARY
+        PLAYER, OAK, RIVAL
     };
 
     enum class TimelinePoint
@@ -56,10 +56,10 @@ private:
     void UpdateFollowingOakToLab();
     void UpdateOakMovingInLab();
     void UpdatePlayerMovingToOakInLab();
-    void UpdateGaryComplainingConversation(const float dt);
+    void UpdateRivalComplainingConversation(const float dt);
     void UpdateOakUrgingPlayerToTakeBallConversation(const float dt);
-    void UpdateGaryComplainingAgainConversation(const float dt);
-    void UpdateOakComplainingToGaryComplaintsConversation(const float dt);
+    void UpdateRivalComplainingAgainConversation(const float dt);
+    void UpdateOakComplainingToRivalComplaintsConversation(const float dt);
     void CreateExlamationMark();
     void PositionOakSprite(const TimelinePoint timelinePoint);
     void CreateOakEntranceScriptedPath();   
@@ -79,10 +79,10 @@ private:
         FOLLOWING_OAK_TO_LAB,
         OAK_MOVING_IN_LAB,
         PLAYER_MOVING_TO_OAK_IN_LAB,
-        GARY_COMPLAINING_CONVERSATION,
+        RIVAL_COMPLAINING_CONVERSATION,
         OAK_URGING_PLAYER_TO_TAKE_BALL_CONVERSATION,
-        GARY_COMPLAINING_AGAIN_CONVERSATION,
-        OAK_RESPONDING_TO_GARY_COMPLAINTS_CONVERSATION
+        RIVAL_COMPLAINING_AGAIN_CONVERSATION,
+        OAK_RESPONDING_TO_RIVAL_COMPLAINTS_CONVERSATION
     };
    
     static const std::string OAK_APPEARS_MUSIC_NAME;
@@ -99,7 +99,7 @@ private:
     static const TileCoords OAK_SPEECH_COORDS_2;    
     
     static const int OAKS_LAB_OAK_LEVEL_INDEX;
-    static const int OAKS_LAB_GARY_LEVEL_INDEX;
+    static const int OAKS_LAB_RIVAL_LEVEL_INDEX;
     static const int PALLET_OAK_LEVEL_INDEX;
     static const int PIKACHU_LEVEL;
 

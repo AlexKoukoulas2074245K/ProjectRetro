@@ -32,7 +32,7 @@ const TileCoords OaksLabPokeBallDialogOverworldFlowState::EXCLAMATION_MARK_ATLAS
 const TileCoords OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_POKEBALL_COORDS      = TileCoords(10, 10);
 
 const int OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_OAK_LEVEL_INDEX             = 10;
-const int OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_GARY_LEVEL_INDEX            = 11;
+const int OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_RIVAL_LEVEL_INDEX            = 11;
 const int OaksLabPokeBallDialogOverworldFlowState::OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX = 12;
 
 const float OaksLabPokeBallDialogOverworldFlowState::EXCLAMATION_MARK_LIFE_TIME         = 1.0f;
@@ -69,9 +69,9 @@ void OaksLabPokeBallDialogOverworldFlowState::VUpdate(const float dt)
         switch (mEventState)
         {
             case EventState::EXCLAMATION_MARK:                    UpdateExclamationMark(dt); break;
-            case EventState::GARY_MOVING_TOWARD_PLAYER:           UpdateGaryMovingTowardPlayer(); break;
+            case EventState::RIVAL_MOVING_TOWARD_PLAYER:           UpdateRivalMovingTowardPlayer(); break;
             case EventState::PLAYER_MOVING_TOWARD_WALL:           UpdatePlayerMovingTowardWall(); break;
-            case EventState::GARY_SNATCHING_POKEMON_CONVERSATION: UpdateGarySnatchingPokemonConversation(); break;
+            case EventState::RIVAL_SNATCHING_POKEMON_CONVERSATION: UpdateRivalSnatchingPokemonConversation(); break;
             case EventState::OAK_POST_SNATCH_CONVERSATION:        UpdateOakPostSnatchConversation(); break;
             case EventState::PLAYER_MOVING_TOWARD_OAK:            UpdatePlayerMovingTowardOak(); break;
             case EventState::PIKACHU_RECEPTION_CONVERSATION:      UpdatePikachuReceptionConversation(); break;
@@ -95,17 +95,17 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdateExclamationMark(const float 
         if (mTimer.HasTicked())
         {
             mWorld.DestroyEntity(mExclamationMarkEntityId);            
-            CreateGaryMovingToPlayerPath();
-            mEventState = EventState::GARY_MOVING_TOWARD_PLAYER;
+            CreateRivalMovingToPlayerPath();
+            mEventState = EventState::RIVAL_MOVING_TOWARD_PLAYER;
         }
     }    
 }
 
-void OaksLabPokeBallDialogOverworldFlowState::UpdateGaryMovingTowardPlayer()
+void OaksLabPokeBallDialogOverworldFlowState::UpdateRivalMovingTowardPlayer()
 {
-    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
-    auto& garyAiComponent   = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
-    if (garyAiComponent.mScriptedPathIndex == -1)
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
+    auto& rivalAiComponent   = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+    if (rivalAiComponent.mScriptedPathIndex == -1)
     {
         CreatePlayerMovingToWallPath();
         mEventState = EventState::PLAYER_MOVING_TOWARD_WALL;
@@ -124,13 +124,13 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
         mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
         DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
 
-        const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+        const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
-        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
+        auto& npcAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
         npcAiComponent.mInitDirection = Direction::NORTH;    
 
-        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(garyEntityId);
-        auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(garyEntityId);
+        auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(rivalEntityId);
+        auto& directionComponent  = mWorld.GetComponent<DirectionComponent>(rivalEntityId);
 
         directionComponent.mDirection = Direction::NORTH;
         ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::NORTH), renderableComponent);
@@ -146,15 +146,15 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         auto& levelModelComponent  = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
         
-        GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = garyEntityId;
+        GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = rivalEntityId;
         GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
         
-        mEventState = EventState::GARY_SNATCHING_POKEMON_CONVERSATION;
+        mEventState = EventState::RIVAL_SNATCHING_POKEMON_CONVERSATION;
     }
 
 }
 
-void OaksLabPokeBallDialogOverworldFlowState::UpdateGarySnatchingPokemonConversation()
+void OaksLabPokeBallDialogOverworldFlowState::UpdateRivalSnatchingPokemonConversation()
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
@@ -216,8 +216,8 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePikachuReceptionConversation
     {
         SetMilestone(milestones::RECEIVED_PIKACHU, mWorld);
 
-        auto& garyNpcAiComponent   = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld));        
-        garyNpcAiComponent.mDialog = playerStateComponent.mPlayerTrainerName.GetString() + ": Heh, my#POK^MON looks a#lot stronger.";
+        auto& rivalNpcAiComponent   = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld));        
+        rivalNpcAiComponent.mDialog = playerStateComponent.mPlayerTrainerName.GetString() + ": Heh, my#POK^MON looks a#lot stronger.";
 
         CompleteOverworldFlow();
     }
@@ -238,24 +238,24 @@ void OaksLabPokeBallDialogOverworldFlowState::CreateExlamationMark()
     );
 
     ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(Direction::SOUTH), *exclamationMarkRenderableComponent);
-    const auto& garyMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld));
+    const auto& rivalMovementStateComponent = mWorld.GetComponent<MovementStateComponent>(GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld));
     auto exclamationMarkTransformComponent = std::make_unique<TransformComponent>();
-    exclamationMarkTransformComponent->mPosition = TileCoordsToPosition(garyMovementStateComponent.mCurrentCoords);
+    exclamationMarkTransformComponent->mPosition = TileCoordsToPosition(rivalMovementStateComponent.mCurrentCoords);
     exclamationMarkTransformComponent->mPosition.y += GAME_TILE_SIZE;
 
     mWorld.AddComponent<RenderableComponent>(mExclamationMarkEntityId, std::move(exclamationMarkRenderableComponent));
     mWorld.AddComponent<TransformComponent>(mExclamationMarkEntityId, std::move(exclamationMarkTransformComponent));
 }
 
-void OaksLabPokeBallDialogOverworldFlowState::CreateGaryMovingToPlayerPath()
+void OaksLabPokeBallDialogOverworldFlowState::CreateRivalMovingToPlayerPath()
 {
-    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
-    auto& garyAiComponent    = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
-    garyAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
-    garyAiComponent.mScriptedPathTileCoords.emplace_back(7, 9);
-    garyAiComponent.mScriptedPathTileCoords.emplace_back(9, 9);
-    garyAiComponent.mScriptedPathIndex = 0;
+    auto& rivalAiComponent    = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+    rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    rivalAiComponent.mScriptedPathTileCoords.emplace_back(7, 9);
+    rivalAiComponent.mScriptedPathTileCoords.emplace_back(9, 9);
+    rivalAiComponent.mScriptedPathIndex = 0;
 }
 
 void OaksLabPokeBallDialogOverworldFlowState::CreatePlayerMovingToWallPath()
@@ -266,10 +266,10 @@ void OaksLabPokeBallDialogOverworldFlowState::CreatePlayerMovingToWallPath()
     playerNpcAiComponent->mScriptedPathTileCoords.emplace_back(12, 9);    
     playerNpcAiComponent->mScriptedPathIndex = 0;    
 
-    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
-    auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
-    garyAiComponent.mScriptedPathTileCoords.emplace_back(10, 9);
-    garyAiComponent.mScriptedPathIndex = 0;
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
+    auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+    rivalAiComponent.mScriptedPathTileCoords.emplace_back(10, 9);
+    rivalAiComponent.mScriptedPathIndex = 0;
     
     mWorld.AddComponent<NpcAiComponent>(playerEntityId, std::move(playerNpcAiComponent));
 }

@@ -30,7 +30,7 @@ const std::string OaksLabMovementAndBattleTriggerOverworldFlowState::RIVAL_TRAIN
 
 const TileCoords OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(7, 6);
 
-const int OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_GARY_LEVEL_INDEX = 11;
+const int OaksLabMovementAndBattleTriggerOverworldFlowState::OAKS_LAB_RIVAL_LEVEL_INDEX = 11;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -57,13 +57,13 @@ OaksLabMovementAndBattleTriggerOverworldFlowState::OaksLabMovementAndBattleTrigg
         playerDirectionComponent.mDirection = Direction::NORTH;
         ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(playerDirectionComponent.mDirection), playerRenderableComponent);
         
-        const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+        const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
-        auto& garyDirectionComponent = mWorld.GetComponent<DirectionComponent>(garyEntityId);
-        auto& garyRenderableComponent = mWorld.GetComponent<RenderableComponent>(garyEntityId);
+        auto& rivalDirectionComponent = mWorld.GetComponent<DirectionComponent>(rivalEntityId);
+        auto& rivalRenderableComponent = mWorld.GetComponent<RenderableComponent>(rivalEntityId);
 
-        garyDirectionComponent.mDirection = Direction::SOUTH;
-        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(garyDirectionComponent.mDirection), garyRenderableComponent);
+        rivalDirectionComponent.mDirection = Direction::SOUTH;
+        ChangeAnimationIfCurrentPlayingIsDifferent(GetDirectionAnimationName(rivalDirectionComponent.mDirection), rivalRenderableComponent);
 
         QueueDialogForChatbox
         (
@@ -73,11 +73,11 @@ OaksLabMovementAndBattleTriggerOverworldFlowState::OaksLabMovementAndBattleTrigg
             mWorld
         );
 
-        CreateGaryPathToPlayer();
+        CreateRivalPathToPlayer();
 
         SoundService::GetInstance().PlayMusic(RIVAL_TRAINER_MUSIC_NAME, false);
 
-        mEventState = EventState::WAITING_FOR_GARY_TO_REACH_PLAYER;
+        mEventState = EventState::WAITING_FOR_RIVAL_TO_REACH_PLAYER;
     }
 }
 
@@ -104,7 +104,7 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::VUpdate(const float)
     {
         switch (mEventState)
         {
-            case EventState::WAITING_FOR_GARY_TO_REACH_PLAYER: UpdateWaitForGaryToReachPlayer(); break;
+            case EventState::WAITING_FOR_RIVAL_TO_REACH_PLAYER: UpdateWaitForRivalToReachPlayer(); break;
             case EventState::WAITING_FOR_BATTLE_TO_FINISH:     UpdateWaitForBattleToFinish(); break;
         }        
     }
@@ -114,17 +114,17 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::VUpdate(const float)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForGaryToReachPlayer()
+void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForRivalToReachPlayer()
 {
-    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
-    auto& garyAiComponent = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
+    auto& rivalAiComponent = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
 
-    if (garyAiComponent.mScriptedPathIndex == -1)
+    if (rivalAiComponent.mScriptedPathIndex == -1)
     {        
         auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
         auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
         
-        playerStateComponent.mLastNpcLevelIndexSpokenTo = OAKS_LAB_GARY_LEVEL_INDEX;
+        playerStateComponent.mLastNpcLevelIndexSpokenTo = OAKS_LAB_RIVAL_LEVEL_INDEX;
         
         encounterStateComponent.mActiveEncounterType = EncounterType::TRAINER;
         encounterStateComponent.mOpponentTrainerSpeciesName = StringId("RIVAL_1");
@@ -150,32 +150,41 @@ void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForGaryToReach
 
 void OaksLabMovementAndBattleTriggerOverworldFlowState::UpdateWaitForBattleToFinish()
 {
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
     {
         SetMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld);
+
+        QueueDialogForChatbox
+        (
+            CreateChatbox(mWorld),
+            playerStateComponent.mRivalName.GetString() + ": Okay!#I'll make my#POK^MON fight to#toughen it up!#@" + 
+            playerStateComponent.mPlayerTrainerName.GetString() + "! Gramps!#Smell you later!", 
+            mWorld
+        );
     }
 }
 
-void OaksLabMovementAndBattleTriggerOverworldFlowState::CreateGaryPathToPlayer()
+void OaksLabMovementAndBattleTriggerOverworldFlowState::CreateRivalPathToPlayer()
 {
-    const auto garyEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_GARY_LEVEL_INDEX, mWorld);
+    const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
-    auto& garyAiComponent    = mWorld.GetComponent<NpcAiComponent>(garyEntityId);
-    garyAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
+    auto& rivalAiComponent    = mWorld.GetComponent<NpcAiComponent>(rivalEntityId);
+    rivalAiComponent.mAiTimer = std::make_unique<Timer>(CHARACTER_ANIMATION_FRAME_TIME);
 
     if (mIsPlayerOnLeftTile)
     {
-        garyAiComponent.mScriptedPathTileCoords.emplace_back(7, 9);
-        garyAiComponent.mScriptedPathTileCoords.emplace_back(7, 7);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(7, 9);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(7, 7);
     }
     else
     {
-        garyAiComponent.mScriptedPathTileCoords.emplace_back(8, 9);
-        garyAiComponent.mScriptedPathTileCoords.emplace_back(8, 7);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 9);
+        rivalAiComponent.mScriptedPathTileCoords.emplace_back(8, 7);
     }
 
-    garyAiComponent.mScriptedPathIndex = 0;
+    rivalAiComponent.mScriptedPathIndex = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
