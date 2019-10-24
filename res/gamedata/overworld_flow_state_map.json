@@ -38,6 +38,8 @@
 		{"level_name": "route_22", "level_col": 42, "level_row": 20, "flow_state_name": "RivalRoute22EncounterOverworldFlowState"},
 		{"level_name": "route_22", "level_col": 42, "level_row": 19, "flow_state_name": "RivalRoute22EncounterOverworldFlowState"},
 		{"level_name": "pallet_town", "level_col": 16, "level_row": 23, "flow_state_name": "PikachuCatchIntroSequenceOverworldFlowState"},
-		{"level_name": "pallet_town", "level_col": 17, "level_row": 23, "flow_state_name": "PikachuCatchIntroSequenceOverworldFlowState"}
+		{"level_name": "pallet_town", "level_col": 17, "level_row": 23, "flow_state_name": "PikachuCatchIntroSequenceOverworldFlowState"},
+		{"level_name": "in_oaks_lab", "level_col": 7, "level_row": 6, "flow_state_name": "OaksLabMovementAndBattleTriggerOverworldFlowState"},
+		{"level_name": "in_oaks_lab", "level_col": 8, "level_row": 6, "flow_state_name": "OaksLabMovementAndBattleTriggerOverworldFlowState"}
 	]
 }

@@ -30,17 +30,19 @@ namespace
     const StringId PEWTER_CITY_LEVEL_NAME     = StringId("pewter_city");
     const StringId PEWTER_CITY_GYM_LEVEL_NAME = StringId("in_pewter_gym");
 
-    const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS                    = TileCoords(5, 11);
-    const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS                   = TileCoords(6, 11);
-    const TileCoords OAKS_LAB_POKEBALL_COORDS                         = TileCoords(10, 10);
-    const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_1_TILE_COORDS = TileCoords(16,23);
-    const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_2_TILE_COORDS = TileCoords(17, 23);
-    const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS       = TileCoords(24, 34);
-    const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS      = TileCoords(42, 20);
-    const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS      = TileCoords(42, 19);
-    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_1_TILE_COORDS    = TileCoords(46, 34);
-    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_2_TILE_COORDS    = TileCoords(47, 33);
-    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_3_TILE_COORDS    = TileCoords(48, 32);
+    const TileCoords OAKS_LAB_FIRST_POKEDEX_COORDS                      = TileCoords(5, 11);
+    const TileCoords OAKS_LAB_SECOND_POKEDEX_COORDS                     = TileCoords(6, 11);
+    const TileCoords OAKS_LAB_POKEBALL_COORDS                           = TileCoords(10, 10);
+    const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS = TileCoords(7, 6);
+    const TileCoords OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_2_TILE_COORDS = TileCoords(8, 6);
+    const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_1_TILE_COORDS   = TileCoords(16,23);
+    const TileCoords PALLET_TOWN_INTRO_SEQUENCE_TRIGGER_2_TILE_COORDS   = TileCoords(17, 23);
+    const TileCoords VIRIDIAN_CITY_RUDE_GUY_TRIGGER_TILE_COORDS         = TileCoords(24, 34);
+    const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_1_TILE_COORDS        = TileCoords(42, 20);
+    const TileCoords ROUTE_22_RIVAL_BATTLE_TRIGGER_2_TILE_COORDS        = TileCoords(42, 19);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_1_TILE_COORDS      = TileCoords(46, 34);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_2_TILE_COORDS      = TileCoords(47, 33);
+    const TileCoords PEWTER_CITY_BROCK_GUIDE_TRIGGER_3_TILE_COORDS      = TileCoords(48, 32);
 
     const int OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
     const int OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
@@ -82,10 +84,22 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_FIRST_POKEDEX_COORDS, mWorld));
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_SECOND_POKEDEX_COORDS, mWorld));
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
+
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+                DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);                
+
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+            }   
+            else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld))
+            {
+                mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_POKEBALL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
-            }    
+
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+            }
             else if (levelName == OAKS_LAB_LEVEL_NAME && HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
             {
                 mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));
@@ -102,6 +116,9 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
             else if (levelName == OAKS_LAB_LEVEL_NAME && !HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
             {
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_OAK_ENTITY_LEVEL_INDEX, mWorld), mWorld);
+
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
+                GetTile(OAKS_LAB_MOVEMENT_AND_BATTLE_TRIGGER_1_TILE_COORDS, levelModelComponent.mLevelTilemap).mTileTrait = TileTrait::NONE;
             }
             else if (levelName == PALLET_TOWN_LEVEL_NAME && HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
             {

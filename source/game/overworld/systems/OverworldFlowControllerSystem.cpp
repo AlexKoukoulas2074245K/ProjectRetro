@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/OakDialogOverworldFlowState.h"
+#include "../../common/flowstates/OaksLabMovementAndBattleTriggerOverworldFlowState.h"
 #include "../../common/flowstates/OaksLabPokeBallDialogOverworldFlowState.h"
 #include "../../common/flowstates/PCIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
@@ -157,6 +158,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(RivalRoute22EncounterOverworldFlowState);
     RegisterNamedFlowState(PikachuCatchIntroSequenceOverworldFlowState);
     RegisterNamedFlowState(OaksLabPokeBallDialogOverworldFlowState);
+    RegisterNamedFlowState(OaksLabMovementAndBattleTriggerOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
