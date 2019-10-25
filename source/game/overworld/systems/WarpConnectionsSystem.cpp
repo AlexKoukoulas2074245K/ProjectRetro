@@ -124,6 +124,7 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
 
         if (oldMusicTrackName != levelModelComponent.mLevelMusicTrackName)
         {
+            SoundService::GetInstance().UnmuteMusic();
             SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
         }
         

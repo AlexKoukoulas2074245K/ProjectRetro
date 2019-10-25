@@ -108,6 +108,7 @@ public:
     FlowStateManager mFlowStateManager;
     EncounterViewObjects mViewObjects;
     std::vector<std::unique_ptr<Pokemon>> mOpponentPokemonRoster;        
+    std::vector<size_t> mPlayerPokemonIndicesEligibleForXp;
     std::unordered_map<int, std::unordered_map<int, float>> mPlayerPokemonToOpponentPokemonDamageMap;
     StringId mLastMoveSelected                                           = StringId();
     StringId mOpponentTrainerSpeciesName                                 = StringId();
@@ -119,6 +120,7 @@ public:
     OverworldEncounterAnimationState mOverworldEncounterAnimationState   = OverworldEncounterAnimationState::NONE;            
     MainMenuActionType mLastEncounterMainMenuActionSelected              = MainMenuActionType::FIGHT;
     BindOrWrapState mBindOrWrapState                                     = BindOrWrapState::NOT_APPLICABLE;
+    size_t mNumberOfPlayerPokemonEligibleForXp                           = 0;
     int mActivePlayerPokemonRosterIndex                                  = 0;
     int mActiveOpponentPokemonRosterIndex                                = 0;
     int mSpecialMoveAnimationStep                                        = 0;

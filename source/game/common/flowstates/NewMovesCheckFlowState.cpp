@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "AwardExperienceEncounterFlowState.h"
 #include "EvolutionTextFlowState.h"
 #include "NewMovesCheckFlowState.h"
 #include "LearnNewMoveFlowState.h"
@@ -55,24 +56,36 @@ void NewMovesCheckFlowState::VUpdate(const float)
     if (activePlayerPokemon.mMoveToBeLearned == StringId())
     {
         playerStateComponent.mLeveledUpPokemonRosterIndex = -1;
-        if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+
+        // There are more pokemon to award xp to
+        if (encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.size() > 1)
         {
-            CompleteAndTransitionTo<EvolutionTextFlowState>();
+            encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.erase(encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.begin());
+            CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
         }
-        else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+        // There aren't any more pokemon to award xp to
+        else
         {
-            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.clear();
+            if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
             {
-                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                CompleteAndTransitionTo<EvolutionTextFlowState>();
+            }
+            else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
+            {
+                if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+                {
+                    CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                }
+                else
+                {
+                    CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                }
             }
             else
             {
-                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                //TODO: Continue with overworld
             }
-        }
-        else
-        {
-            //TODO: Continue with overworld
         }
     }
     else

@@ -32,16 +32,17 @@ PokemonDeathTextEncounterFlowState::PokemonDeathTextEncounterFlowState(ecs::Worl
 
 void PokemonDeathTextEncounterFlowState::VUpdate(const float)
 {
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& guiStateComponent       = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
-    const auto& activeOpponentPokemon   = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& guiStateComponent     = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& encounterStateComponent     = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    const auto& activeOpponentPokemon = encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
     
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         if (activeOpponentPokemon->mHp <= 0)
         {
+            encounterStateComponent.mNumberOfPlayerPokemonEligibleForXp = encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.size();
             CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
         } 
         // Player's pokemon fainted

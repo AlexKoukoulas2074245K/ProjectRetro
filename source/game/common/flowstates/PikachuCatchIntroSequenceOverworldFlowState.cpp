@@ -63,6 +63,13 @@ PikachuCatchIntroSequenceOverworldFlowState::PikachuCatchIntroSequenceOverworldF
     , mExclamationMarkEntityId(ecs::NULL_ENTITY_ID)    
     , mEventState(EventState::EXCLAMATION_MARK)
 {
+    // Have to check manually as this flow is triggered by the tiles immediately when entering pallet
+    if (HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld))
+    {
+        CompleteOverworldFlow();
+        return;
+    }
+
     const auto& playerMovementState = mWorld.GetComponent<MovementStateComponent>(GetPlayerEntityId(mWorld));
     mIsPlayerOnLeftTile = playerMovementState.mCurrentCoords == TileCoords(OAK_SPEECH_COORDS_1.mCol, OAK_SPEECH_COORDS_1.mRow + 1);
 

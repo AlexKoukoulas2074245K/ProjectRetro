@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "AbandonLearningNewMoveFlowState.h"
+#include "AwardExperienceEncounterFlowState.h"
+#include "EvolutionTextFlowState.h"
 #include "FullMovesetIntroTextFlowState.h"
 #include "NextOpponentPokemonCheckEncounterFlowState.h"
 #include "TrainerBattleWonEncounterFlowState.h"
@@ -67,13 +69,31 @@ void AbandonLearningNewMoveFlowState::VUpdate(const float)
         }
         else if (encounterStateComponent.mActiveEncounterType != EncounterType::NONE)
         {
-            if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+            // There are more pokemon to award xp to
+            if (encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.size() > 1)
             {
-                CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.erase(encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.begin());
+                CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
             }
+            // There aren't any more pokemon to award xp to
             else
             {
-                CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.clear();
+                if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+                {
+                    CompleteAndTransitionTo<EvolutionTextFlowState>();
+                }
+                else
+                {
+                    if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+                    {
+                        CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                    }
+                    else
+                    {
+                        CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                    }
+                }                
             }
         }
         else

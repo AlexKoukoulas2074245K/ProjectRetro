@@ -82,8 +82,8 @@
 const float App::MIN_DT = 0.00001f;
 const float App::MAX_DT = 1.0f;
 
-#ifndef NDEBUG
 const float App::DEBUG_DT_SPEEDUP = 10.0f;
+#ifndef NDEBUG
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,6 @@ void App::GameLoop()
             dtAccumulator = 0.0f;
         }        
         
-#ifndef NDEBUG        
         if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt * DEBUG_DT_SPEEDUP, MAX_DT)));
@@ -183,9 +182,8 @@ void App::GameLoop()
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
         }
-        
+#ifndef NDEBUG                        
 #else
-        mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
 #endif      
 
         if (IsActionTypeKeyTapped(VirtualActionType::SELECT_BUTTON, inputStateSingletonComponent))

@@ -58,6 +58,8 @@ void SaveGame(const ecs::World& world)
     saveFileString << "    \"player_name\": \"" << playerStateComponent.mPlayerTrainerName.GetString() << "\",\n";
     saveFileString << "    \"rival_name\": \"" << playerStateComponent.mRivalName.GetString() << "\",\n";
     saveFileString << "    \"home_name\": \"" << playerStateComponent.mHomeLevelName.GetString() << "\",\n";
+    saveFileString << "    \"home_col\": " << playerStateComponent.mHomeLevelOccupiedCol << ",\n";
+    saveFileString << "    \"home_row\": " << playerStateComponent.mHomeLevelOccupiedRow << ",\n";
     saveFileString << "    \"milestones\": " << playerStateComponent.mMilestones << ",\n";
     saveFileString << "    \"current_level_name\": \"" << activeLevelComponent.mActiveLevelNameId.GetString() << "\",\n";
     saveFileString << "    \"current_game_col\": " << movementComponent.mCurrentCoords.mCol << ",\n";
@@ -261,13 +263,15 @@ void RestoreGameStateFromSaveFile(ecs::World& world)
     const auto saveJson = nlohmann::json::parse(saveFileResource.GetContents());
     
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();
-    playerStateComponent->mPlayerTrainerName = StringId(saveJson["player_name"].get<std::string>());
-    playerStateComponent->mRivalName         = StringId(saveJson["rival_name"].get<std::string>());
-    playerStateComponent->mMilestones        = saveJson["milestones"].get<unsigned long>();
-    playerStateComponent->mHomeLevelName     = StringId(saveJson["home_name"].get<std::string>());
-    playerStateComponent->mSecondsPlayed     = saveJson["seconds_played"].get<int>();
-    playerStateComponent->mPokeDollarCredits = saveJson["poke_dollars"].get<int>();
-    playerStateComponent->mTrainerId         = saveJson["trainer_id"].get<int>();
+    playerStateComponent->mPlayerTrainerName    = StringId(saveJson["player_name"].get<std::string>());
+    playerStateComponent->mRivalName            = StringId(saveJson["rival_name"].get<std::string>());
+    playerStateComponent->mMilestones           = saveJson["milestones"].get<unsigned long>();
+    playerStateComponent->mHomeLevelName        = StringId(saveJson["home_name"].get<std::string>());
+    playerStateComponent->mHomeLevelOccupiedCol = saveJson["home_col"].get<int>();
+    playerStateComponent->mHomeLevelOccupiedRow = saveJson["home_row"].get<int>();
+    playerStateComponent->mSecondsPlayed        = saveJson["seconds_played"].get<int>();
+    playerStateComponent->mPokeDollarCredits    = saveJson["poke_dollars"].get<int>();
+    playerStateComponent->mTrainerId            = saveJson["trainer_id"].get<int>();
     
     for (const auto& defeatedNpcEntry: saveJson["defeated_npc_entries"])
     {

@@ -27,11 +27,14 @@
 AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    const auto& activeOpponentPokemon   = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     
-    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    std::sort(encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.begin(), encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.end());
+    
+    const auto& playerStateComponent  = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& activeOpponentPokemon = *encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex];
+    
+    auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.front()];
     
     if (activePlayerPokemon.mLevel < 100)
     {
@@ -41,7 +44,7 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
             encounterStateComponent.mActiveEncounterType == EncounterType::WILD,
             activeOpponentPokemon.mBaseSpeciesStats.mXpStat,
             activeOpponentPokemon.mLevel,
-            1
+            static_cast<int>(encounterStateComponent.mNumberOfPlayerPokemonEligibleForXp)
         );
 
         activePlayerPokemon.mXpPoints  += xpAwarded;
@@ -50,6 +53,12 @@ AwardExperienceEncounterFlowState::AwardExperienceEncounterFlowState(ecs::World&
         AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpeed, activePlayerPokemon.mSpeedEv);
         AddToEvStat(activeOpponentPokemon.mBaseSpeciesStats.mSpecial, activePlayerPokemon.mSpecialEv);
         
+        const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+        if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+        {
+            DestroyActiveTextbox(mWorld);
+        }
+
         const auto mainChatboxEntityId = CreateChatbox(mWorld);
         QueueDialogForChatbox
         (
@@ -65,7 +74,7 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
     const auto& guiStateComponent   = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     auto& playerStateComponent      = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     auto& encounterStateComponent   = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mActivePlayerPokemonRosterIndex];
+    const auto& activePlayerPokemon = *playerStateComponent.mPlayerPokemonRoster[encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.front()];
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
@@ -83,21 +92,32 @@ void AwardExperienceEncounterFlowState::VUpdate(const float)
         }
         else
         {
-            if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
-            {                
-                CompleteAndTransitionTo<EvolutionTextFlowState>();
+            // There are more pokemon to award xp to
+            if (encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.size() > 1)
+            {
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.erase(encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.begin());
+                CompleteAndTransitionTo<AwardExperienceEncounterFlowState>();
             }
+            // There aren't any more pokemon to award xp to
             else
             {
-                if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
-                {                    
-                    CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.clear();
+                if (encounterStateComponent.mActiveEncounterType == EncounterType::WILD)
+                {
+                    CompleteAndTransitionTo<EvolutionTextFlowState>();
                 }
                 else
                 {
-                    CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
-                }                
-            }
+                    if (GetFirstNonFaintedPokemonIndex(encounterStateComponent.mOpponentPokemonRoster) != encounterStateComponent.mOpponentPokemonRoster.size())
+                    {
+                        CompleteAndTransitionTo<NextOpponentPokemonCheckEncounterFlowState>();
+                    }
+                    else
+                    {
+                        CompleteAndTransitionTo<TrainerBattleWonEncounterFlowState>();
+                    }
+                }
+            }            
         }
     }
 }

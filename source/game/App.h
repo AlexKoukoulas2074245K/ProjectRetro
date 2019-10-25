@@ -39,8 +39,8 @@ private:
     static const float MIN_DT;
     static const float MAX_DT;
 
-#ifndef NDEBUG
     static const float DEBUG_DT_SPEEDUP;
+#ifndef NDEBUG
 #endif
 
     ecs::World mWorld;    

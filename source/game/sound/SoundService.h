@@ -47,6 +47,7 @@ public:
     void PlayMusic(const StringId musicTrackName, const bool fadeOutEnabled = true);
     void MuteMusic();
     void UnmuteMusic();
+    void ResetCurrentlyPlayingMusic();
     void MuteSfx();
     void UnmuteSfx();
     void ToggleAudioOnOff();

@@ -98,6 +98,9 @@ OpponentPokemonStatusDisplayEncounterFlowState::OpponentPokemonStatusDisplayEnco
         );
     }
 
+    encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.clear();
+    encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.push_back(encounterStateComponent.mActivePlayerPokemonRosterIndex);
+
     if (encounterStateComponent.mIsPikachuCaptureFlowActive)
     {
         CompleteAndTransitionTo<MainMenuEncounterFlowState>();

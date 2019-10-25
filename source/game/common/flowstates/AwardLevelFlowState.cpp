@@ -36,11 +36,20 @@ AwardLevelFlowState::AwardLevelFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
     const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& activePlayerPokemon        = *playerStateComponent.mPlayerPokemonRoster[playerStateComponent.mLeveledUpPokemonRosterIndex];
 
     LevelUpStats(mWorld, activePlayerPokemon);
     
-    RefreshPokemonStats();
+    if
+    (
+        encounterStateComponent.mActiveEncounterType == EncounterType::NONE ||
+        encounterStateComponent.mActivePlayerPokemonRosterIndex == playerStateComponent.mLeveledUpPokemonRosterIndex
+    )
+    {
+        RefreshPokemonStats();
+    }
+    
 
     const auto mainChatboxEntityId = CreateChatbox(mWorld);
     QueueDialogForChatbox

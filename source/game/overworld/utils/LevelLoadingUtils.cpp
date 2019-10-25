@@ -45,6 +45,9 @@ static const std::string LEVEL_SEA_TILE_MODEL_NAME             = "sea_tile";
 
 static const float ANIMATED_FLOWER_SCALE = 0.7f;
 
+static const float DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME = 0.5f;
+static const float DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME = 3.0f;
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +378,11 @@ ecs::EntityId CreateNpcAttributes
     
     if (movementType == CharacterMovementType::DYNAMIC)
     {
-        aiComponent->mAiTimer = nullptr;
+        aiComponent->mAiTimer = std::make_unique<Timer>(math::RandomFloat
+        (
+            DYNAMIC_NPC_MIN_MOVEMENT_INITIATION_TIME,
+            DYNAMIC_NPC_MAX_MOVEMENT_INITIATION_TIME
+        ));
     }
 
     const auto& playerStateComponent = world.GetSingletonComponent<PlayerStateSingletonComponent>();
@@ -760,10 +767,14 @@ void DestroyAnyCollectedItemNpcs
                 if (world.HasComponent<NpcAiComponent>(npcEntityId))
                 {
                     const auto& npcAiComponent = world.GetComponent<NpcAiComponent>(npcEntityId);
-                    
+                    const auto& movementStateComponent = world.GetComponent<MovementStateComponent>(npcEntityId);
+
                     if (npcAiComponent.mLevelIndex == collectedItemNpcEntry.mNpcLevelIndex)
                     {
-                        DestroyOverworldNpcEntityAndEraseTileInfo(npcEntityId, world);                        
+                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;		
+                        GetTile(movementStateComponent.mCurrentCoords.mCol, movementStateComponent.mCurrentCoords.mRow, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NONE;
+
+                        world.DestroyEntity(npcEntityId);                        
                     }
                 }                
             }

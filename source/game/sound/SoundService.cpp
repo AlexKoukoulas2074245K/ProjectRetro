@@ -199,7 +199,11 @@ void SoundService::MuteMusic()
 {
     if (!mAllAudioDisabled)
     {
-        mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+        if (Mix_VolumeMusic(-1) > 0)
+        {
+            mMusicVolumePriorToMuting = Mix_VolumeMusic(-1);
+        }
+        
         Mix_VolumeMusic(0);
     }    
 }
@@ -210,7 +214,11 @@ void SoundService::UnmuteMusic()
     {
         Mix_VolumeMusic(mMusicVolumePriorToMuting);
     }
-    
+}
+
+void SoundService::ResetCurrentlyPlayingMusic()
+{    
+    mCurrentlyPlayingMusicResourceId = 0;    
 }
 
 void SoundService::MuteSfx()

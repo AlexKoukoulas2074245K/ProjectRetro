@@ -197,7 +197,15 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         }
     }
     else if (encounterStateComponent.mActiveEncounterType == EncounterType::TRAINER)
-    {
+    {        
+        if (HasMilestone(!milestones::FIRST_RIVAL_BATTLE_FINSIHED, mWorld))
+        {
+            for (auto& pokemon : playerStateComponent.mPlayerPokemonRoster)
+            {
+                RestorePokemonStats(*pokemon);
+            }
+        }
+
         playerStateComponent.mDefeatedNpcEntries.emplace_back
         (
             playerStateComponent.mLastOverworldLevelName,
@@ -236,7 +244,8 @@ void EncounterStateControllerSystem::DestroyEncounterAndCreateLastPlayedLevel() 
         playerStateComponent.mLastOverworldLevelOccupiedRow,
         mWorld
     );    
-
+    
+    SoundService::GetInstance().UnmuteMusic();
     SoundService::GetInstance().PlayMusic(overworldLevelModelComponent.mLevelMusicTrackName);
 }
 

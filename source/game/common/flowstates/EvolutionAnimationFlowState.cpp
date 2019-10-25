@@ -194,6 +194,7 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                     evolutionAnimationStateComponent.mEvolutionAnimationTimer = std::make_unique<Timer>(POKEMON_CRY_DELAY * 2);
 
                     SoundService::GetInstance().PlaySfx(POKEMON_EVOLUTION_SFX_NAME);
+                    SoundService::GetInstance().ResetCurrentlyPlayingMusic();
                 }
             }
         } break;

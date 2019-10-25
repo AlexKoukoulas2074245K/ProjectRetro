@@ -173,12 +173,24 @@ void HealthDepletionEncounterFlowState::RefreshPlayerPokemonStats() const
     
     mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId);
 
-    encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
-    (
-        encounterStateComponent.mDefenderFloatHealth / activePlayerPokemon.mMaxHp,
-        false,
-        mWorld
-    );
+    if (encounterStateComponent.mDefenderFloatHealth > 0.0f)
+    {
+        encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+        (
+            encounterStateComponent.mDefenderFloatHealth / activePlayerPokemon.mMaxHp,
+            false,
+            mWorld
+        );
+    }
+    else
+    {
+        encounterStateComponent.mViewObjects.mPlayerPokemonHealthBarEntityId = LoadAndCreatePokemonHealthBar
+        (
+            static_cast<float>(activePlayerPokemon.mHp) / activePlayerPokemon.mMaxHp,
+            false,
+            mWorld
+        );
+    }
 
     // Write player's pokemon current hp
     DeleteCharAtTextboxCoords(encounterStateComponent.mViewObjects.mPlayerPokemonInfoTextboxEntityId, 1, 3, mWorld);

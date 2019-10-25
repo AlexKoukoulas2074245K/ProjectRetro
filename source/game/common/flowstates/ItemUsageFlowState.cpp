@@ -13,6 +13,7 @@
 #include "ItemMenuFlowState.h"
 #include "ItemUsageFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
+#include "TownMapOverworldFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
@@ -118,6 +119,17 @@ void ItemUsageFlowState::VUpdate(const float)
             pokemonSelectionViewState.mCreationSourceType = PokemonSelectionViewCreationSourceType::ITEM_USAGE;
 
             CompleteAndTransitionTo<PokemonSelectionViewFlowState>();
+        }
+        // Town map flow
+        else if (StringStartsWith(selectedItemStats.mEffect.GetString(), "TOWNMAP"))
+        {
+            // Destroy Use/Toss textbox
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy Item Menu
+            DestroyActiveTextbox(mWorld);
+
+            CompleteAndTransitionTo<TownMapOverworldFlowState>();
         }
     }
     else

@@ -47,7 +47,7 @@ namespace
     const int OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX  = 4;
     const int OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX = 5;
     const int OAKS_LAB_OAK_ENTITY_LEVEL_INDEX                       = 10;
-    const int OAKS_LAB_RIVAL_ENTITY_LEVEL_INDEX                      = 11;
+    const int OAKS_LAB_RIVAL_ENTITY_LEVEL_INDEX                     = 11;
     const int RIVALS_HOME_SISTER_NPC_LEVEL_INDEX                    = 4;
     const int VIRIDIAN_RUDE_GUY_RELATIVE_LEVEL_INDEX                = 4;
     const int VIRIDIAN_RUDE_GUY_LEVEL_INDEX                         = 5;
@@ -85,6 +85,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 
                 DestroyOverworldModelNpcAndEraseTileInfo(OAKS_LAB_POKEBALL_COORDS, mWorld);
 
+                DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_FIRST_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 DestroyOverworldNpcEntityAndEraseTileInfo(GetNpcEntityIdFromLevelIndex(OAKS_LAB_SECOND_POKEDEX_NPC_HIDDEN_ENTITY_LEVEL_INDEX, mWorld), mWorld);
                 

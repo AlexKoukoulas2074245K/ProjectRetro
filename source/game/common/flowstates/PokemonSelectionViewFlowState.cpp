@@ -41,6 +41,7 @@
 
 #include <unordered_map>
 #include <utility>
+#include <xutility>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -722,7 +723,19 @@ void PokemonSelectionViewFlowState::TrySwitchPokemon()
             currentlyActivePokemon.mBindingOrWrappingContinuationDamage = 0;
         }
         
-        
+        if 
+        (
+            std::count
+            (
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.cbegin(),
+                encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.cend(), 
+                static_cast<size_t>(pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex)
+            ) <= 0U
+        )
+        {
+            encounterStateComponent.mPlayerPokemonIndicesEligibleForXp.push_back(pokemonSelectionViewComponent.mLastSelectedPokemonRosterIndex);
+        }        
+
         if (pokemonSelectionViewComponent.mCreationSourceType != PokemonSelectionViewCreationSourceType::ENCOUNTER_AFTER_POKEMON_FAINTED)
         {
             encounterStateComponent.mIsOpponentsTurn = false;
