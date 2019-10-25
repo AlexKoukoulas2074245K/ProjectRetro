@@ -21,6 +21,32 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+void DestroyOverworldModelNpcAndEraseTileInfo(const TileCoords& coords, ecs::World& world)
+{
+    // Since model and npc attributes are two separate entities (and they should be, as 
+    // there can be a hidden item on top of a model for instance), all entities on the
+    // given coords should be destroyed
+    const auto& activeEntities = world.GetActiveEntities();
+    for (const auto& entityId : activeEntities)
+    {
+        if (world.HasComponent<MovementStateComponent>(entityId))                
+        {
+            const auto& movementStateComponent = world.GetComponent<MovementStateComponent>(entityId);
+            if (movementStateComponent.mCurrentCoords == coords)
+            {
+                world.DestroyEntity(entityId);
+            }
+        }
+    }
+
+    // Also clear tile occupier info
+    const auto& activeLevelComponent = world.GetSingletonComponent<ActiveLevelSingletonComponent>();
+    auto& levelModelComponent        = world.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, world));
+
+    GetTile(coords, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = ecs::NULL_ENTITY_ID;
+    GetTile(coords, levelModelComponent.mLevelTilemap).mTileOccupierType     = TileOccupierType::NONE;
+}
+
 void DestroyOverworldNpcEntityAndEraseTileInfo(const ecs::EntityId entityId, ecs::World& world)
 {
     const auto& activeLevelComponent = world.GetSingletonComponent<ActiveLevelSingletonComponent>();

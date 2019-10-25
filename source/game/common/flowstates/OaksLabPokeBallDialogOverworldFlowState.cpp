@@ -123,8 +123,7 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
         const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
         auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(GetLevelIdFromNameId(activeLevelComponent.mActiveLevelNameId, mWorld));
 
-        mWorld.RemoveComponent<NpcAiComponent>(playerEntityId);
-        mWorld.DestroyEntity(FindEntityAtLevelCoords(OAKS_LAB_POKEBALL_COORDS, mWorld));                
+        mWorld.RemoveComponent<NpcAiComponent>(playerEntityId);                  
 
         const auto rivalEntityId = GetNpcEntityIdFromLevelIndex(OAKS_LAB_RIVAL_LEVEL_INDEX, mWorld);
 
@@ -145,7 +144,8 @@ void OaksLabPokeBallDialogOverworldFlowState::UpdatePlayerMovingTowardWall()
             mWorld
         );
 
-        GetTile(OAKS_LAB_POKEBALL_COORDS, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NONE;
+        DestroyOverworldModelNpcAndEraseTileInfo(OAKS_LAB_POKEBALL_COORDS, mWorld);
+
         GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierEntityId = rivalEntityId;
         GetTile(10, 9, levelModelComponent.mLevelTilemap).mTileOccupierType = TileOccupierType::NPC;
         

@@ -137,6 +137,8 @@ inline StringId GetLevelOwnerNameOfLocation(const StringId locationName, const e
     }
 }
 
+void DestroyOverworldModelNpcAndEraseTileInfo(const TileCoords& coords, ecs::World& world);
+
 void DestroyOverworldNpcEntityAndEraseTileInfo(const ecs::EntityId, ecs::World& world);
 
 ecs::EntityId FindEntityAtLevelCoords(const TileCoords& coords, const ecs::World& world);

@@ -589,7 +589,10 @@ void CreateLevelModelEntry
 
         return;
     }
-    
+
+    const auto gameCol = modelEntryJsonObject["game_col"].get<int>();
+    const auto gameRow = modelEntryJsonObject["game_row"].get<int>();
+
     const auto modelEntityId = world.CreateEntity();
     
     auto transformComponent         = std::make_unique<TransformComponent>();
@@ -651,9 +654,13 @@ void CreateLevelModelEntry
         );
     }
    
+    auto movementStateComponent = std::make_unique<MovementStateComponent>();
+    movementStateComponent->mCurrentCoords = TileCoords(gameCol, gameRow);
+
     auto levelResidentComponent          = std::make_unique<LevelResidentComponent>();
-    levelResidentComponent->mLevelNameId = levelNameId;
-    
+    levelResidentComponent->mLevelNameId = levelNameId;        
+
+    world.AddComponent<MovementStateComponent>(modelEntityId, std::move(movementStateComponent));
     world.AddComponent<TransformComponent>(modelEntityId, std::move(transformComponent));
     world.AddComponent<LevelResidentComponent>(modelEntityId, std::move(levelResidentComponent));
     world.AddComponent<RenderableComponent>(modelEntityId, std::move(renderableComponent));

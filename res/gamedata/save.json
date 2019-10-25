@@ -1,0 +1,20 @@
+{
+    "player_name": "Alex",
+    "rival_name": "Rival",
+    "home_name": "pallet_town",
+    "milestones": 19,
+    "current_level_name": "in_oaks_lab",
+    "current_game_col": 8,
+    "current_game_row": 3,
+    "current_direction": 2,
+    "seconds_played": 519,
+    "poke_dollars": 3175,
+    "trainer_id": 46121,
+    "defeated_npc_entries": [{ "level_name": "in_oaks_lab", "level_index": 11 }],
+    "collected_npc_item_entries": [],
+    "collected_npc_item_non_destructible_entries": [],
+    "bag": [{ "item_name": "CANCEL", "item_quantity": 1 }],
+    "pokedex": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "box_pokemon": [],
+    "pokemon": [{ "species_name": "PIKACHU", "nickname": "PIKACHU", "level": 6, "current_hp": 15, "xp_points": 223, "status": 0, "rounds_to_awake": 0, "hp_iv": 13, "attack_iv": 13, "defense_iv": 7, "speed_iv": 0, "special_iv": 9, "hp_ev": 0, "attack_ev": 55, "defense_ev": 50, "speed_ev": 55, "special_ev": 65, "moveset": [{ "move_name": "THUNDERSHOCK", "pp_left": 26 }, { "move_name": "GROWL", "pp_left": 40 }, { "move_name": "TAIL_WHIP", "pp_left": 30 }] }]
+}
