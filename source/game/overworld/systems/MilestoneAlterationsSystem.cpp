@@ -128,7 +128,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
             else if (levelName == RIVALS_HOUSE_LEVEL_NAME && !HasMilestone(milestones::RECEIVED_POKEDEX, mWorld))
             {
                 auto& rivalsSisterAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(RIVALS_HOME_SISTER_NPC_LEVEL_INDEX, mWorld));
-                rivalsSisterAiComponent.mDialog = "Hi PLAYERNAME!#" + playerStateComponent.mRivalName.GetString() + "#is out at#Grandpa's lab.";                
+                rivalsSisterAiComponent.mDialog = "Hi " + playerStateComponent.mPlayerTrainerName.GetString() + "!#" + playerStateComponent.mRivalName.GetString() + "#is out at#Grandpa's lab.";                
             }
             else if (levelName == VIRIDIAN_CITY_LEVEL_NAME && HasMilestone(milestones::RECEIVED_POKEDEX, mWorld))
             {                

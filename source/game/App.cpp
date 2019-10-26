@@ -256,8 +256,8 @@ void App::DummyInitialization()
     playerStateComponent->mSecondsPlayed = 0;
     playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
-    playerStateComponent->mPlayerTrainerName = StringId("Alex");
-    playerStateComponent->mRivalName  = StringId("Rival");    
+    playerStateComponent->mPlayerTrainerName = StringId("Caro");
+    playerStateComponent->mRivalName  = StringId("Jake");    
 
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
