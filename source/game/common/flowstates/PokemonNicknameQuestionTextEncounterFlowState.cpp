@@ -91,6 +91,9 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
                 // Destroy Nickname Chatbox
                 DestroyActiveTextbox(mWorld);
                 
+                // Destroy placeholder chatbox
+                DestroyActiveTextbox(mWorld);
+                
                 auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
                 nameSelectionStateComponent.mNameSelectionMode = NameSelectionMode::POKEMON_NICKNAME;
                 nameSelectionStateComponent.mPokemonToSelectNameFor = encounterStateComponent.mOpponentPokemonRoster.at(0).get();
