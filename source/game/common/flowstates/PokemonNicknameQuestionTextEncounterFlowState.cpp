@@ -11,9 +11,11 @@
 
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "DeterminePokemonPlacementFlowState.h"
+#include "NameSelectionFlowState.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../../common/components/CursorComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
+#include "../../common/components/NameSelectionStateSingletonComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -77,13 +79,22 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
     // Yes/No textbox active
     else
     {
-        const auto& cursorComponent   = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+        const auto& cursorComponent = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
         
         if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
         {
             if (cursorComponent.mCursorRow == 0)
             {
-                //TODO: Nickname Flow
+                // Destroy Yes/No textbox
+                DestroyActiveTextbox(mWorld);
+                
+                // Destroy Nickname Chatbox
+                DestroyActiveTextbox(mWorld);
+                
+                auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
+                nameSelectionStateComponent.mNameSelectionMode = NameSelectionMode::POKEMON_NICKNAME;
+                nameSelectionStateComponent.mPokemonToSelectNameFor = encounterStateComponent.mOpponentPokemonRoster.at(0).get();
+                CompleteAndTransitionTo<NameSelectionFlowState>();
             }
             else
             {

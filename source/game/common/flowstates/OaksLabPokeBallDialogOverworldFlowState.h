@@ -18,6 +18,7 @@
 
 #include "BaseOverworldFlowState.h"
 #include "../GameConstants.h"
+#include "../utils/MathUtils.h"
 #include "../utils/Timer.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,9 @@ private:
         RIVAL_SNATCHING_POKEMON_CONVERSATION,
         OAK_POST_SNATCH_CONVERSATION,
         PLAYER_MOVING_TOWARD_OAK,
-        PIKACHU_RECEPTION_CONVERSATION
+        PIKACHU_RECEPTION_CONVERSATION,
+        PIKACHU_NICKNAME_FLOW,
+        PIKACHU_NICKNAME_YES_NO
     };
 
     void UpdateExclamationMark(const float dt);
@@ -50,11 +53,15 @@ private:
     void UpdateOakPostSnatchConversation();
     void UpdatePlayerMovingTowardOak();
     void UpdatePikachuReceptionConversation();
+    void UpdatePikachuNicknameFlow();
+    void UpdatePikachuNicknameYesNoFlow();
     void CreateExlamationMark();
     void CreateRivalMovingToPlayerPath();
     void CreatePlayerMovingToWallPath();
     void CreatePlayerMovingToOakPath();
 
+    static const glm::vec3 YES_NO_TEXTBOX_POSITION;
+    
     static const TileCoords EXCLAMATION_MARK_ATLAS_COORDS;
     static const TileCoords OAKS_LAB_POKEBALL_COORDS;
 

@@ -225,6 +225,24 @@ ecs::EntityId CreatePokedexPokemonEntryDisplayTextbox
     ecs::World& world
 );
 
+ecs::EntityId CreateNameSelectionCharactersEnclosingTextbox
+(
+    ecs::World& world
+);
+
+ecs::EntityId CreateNameSelectionCharactersInvisibleTextbox
+(
+    const bool uppercaseMode,
+    ecs::World& world,
+    const int previousCursorCol = 0,
+    const int previousCursorRow = 0
+);
+
+ecs::EntityId CreateNameSelectionTitleInvisibleTextbox
+(
+    ecs::World& world
+);
+
 void DestroyActiveTextbox
 (
     ecs::World& world
@@ -242,6 +260,15 @@ void WriteCharAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
     const char character,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+);
+
+void WriteCharacterStandAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const bool characterStandUp,
     const size_t textboxCol,
     const size_t textboxRow,
     ecs::World& world

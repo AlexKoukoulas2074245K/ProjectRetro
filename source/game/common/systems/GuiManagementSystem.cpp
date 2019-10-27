@@ -777,7 +777,12 @@ void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId,
     {
         cursorComponent.mCursorRow = cursorComponent.mWarp ? cursorComponent.mCursorRowCount - 1 : 0;
     }
-
+    
+    if (cursorComponent.mCursorRow == cursorComponent.mCursorRowCount - 1 && cursorComponent.mNameSelectionSpecialCase)
+    {
+        cursorComponent.mCursorCol = 0;
+    }
+    
     WriteCharAtTextboxCoords
     (
         textboxEntityId,

@@ -50,6 +50,9 @@ static const glm::vec3 PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION      = gl
 static const glm::vec3 PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION         = glm::vec3(0.304f, -0.561f, -0.4f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
+static const glm::vec3 NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
+static const glm::vec3 NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_POSITION = glm::vec3(0.0f, -0.1f, -0.1f);
+static const glm::vec3 NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_POSITION      = glm::vec3(0.0f, 0.7646f, -0.1f);
 
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
@@ -113,6 +116,15 @@ static const int BLACKBOARD_TEXTBOX_ROWS = 8;
 
 static const int SAVE_SCREEN_PLAYER_STATS_TEXTBOX_COLS = 16;
 static const int SAVE_SCREEN_PLAYER_STATS_TEXTBOX_ROWS = 10;
+
+static const int NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_COLS = 20;
+static const int NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_ROWS = 11;
+
+static const int NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_COLS = 18;
+static const int NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_ROWS = 11;
+
+static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_COLS = 20;
+static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_ROWS = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -1236,6 +1248,107 @@ ecs::EntityId CreatePokedexPokemonEntryDisplayTextbox
     );
 }
 
+ecs::EntityId CreateNameSelectionCharactersEnclosingTextbox
+(
+    ecs::World& world
+)
+{
+    return CreateTextboxWithDimensions
+    (
+        TextboxType::GENERIC_TEXTBOX,
+        NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_COLS,
+        NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_ROWS,
+        NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION.x,
+        NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION.y,
+        NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION.z,
+        world
+    );
+}
+
+ecs::EntityId CreateNameSelectionCharactersInvisibleTextbox
+(
+    const bool uppercaseMode,
+    ecs::World& world,
+    const int previousCursorCol /* 0 */,
+    const int previousCursorRow /* 0 */
+)
+{
+    const auto nameSelectionCharactersTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_BARE_TEXTBOX,
+        NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_COLS,
+        NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_ROWS,
+        NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_POSITION.x,
+        NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_POSITION.y,
+        NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_POSITION.z,
+        world
+    );
+    
+    if (uppercaseMode)
+    {
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "A B C D E F G H I", 1, 0, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "J K L M N O P Q R", 1, 2, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "S T U V W X Y Z  ", 1, 4, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "lower case", 1, 10, world);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "a b c d e f g h i", 1, 0, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "j k l m n o p q r", 1, 2, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "s t u v w x y z  ", 1, 4, world);
+        WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "UPPER CASE", 1, 10, world);
+    }
+    
+    WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "* ( ) : ; # @ < >", 1, 6, world);
+    WriteTextAtTextboxCoords(nameSelectionCharactersTextboxEntityId, "- ? ! [ ] / . , %", 1, 8, world);
+    
+    auto cursorComponent = std::make_unique<CursorComponent>();
+    cursorComponent->mCursorCol = previousCursorCol;
+    cursorComponent->mCursorRow = previousCursorRow;
+    
+    cursorComponent->mCursorColCount = NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_COLS/2;
+    cursorComponent->mCursorRowCount = NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_ROWS/2 + 1;
+    
+    cursorComponent->mCursorDisplayHorizontalTileOffset = 0;
+    cursorComponent->mCursorDisplayVerticalTileOffset   = 0;
+    
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 2;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+    
+    WriteCharAtTextboxCoords
+    (
+        nameSelectionCharactersTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+    
+    cursorComponent->mWarp = true;
+    cursorComponent->mNameSelectionSpecialCase = true;
+
+    world.AddComponent<CursorComponent>(nameSelectionCharactersTextboxEntityId, std::move(cursorComponent));
+    
+    return nameSelectionCharactersTextboxEntityId;
+}
+
+ecs::EntityId CreateNameSelectionTitleInvisibleTextbox
+(
+    ecs::World& world
+)
+{
+    return  CreateTextboxWithDimensions
+    (
+        TextboxType::BARE_TEXTBOX,
+        NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_COLS,
+        NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_ROWS,
+        NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_POSITION.x,
+        NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_POSITION.y,
+        NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_POSITION.z,
+        world
+    );
+}
+
 void DestroyActiveTextbox
 (
     ecs::World& world
@@ -1395,6 +1508,82 @@ void WriteCharAtTextboxCoords
         textboxTopLeftPoint.x + tileWidth * textboxCol,
         textboxTopLeftPoint.y - tileHeightAccountingForAspect * textboxRow,
         textboxTransformComponent.mPosition.z -0.06f
+     );
+    
+    world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));
+    world.AddComponent<TransformComponent>(characterEntityId, std::move(transformComponent));
+}
+
+void WriteCharacterStandAtTextboxCoords
+(
+    const ecs::EntityId textboxEntityId,
+    const bool characterStandUp,
+    const size_t textboxCol,
+    const size_t textboxRow,
+    ecs::World& world
+)
+{
+    const auto& windowComponent           = world.GetSingletonComponent<WindowSingletonComponent>();
+    const auto& guiStateComponent         = world.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& textboxTransformComponent = world.GetComponent<TransformComponent>(textboxEntityId);
+    
+    auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
+    auto& textboxContent   = textboxComponent.mTextContent;
+    
+    if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
+    {
+        world.DestroyEntity(textboxContent[textboxRow][textboxCol].mEntityId);
+    }
+    
+    const auto characterEntityId = world.CreateEntity();
+    
+    textboxComponent.mTextContent[textboxRow][textboxCol].mCharacter = '_';
+    textboxComponent.mTextContent[textboxRow][textboxCol].mEntityId  = characterEntityId;
+    
+    auto textboxResidentComponent                    = std::make_unique<TextboxResidentComponent>();
+    textboxResidentComponent->mTextboxParentEntityId = textboxEntityId;
+    
+    world.AddComponent<TextboxResidentComponent>(characterEntityId, std::move(textboxResidentComponent));
+   
+    auto renderableComponent                    = std::make_unique<RenderableComponent>();
+    renderableComponent->mTextureResourceId     = ResourceLoadingService::GetInstance().LoadResource(ResourceLoadingService::RES_ATLASES_ROOT + "gui.png");
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+    renderableComponent->mAnimationsToMeshes[renderableComponent->mActiveAnimationNameId].push_back
+    (
+        LoadMeshFromAtlasTexCoords
+        (
+            characterStandUp ? 2 : 3,
+            7,
+            GUI_ATLAS_COLS,
+            GUI_ATLAS_ROWS,
+            false,
+            GUI_COMPONENTS_MODEL_NAME
+        )
+    );
+    
+    const auto tileWidth  = guiStateComponent.mGlobalGuiTileWidth;
+    const auto tileHeight = guiStateComponent.mGlobalGuiTileHeight;
+    
+    // This is used for positional calculations only, otherwise the rendered dimensions
+    // of the textbox itself will be wrong
+    const auto tileHeightAccountingForAspect = tileHeight * windowComponent.mAspectRatio;
+    
+    const auto textboxTopLeftPoint = glm::vec3
+    (
+        textboxTransformComponent.mPosition.x - (textboxComponent.mTextboxTileCols * tileWidth) * 0.5f + tileWidth * 0.5f,
+        textboxTransformComponent.mPosition.y + (textboxComponent.mTextboxTileRows * tileHeightAccountingForAspect) * 0.5f - tileHeightAccountingForAspect * 0.5f,
+        0.0f
+    );
+    
+    auto transformComponent       = std::make_unique<TransformComponent>();
+    transformComponent->mScale    = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
+    transformComponent->mPosition = glm::vec3
+    (
+     textboxTopLeftPoint.x + tileWidth * textboxCol,
+     textboxTopLeftPoint.y - tileHeightAccountingForAspect * textboxRow,
+     textboxTransformComponent.mPosition.z -0.06f
      );
     
     world.AddComponent<RenderableComponent>(characterEntityId, std::move(renderableComponent));

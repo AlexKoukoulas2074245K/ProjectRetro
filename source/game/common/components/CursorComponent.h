@@ -34,6 +34,7 @@ public:
     int mCursorDisplayHorizontalTileIncrements = 0;
     int mCursorDisplayVerticalTileIncrements   = 0;
     bool mWarp                                 = false;
+    bool mNameSelectionSpecialCase             = false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

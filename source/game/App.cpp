@@ -15,6 +15,7 @@
 #include "common/components/ItemStatsSingletonComponent.h"
 #include "common/components/MarketStocksSingletonComponent.h"
 #include "common/components/MoveStatsSingletonComponent.h"
+#include "common/components/NameSelectionStateSingletonComponent.h"
 #include "common/components/PokeMartDialogStateSingletonComponent.h"
 #include "common/components/TextboxComponent.h"
 #include "common/components/TransformComponent.h"
@@ -226,6 +227,9 @@ void App::CommonSingletonsInitialization()
     LoadAndPopulateItemsStats(*itemStatsComponent);
     mWorld.SetSingletonComponent<ItemStatsSingletonComponent>(std::move(itemStatsComponent));
     
+    auto nameSelectionStateComponent = std::make_unique<NameSelectionStateSingletonComponent>();
+    mWorld.SetSingletonComponent<NameSelectionStateSingletonComponent>(std::move(nameSelectionStateComponent));
+    
     auto pokedexStateComponent = std::make_unique<PokedexStateSingletonComponent>();    
     mWorld.SetSingletonComponent<PokedexStateSingletonComponent>(std::move(pokedexStateComponent));
     
@@ -253,11 +257,11 @@ void App::InitializationFromSaveFile()
 void App::DummyInitialization()
 {
     auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();    
-    playerStateComponent->mSecondsPlayed = 0;
-    playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
+    playerStateComponent->mSecondsPlayed     = 0;
+    playerStateComponent->mTrainerId         = math::RandomInt(0, 65535);
     playerStateComponent->mPokeDollarCredits = 3000;
     playerStateComponent->mPlayerTrainerName = StringId("Caro");
-    playerStateComponent->mRivalName  = StringId("Jake");    
+    playerStateComponent->mRivalName         = StringId("Jake");
 
     mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
 
