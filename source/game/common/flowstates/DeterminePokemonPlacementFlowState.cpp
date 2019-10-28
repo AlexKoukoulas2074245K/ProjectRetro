@@ -24,7 +24,12 @@ DeterminePokemonPlacementFlowState::DeterminePokemonPlacementFlowState(ecs::Worl
 {
     auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
     auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-
+    
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        CreateChatbox(mWorld);
+    }
+    
     if (playerStateComponent.mPlayerPokemonRoster.size() < MAX_ROSTER_SIZE)
     {
         playerStateComponent.mPlayerPokemonRoster.push_back(std::move(encounterStateComponent.mOpponentPokemonRoster.front()));
