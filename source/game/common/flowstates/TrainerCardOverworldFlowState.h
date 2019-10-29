@@ -37,10 +37,16 @@ private:
     void CreateBackground();
     void DestroyBackground();
 
+    static const std::string TRAINER_BACKGROUND_SPRITE_MODEL_FILE_NAME;
+    static const std::string TRAINER_BACKGROUND_TEXTURE_FILE_NAME;
+
     static const glm::vec3 BACKGROUND_POSITION;
     static const glm::vec3 BACKGROUND_SCALE;
+    static const glm::vec3 TRAINER_CARD_BACKGROUND_POSITION;
+    static const glm::vec3 TRAINER_CARD_BACKGROUND_SCALE;
 
     ecs::EntityId mBackgroundCoverEntityId;
+    ecs::EntityId mTrainerCardBackgroundEntityId;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
