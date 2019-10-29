@@ -126,6 +126,13 @@ static const int NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_ROWS = 11;
 static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_COLS = 20;
 static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_ROWS = 3;
 
+static const std::unordered_map<SpecialCharacter, TileCoords> SPECIAL_CHARACTERS_TO_ATLAS_COORDS =
+{
+    { SpecialCharacter::CHARACTER_STAND_UP, TileCoords(2, 7) },
+    { SpecialCharacter::CHARACTER_STAND_NORMAL, TileCoords(3, 7) },
+    { SpecialCharacter::POKEDEX_CAUGHT_BALL, TileCoords(4, 7) }
+};
+
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -1514,10 +1521,10 @@ void WriteCharAtTextboxCoords
     world.AddComponent<TransformComponent>(characterEntityId, std::move(transformComponent));
 }
 
-void WriteCharacterStandAtTextboxCoords
+void WriteSpecialCharacterAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
-    const bool characterStandUp,
+    const SpecialCharacter specialCharacter,
     const size_t textboxCol,
     const size_t textboxRow,
     ecs::World& world
@@ -1530,6 +1537,8 @@ void WriteCharacterStandAtTextboxCoords
     auto& textboxComponent = world.GetComponent<TextboxComponent>(textboxEntityId);
     auto& textboxContent   = textboxComponent.mTextContent;
     
+    const auto& specialCharacterAtlasCoords = SPECIAL_CHARACTERS_TO_ATLAS_COORDS.at(specialCharacter);
+
     if (textboxContent[textboxRow][textboxCol].mEntityId != ecs::NULL_ENTITY_ID)
     {
         world.DestroyEntity(textboxContent[textboxRow][textboxCol].mEntityId);
@@ -1554,8 +1563,8 @@ void WriteCharacterStandAtTextboxCoords
     (
         LoadMeshFromAtlasTexCoords
         (
-            characterStandUp ? 2 : 3,
-            7,
+            specialCharacterAtlasCoords.mCol,
+            specialCharacterAtlasCoords.mRow,
             GUI_ATLAS_COLS,
             GUI_ATLAS_ROWS,
             false,

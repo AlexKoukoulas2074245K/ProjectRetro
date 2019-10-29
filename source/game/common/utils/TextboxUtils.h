@@ -42,6 +42,15 @@ extern const glm::vec3 ENCOUNTER_FIGHT_MENU_TEXTBOX_POSITION;
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+enum class SpecialCharacter
+{
+    CHARACTER_STAND_UP, CHARACTER_STAND_NORMAL, POKEDEX_CAUGHT_BALL
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 ecs::EntityId GetActiveTextboxEntityId
 (
     const ecs::World& world
@@ -265,10 +274,10 @@ void WriteCharAtTextboxCoords
     ecs::World& world
 );
 
-void WriteCharacterStandAtTextboxCoords
+void WriteSpecialCharacterAtTextboxCoords
 (
     const ecs::EntityId textboxEntityId,
-    const bool characterStandUp,
+    const SpecialCharacter specialCharacter,
     const size_t textboxCol,
     const size_t textboxRow,
     ecs::World& world

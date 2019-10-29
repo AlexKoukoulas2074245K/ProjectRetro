@@ -176,6 +176,8 @@ void App::GameLoop()
         }                
         
 #ifndef NDEBUG          
+#else        
+#endif      
         if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt * DEBUG_DT_SPEEDUP, MAX_DT)));
@@ -184,9 +186,6 @@ void App::GameLoop()
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
         }
-#else
-        mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
-#endif      
 
         if (IsActionTypeKeyTapped(VirtualActionType::DEBUG_CAMERA_BACKWARD, inputStateSingletonComponent))
         {

@@ -288,8 +288,8 @@ void NameSelectionFlowState::RedrawSelectedText()
         SELECTED_POKEMON_NAME_END_COORDS.mCol - SELECTED_TRAINER_NAME_END_COORDS.mCol);
     
     for (int i = 0; i < maxAllowedSize; ++i)
-    {
-        WriteCharacterStandAtTextboxCoords(mTitleTextboxEntityId, false, SELECTED_NAME_START_COORDS.mCol + i, SELECTED_NAME_START_COORDS.mRow, mWorld);
+    {        
+        WriteSpecialCharacterAtTextboxCoords(mTitleTextboxEntityId, SpecialCharacter::CHARACTER_STAND_NORMAL, SELECTED_NAME_START_COORDS.mCol + i, SELECTED_NAME_START_COORDS.mRow, mWorld);
         DeleteCharAtTextboxCoords(mTitleTextboxEntityId, SELECTED_NAME_START_COORDS.mCol + i, SELECTED_NAME_START_COORDS.mRow - 1, mWorld);
     }
     
@@ -302,11 +302,11 @@ void NameSelectionFlowState::RedrawSelectedText()
     
     if (characterCounter == maxAllowedSize)
     {
-        WriteCharacterStandAtTextboxCoords(mTitleTextboxEntityId, true, SELECTED_NAME_START_COORDS.mCol + maxAllowedSize - 1, SELECTED_NAME_START_COORDS.mRow, mWorld);
+        WriteSpecialCharacterAtTextboxCoords(mTitleTextboxEntityId, SpecialCharacter::CHARACTER_STAND_UP, SELECTED_NAME_START_COORDS.mCol + maxAllowedSize - 1, SELECTED_NAME_START_COORDS.mRow, mWorld);
     }
     else
     {
-        WriteCharacterStandAtTextboxCoords(mTitleTextboxEntityId, true, SELECTED_NAME_START_COORDS.mCol + characterCounter, SELECTED_NAME_START_COORDS.mRow, mWorld);
+        WriteSpecialCharacterAtTextboxCoords(mTitleTextboxEntityId, SpecialCharacter::CHARACTER_STAND_UP, SELECTED_NAME_START_COORDS.mCol + characterCounter, SELECTED_NAME_START_COORDS.mRow, mWorld);
     }
 }
 
