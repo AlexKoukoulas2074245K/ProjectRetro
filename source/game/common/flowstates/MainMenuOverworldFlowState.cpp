@@ -13,6 +13,7 @@
 #include "MainMenuOverworldFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "SavePromptDialogOverworldFlowState.h"
+#include "TrainerCardOverworldFlowState.h"
 #include "../components/CursorComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
@@ -89,6 +90,10 @@ void MainMenuOverworldFlowState::VUpdate(const float)
         else if (StringStartsWith(mainMenuItem, "EXIT"))
         {
             ExitOverworldMainMenu();
+        }        
+        else
+        {
+            CompleteAndTransitionTo<TrainerCardOverworldFlowState>();
         }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
