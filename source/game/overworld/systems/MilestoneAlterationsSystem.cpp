@@ -53,6 +53,8 @@ namespace
     const int VIRIDIAN_RUDE_GUY_LEVEL_INDEX                         = 5;
     const int PEWTER_CITY_BROCK_GUIDE_LEVEL_INDEX                   = 2;
     const int PEWTER_CITY_GYM_TRAINER                               = 1;
+    const int PEWTER_CITY_GYM_STATUE_1_LEVEL_INDEX                  = 2;
+    const int PEWTER_CITY_GYM_STATUE_2_LEVEL_INDEX                  = 3;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +156,12 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 auto& pewterGymTrainerAiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(PEWTER_CITY_GYM_TRAINER, mWorld));
                 pewterGymTrainerAiComponent.mIsDefeated = true;
                 pewterGymTrainerAiComponent.mDialog = pewterGymTrainerAiComponent.mSideDialogs[1];
+
+                auto& statue1AiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(PEWTER_CITY_GYM_STATUE_1_LEVEL_INDEX, mWorld));
+                statue1AiComponent.mDialog += "#" + playerStateComponent.mPlayerTrainerName.GetString();
+
+                auto& statue2AiComponent = mWorld.GetComponent<NpcAiComponent>(GetNpcEntityIdFromLevelIndex(PEWTER_CITY_GYM_STATUE_2_LEVEL_INDEX, mWorld));
+                statue2AiComponent.mDialog += "#" + playerStateComponent.mPlayerTrainerName.GetString();
             }
             
             mWorld.RemoveComponent<MilestoneAlterationTagComponent>(entityId);

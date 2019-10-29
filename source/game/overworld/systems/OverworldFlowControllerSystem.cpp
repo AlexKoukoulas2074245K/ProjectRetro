@@ -23,6 +23,7 @@
 #include "../../common/flowstates/OaksLabPokeBallDialogOverworldFlowState.h"
 #include "../../common/flowstates/PCIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
+#include "../../common/flowstates/PewterCityGymInstructorOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumGuideOverworldFlowState.h"
 #include "../../common/flowstates/PewterPokeCenterJigglypuffOverworldFlowState.h"
@@ -161,6 +162,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(OaksLabPokeBallDialogOverworldFlowState);
     RegisterNamedFlowState(OaksLabMovementAndBattleTriggerOverworldFlowState);
     RegisterNamedFlowState(PewterPokeCenterJigglypuffOverworldFlowState);
+    RegisterNamedFlowState(PewterCityGymInstructorOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
