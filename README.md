@@ -44,22 +44,4 @@ The project is being developed using C++ & SDL2 and is Windows/MacOS compatible.
 ![Battle image](res/screenshots/battle_screenshot.png)
 
 ## Progress
-### Characters
-* Character movement and interaction works as expected.
-
-### Locations (including houses and indoor areas)
-* Pallet town
-* Route 1
-* Viridian City
-* Route 22 (except room leading to victory road)
-* Viridian Forest
-* Route 2 (viridian side & pewter side)
-* Pewter City (except museum and jigglypuff scripted event in poke center)
-
-
-### Encounters
-* Combat is generally well-emulated at this point, except for burn, and freeze statuses
-* The moves are added to the game incrementally, the more areas and wild encounters are added. All moves with animation folders under res/textures/battle_animations should be working properly in battle.
-
-### Misc
-* Flows and scripted events are also added on an ad-hoc fashion as required by the newer levels built. Trainer card, Pokedex, and Name selection flows still need to be implemented
+See Releases
