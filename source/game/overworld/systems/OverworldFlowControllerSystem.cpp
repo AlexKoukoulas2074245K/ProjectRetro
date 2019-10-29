@@ -25,6 +25,7 @@
 #include "../../common/flowstates/PewterBrockGuideOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumGuideOverworldFlowState.h"
+#include "../../common/flowstates/PewterPokeCenterJigglypuffOverworldFlowState.h"
 #include "../../common/flowstates/PikachuCatchIntroSequenceOverworldFlowState.h"
 #include "../../common/flowstates/PokeCenterHealingIntroDialogOverworldFlowState.h"
 #include "../../common/flowstates/PokeMartIntroDialogOverworldFlowState.h"
@@ -159,6 +160,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(PikachuCatchIntroSequenceOverworldFlowState);
     RegisterNamedFlowState(OaksLabPokeBallDialogOverworldFlowState);
     RegisterNamedFlowState(OaksLabMovementAndBattleTriggerOverworldFlowState);
+    RegisterNamedFlowState(PewterPokeCenterJigglypuffOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const
