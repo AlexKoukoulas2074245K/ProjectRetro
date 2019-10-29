@@ -220,7 +220,7 @@ void PokedexPokemonEntryDisplayFlowState::DisplayPokemonPokedexDescriptionForPag
     for (const auto& word: descriptionTextSplitBySpace)
     {
         lineCharacterCounter += word.size() + 1; // + 1 for the trailing space character
-        if (lineCharacterCounter > LINE_CHARACTERS_CAPACITY)
+        if (lineCharacterCounter > LINE_CHARACTERS_CAPACITY && lineCharacterCounter - 1 != LINE_CHARACTERS_CAPACITY)
         {
             lineCharacterCounter = word.size() + 1;
             if (++lineCounter >= 3)
@@ -228,6 +228,11 @@ void PokedexPokemonEntryDisplayFlowState::DisplayPokemonPokedexDescriptionForPag
                 lineCounter = 0;
                 fillingFirstPage = false;
             }
+        }
+        // Last added word fits exactly on the page (without the trailing space)
+        else if (lineCharacterCounter - 1 == LINE_CHARACTERS_CAPACITY)
+        {
+            lineCharacterCounter--;
         }
 
         if 

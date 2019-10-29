@@ -187,7 +187,7 @@ void App::GameLoop()
 #else
 #endif      
 
-        if (IsActionTypeKeyTapped(VirtualActionType::SELECT_BUTTON, inputStateSingletonComponent))
+        if (IsActionTypeKeyTapped(VirtualActionType::DEBUG_CAMERA_BACKWARD, inputStateSingletonComponent))
         {
             SoundService::GetInstance().ToggleAudioOnOff();
         }

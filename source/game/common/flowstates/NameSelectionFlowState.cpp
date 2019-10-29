@@ -57,8 +57,25 @@ NameSelectionFlowState::NameSelectionFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
     , mUppercaseMode(true)
 {
-    const auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
-    
+    auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
+    nameSelectionStateComponent.mSelectedName = "";
+
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+
+    // Destroy Last Frame of Pokemon Caught animation
+    if (encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId);
+        encounterStateComponent.mViewObjects.mBattleAnimationFrameEntityId = ecs::NULL_ENTITY_ID;
+    }
+
+    // Destroy Opponent pokemon sprite
+    if (encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.DestroyEntity(encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId);
+        encounterStateComponent.mViewObjects.mOpponentActiveSpriteEntityId = ecs::NULL_ENTITY_ID;
+    }
+
     CreateBackground();
     CreateTextboxes();
     RedrawSelectedText();
