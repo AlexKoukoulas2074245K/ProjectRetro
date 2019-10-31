@@ -18,6 +18,7 @@
 
 #include "BaseFlowState.h"
 #include "../utils/MathUtils.h"
+#include "../utils/Timer.h"
 #include "../../ECS.h"
 
 #include <string>
@@ -54,9 +55,12 @@ private:
 
     static const int POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_COLS;
     static const int POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_ROWS;
+    
+    static const float POKEDEX_RAPID_SCROLL_ENABLING_TIMER_DELAY;
+    static const float POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY;
 
-    static const float POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_X_DISPLACEMENT;
-
+    Timer mPokedexRapidScrollEnablingTimer;
+    Timer mPokedexRapidScrollAdvanceTimer;
     ecs::EntityId mPokedexMainViewBackgroundEntityId;
     ecs::EntityId mPokedexSelectionOptionsBareTextboxEntityId;
 };

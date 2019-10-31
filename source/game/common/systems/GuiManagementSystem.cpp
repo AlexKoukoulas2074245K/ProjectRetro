@@ -743,54 +743,7 @@ void GuiManagementSystem::StripSpecialHookStringFromQueuedText(const ecs::Entity
 
 void GuiManagementSystem::MoveTextboxCursor(const ecs::EntityId textboxEntityId, const Direction direction) const
 {
-    auto& cursorComponent = mWorld.GetComponent<CursorComponent>(textboxEntityId);
-    
-    DeleteCharAtTextboxCoords
-    (
-        textboxEntityId, 
-        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
-        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
-        mWorld
-    );
-
-    switch (direction)
-    {
-        case Direction::EAST:  cursorComponent.mCursorCol++; break;
-        case Direction::NORTH: cursorComponent.mCursorRow--; break;
-        case Direction::SOUTH: cursorComponent.mCursorRow++; break;
-        case Direction::WEST:  cursorComponent.mCursorCol--; break;
-    }
-
-    if (cursorComponent.mCursorCol >= cursorComponent.mCursorColCount)
-    {
-        cursorComponent.mCursorCol = cursorComponent.mWarp ? 0 : cursorComponent.mCursorColCount - 1;
-    }
-    else if (cursorComponent.mCursorCol < 0)
-    {
-        cursorComponent.mCursorCol = cursorComponent.mWarp ? cursorComponent.mCursorColCount - 1 : 0;
-    }
-    else if (cursorComponent.mCursorRow >= cursorComponent.mCursorRowCount)
-    {
-        cursorComponent.mCursorRow = cursorComponent.mWarp ? 0 : cursorComponent.mCursorRowCount - 1;
-    }
-    else if (cursorComponent.mCursorRow < 0)
-    {
-        cursorComponent.mCursorRow = cursorComponent.mWarp ? cursorComponent.mCursorRowCount - 1 : 0;
-    }
-    
-    if (cursorComponent.mCursorRow == cursorComponent.mCursorRowCount - 1 && cursorComponent.mNameSelectionSpecialCase)
-    {
-        cursorComponent.mCursorCol = 0;
-    }
-    
-    WriteCharAtTextboxCoords
-    (
-        textboxEntityId,
-        '}',
-        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
-        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
-        mWorld
-    );
+    MoveTextboxCursorToDirection(textboxEntityId, direction, mWorld);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

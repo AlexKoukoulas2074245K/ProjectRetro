@@ -49,6 +49,7 @@ static const glm::vec3 PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION           = gl
 static const glm::vec3 PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION      = glm::vec3(0.1337f, 0.167f, -0.2f);
 static const glm::vec3 PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION         = glm::vec3(0.304f, -0.561f, -0.4f);
 static const glm::vec3 POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_POSITION    = glm::vec3(-0.171200007f, 0.0f, -0.1f);
+static const glm::vec3 POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_POSITION    = glm::vec3(0.375700057, -0.385200024f, -0.1f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
 static const glm::vec3 NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -128,6 +129,9 @@ static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_ROWS = 3;
 
 static const int POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_COLS = 15;
 static const int POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_ROWS = 14;
+
+static const int POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_COLS = 1; 
+static const int POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_ROWS = 9;
 
 static const std::unordered_map<SpecialCharacter, TileCoords> SPECIAL_CHARACTERS_TO_ATLAS_COORDS =
 {
@@ -789,6 +793,51 @@ ecs::EntityId CreatePokedexMainViewInvisibleListTextbox
     world.AddComponent<ItemMenuStateComponent>(pokedexMainViewInvisibleListTextboxEntityId, std::move(itemMenuStateComponent));
 
     return pokedexMainViewInvisibleListTextboxEntityId;
+}
+
+ecs::EntityId CreatePokedexSelectionViewInvisibleTextbox
+(    
+    ecs::World& world
+)
+{
+    const auto pokedexSelectionViewInvisibleTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_BARE_TEXTBOX,
+        POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_COLS,
+        POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_ROWS,
+        POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_POSITION.x,
+        POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_POSITION.y,
+        POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_POSITION.z,
+        world
+    );
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = 0;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = POKEDEX_SELECTION_VIEW_INVISIBLE_TEXTBOX_ROWS/2 + 1;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 0;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 0;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        pokedexSelectionViewInvisibleTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(pokedexSelectionViewInvisibleTextboxEntityId, std::move(cursorComponent));
+
+    return pokedexSelectionViewInvisibleTextboxEntityId;
 }
 
 ecs::EntityId CreateBlackboardTextbox
@@ -1762,6 +1811,63 @@ void DeleteTextAtTextboxRow
     {
         DeleteCharAtTextboxCoords(textboxEntityId, textboxCol, textboxRow, world);
     }
+}
+
+void MoveTextboxCursorToDirection
+(
+    const ecs::EntityId textboxEntityId,
+    const Direction direction,
+    ecs::World& world
+)
+{
+    auto& cursorComponent = world.GetComponent<CursorComponent>(textboxEntityId);
+
+    DeleteCharAtTextboxCoords
+    (
+        textboxEntityId,
+        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
+        world
+    );
+
+    switch (direction)
+    {
+        case Direction::EAST:  cursorComponent.mCursorCol++; break;
+        case Direction::NORTH: cursorComponent.mCursorRow--; break;
+        case Direction::SOUTH: cursorComponent.mCursorRow++; break;
+        case Direction::WEST:  cursorComponent.mCursorCol--; break;
+    }
+
+    if (cursorComponent.mCursorCol >= cursorComponent.mCursorColCount)
+    {
+        cursorComponent.mCursorCol = cursorComponent.mWarp ? 0 : cursorComponent.mCursorColCount - 1;
+    }
+    else if (cursorComponent.mCursorCol < 0)
+    {
+        cursorComponent.mCursorCol = cursorComponent.mWarp ? cursorComponent.mCursorColCount - 1 : 0;
+    }
+    else if (cursorComponent.mCursorRow >= cursorComponent.mCursorRowCount)
+    {
+        cursorComponent.mCursorRow = cursorComponent.mWarp ? 0 : cursorComponent.mCursorRowCount - 1;
+    }
+    else if (cursorComponent.mCursorRow < 0)
+    {
+        cursorComponent.mCursorRow = cursorComponent.mWarp ? cursorComponent.mCursorRowCount - 1 : 0;
+    }
+
+    if (cursorComponent.mCursorRow == cursorComponent.mCursorRowCount - 1 && cursorComponent.mNameSelectionSpecialCase)
+    {
+        cursorComponent.mCursorCol = 0;
+    }
+
+    WriteCharAtTextboxCoords
+    (
+        textboxEntityId,
+        '}',
+        cursorComponent.mCursorDisplayHorizontalTileOffset + cursorComponent.mCursorDisplayHorizontalTileIncrements * cursorComponent.mCursorCol,
+        cursorComponent.mCursorDisplayVerticalTileOffset + cursorComponent.mCursorDisplayVerticalTileIncrements * cursorComponent.mCursorRow,
+        world
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

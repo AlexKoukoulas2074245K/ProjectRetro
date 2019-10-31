@@ -167,6 +167,11 @@ ecs::EntityId CreatePokedexMainViewInvisibleListTextbox
     const int itemOffset = 0 
 );
 
+ecs::EntityId CreatePokedexSelectionViewInvisibleTextbox
+(    
+    ecs::World& world
+);
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,
@@ -318,6 +323,13 @@ void DeleteTextAtTextboxRow
 (
     const ecs::EntityId textboxEntityId,
     const size_t textboxRow,
+    ecs::World& world
+);
+
+void MoveTextboxCursorToDirection
+(
+    const ecs::EntityId textboxEntityId,
+    const Direction direction,
     ecs::World& world
 );
 

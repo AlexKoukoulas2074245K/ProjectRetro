@@ -43,8 +43,8 @@ const std::string PokedexMainViewOverworldFlowState::POKEDEX_MAIN_VIEW_BACKGROUN
 const int PokedexMainViewOverworldFlowState::POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_COLS = 4;
 const int PokedexMainViewOverworldFlowState::POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_ROWS = 16;
 
-
-glm::vec3 pos(0.0f, 0.0f, -0.1f);
+const float PokedexMainViewOverworldFlowState::POKEDEX_RAPID_SCROLL_ENABLING_TIMER_DELAY = 0.2f;
+const float PokedexMainViewOverworldFlowState::POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY  = 0.1f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +52,8 @@ glm::vec3 pos(0.0f, 0.0f, -0.1f);
 
 PokedexMainViewOverworldFlowState::PokedexMainViewOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
+    , mPokedexRapidScrollEnablingTimer(POKEDEX_RAPID_SCROLL_ENABLING_TIMER_DELAY)
+    , mPokedexRapidScrollAdvanceTimer(POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY)
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
     
@@ -59,7 +61,7 @@ PokedexMainViewOverworldFlowState::PokedexMainViewOverworldFlowState(ecs::World&
     {
         CreatePokedexMainViewBackground();
         CreatePokedexMainViewInvisibleListTextbox(mWorld);
-        DisplayPokedexEntriesForCurrentOffset();
+        DisplayPokedexEntriesForCurrentOffset();        
     }    
 }
 
@@ -87,8 +89,8 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
 {    
     const auto& inputStateComponent    = mWorld.GetSingletonComponent<InputStateSingletonComponent>();    
     const auto pokedexMainViewEntityId = GetActiveTextboxEntityId(mWorld);
-    //const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(pokedexMainViewEntityId);
-    //auto& itemMenuStateComponent       = mWorld.GetComponent<ItemMenuStateComponent>(pokedexMainViewEntityId);
+    const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(pokedexMainViewEntityId);
+    auto& itemMenuStateComponent       = mWorld.GetComponent<ItemMenuStateComponent>(pokedexMainViewEntityId);
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
     {
@@ -100,10 +102,9 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
         return;
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent))
-    {
-        pos.y += 0.1f * dt;        
-        
-        /*
+    {        
+        mPokedexRapidScrollEnablingTimer.Reset();
+        mPokedexRapidScrollAdvanceTimer.Reset();
         if (cursorComponent.mCursorRow == 0 && itemMenuStateComponent.mPreviousCursorRow == 0)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart--;
@@ -113,15 +114,39 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
             }
 
             RedrawPokedexMainView();
+        }        
+    }
+    else if (IsActionTypeKeyPressed(VirtualActionType::UP_ARROW, inputStateComponent))
+    {
+        mPokedexRapidScrollEnablingTimer.Update(dt);
+        if (mPokedexRapidScrollEnablingTimer.HasTicked())
+        {          
+            mPokedexRapidScrollAdvanceTimer.Update(dt);
+            if (mPokedexRapidScrollAdvanceTimer.HasTicked())
+            {
+                mPokedexRapidScrollAdvanceTimer.Reset();
+                if (cursorComponent.mCursorRow == 0 && itemMenuStateComponent.mPreviousCursorRow == 0)
+                {                
+                    itemMenuStateComponent.mItemMenuOffsetFromStart--;
+                    if (itemMenuStateComponent.mItemMenuOffsetFromStart <= 0)
+                    {
+                        itemMenuStateComponent.mItemMenuOffsetFromStart = 0;
+                    }
+
+                    RedrawPokedexMainView();                
+                }
+                else
+                {
+                    MoveTextboxCursorToDirection(GetActiveTextboxEntityId(mWorld), Direction::NORTH, mWorld);
+                }
+            }
         }
-        */
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent))
-    {
-        pos.y -= 0.1f * dt;        
-        
-        /*
-        if (cursorComponent.mCursorRow == 7 && itemMenuStateComponent.mPreviousCursorRow == 7)
+    {    
+        mPokedexRapidScrollEnablingTimer.Reset();
+        mPokedexRapidScrollAdvanceTimer.Reset();
+        if (cursorComponent.mCursorRow == 6 && itemMenuStateComponent.mPreviousCursorRow == 6)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart++;
             if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= MAX_POKEMON_ID - 1)
@@ -130,14 +155,36 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
             }
 
             RedrawPokedexMainView();
-        }
-        */
+        }        
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::LEFT_ARROW, inputStateComponent))
+    else if (IsActionTypeKeyPressed(VirtualActionType::DOWN_ARROW, inputStateComponent))
     {
-        pos.x -= 0.1f * dt;       
-        
-        /*
+        mPokedexRapidScrollEnablingTimer.Update(dt);
+        if (mPokedexRapidScrollEnablingTimer.HasTicked())
+        {           
+            mPokedexRapidScrollAdvanceTimer.Update(dt);
+            if (mPokedexRapidScrollAdvanceTimer.HasTicked())
+            {
+                mPokedexRapidScrollAdvanceTimer.Reset();
+                if (cursorComponent.mCursorRow == 6 && itemMenuStateComponent.mPreviousCursorRow == 6)
+                {
+                    itemMenuStateComponent.mItemMenuOffsetFromStart++;
+                    if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= MAX_POKEMON_ID - 1)
+                    {
+                        itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 1 - cursorComponent.mCursorRow;
+                    }
+
+                    RedrawPokedexMainView();
+                }
+                else
+                {
+                    MoveTextboxCursorToDirection(GetActiveTextboxEntityId(mWorld), Direction::SOUTH, mWorld);
+                }
+            }
+        }        
+    }   
+    else if (IsActionTypeKeyTapped(VirtualActionType::LEFT_ARROW, inputStateComponent))
+    {              
         if (cursorComponent.mCursorRow == 7 && itemMenuStateComponent.mPreviousCursorRow == 7)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart++;
@@ -147,14 +194,10 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
             }
 
             RedrawPokedexMainView();
-        }
-        */
+        }       
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT_ARROW, inputStateComponent))
-    {
-        pos.x += 0.1f * dt;        
-        
-        /*
+    {                
         if (cursorComponent.mCursorRow == 7 && itemMenuStateComponent.mPreviousCursorRow == 7)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart++;
@@ -164,8 +207,8 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
             }
 
             RedrawPokedexMainView();
-        }*/
-    }
+        }
+    }   
 
     SaveLastFramesCursorRow();
 }
