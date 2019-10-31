@@ -313,7 +313,7 @@ void RestoreGameStateFromSaveFile(ecs::World& world)
     world.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
     
     InitializePlayerBag(world);
-    
+        
     for (const auto& bagItemEntry: saveJson["bag"])
     {
         AddItemToBag
@@ -324,6 +324,12 @@ void RestoreGameStateFromSaveFile(ecs::World& world)
         );
     }
     
+    auto pokedexIdCounter = 1;
+    for (const auto& pokedexEntry : saveJson["pokedex"])
+    {
+        ChangePokedexEntryForPokemon(GetPokemonNameFromPokedexId(pokedexIdCounter++, world), static_cast<PokedexEntryType>(pokedexEntry.get<int>()), world);
+    }
+
     const auto levelEntityId  = LoadAndCreateLevelByName(StringId(saveJson["current_level_name"].get<std::string>()), world);
     auto& levelModelComponent = world.GetComponent<LevelModelComponent>(levelEntityId);
     
@@ -398,9 +404,7 @@ std::unique_ptr<Pokemon> CreatePokemonFromJson(const nlohmann::basic_json<>& pok
         AddMoveToIndex(moveName, moveIndex, world, *pokemonInstance);
 
         pokemonInstance->mMoveSet[moveIndex++]->mPowerPointsLeft = ppLeft;
-    }
-    
-    ChangePokedexEntryForPokemon(pokemonInstance->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, world);
+    }        
     
     return pokemonInstance;
 }

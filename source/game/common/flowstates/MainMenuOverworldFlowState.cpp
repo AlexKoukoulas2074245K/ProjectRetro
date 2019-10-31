@@ -11,6 +11,7 @@
 
 #include "ItemMenuFlowState.h"
 #include "MainMenuOverworldFlowState.h"
+#include "PokedexMainViewOverworldFlowState.h"
 #include "PokemonSelectionViewFlowState.h"
 #include "SavePromptDialogOverworldFlowState.h"
 #include "TrainerCardOverworldFlowState.h"
@@ -57,7 +58,7 @@ void MainMenuOverworldFlowState::VUpdate(const float)
         const auto mainMenuItem = GetCursorMainMenuItemFirstFourLetters();
         if (StringStartsWith(mainMenuItem, "POK^DE"))
         {
-            
+            CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
         }
         else if (StringStartsWith(mainMenuItem, "POK^MO"))
         {

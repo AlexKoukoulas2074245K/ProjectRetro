@@ -160,6 +160,13 @@ ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
     const int cursorRow = 0
 );
 
+ecs::EntityId CreatePokedexMainViewInvisibleListTextbox
+(    
+    ecs::World& world,
+    const int previousCursorRow = 0,
+    const int itemOffset = 0 
+);
+
 ecs::EntityId CreateBlackboardTextbox
 (
     ecs::World& world,

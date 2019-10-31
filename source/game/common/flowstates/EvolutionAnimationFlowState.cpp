@@ -14,6 +14,7 @@
 #include "../components/EvolutionAnimationStateSingletonComponent.h"
 #include "../components/GuiStateSingletonComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
+#include "../utils/PokedexUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
@@ -80,6 +81,8 @@ void EvolutionAnimationFlowState::VUpdate(const float dt)
                 {
                     playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mName = playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mBaseSpeciesStats.mSpeciesName;
                 }
+
+                ChangePokedexEntryForPokemon(playerStateComponent.mPlayerPokemonRoster[pokemonReadyToEvolveIndex]->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::OWNED, mWorld);
 
                 DestroyActiveTextbox(mWorld);
                 mWorld.DestroyEntity(evolutionAnimationStateComponent.mOldPokemonSpriteEntityId);

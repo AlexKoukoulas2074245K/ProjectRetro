@@ -43,6 +43,12 @@ std::string GetPokedexCompletionRatingText
     const ecs::World& world
 );
 
+StringId GetPokemonNameFromPokedexId
+(
+    const int pokemonPokedexId,
+    const ecs::World& world
+);
+
 void ChangePokedexEntryForPokemon
 (
     const StringId pokemonName,

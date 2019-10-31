@@ -13,6 +13,7 @@
 #include "PokedexUtils.h"
 #include "PokemonUtils.h"
 #include "../components/PokedexStateSingletonComponent.h"
+#include "../components/PokemonBaseStatsSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../resources/ResourceLoadingService.h"
@@ -88,6 +89,24 @@ std::string GetPokedexCompletionRatingText
     pokedexCompletionText += "You still have#lots to do.#Look for POK^MON#in grassy areas!";
 
     return pokedexCompletionText;
+}
+
+StringId GetPokemonNameFromPokedexId
+(
+    const int pokemonPokedexId,
+    const ecs::World& world
+)
+{
+    const auto& baseStatsComponent = world.GetSingletonComponent<PokemonBaseStatsSingletonComponent>();
+    return std::find_if
+    (
+        baseStatsComponent.mPokemonBaseStats.cbegin(),
+        baseStatsComponent.mPokemonBaseStats.cend(),
+        [pokemonPokedexId](const std::pair<const StringId, PokemonBaseStats>& entry) 
+        {
+            return entry.second.mId == pokemonPokedexId;
+        }
+    )->first;
 }
 
 void ChangePokedexEntryForPokemon

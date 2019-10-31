@@ -48,12 +48,12 @@ static const glm::vec3 PC_MAIN_OPTIONS_TEXTBOX_POSITION                     = gl
 static const glm::vec3 PC_POKEMON_SYSTEM_OPTIONS_TEXTBOX_POSITION           = glm::vec3(-0.206199840f, 0.452099757f, -0.1f);
 static const glm::vec3 PC_POKEMON_SYSTEM_POKEMON_LIST_TEXTBOX_POSITION      = glm::vec3(0.1337f, 0.167f, -0.2f);
 static const glm::vec3 PC_POKEMON_SELECTED_OPTIONS_TEXTBOX_POSITION         = glm::vec3(0.304f, -0.561f, -0.4f);
+static const glm::vec3 POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_POSITION    = glm::vec3(-0.171200007f, 0.0f, -0.1f);
 static const glm::vec3 BLACKBOARD_TEXTBOX_POSITION                          = glm::vec3(-0.272698253f, 0.564099908f, -0.4f);
 static const glm::vec3 SAVE_SCREEN_PLAYER_STATS_TEXTBOX_POSITION            = glm::vec3(0.1337f, 0.451719970f, -0.1f);
 static const glm::vec3 NAME_SELECTION_CHARACTERS_ENCLOSING_TEXTBOX_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
 static const glm::vec3 NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_POSITION = glm::vec3(0.0f, -0.1f, -0.1f);
 static const glm::vec3 NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_POSITION      = glm::vec3(0.0f, 0.7646f, -0.1f);
-
 static const int CHATBOX_COLS = 20;
 static const int CHATBOX_ROWS = 6;
 
@@ -125,6 +125,9 @@ static const int NAME_SELECTION_CHARACTERS_INVISIBLE_TEXTBOX_ROWS = 11;
 
 static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_COLS = 20;
 static const int NAME_SELECTION_TITLE_INVISIBLE_TEXTBOX_ROWS = 3;
+
+static const int POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_COLS = 15;
+static const int POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_ROWS = 14;
 
 static const std::unordered_map<SpecialCharacter, TileCoords> SPECIAL_CHARACTERS_TO_ATLAS_COORDS =
 {
@@ -735,6 +738,57 @@ ecs::EntityId CreatePCPokemonSelectedOptionsTextbox
     world.AddComponent<CursorComponent>(pcPokemonSelectedOptionsTextboxEntityId, std::move(cursorComponent));
 
     return pcPokemonSelectedOptionsTextboxEntityId;
+}
+
+ecs::EntityId CreatePokedexMainViewInvisibleListTextbox
+(    
+    ecs::World& world,
+    const int previousCursorRow /* 0 */,
+    const int itemOffset /* 0 */
+)
+{
+    const auto pokedexMainViewInvisibleListTextboxEntityId = CreateTextboxWithDimensions
+    (
+        TextboxType::CURSORED_BARE_TEXTBOX,
+        POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_COLS,
+        POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_ROWS,
+        POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_POSITION.x,
+        POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_POSITION.y,
+        POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_POSITION.z,
+        world
+    );
+
+    auto cursorComponent = std::make_unique<CursorComponent>();
+
+    cursorComponent->mCursorCol = 0;
+    cursorComponent->mCursorRow = previousCursorRow;
+
+    cursorComponent->mCursorColCount = 1;
+    cursorComponent->mCursorRowCount = POKEDEX_MAIN_VIEW_INVISIBLE_LIST_TEXTBOX_ROWS/2;
+
+    cursorComponent->mCursorDisplayHorizontalTileOffset     = 0;
+    cursorComponent->mCursorDisplayVerticalTileOffset       = 1;
+    cursorComponent->mCursorDisplayHorizontalTileIncrements = 0;
+    cursorComponent->mCursorDisplayVerticalTileIncrements   = 2;
+
+    WriteCharAtTextboxCoords
+    (
+        pokedexMainViewInvisibleListTextboxEntityId,
+        '}',
+        cursorComponent->mCursorDisplayHorizontalTileOffset + cursorComponent->mCursorDisplayHorizontalTileIncrements * cursorComponent->mCursorCol,
+        cursorComponent->mCursorDisplayVerticalTileOffset + cursorComponent->mCursorDisplayVerticalTileIncrements * cursorComponent->mCursorRow,
+        world
+    );
+
+    cursorComponent->mWarp = false;
+
+    world.AddComponent<CursorComponent>(pokedexMainViewInvisibleListTextboxEntityId, std::move(cursorComponent));
+
+    auto itemMenuStateComponent = std::make_unique<ItemMenuStateComponent>();
+    itemMenuStateComponent->mItemMenuOffsetFromStart = itemOffset;
+    world.AddComponent<ItemMenuStateComponent>(pokedexMainViewInvisibleListTextboxEntityId, std::move(itemMenuStateComponent));
+
+    return pokedexMainViewInvisibleListTextboxEntityId;
 }
 
 ecs::EntityId CreateBlackboardTextbox
