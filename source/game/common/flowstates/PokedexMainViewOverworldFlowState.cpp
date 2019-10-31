@@ -272,7 +272,13 @@ void PokedexMainViewOverworldFlowState::UpdatePokedexEntrySelected(const float)
 
 void PokedexMainViewOverworldFlowState::CancelPokedexMainView()
 {
-    SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);    
+    SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+    
+    DestroyActiveTextbox(mWorld);
+    DestroyGenericOrBareTextbox(mPokedexSelectionOptionsBareTextboxEntityId, mWorld);
+    mWorld.DestroyEntity(mPokedexMainViewBackgroundEntityId);
+    
+    CompleteAndTransitionTo<MainMenuOverworldFlowState>();
 }
 
 void PokedexMainViewOverworldFlowState::RedrawPokedexMainView() const
