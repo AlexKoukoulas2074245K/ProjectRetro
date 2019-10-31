@@ -105,6 +105,7 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
     {        
         mPokedexRapidScrollEnablingTimer.Reset();
         mPokedexRapidScrollAdvanceTimer.Reset();
+        
         if (cursorComponent.mCursorRow == 0 && itemMenuStateComponent.mPreviousCursorRow == 0)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart--;
@@ -146,6 +147,7 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
     {    
         mPokedexRapidScrollEnablingTimer.Reset();
         mPokedexRapidScrollAdvanceTimer.Reset();
+        
         if (cursorComponent.mCursorRow == 6 && itemMenuStateComponent.mPreviousCursorRow == 6)
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart++;
@@ -184,31 +186,81 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
         }        
     }   
     else if (IsActionTypeKeyTapped(VirtualActionType::LEFT_ARROW, inputStateComponent))
-    {              
-        if (cursorComponent.mCursorRow == 7 && itemMenuStateComponent.mPreviousCursorRow == 7)
+    {
+        mPokedexRapidScrollEnablingTimer.Reset();
+        mPokedexRapidScrollAdvanceTimer.Reset();
+        
+        if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= 6)
         {
-            itemMenuStateComponent.mItemMenuOffsetFromStart++;
-            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= MAX_POKEMON_ID - 1)
+            itemMenuStateComponent.mItemMenuOffsetFromStart -= 7;
+            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow < 6)
             {
-                itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 1 - cursorComponent.mCursorRow;
+                itemMenuStateComponent.mItemMenuOffsetFromStart = 6 - cursorComponent.mCursorRow;
             }
-
-            RedrawPokedexMainView();
-        }       
-    }
-    else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT_ARROW, inputStateComponent))
-    {                
-        if (cursorComponent.mCursorRow == 7 && itemMenuStateComponent.mPreviousCursorRow == 7)
-        {
-            itemMenuStateComponent.mItemMenuOffsetFromStart++;
-            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= MAX_POKEMON_ID - 1)
-            {
-                itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 1 - cursorComponent.mCursorRow;
-            }
-
+            
             RedrawPokedexMainView();
         }
-    }   
+    }
+    else if (IsActionTypeKeyPressed(VirtualActionType::LEFT_ARROW, inputStateComponent))
+    {
+        mPokedexRapidScrollEnablingTimer.Update(dt);
+        if (mPokedexRapidScrollEnablingTimer.HasTicked())
+        {
+            mPokedexRapidScrollAdvanceTimer.Update(dt);
+            if (mPokedexRapidScrollAdvanceTimer.HasTicked())
+            {
+                mPokedexRapidScrollAdvanceTimer.Reset();
+                if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= 6)
+                {
+                    itemMenuStateComponent.mItemMenuOffsetFromStart -= 7;
+                    if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow < 6)
+                    {
+                        itemMenuStateComponent.mItemMenuOffsetFromStart = 6 - cursorComponent.mCursorRow;
+                    }
+                    
+                    RedrawPokedexMainView();
+                }
+            }
+        }
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::RIGHT_ARROW, inputStateComponent))
+    {
+        mPokedexRapidScrollEnablingTimer.Reset();
+        mPokedexRapidScrollAdvanceTimer.Reset();
+        
+        if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= MAX_POKEMON_ID - 7)
+        {
+            itemMenuStateComponent.mItemMenuOffsetFromStart += 7;
+            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow > MAX_POKEMON_ID - 7)
+            {
+                itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 7 - cursorComponent.mCursorRow;
+            }
+            
+            RedrawPokedexMainView();
+        }
+    }
+    else if (IsActionTypeKeyPressed(VirtualActionType::RIGHT_ARROW, inputStateComponent))
+    {
+        mPokedexRapidScrollEnablingTimer.Update(dt);
+        if (mPokedexRapidScrollEnablingTimer.HasTicked())
+        {
+            mPokedexRapidScrollAdvanceTimer.Update(dt);
+            if (mPokedexRapidScrollAdvanceTimer.HasTicked())
+            {
+                mPokedexRapidScrollAdvanceTimer.Reset();
+                if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= MAX_POKEMON_ID - 7)
+                {
+                    itemMenuStateComponent.mItemMenuOffsetFromStart += 7;
+                    if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow > MAX_POKEMON_ID - 7)
+                    {
+                        itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 7 - cursorComponent.mCursorRow;
+                    }
+                    
+                    RedrawPokedexMainView();
+                }
+            }
+        }
+    }
 
     SaveLastFramesCursorRow();
 }
