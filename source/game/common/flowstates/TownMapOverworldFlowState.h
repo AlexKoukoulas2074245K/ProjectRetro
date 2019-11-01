@@ -32,24 +32,35 @@ public:
     
     void VUpdate(const float dt) override;
 
-private:    
-    void CreateLocationNameTextbox(const StringId name);
-    
+private: 
+    enum class DisplayMode
+    {
+        CURSOR_MODE,
+        NEST_MODE,
+        UNKNOWN_AREA_MODE
+    };
+
     static const glm::vec3 LOCATION_NAME_TEXTBOX_POSITION;
+    static const glm::vec3 UNKNOWN_AREA_TEXTBOX_POSITION;
     static const std::string CURSOR_BUMP_SFX_NAME;
     static const float CURSOR_BLINKING_DELAY;
     static const int LOCATION_NAME_TEXTBOX_COLS;
     static const int LOCATION_NAME_TEXTBOX_ROWS;
+    static const int UNKNOWN_AREA_TEXTBOX_COLS;
+    static const int UNKNOWN_AREA_TEXTBOX_ROWS;
+
+    void CreateLocationNameTextbox(const StringId name);
 
     std::vector<ecs::EntityId> mNestIconEntityIds;
     ecs::EntityId mBackgroundEntityId;    
     ecs::EntityId mPlayerIconEntityId;
     ecs::EntityId mCursorIconEntityId;
     ecs::EntityId mLocationNameTextboxEntityId;
+    ecs::EntityId mUnknownAreaTextboxEntityId;
 
     Timer mCursorBlinkingTimer;
     int mCursorMapIndex;
-    bool mNestDisplayMode;
+    DisplayMode mDisplayMode;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

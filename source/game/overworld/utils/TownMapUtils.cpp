@@ -128,6 +128,7 @@ ecs::EntityId LoadAndCreateTownMapIconAtLocation
     if (iconType == TownMapIconType::NEST_ICON)
     {
         transformComponent->mScale = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
+        transformComponent->mPosition.z -= 0.1f;
     }
     else
     {

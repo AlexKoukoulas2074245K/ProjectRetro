@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 const glm::vec3 TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_POSITION = glm::vec3(-0.0633000061f, 0.927501202f, -0.5f);
+const glm::vec3 TownMapOverworldFlowState::UNKNOWN_AREA_TEXTBOX_POSITION  = glm::vec3(0.0f, 0.0f, -0.9f);
 
 const std::string TownMapOverworldFlowState::CURSOR_BUMP_SFX_NAME = "general/pokeball_healing";
 
@@ -34,6 +35,8 @@ const float TownMapOverworldFlowState::CURSOR_BLINKING_DELAY = 0.5f;
 
 const int TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_COLS = 16;
 const int TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_ROWS = 1;
+const int TownMapOverworldFlowState::UNKNOWN_AREA_TEXTBOX_COLS  = 17;
+const int TownMapOverworldFlowState::UNKNOWN_AREA_TEXTBOX_ROWS  = 4;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -41,25 +44,58 @@ const int TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_ROWS = 1;
 
 TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
+    , mBackgroundEntityId(ecs::NULL_ENTITY_ID)
+    , mPlayerIconEntityId(ecs::NULL_ENTITY_ID)
     , mCursorIconEntityId(ecs::NULL_ENTITY_ID)
     , mLocationNameTextboxEntityId(ecs::NULL_ENTITY_ID)
+    , mUnknownAreaTextboxEntityId(ecs::NULL_ENTITY_ID)
     , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)
 {               
-    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
-    mNestDisplayMode = pokedexStateComponent.mSelectedPokemonName != StringId();
-    
+    const auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-    
-    mBackgroundEntityId = LoadAndCreateTownMapBackground(mWorld);    
+
+    if (pokedexStateComponent.mSelectedPokemonName != StringId())
+    {
+        mDisplayMode = DisplayMode::NEST_MODE;
+    }                
+    else
+    {
+        mDisplayMode = DisplayMode::CURSOR_MODE;    
+    }
+
+    mBackgroundEntityId = LoadAndCreateTownMapBackground(mWorld);
     mPlayerIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::PLAYER_ICON, activeLevelComponent.mActiveLevelNameId, mWorld);
 
-    if (mNestDisplayMode)
+    if (mDisplayMode == DisplayMode::NEST_MODE)
     {
         const auto& levelNamesWherePokemonCanBeEncountered = FindAllLevelNamesWherePokemonCanBeEncountered(pokedexStateComponent.mSelectedPokemonName);
-        for (const auto& levelName : levelNamesWherePokemonCanBeEncountered)
+        if (levelNamesWherePokemonCanBeEncountered.size() > 0)
         {
-            mNestIconEntityIds.push_back(LoadAndCreateTownMapIconAtLocation(TownMapIconType::NEST_ICON, levelName, mWorld));
+            for (const auto& levelName : levelNamesWherePokemonCanBeEncountered)
+            {
+                mNestIconEntityIds.push_back(LoadAndCreateTownMapIconAtLocation(TownMapIconType::NEST_ICON, levelName, mWorld));
+            }
         }
+        else
+        {
+            mDisplayMode = DisplayMode::UNKNOWN_AREA_MODE;
+
+            mWorld.DestroyEntity(mPlayerIconEntityId);
+            mPlayerIconEntityId = ecs::NULL_ENTITY_ID;
+
+            mUnknownAreaTextboxEntityId = CreateTextboxWithDimensions
+            (
+                TextboxType::GENERIC_TEXTBOX,
+                UNKNOWN_AREA_TEXTBOX_COLS,
+                UNKNOWN_AREA_TEXTBOX_ROWS,
+                UNKNOWN_AREA_TEXTBOX_POSITION.x,
+                UNKNOWN_AREA_TEXTBOX_POSITION.y,
+                UNKNOWN_AREA_TEXTBOX_POSITION.z,
+                mWorld
+            );
+
+            WriteTextAtTextboxCoords(mUnknownAreaTextboxEntityId, "AREA UNKNOWN", 2, 2, mWorld);
+        }        
     }
     else
     {
@@ -68,7 +104,7 @@ TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
         DestroyActiveTextbox(mWorld);
     }               
 
-    CreateLocationNameTextbox(mNestDisplayMode ? pokedexStateComponent.mSelectedPokemonName : GetLocationFromTownMapIndex(mCursorMapIndex, mWorld));
+    CreateLocationNameTextbox(mDisplayMode == DisplayMode::CURSOR_MODE ? GetLocationFromTownMapIndex(mCursorMapIndex, mWorld) : pokedexStateComponent.mSelectedPokemonName);
 }
 
 void TownMapOverworldFlowState::VUpdate(const float dt)
@@ -78,7 +114,7 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
     {
         mCursorBlinkingTimer.Reset();
 
-        if (mNestDisplayMode)
+        if (mDisplayMode == DisplayMode::NEST_MODE)
         {
             for (const auto& nestIconEntityId : mNestIconEntityIds)
             {
@@ -86,7 +122,7 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
                 renderableComponent.mVisibility = !renderableComponent.mVisibility;
             }
         }
-        else
+        else if (mDisplayMode == DisplayMode::CURSOR_MODE)
         {
             auto& renderableComponent       = mWorld.GetComponent<RenderableComponent>(mCursorIconEntityId);
             renderableComponent.mVisibility = !renderableComponent.mVisibility;
@@ -111,24 +147,30 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
             mWorld.DestroyEntity(mPlayerIconEntityId);
         }
         
+        if (mUnknownAreaTextboxEntityId != ecs::NULL_ENTITY_ID)
+        {
+            DestroyGenericOrBareTextbox(mUnknownAreaTextboxEntityId, mWorld);
+        }
+
         for (const auto nestIconEntityId : mNestIconEntityIds)
         {
             mWorld.DestroyEntity(nestIconEntityId);
         }
 
         DestroyGenericOrBareTextbox(mLocationNameTextboxEntityId, mWorld);
+
         mWorld.DestroyEntity(mBackgroundEntityId);        
 
-        if (mNestDisplayMode)
+        if (mDisplayMode == DisplayMode::CURSOR_MODE)
         {
-            CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
+            CompleteOverworldFlow();
         }
         else
         {
-            CompleteOverworldFlow();
+            CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
         }        
     }    
-    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) && mNestDisplayMode == false)
+    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) && mDisplayMode == DisplayMode::CURSOR_MODE)
     {
         SoundService::GetInstance().PlaySfx(CURSOR_BUMP_SFX_NAME, true);
 
@@ -146,7 +188,7 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
         mCursorIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, newLocation, mWorld);        
         CreateLocationNameTextbox(newLocation);
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent) && mNestDisplayMode == false)
+    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent) && mDisplayMode == DisplayMode::CURSOR_MODE)
     {
         SoundService::GetInstance().PlaySfx(CURSOR_BUMP_SFX_NAME, true);
 
@@ -188,13 +230,13 @@ void TownMapOverworldFlowState::CreateLocationNameTextbox(const StringId name)
         mWorld
     );
     
-    if (mNestDisplayMode)
+    if (mDisplayMode == DisplayMode::CURSOR_MODE)
     {
-        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, name.GetString() + "'s NEST", 0, 0, mWorld);
+        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, GetFormattedLocationName(name), 0, 0, mWorld);
     }
     else
     {
-        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, GetFormattedLocationName(name), 0, 0, mWorld);
+        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, name.GetString() + "'s NEST", 0, 0, mWorld);
     }    
 }
 
