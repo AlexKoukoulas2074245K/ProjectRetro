@@ -41,8 +41,8 @@ const int TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_ROWS = 1;
 
 TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
-    , mLocationNameTextboxEntityId(ecs::NULL_ENTITY_ID)
     , mCursorIconEntityId(ecs::NULL_ENTITY_ID)
+    , mLocationNameTextboxEntityId(ecs::NULL_ENTITY_ID)
     , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)
 {               
     auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();

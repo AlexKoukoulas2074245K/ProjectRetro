@@ -55,9 +55,9 @@ const float PokedexMainViewOverworldFlowState::POKEDEX_RAPID_SCROLL_ADVANCE_TIME
 
 PokedexMainViewOverworldFlowState::PokedexMainViewOverworldFlowState(ecs::World& world)
     : BaseFlowState(world)
+    , mMaxSeenOrOwnedPokemonId(GetMaxSeenOrOwnedPokemonId(mWorld))
     , mPokedexRapidScrollEnablingTimer(POKEDEX_RAPID_SCROLL_ENABLING_TIMER_DELAY)
     , mPokedexRapidScrollAdvanceTimer(POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY)
-    , mMaxSeenOrOwnedPokemonId(GetMaxSeenOrOwnedPokemonId(mWorld))
 {
     const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
     
@@ -235,7 +235,6 @@ void PokedexMainViewOverworldFlowState::UpdateSelectionView(const float)
     const auto& inputStateComponent         = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
     const auto pokedexSelectionViewEntityId = GetActiveTextboxEntityId(mWorld);
     const auto& cursorComponent             = mWorld.GetComponent<CursorComponent>(pokedexSelectionViewEntityId);
-    const auto cursorCol                    = cursorComponent.mCursorCol;
     const auto cursorRow                    = cursorComponent.mCursorRow;
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
