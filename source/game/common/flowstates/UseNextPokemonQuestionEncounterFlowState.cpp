@@ -16,6 +16,7 @@
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../sound/SoundService.h"

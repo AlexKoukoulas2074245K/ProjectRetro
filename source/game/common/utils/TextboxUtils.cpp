@@ -22,6 +22,7 @@
 #include "../utils/MathUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/StringUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/components/WindowSingletonComponent.h"
 #include "../../resources/MeshUtils.h"
@@ -1113,8 +1114,7 @@ ecs::EntityId CreateOverworldMainMenuTextbox
 
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
-    const MainMenuActionType actionTypeSelected,
-
+    const int intActionTypeSelected,
     ecs::World& world
 )
 {
@@ -1135,7 +1135,7 @@ ecs::EntityId CreateEncounterMainMenuTextbox
     WriteTextAtTextboxCoords(mainMenuTextboxEntityId, "RUN", 8, 4, world);    
 
     auto cursorComponent = std::make_unique<CursorComponent>();
-    const auto targetCursorCoords = sMainMenuActionTypesToCursorCoords.at(actionTypeSelected);
+    const auto targetCursorCoords = sMainMenuActionTypesToCursorCoords.at(static_cast<MainMenuActionType>(intActionTypeSelected));
 
     cursorComponent->mCursorCol = targetCursorCoords.first;
     cursorComponent->mCursorRow = targetCursorCoords.second;

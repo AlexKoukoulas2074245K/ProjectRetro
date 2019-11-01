@@ -10,7 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "PokedexMainViewOverworldFlowState.h"
+#include "PokedexPokemonEntryDisplayFlowState.h"
 #include "TooImportantToTossFlowState.h"
+#include "TownMapOverworldFlowState.h"
 #include "ItemUsageFlowState.h"
 #include "MainMenuEncounterFlowState.h"
 #include "MainMenuOverworldFlowState.h"
@@ -26,6 +28,7 @@
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
+#include "../../resources/ResourceLoadingService.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -54,15 +57,20 @@ PokedexMainViewOverworldFlowState::PokedexMainViewOverworldFlowState(ecs::World&
     : BaseFlowState(world)
     , mPokedexRapidScrollEnablingTimer(POKEDEX_RAPID_SCROLL_ENABLING_TIMER_DELAY)
     , mPokedexRapidScrollAdvanceTimer(POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY)
+    , mMaxSeenOrOwnedPokemonId(GetMaxSeenOrOwnedPokemonId(mWorld))
 {
-    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();    
     
     if (guiStateComponent.mActiveTextboxesStack.size() == 1)
     {
         CreatePokedexMainViewBackground();
         CreatePokedexMainViewInvisibleListTextbox(mWorld);
         DisplayPokedexEntriesForCurrentOffset();        
-    }    
+    } 
+    else
+    {
+        DestroyActiveTextbox(mWorld);
+    }
 }
 
 void PokedexMainViewOverworldFlowState::VUpdate(const float dt)
@@ -77,7 +85,7 @@ void PokedexMainViewOverworldFlowState::VUpdate(const float dt)
     // Pokedex selected entry view is active
     else if (guiStateComponent.mActiveTextboxesStack.size() == 3)
     {
-        UpdatePokedexEntrySelected(dt);
+        UpdateSelectionView(dt);
     }    
 }
 
@@ -93,8 +101,13 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
     auto& itemMenuStateComponent       = mWorld.GetComponent<ItemMenuStateComponent>(pokedexMainViewEntityId);
 
     if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
-    {
-        SavePokedexMainViewState();
+    {        
+        mSelectedPokemonId = itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow + 1;        
+        if (GetPokedexEntryType(mSelectedPokemonId, mWorld) != PokedexEntryType::LOCKED)
+        {
+            DoActionInPokedexMainViewPokemonList(PokedexMainViewListActionType::SELECT_ENTRY);
+            return;
+        }
     }
     else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
     {
@@ -192,7 +205,7 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
         mPokedexRapidScrollEnablingTimer.Reset();
         mPokedexRapidScrollAdvanceTimer.Reset();
         
-        if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= MAX_POKEMON_ID - 7)
+        if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= mMaxSeenOrOwnedPokemonId - 7)
         {
             DoActionInPokedexMainViewPokemonList(PokedexMainViewListActionType::PAGE_DOWN);
         }
@@ -206,7 +219,7 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
             if (mPokedexRapidScrollAdvanceTimer.HasTicked())
             {
                 mPokedexRapidScrollAdvanceTimer.Reset();
-                if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= MAX_POKEMON_ID - 7)
+                if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow <= mMaxSeenOrOwnedPokemonId - 7)
                 {
                     DoActionInPokedexMainViewPokemonList(PokedexMainViewListActionType::PAGE_DOWN);
                 }
@@ -217,19 +230,68 @@ void PokedexMainViewOverworldFlowState::UpdateMainView(const float dt)
     SaveLastFramesCursorRow();
 }
 
-void PokedexMainViewOverworldFlowState::UpdatePokedexEntrySelected(const float)
+void PokedexMainViewOverworldFlowState::UpdateSelectionView(const float)
 {
+    const auto& inputStateComponent         = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto pokedexSelectionViewEntityId = GetActiveTextboxEntityId(mWorld);
+    const auto& cursorComponent             = mWorld.GetComponent<CursorComponent>(pokedexSelectionViewEntityId);
+    const auto cursorCol                    = cursorComponent.mCursorCol;
+    const auto cursorRow                    = cursorComponent.mCursorRow;
 
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {       
+        // DATA
+        if (cursorRow == 0)
+        {
+            DestroyActiveTextbox(mWorld);
+            CreateChatbox(mWorld);
+            CompleteAndTransitionTo<PokedexPokemonEntryDisplayFlowState>();
+        }
+        // CRY
+        else if (cursorRow == 1)
+        {
+            SoundService::GetInstance().PlaySfx("cries/" + GetFormattedPokemonIdString(mSelectedPokemonId));
+        }
+        // AREA
+        else if (cursorRow == 2)
+        {                  
+            DestroyActiveTextbox(mWorld);
+            CreateChatbox(mWorld);
+            CompleteAndTransitionTo<TownMapOverworldFlowState>();
+        }
+        // PRNT
+        else if (cursorRow == 3)
+        {
+
+        }
+        // QUIT
+        else if (cursorRow == 4)
+        {
+            DestroyActiveTextbox(mWorld);
+            CancelPokedexMainView();
+        }
+    }
+    else if (IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent))
+    {
+        SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
+        DestroyActiveTextbox(mWorld);
+    }
 }
 
 void PokedexMainViewOverworldFlowState::CancelPokedexMainView()
 {
+    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+
     SoundService::GetInstance().PlaySfx(TEXTBOX_CLICK_SFX_NAME);
     
     DestroyActiveTextbox(mWorld);
-    DestroyGenericOrBareTextbox(mPokedexSelectionOptionsBareTextboxEntityId, mWorld);
-    mWorld.DestroyEntity(mPokedexMainViewBackgroundEntityId);
-    
+    DestroyGenericOrBareTextbox(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, mWorld);
+    mWorld.DestroyEntity(pokedexStateComponent.mPokedexMainViewBackgroundEntityId);
+
+    pokedexStateComponent.mPokedexMainViewBackgroundEntityId          = ecs::NULL_ENTITY_ID;
+    pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId = ecs::NULL_ENTITY_ID;
+    pokedexStateComponent.mSelectedPokemonName                        = StringId();
+
     CompleteAndTransitionTo<MainMenuOverworldFlowState>();
 }
 
@@ -256,13 +318,28 @@ void PokedexMainViewOverworldFlowState::DisplayPokedexEntriesForCurrentOffset() 
     for
     (
         auto i = itemMenuComponent.mItemMenuOffsetFromStart;
-        i < math::Min(itemMenuComponent.mItemMenuOffsetFromStart + 7, MAX_POKEMON_ID);
+        i < math::Min(itemMenuComponent.mItemMenuOffsetFromStart + 7, mMaxSeenOrOwnedPokemonId);
         ++i
     )
     {
         const auto formattedPokemonPokedexId = GetFormattedPokemonIdString(i + 1);
+        const auto pokemonName               = GetPokemonNameFromPokedexId(i + 1, mWorld);
+        const auto pokedexEntryType          = GetPokedexEntryType(pokemonName, mWorld);
+
         WriteTextAtTextboxCoords(pokedexMainViewEntityId, formattedPokemonPokedexId, 1, cursorRowIndex * 2, mWorld);            
-        WriteTextAtTextboxCoords(pokedexMainViewEntityId, "----------", 4, 1 + cursorRowIndex * 2, mWorld);        
+
+        if (pokedexEntryType == PokedexEntryType::LOCKED)
+        {
+            WriteTextAtTextboxCoords(pokedexMainViewEntityId, "----------", 4, 1 + cursorRowIndex * 2, mWorld);        
+        }
+        else
+        {
+            if (pokedexEntryType == PokedexEntryType::OWNED)
+            {
+                WriteSpecialCharacterAtTextboxCoords(pokedexMainViewEntityId, SpecialCharacter::POKEDEX_CAUGHT_BALL, 3, 1 + cursorRowIndex * 2, mWorld);
+            }
+            WriteTextAtTextboxCoords(pokedexMainViewEntityId, pokemonName.GetString(), 4, 1 + cursorRowIndex * 2, mWorld);
+        }
             
         cursorRowIndex++;
     }    
@@ -270,27 +347,17 @@ void PokedexMainViewOverworldFlowState::DisplayPokedexEntriesForCurrentOffset() 
 
 void PokedexMainViewOverworldFlowState::SaveLastFramesCursorRow() const
 {
-    const auto pokedexMainViewEntityId = GetActiveTextboxEntityId(mWorld);
+    const auto pokedexMainViewEntityId = GetActiveTextboxEntityId(mWorld);    
     const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(pokedexMainViewEntityId);
     auto& itemMenuStateComponent       = mWorld.GetComponent<ItemMenuStateComponent>(pokedexMainViewEntityId);
 
     itemMenuStateComponent.mPreviousCursorRow = cursorComponent.mCursorRow;
 }
 
-void PokedexMainViewOverworldFlowState::SavePokedexMainViewState() const
-{
-    const auto itemMenuEntityId        = GetActiveTextboxEntityId(mWorld);
-    const auto& cursorComponent        = mWorld.GetComponent<CursorComponent>(itemMenuEntityId);
-    const auto& itemMenuStateComponent = mWorld.GetComponent<ItemMenuStateComponent>(itemMenuEntityId);
-
-    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
-    playerStateComponent.mPreviousItemMenuCursorRow  = cursorComponent.mCursorRow;
-    playerStateComponent.mPreviousItemMenuItemOffset = itemMenuStateComponent.mItemMenuOffsetFromStart;
-}
-
 void PokedexMainViewOverworldFlowState::CreatePokedexMainViewBackground()
 {
-    mPokedexMainViewBackgroundEntityId = mWorld.CreateEntity();
+    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+    pokedexStateComponent.mPokedexMainViewBackgroundEntityId = mWorld.CreateEntity();
 
     auto renderableComponent = std::make_unique<RenderableComponent>();
 
@@ -308,10 +375,10 @@ void PokedexMainViewOverworldFlowState::CreatePokedexMainViewBackground()
     transformComponent->mPosition = POKEDEX_MAIN_VIEW_BACKGROUND_POSITION;
     transformComponent->mScale    = POKEDEX_MAIN_VIEW_BACKGROUND_SCALE;
 
-    mWorld.AddComponent<RenderableComponent>(mPokedexMainViewBackgroundEntityId, std::move(renderableComponent));
-    mWorld.AddComponent<TransformComponent>(mPokedexMainViewBackgroundEntityId, std::move(transformComponent));    
+    mWorld.AddComponent<RenderableComponent>(pokedexStateComponent.mPokedexMainViewBackgroundEntityId, std::move(renderableComponent));
+    mWorld.AddComponent<TransformComponent>(pokedexStateComponent.mPokedexMainViewBackgroundEntityId, std::move(transformComponent));
 
-    mPokedexSelectionOptionsBareTextboxEntityId = CreateTextboxWithDimensions
+    pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId = CreateTextboxWithDimensions
     (
         TextboxType::BARE_TEXTBOX, 
         POKEDEX_SELECTION_OPTIONS_BARE_TEXTBOX_COLS, 
@@ -328,22 +395,16 @@ void PokedexMainViewOverworldFlowState::CreatePokedexMainViewBackground()
     const auto ownedPokemonString = std::to_string(ownedPokemon);
     const auto seenPokemonString  = std::to_string(seenPokemon);
 
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "SEEN", 0, 0, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, seenPokemonString, 3 - seenPokemonString.size(), 1, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "OWN", 0, 3, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, ownedPokemonString, 3 - ownedPokemonString.size(), 4, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "DATA", 0, 7, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "CRY", 0, 9, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "AREA", 0, 11, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "PRNT", 0, 13, mWorld);
-    WriteTextAtTextboxCoords(mPokedexSelectionOptionsBareTextboxEntityId, "QUIT", 0, 15, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "SEEN", 0, 0, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, seenPokemonString, 3 - seenPokemonString.size(), 1, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "OWN", 0, 3, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, ownedPokemonString, 3 - ownedPokemonString.size(), 4, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "DATA", 0, 7, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "CRY", 0, 9, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "AREA", 0, 11, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "PRNT", 0, 13, mWorld);
+    WriteTextAtTextboxCoords(pokedexStateComponent.mPokedexSelectionOptionsBareTextboxEntityId, "QUIT", 0, 15, mWorld);
 
-}
-
-void PokedexMainViewOverworldFlowState::DestroyPokedexMainViewBackground()
-{
-    mWorld.DestroyEntity(mPokedexMainViewBackgroundEntityId);
-    DestroyGenericOrBareTextbox(mPokedexSelectionOptionsBareTextboxEntityId, mWorld);
 }
 
 void PokedexMainViewOverworldFlowState::DoActionInPokedexMainViewPokemonList(const PokedexMainViewListActionType actionType) const
@@ -366,9 +427,9 @@ void PokedexMainViewOverworldFlowState::DoActionInPokedexMainViewPokemonList(con
         case PokedexMainViewListActionType::SCROLL_DOWN:
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart++;
-            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= MAX_POKEMON_ID - 1)
+            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow >= mMaxSeenOrOwnedPokemonId - 1)
             {
-                itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 1 - cursorComponent.mCursorRow;
+                itemMenuStateComponent.mItemMenuOffsetFromStart = mMaxSeenOrOwnedPokemonId - 1 - cursorComponent.mCursorRow;
             }            
         } break;
 
@@ -384,11 +445,21 @@ void PokedexMainViewOverworldFlowState::DoActionInPokedexMainViewPokemonList(con
         case PokedexMainViewListActionType::PAGE_DOWN:
         {
             itemMenuStateComponent.mItemMenuOffsetFromStart += 7;
-            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow > MAX_POKEMON_ID - 7)
+            if (itemMenuStateComponent.mItemMenuOffsetFromStart + cursorComponent.mCursorRow > mMaxSeenOrOwnedPokemonId - 7)
             {
-                itemMenuStateComponent.mItemMenuOffsetFromStart = MAX_POKEMON_ID - 7 - cursorComponent.mCursorRow;
+                itemMenuStateComponent.mItemMenuOffsetFromStart = mMaxSeenOrOwnedPokemonId - 7 - cursorComponent.mCursorRow;
             }
 
+        } break;
+
+        case PokedexMainViewListActionType::SELECT_ENTRY:
+        {            
+            CreatePokedexSelectionViewInvisibleTextbox(mWorld);         
+
+            auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+            pokedexStateComponent.mSelectedPokemonName = GetPokemonNameFromPokedexId(mSelectedPokemonId, mWorld);
+
+            return;            
         } break;
     }
 

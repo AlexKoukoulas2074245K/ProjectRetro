@@ -32,7 +32,13 @@ ecs::EntityId LoadAndCreatePokedexPokemonDataScreen
     ecs::World& world
 );
 
-PokedexEntryType GetPokedexEntryTypeForPokemon
+PokedexEntryType GetPokedexEntryType
+(
+    const int pokemonId,
+    const ecs::World& world
+);
+
+PokedexEntryType GetPokedexEntryType
 (
     const StringId pokemonName,
     const ecs::World& world
@@ -59,6 +65,11 @@ void ChangePokedexEntryForPokemon
 int GetNumberOfPokemonWithPokedexEntryType
 (
     const PokedexEntryType pokedexEntryType,
+    const ecs::World& world
+);
+
+int GetMaxSeenOrOwnedPokemonId
+(
     const ecs::World& world
 );
 

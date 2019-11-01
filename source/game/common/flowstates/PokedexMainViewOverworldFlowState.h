@@ -18,6 +18,7 @@
 
 #include "BaseFlowState.h"
 #include "../utils/MathUtils.h"
+#include "../utils/StringUtils.h"
 #include "../utils/Timer.h"
 #include "../../ECS.h"
 
@@ -37,7 +38,7 @@ public:
 private:
     enum class PokedexMainViewListActionType
     {
-        SCROLL_UP, SCROLL_DOWN, PAGE_UP, PAGE_DOWN
+        SCROLL_UP, SCROLL_DOWN, PAGE_UP, PAGE_DOWN, SELECT_ENTRY
     };
 
     static const glm::vec3 POKEDEX_MAIN_VIEW_BACKGROUND_POSITION;
@@ -55,21 +56,19 @@ private:
     static const float POKEDEX_RAPID_SCROLL_ADVANCE_TIMER_DELAY;
 
     void UpdateMainView(const float dt);    
-    void UpdatePokedexEntrySelected(const float dt);
+    void UpdateSelectionView(const float dt);
     void CancelPokedexMainView();    
     void RedrawPokedexMainView() const;
     void DisplayPokedexEntriesForCurrentOffset() const;
-    void SaveLastFramesCursorRow() const;
-    void SavePokedexMainViewState() const;
-    void CreatePokedexMainViewBackground();
-    void DestroyPokedexMainViewBackground();
+    void SaveLastFramesCursorRow() const;    
+    void CreatePokedexMainViewBackground();    
     void DoActionInPokedexMainViewPokemonList(const PokedexMainViewListActionType) const;
-    
+        
+    const int mMaxSeenOrOwnedPokemonId;
+    int mSelectedPokemonId;
 
     Timer mPokedexRapidScrollEnablingTimer;
-    Timer mPokedexRapidScrollAdvanceTimer;
-    ecs::EntityId mPokedexMainViewBackgroundEntityId;
-    ecs::EntityId mPokedexSelectionOptionsBareTextboxEntityId;
+    Timer mPokedexRapidScrollAdvanceTimer;    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

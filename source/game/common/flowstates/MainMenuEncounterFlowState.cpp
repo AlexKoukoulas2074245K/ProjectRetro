@@ -31,7 +31,7 @@ MainMenuEncounterFlowState::MainMenuEncounterFlowState(ecs::World& world)
 {
     const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
 
-    CreateEncounterMainMenuTextbox(encounterStateComponent.mLastEncounterMainMenuActionSelected, world);
+    CreateEncounterMainMenuTextbox(static_cast<int>(encounterStateComponent.mLastEncounterMainMenuActionSelected), world);
 
     if (encounterStateComponent.mIsPikachuCaptureFlowActive)
     {   

@@ -24,6 +24,7 @@
 #include "../../common/utils/StringUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../common/utils/TrainerUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/components/AnimationTimerComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"

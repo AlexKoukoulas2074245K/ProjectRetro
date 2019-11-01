@@ -17,41 +17,29 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "../components/LevelModelComponent.h"
-#include "../../common/utils/MathUtils.h"
-#include "../../common/utils/Logging.h"
+#include "../../common/utils/StringUtils.h"
+#include "../../ECS.h"
+
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-bool DoesLevelHaveWildEncounters(const LevelModelComponent& levelModelComponent)
-{
-    return levelModelComponent.mWildEncounters.size() > 0;
-}
+class LevelModelComponent;
+struct WildEncounterInfo;
 
-bool WildEncounterRNGTriggered(const LevelModelComponent& levelModelComponent)
-{
-    return levelModelComponent.mEncounterDensity >= math::RandomInt(1, 256);
-}
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 
-const WildEncounterInfo& SelectRandomWildEncounter(const LevelModelComponent& levelModelComponent)
-{
-    const auto randomEncounterIndex  = math::RandomInt(1, 256);
-    auto encounterRateAccumulator    = 0;
+bool DoesLevelHaveWildEncounters(const LevelModelComponent& levelModelComponent);
 
-    for (const auto& encounterInfo: levelModelComponent.mWildEncounters)
-    {
-        encounterRateAccumulator += encounterInfo.mRate;
-        if (randomEncounterIndex <= encounterRateAccumulator)
-        {            
-            return encounterInfo;
-        }
-    }
+bool WildEncounterRNGTriggered(const LevelModelComponent& levelModelComponent);
 
-    assert(false && "Encounter rate accumulator larger than sum of encounter rates");
-    return levelModelComponent.mWildEncounters[0];
-}
+const WildEncounterInfo& SelectRandomWildEncounter(const LevelModelComponent& levelModelComponent);
+
+std::vector<StringId> FindAllLevelNamesWherePokemonCanBeEncountered(const StringId pokemonName);
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

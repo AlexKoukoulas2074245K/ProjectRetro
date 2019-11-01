@@ -26,17 +26,18 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-static const glm::vec3 TOWN_MAP_BACKGROUND_POSITION           = glm::vec3(0.0f, -0.01f, 0.1f);
+static const glm::vec3 TOWN_MAP_BACKGROUND_POSITION           = glm::vec3(0.0f, -0.01f, -0.3f);
 static const glm::vec3 TOWN_MAP_BACKGROUND_SCALE              = glm::vec3(2.2f, 2.2f, 1.0f);
-static const glm::vec3 TOWN_MAP_ICON_TOP_LEFT_ORIGIN_POSITION = glm::vec3(-0.62f, 0.885f, 0.0f);
+static const glm::vec3 TOWN_MAP_ICON_TOP_LEFT_ORIGIN_POSITION = glm::vec3(-0.62f, 0.885f, -0.4f);
 
 static const std::string TOWN_MAP_LOCATIONS_DATA_FILE_NAME      = "town_map_locations.json";
 static const std::string TOWN_MAP_SPRITE_MODEL_FILE_NAME        = "town_map_sprite.obj";
 static const std::string TOWN_MAP_BACKGROUND_TEXTURE_FILE_NAME  = "town_map_background.png";
 static const std::string TOWN_MAP_PLAYER_ICON_TEXTURE_FILE_NAME = "town_map_player_icon.png";
 static const std::string TOWN_MAP_CURSOR_ICON_TEXTURE_FILE_NAME = "town_map_cursor_icon.png";
+static const std::string TOWN_MAP_NEST_ICON_TEXTURE_FILE_NAME   = "town_map_nest_icon.png";
 
-static const float TOWN_MAP_ICON_Z = 0.0f;
+static const float TOWN_MAP_ICON_Z = -0.4f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +95,7 @@ ecs::EntityId LoadAndCreateTownMapIconAtLocation
     {
         case TownMapIconType::PLAYER_ICON: texturePath += TOWN_MAP_PLAYER_ICON_TEXTURE_FILE_NAME; break;
         case TownMapIconType::CURSOR_ICON: texturePath += TOWN_MAP_CURSOR_ICON_TEXTURE_FILE_NAME; break;
+        case TownMapIconType::NEST_ICON: texturePath   += TOWN_MAP_NEST_ICON_TEXTURE_FILE_NAME; break;
     }
     
     renderableComponent->mTextureResourceId     = resourceLoadingService.LoadResource(texturePath);
@@ -122,7 +124,15 @@ ecs::EntityId LoadAndCreateTownMapIconAtLocation
 
     auto transformComponent       = std::make_unique<TransformComponent>();
     transformComponent->mPosition = glm::vec3(transformedCoords.x, transformedCoords.y, TOWN_MAP_ICON_Z);
-    transformComponent->mScale    = glm::vec3(guiStateComponent.mGlobalGuiTileWidth * 2, guiStateComponent.mGlobalGuiTileHeight * 2, 1.0f);
+
+    if (iconType == TownMapIconType::NEST_ICON)
+    {
+        transformComponent->mScale = glm::vec3(guiStateComponent.mGlobalGuiTileWidth, guiStateComponent.mGlobalGuiTileHeight, 1.0f);
+    }
+    else
+    {
+        transformComponent->mScale = glm::vec3(guiStateComponent.mGlobalGuiTileWidth * 2, guiStateComponent.mGlobalGuiTileHeight * 2, 1.0f);
+    }    
 
     world.AddComponent<RenderableComponent>(townMapIconEntityId, std::move(renderableComponent));
     world.AddComponent<TransformComponent>(townMapIconEntityId, std::move(transformComponent));

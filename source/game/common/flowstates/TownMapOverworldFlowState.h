@@ -33,14 +33,15 @@ public:
     void VUpdate(const float dt) override;
 
 private:    
-    void CreateLocationNameTextbox(const StringId locationName);
-
+    void CreateLocationNameTextbox(const StringId name);
+    
     static const glm::vec3 LOCATION_NAME_TEXTBOX_POSITION;
     static const std::string CURSOR_BUMP_SFX_NAME;
     static const float CURSOR_BLINKING_DELAY;
     static const int LOCATION_NAME_TEXTBOX_COLS;
     static const int LOCATION_NAME_TEXTBOX_ROWS;
 
+    std::vector<ecs::EntityId> mNestIconEntityIds;
     ecs::EntityId mBackgroundEntityId;    
     ecs::EntityId mPlayerIconEntityId;
     ecs::EntityId mCursorIconEntityId;
@@ -48,6 +49,7 @@ private:
 
     Timer mCursorBlinkingTimer;
     int mCursorMapIndex;
+    bool mNestDisplayMode;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

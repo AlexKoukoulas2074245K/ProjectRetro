@@ -44,7 +44,7 @@ OpponentTrainerPokemonSummonTextEncounterFlowState::OpponentTrainerPokemonSummon
         mWorld
     );
     
-    const auto pokedexEntryType = GetPokedexEntryTypeForPokemon(activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName, mWorld);
+    const auto pokedexEntryType = GetPokedexEntryType(activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName, mWorld);
     if (pokedexEntryType != PokedexEntryType::OWNED)
     {
         ChangePokedexEntryForPokemon(activeOpponentPokemon.mBaseSpeciesStats.mSpeciesName, PokedexEntryType::SEEN, mWorld);

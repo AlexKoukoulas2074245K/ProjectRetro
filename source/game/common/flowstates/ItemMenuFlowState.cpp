@@ -22,6 +22,7 @@
 #include "../utils/MathUtils.h"
 #include "../utils/PokemonItemsUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../sound/SoundService.h"

@@ -13,7 +13,9 @@
 #include "../components/DirectionComponent.h"
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../utils/PokemonUtils.h"
 #include "../../common/utils/MilestoneUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../overworld/components/MovementStateComponent.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
 #include "../../overworld/components/LevelModelComponent.h"
@@ -21,7 +23,6 @@
 #include "../../overworld/utils/OverworldUtils.h"
 #include "../../rendering/components/RenderableComponent.h"
 #include "../../rendering/utils/AnimationUtils.h"
-#include "../utils/PokemonUtils.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////

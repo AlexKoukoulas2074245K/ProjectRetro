@@ -17,6 +17,7 @@
 #include "../utils/TextboxUtils.h"
 #include "../utils/TrainerUtils.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////

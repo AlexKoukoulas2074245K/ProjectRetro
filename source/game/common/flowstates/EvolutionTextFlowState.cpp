@@ -15,6 +15,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../sound/SoundService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////

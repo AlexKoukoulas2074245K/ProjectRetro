@@ -18,6 +18,7 @@
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/flowstates/MainMenuOverworldFlowState.h"
 #include "../../common/utils/MilestoneUtils.h"
+#include "../../common/utils/PokedexUtils.h"
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonItemsUtils.h"
 #include "../../common/utils/TextboxUtils.h"
@@ -218,6 +219,7 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, false, mWorld));
             playerStateComponent.mPendingItemToBeAdded = StringId();
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+            ChangePokedexEntryForPokemon(StringId("PIKACHU"), PokedexEntryType::OWNED, mWorld);
             return;
         }
         // Milestone handling

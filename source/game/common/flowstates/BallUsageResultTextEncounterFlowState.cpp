@@ -64,7 +64,7 @@ void BallUsageResultTextEncounterFlowState::VUpdate(const float)
 
         if (encounterStateComponent.mWasPokemonCaught)
         {
-            if (GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
+            if (GetPokedexEntryType(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) != PokedexEntryType::OWNED)
             {
                 if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
                 {
@@ -137,7 +137,7 @@ void BallUsageResultTextEncounterFlowState::DisplayCatchResultText() const
         if 
         (
             encounterStateComponent.mIsPikachuCaptureFlowActive || 
-            GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) == PokedexEntryType::OWNED
+            GetPokedexEntryType(encounterStateComponent.mOpponentPokemonRoster.at(0)->mName, mWorld) == PokedexEntryType::OWNED
         )
         {
             catchResultText += "@+FREEZE";

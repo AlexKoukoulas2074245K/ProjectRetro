@@ -20,6 +20,7 @@
 #include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/PokemonMoveUtils.h"
 #include "../../common/utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../sound/SoundService.h"
 
 #include <memory>

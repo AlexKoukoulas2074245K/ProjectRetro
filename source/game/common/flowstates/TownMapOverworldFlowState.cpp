@@ -9,13 +9,16 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "PokedexMainViewOverworldFlowState.h"
 #include "TownMapOverworldFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
+#include "../components/PokedexStateSingletonComponent.h"
 #include "../components/TransformComponent.h"
 #include "../utils/TextboxUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/utils/EncounterUtils.h"
 #include "../../overworld/utils/TownMapUtils.h"
 #include "../../sound/SoundService.h"
 
@@ -39,18 +42,33 @@ const int TownMapOverworldFlowState::LOCATION_NAME_TEXTBOX_ROWS = 1;
 TownMapOverworldFlowState::TownMapOverworldFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
     , mLocationNameTextboxEntityId(ecs::NULL_ENTITY_ID)
+    , mCursorIconEntityId(ecs::NULL_ENTITY_ID)
     , mCursorBlinkingTimer(CURSOR_BLINKING_DELAY)
-{   
-    DestroyActiveTextbox(mWorld);
-
+{               
+    auto& pokedexStateComponent = mWorld.GetSingletonComponent<PokedexStateSingletonComponent>();
+    mNestDisplayMode = pokedexStateComponent.mSelectedPokemonName != StringId();
+    
     const auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-
+    
     mBackgroundEntityId = LoadAndCreateTownMapBackground(mWorld);    
     mPlayerIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::PLAYER_ICON, activeLevelComponent.mActiveLevelNameId, mWorld);
-    mCursorIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, activeLevelComponent.mActiveLevelNameId, mWorld);
-    mCursorMapIndex     = GetLocationIndexInTownMap(activeLevelComponent.mActiveLevelNameId, mWorld);
-    
-    CreateLocationNameTextbox(GetLocationFromTownMapIndex(mCursorMapIndex, mWorld));
+
+    if (mNestDisplayMode)
+    {
+        const auto& levelNamesWherePokemonCanBeEncountered = FindAllLevelNamesWherePokemonCanBeEncountered(pokedexStateComponent.mSelectedPokemonName);
+        for (const auto& levelName : levelNamesWherePokemonCanBeEncountered)
+        {
+            mNestIconEntityIds.push_back(LoadAndCreateTownMapIconAtLocation(TownMapIconType::NEST_ICON, levelName, mWorld));
+        }
+    }
+    else
+    {
+        mCursorIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, activeLevelComponent.mActiveLevelNameId, mWorld);
+        mCursorMapIndex = GetLocationIndexInTownMap(activeLevelComponent.mActiveLevelNameId, mWorld);
+        DestroyActiveTextbox(mWorld);
+    }               
+
+    CreateLocationNameTextbox(mNestDisplayMode ? pokedexStateComponent.mSelectedPokemonName : GetLocationFromTownMapIndex(mCursorMapIndex, mWorld));
 }
 
 void TownMapOverworldFlowState::VUpdate(const float dt)
@@ -60,17 +78,21 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
     {
         mCursorBlinkingTimer.Reset();
 
-        if (mCursorIconEntityId != ecs::NULL_ENTITY_ID)
+        if (mNestDisplayMode)
         {
-            mWorld.DestroyEntity(mCursorIconEntityId);
-            mCursorIconEntityId = ecs::NULL_ENTITY_ID;
+            for (const auto& nestIconEntityId : mNestIconEntityIds)
+            {
+                auto& renderableComponent = mWorld.GetComponent<RenderableComponent>(nestIconEntityId);
+                renderableComponent.mVisibility = !renderableComponent.mVisibility;
+            }
         }
         else
         {
-            mCursorIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, GetLocationFromTownMapIndex(mCursorMapIndex, mWorld), mWorld);
-        }
+            auto& renderableComponent       = mWorld.GetComponent<RenderableComponent>(mCursorIconEntityId);
+            renderableComponent.mVisibility = !renderableComponent.mVisibility;
+        }        
     }
-
+       
     const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
 
     if 
@@ -89,11 +111,24 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
             mWorld.DestroyEntity(mPlayerIconEntityId);
         }
         
+        for (const auto nestIconEntityId : mNestIconEntityIds)
+        {
+            mWorld.DestroyEntity(nestIconEntityId);
+        }
+
         DestroyGenericOrBareTextbox(mLocationNameTextboxEntityId, mWorld);
         mWorld.DestroyEntity(mBackgroundEntityId);        
-        CompleteOverworldFlow();
+
+        if (mNestDisplayMode)
+        {
+            CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
+        }
+        else
+        {
+            CompleteOverworldFlow();
+        }        
     }    
-    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::UP_ARROW, inputStateComponent) && mNestDisplayMode == false)
     {
         SoundService::GetInstance().PlaySfx(CURSOR_BUMP_SFX_NAME, true);
 
@@ -111,7 +146,7 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
         mCursorIconEntityId = LoadAndCreateTownMapIconAtLocation(TownMapIconType::CURSOR_ICON, newLocation, mWorld);        
         CreateLocationNameTextbox(newLocation);
     }
-    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent))
+    else if (IsActionTypeKeyTapped(VirtualActionType::DOWN_ARROW, inputStateComponent) && mNestDisplayMode == false)
     {
         SoundService::GetInstance().PlaySfx(CURSOR_BUMP_SFX_NAME, true);
 
@@ -135,7 +170,7 @@ void TownMapOverworldFlowState::VUpdate(const float dt)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-void TownMapOverworldFlowState::CreateLocationNameTextbox(const StringId locationName)
+void TownMapOverworldFlowState::CreateLocationNameTextbox(const StringId name)
 {
     if (mLocationNameTextboxEntityId != ecs::NULL_ENTITY_ID)
     {
@@ -153,7 +188,14 @@ void TownMapOverworldFlowState::CreateLocationNameTextbox(const StringId locatio
         mWorld
     );
     
-    WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, GetFormattedLocationName(locationName), 0, 0, mWorld);
+    if (mNestDisplayMode)
+    {
+        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, name.GetString() + "'s NEST", 0, 0, mWorld);
+    }
+    else
+    {
+        WriteTextAtTextboxCoords(mLocationNameTextboxEntityId, GetFormattedLocationName(name), 0, 0, mWorld);
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

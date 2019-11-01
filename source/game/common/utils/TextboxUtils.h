@@ -18,8 +18,8 @@
 
 #include "MathUtils.h"
 #include "../components/TextboxComponent.h"
+#include "../GameConstants.h"
 #include "../../ECS.h"
-#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../overworld/components/PCStateSingletonComponent.h"
 
 #include <string>
@@ -29,6 +29,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+class TextboxCharacterEntry;
 struct Pokemon;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +207,7 @@ ecs::EntityId CreateOverworldMainMenuTextbox
 
 ecs::EntityId CreateEncounterMainMenuTextbox
 (
-    const MainMenuActionType actionTypeSelected,
+    const int intActionTypeSelected,
     ecs::World& world
 );
 

@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "EncounterSpriteUtils.h"
+#include "../components/EncounterStateSingletonComponent.h"
 #include "../../common/components/TransformComponent.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../rendering/components/RenderableComponent.h"

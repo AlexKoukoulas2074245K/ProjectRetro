@@ -14,8 +14,9 @@
 #include "TextboxUtils.h"
 #include "MathUtils.h"
 #include "../components/CursorComponent.h"
-#include "../../rendering/components/RenderableComponent.h"
 #include "../components/TransformComponent.h"
+#include "../../rendering/components/RenderableComponent.h"
+#include "../../resources/ResourceLoadingService.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

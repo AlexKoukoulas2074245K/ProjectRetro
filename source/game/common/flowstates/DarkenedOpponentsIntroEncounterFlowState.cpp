@@ -98,7 +98,7 @@ void DarkenedOpponentsIntroEncounterFlowState::VUpdate(const float dt)
                 );
             }
             
-            const auto pokedexEntryType = GetPokedexEntryTypeForPokemon(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, mWorld);
+            const auto pokedexEntryType = GetPokedexEntryType(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, mWorld);
             if (pokedexEntryType != PokedexEntryType::OWNED)
             {
                 ChangePokedexEntryForPokemon(encounterStateComponent.mOpponentPokemonRoster[encounterStateComponent.mActiveOpponentPokemonRosterIndex]->mBaseSpeciesStats.mSpeciesName, PokedexEntryType::SEEN, mWorld);

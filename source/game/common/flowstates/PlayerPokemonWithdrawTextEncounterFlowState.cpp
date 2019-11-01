@@ -16,6 +16,7 @@
 #include "../components/PlayerStateSingletonComponent.h"
 #include "../components/PokemonSelectionViewStateSingletonComponent.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/components/PokemonSpriteScalingAnimationStateSingletonComponent.h"
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -54,13 +54,15 @@ class PokedexStateSingletonComponent final: public ecs::IComponent
 {
 public:        
     std::array<PokedexEntryType, MAX_POKEMON_ID> mPokedexEntries{ PokedexEntryType::LOCKED };
-    StringId mSelectedPokemonName                  = StringId();
-    ecs::EntityId mPokemonSpriteEntityId           = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mPokedexBackgroundSpriteEntityId = ecs::NULL_ENTITY_ID;
-    ecs::EntityId mPokedexInfoTextboxEntityId      = ecs::NULL_ENTITY_ID;
-    std::unique_ptr<Timer> mPokedexViewTimer       = nullptr;
-    PokedexPageEntryType mCurrentPageViewType      = PokedexPageEntryType::LOCKED;    
-    bool mPokedexPokemonDescriptionCursorShowing   = false;
+    StringId mSelectedPokemonName                             = StringId();
+    ecs::EntityId mPokemonSpriteEntityId                      = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokedexBackgroundSpriteEntityId            = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokedexInfoTextboxEntityId                 = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokedexMainViewBackgroundEntityId          = ecs::NULL_ENTITY_ID;
+    ecs::EntityId mPokedexSelectionOptionsBareTextboxEntityId = ecs::NULL_ENTITY_ID;
+    std::unique_ptr<Timer> mPokedexViewTimer                  = nullptr;
+    PokedexPageEntryType mCurrentPageViewType                 = PokedexPageEntryType::LOCKED;        
+    bool mPokedexPokemonDescriptionCursorShowing              = false;
 
 };
 

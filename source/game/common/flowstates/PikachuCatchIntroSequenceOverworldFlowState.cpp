@@ -18,6 +18,7 @@
 #include "../utils/MilestoneUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../overworld/components/ActiveLevelSingletonComponent.h"

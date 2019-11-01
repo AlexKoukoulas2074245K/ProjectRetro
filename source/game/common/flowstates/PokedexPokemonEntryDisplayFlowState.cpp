@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "PokedexMainViewOverworldFlowState.h"
 #include "PokedexPokemonEntryDisplayFlowState.h"
 #include "PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../components/GuiStateSingletonComponent.h"
@@ -59,7 +60,7 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
             pokedexStateComponent.mPokedexViewTimer->Update(dt);
             if (pokedexStateComponent.mPokedexViewTimer->HasTicked())
             {                
-                if (GetPokedexEntryTypeForPokemon(pokedexStateComponent.mSelectedPokemonName, mWorld) != PokedexEntryType::OWNED)
+                if (GetPokedexEntryType(pokedexStateComponent.mSelectedPokemonName, mWorld) != PokedexEntryType::OWNED)
                 {
                     pokedexStateComponent.mCurrentPageViewType = PokedexPageEntryType::DETAILS_LOCKED;
                 }                
@@ -87,7 +88,8 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                 IsActionTypeKeyTapped(VirtualActionType::B_BUTTON, inputStateComponent)
             )
             {
-                //TODO: CompleteAndTransitionTo<PokedexViewFlowState>();
+                DestroyPokedexPokemonEntryDisplay();
+                CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
             }
         } break;
 
@@ -133,7 +135,8 @@ void PokedexPokemonEntryDisplayFlowState::VUpdate(const float dt)
                 const auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
                 if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
                 {
-                    //TODO: CompleteAndTransitionTo<PokedexViewFlowState>();
+                    DestroyPokedexPokemonEntryDisplay();
+                    CompleteAndTransitionTo<PokedexMainViewOverworldFlowState>();
                 }
                 else
                 {

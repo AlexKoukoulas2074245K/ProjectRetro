@@ -21,6 +21,7 @@
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"
 #include "../../rendering/components/AnimationTimerComponent.h"

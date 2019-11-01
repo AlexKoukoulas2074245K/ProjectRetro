@@ -30,6 +30,7 @@
 #include "../utils/PokemonItemsUtils.h"
 #include "../utils/PokemonUtils.h"
 #include "../utils/TextboxUtils.h"
+#include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
 #include "../../input/components/InputStateSingletonComponent.h"
 #include "../../input/utils/InputUtils.h"

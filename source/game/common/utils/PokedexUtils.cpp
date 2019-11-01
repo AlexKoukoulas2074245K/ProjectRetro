@@ -27,7 +27,7 @@
 static const std::string POKEDEX_ENTRY_DATA_SCREEN_TEXTURE_FILE_NAME = "pokedex_data_screen.png";
 static const std::string POKEDEX_ENTRY_DATA_SCREEN_MODEL_FILE_NAME = "pokemon_stats_display_quad.obj";
 
-static const glm::vec3 POKEDEX_ENTRY_DATA_SCREEN_POSITION = glm::vec3(0.0f, 0.0f, -0.1f);
+static const glm::vec3 POKEDEX_ENTRY_DATA_SCREEN_POSITION = glm::vec3(0.0f, 0.0f, -0.3f);
 static const glm::vec3 POKEDEX_ENTRY_DATA_SCREEN_SCALE    = glm::vec3(2.2f, 2.2f, 1.0f);
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,17 @@ ecs::EntityId LoadAndCreatePokedexPokemonDataScreen
     return pokedexPokemonEntryDataScreenEntityId;
 }
 
-PokedexEntryType GetPokedexEntryTypeForPokemon
+PokedexEntryType GetPokedexEntryType
+(
+    const int pokemonId,
+    const ecs::World& world
+)
+{
+    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
+    return pokedexStateComponent.mPokedexEntries[pokemonId - 1];
+}
+
+PokedexEntryType GetPokedexEntryType
 (
     const StringId pokemonName,
     const ecs::World& world
@@ -129,6 +139,25 @@ int GetNumberOfPokemonWithPokedexEntryType
 {
     const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
     return std::count(pokedexStateComponent.mPokedexEntries.cbegin(), pokedexStateComponent.mPokedexEntries.cend(), pokedexEntryType);
+}
+
+int GetMaxSeenOrOwnedPokemonId
+(
+    const ecs::World& world
+)
+{
+    const auto& pokedexStateComponent = world.GetSingletonComponent<PokedexStateSingletonComponent>();
+    const auto findIter = std::find_if
+    (
+        pokedexStateComponent.mPokedexEntries.crbegin(),
+        pokedexStateComponent.mPokedexEntries.crend(),
+        [](const PokedexEntryType& pokedexEntryType)
+        {
+            return pokedexEntryType != PokedexEntryType::LOCKED;
+        }
+    );
+
+    return pokedexStateComponent.mPokedexEntries.crend() - findIter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
