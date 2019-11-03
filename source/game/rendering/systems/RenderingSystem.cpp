@@ -62,10 +62,14 @@ const StringId RenderingSystem::SPRITE_SHADER_NAME                           = S
 
 const std::unordered_set<StringId, StringIdHasher> RenderingSystem::GUI_SHADERS =
 {
-    StringId("gui"), StringId("dark_flip_hud_special_case"), StringId("gui_unaffected_by_white_flip"), StringId("transition_flip_hud_special_case")
+    StringId("gui"),
+    StringId("dark_flip_hud_special_case"),
+    StringId("gui_unaffected_by_white_flip"),
+    StringId("transition_flip_hud_special_case"),
+    StringId("intro_sequence")
 };
 
-const float RenderingSystem::TARGET_ASPECT_RATIO                  = 1.5993266f;
+const float RenderingSystem::TARGET_ASPECT_RATIO = 1.5993266f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
