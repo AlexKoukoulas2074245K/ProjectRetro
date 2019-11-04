@@ -22,6 +22,7 @@ uniform int transition_progression_step;
 uniform int black_and_white_mode;
 uniform int white_flip_progression_step;
 uniform int dark_flip_progression_step;
+uniform int intro_flip_progression_step;
 
 uniform bool flip_tex_hor;
 uniform bool flip_tex_ver;

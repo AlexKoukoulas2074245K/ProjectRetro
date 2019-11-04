@@ -23,6 +23,7 @@ uniform int transition_progression_step;
 uniform int black_and_white_mode;
 uniform int dark_flip_progression_step;
 uniform int white_flip_progression_step;
+uniform int intro_flip_progression_step;
 
 uniform float global_x_offset;
 uniform float global_y_offset;
