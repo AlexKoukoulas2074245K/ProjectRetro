@@ -23,6 +23,7 @@
 #include <SDL_image.h>
 #include <SDL.h>
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -139,17 +140,6 @@ std::unique_ptr<IResource> TextureLoader::VCreateAndLoadResource(const std::stri
             return vec4ColorA.x + vec4ColorA.y + vec4ColorA.z < vec4ColorB.x + vec4ColorB.y + vec4ColorB.z;
         }        
     });
-    
-    for (const auto& color: colorSet)
-    {
-        if (StringEndsWith(resourcePath, "trainers.png"))
-        {
-            std::cout << Uint32ColorToVec4(color).r << ","
-            << Uint32ColorToVec4(color).g << ","
-            << Uint32ColorToVec4(color).b << ","
-            << Uint32ColorToVec4(color).a << "\n";
-        }
-    }
 
     return std::unique_ptr<IResource>(new TextureResource(surfaceWidth, surfaceHeight, glTextureId, hasTransparentPixels, colorSetVec));
 }
