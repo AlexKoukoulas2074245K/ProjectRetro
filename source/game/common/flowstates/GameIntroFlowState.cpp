@@ -32,8 +32,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const StringId GameIntroFlowState::PIKACHU_CRY_SFX_NAME           = "cries/025";
-const StringId GameIntroFlowState::PLAYER_TRANSFORMATION_SFX_NAME = "general/shrink_character";
+const StringId GameIntroFlowState::PIKACHU_CRY_SFX_NAME           = StringId("cries/025");
+const StringId GameIntroFlowState::PLAYER_TRANSFORMATION_SFX_NAME = StringId("general/shrink_character");
 
 const std::string GameIntroFlowState::PLAYER_TRANSFORMATION_MODEL_FILE_NAME     = "intro_player_transformation_sprite.obj";
 const std::string GameIntroFlowState::PLAYER_TRANSFORMATION_TEXTURE_NAME_PREFIX = "player_intro_transformation_";
@@ -624,7 +624,7 @@ void GameIntroFlowState::UpdatePlayerTransformationFadeOutState(const float dt)
 }
 
 void GameIntroFlowState::UpdatePrepareOverworldState(const float)
-{    
+{
     DestroyActiveTextbox(mWorld);
     mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
 
@@ -642,6 +642,8 @@ void GameIntroFlowState::UpdatePrepareOverworldState(const float)
     SoundService::GetInstance().UnmuteMusic();
     SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName, false);
 
+    SetColorFlipProgressionStep(0);
+    
     CompleteOverworldFlow();
 }
 
