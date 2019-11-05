@@ -81,9 +81,11 @@ void GameIntroFlowState::VUpdate(const float dt)
         case IntroState::RIVAL_FADING_IN:                          UpdateRivalFadingInState(dt); break;
         case IntroState::RIVAL_INTRO_SPEECH:                       UpdateRivalIntroSpeechState(dt); break;
         case IntroState::RIVAL_MOVING_TO_THE_SIDE:                 UpdateRivalMovingToTheSideState(dt); break;
+        case IntroState::PRE_DEFINED_RIVAL_NAME_LIST:              UpdatePreDefinedRivalNameListState(dt); break;
         case IntroState::RIVAL_MOVING_BACK_TO_CENTER:              UpdateRivalMovingBackToCenterState(dt); break;
         case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH:           UpdateRivalNameConfirmationSpeechState(dt); break;
         case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH_FADE_OUT:  UpdateRivalNameConfirmationSpeechFadeOutState(dt); break;
+        case IntroState::PLAYER_FADING_IN: break;
     }
 }
 
