@@ -45,7 +45,10 @@ enum class IntroState
     RIVAL_MOVING_BACK_TO_CENTER,
     RIVAL_NAME_CONFIRMATION_SPEECH,
     RIVAL_NAME_CONFIRMATION_SPEECH_FADE_OUT,
-    PLAYER_FADING_IN
+    PLAYER_FADING_IN,
+    JOURNEY_START_SPEECH,
+    PLAYER_TRANSFORMATION,
+    PLAYER_TRANSFORMATION_FADE_OUT    
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

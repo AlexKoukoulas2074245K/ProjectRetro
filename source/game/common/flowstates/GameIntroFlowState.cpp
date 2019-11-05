@@ -23,12 +23,20 @@
 #include "../../sound/SoundService.h"
 
 #include <unordered_map>
+#include "../../overworld/components/ActiveLevelSingletonComponent.h"
+#include "../../overworld/utils/LevelUtils.h"
+#include "../../overworld/utils/LevelLoadingUtils.h"
+#include "../../overworld/utils/OverworldCharacterLoadingUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-const StringId GameIntroFlowState::PIKACHU_CRY_SFX_NAME = StringId("cries/025");
+const StringId GameIntroFlowState::PIKACHU_CRY_SFX_NAME           = "cries/025";
+const StringId GameIntroFlowState::PLAYER_TRANSFORMATION_SFX_NAME = "general/shrink_character";
+
+const std::string GameIntroFlowState::PLAYER_TRANSFORMATION_MODEL_FILE_NAME     = "intro_player_transformation_sprite.obj";
+const std::string GameIntroFlowState::PLAYER_TRANSFORMATION_TEXTURE_NAME_PREFIX = "player_intro_transformation_";
 
 const TileCoords GameIntroFlowState::NAME_SELECTION_LIST_DIMENSIONS = TileCoords(11, 12);
 
@@ -38,17 +46,22 @@ const glm::vec3 GameIntroFlowState::SPRITE_POSITION_SIDE            = glm::vec3(
 const glm::vec3 GameIntroFlowState::NAME_SELECTION_TEXTBOX_POSITION = glm::vec3(-0.308800131f, 0.320599973f, 0.0f);
 const glm::vec3 GameIntroFlowState::SPRITE_SCALE                    = glm::vec3(0.49f, 0.49f, 1.0f);
 
-const float GameIntroFlowState::SPRITE_ANIMATION_SPEED = 2.0f;
-const float GameIntroFlowState::COLOR_FLIP_TIMER_DELAY = 0.18f;
+const float GameIntroFlowState::SPRITE_ANIMATION_SPEED            = 2.0f;
+const float GameIntroFlowState::COLOR_FLIP_TIMER_DELAY            = 0.18f;
+const float GameIntroFlowState::PLAYER_TRANSFORMATION_TIMER_DELAY = 1.0f;
+
+const int GameIntroFlowState::MAX_PLAYER_TRANSFORMATION_STEP = 3;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 GameIntroFlowState::GameIntroFlowState(ecs::World& world)
-    : BaseFlowState(world)
+    : BaseOverworldFlowState(world)
     , mColorFlipTimer(COLOR_FLIP_TIMER_DELAY)
+    , mPlayerTransformationTimer(PLAYER_TRANSFORMATION_TIMER_DELAY)
     , mActiveCharacterSpriteEntityId(ecs::NULL_ENTITY_ID)    
+    , mPlayerTransformationStep(0)
 {    
     const auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
     if (introStateComponent.mIntroState == IntroState::OAK_FADING_IN)
@@ -85,7 +98,10 @@ void GameIntroFlowState::VUpdate(const float dt)
         case IntroState::RIVAL_MOVING_BACK_TO_CENTER:              UpdateRivalMovingBackToCenterState(dt); break;
         case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH:           UpdateRivalNameConfirmationSpeechState(dt); break;
         case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH_FADE_OUT:  UpdateRivalNameConfirmationSpeechFadeOutState(dt); break;
-        case IntroState::PLAYER_FADING_IN: break;
+        case IntroState::PLAYER_FADING_IN:                         UpdatePlayerFadingInState(dt); break;
+        case IntroState::JOURNEY_START_SPEECH:                     UpdateJourneyStartSpeechState(dt); break;
+        case IntroState::PLAYER_TRANSFORMATION:                    UpdatePlayerTransformationState(dt); break;
+        case IntroState::PLAYER_TRANSFORMATION_FADE_OUT:           UpdatePlayerTransformationFadeOutState(dt); break;
     }
 }
 
@@ -491,7 +507,7 @@ void GameIntroFlowState::UpdateRivalNameConfirmationSpeechState(const float)
 
     if (mActiveCharacterSpriteEntityId == ecs::NULL_ENTITY_ID)
     {
-        mActiveCharacterSpriteEntityId = CreateCharacterSprite(IntroCharacter::PLAYER);
+        mActiveCharacterSpriteEntityId = CreateCharacterSprite(IntroCharacter::RIVAL);
         auto& rivalTransformComponent = mWorld.GetComponent<TransformComponent>(mActiveCharacterSpriteEntityId);
         rivalTransformComponent.mPosition.x = SPRITE_POSITION_CENTER.x;
 
@@ -531,6 +547,94 @@ void GameIntroFlowState::UpdateRivalNameConfirmationSpeechFadeOutState(const flo
             playerTransformComponent.mPosition.x = SPRITE_POSITION_CENTER.x;
 
             introStateComponent.mIntroState = IntroState::PLAYER_FADING_IN;
+        }
+    }
+}
+
+void GameIntroFlowState::UpdatePlayerFadingInState(const float dt)
+{
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    mColorFlipTimer.Update(dt);
+    if (mColorFlipTimer.HasTicked())
+    {
+        mColorFlipTimer.Reset();
+
+        SetColorFlipProgressionStep(GetColorFlipProgressionStep() - 1);
+        if (GetColorFlipProgressionStep() == 5)
+        {
+            SetColorFlipProgressionStep(0);
+       
+            QueueDialogForChatbox(CreateChatbox(mWorld), playerStateComponent.mPlayerTrainerName.GetString() + "!# #@Your very own#POK^MON legend is#about to unfold!#@A world of dreams#and adventures#with POK^MON#awaits! Let's go!+FREEZE", mWorld);
+            introStateComponent.mIntroState = IntroState::JOURNEY_START_SPEECH;
+        }
+    }
+}
+
+void GameIntroFlowState::UpdateJourneyStartSpeechState(const float)
+{
+    const auto& guiStateComponent = mWorld.GetSingletonComponent<GuiStateSingletonComponent>();
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
+    {
+        SoundService::GetInstance().MuteMusic();
+        SoundService::GetInstance().PlaySfx(PLAYER_TRANSFORMATION_SFX_NAME);
+        introStateComponent.mIntroState = IntroState::PLAYER_TRANSFORMATION;
+    }
+}
+
+void GameIntroFlowState::UpdatePlayerTransformationState(const float dt)
+{
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+    mPlayerTransformationTimer.Update(dt);
+    if (mPlayerTransformationTimer.HasTicked())
+    {
+        mPlayerTransformationTimer.Reset();
+        if (++mPlayerTransformationStep > MAX_PLAYER_TRANSFORMATION_STEP)
+        {
+            SetColorFlipProgressionStep(2);
+            introStateComponent.mIntroState = IntroState::PLAYER_TRANSFORMATION_FADE_OUT;
+        }
+        else
+        {
+            mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
+            mActiveCharacterSpriteEntityId = CreatePlayerTransformationSprite();
+        }
+    }
+}
+
+void GameIntroFlowState::UpdatePlayerTransformationFadeOutState(const float dt)
+{    
+    mColorFlipTimer.Update(dt);
+    if (mColorFlipTimer.HasTicked())
+    {
+        mColorFlipTimer.Reset();
+
+        SetColorFlipProgressionStep(GetColorFlipProgressionStep() - 1);
+        if (GetColorFlipProgressionStep() == 0)
+        {
+            SetColorFlipProgressionStep(8);
+
+            DestroyActiveTextbox(mWorld);
+            mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
+
+            auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+
+            DestroyLevel(activeLevelComponent.mActiveLevelNameId, mWorld);
+
+            const auto levelEntityId = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
+            auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
+            
+            activeLevelComponent.mActiveLevelNameId = levelModelComponent.mLevelName;            
+
+            CreatePlayerOverworldSprite(levelEntityId, Direction::NORTH, 7, 5, mWorld);
+
+            SoundService::GetInstance().UnmuteMusic();
+            SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName, false);
+            
+            CompleteOverworldFlow();
         }
     }
 }
@@ -577,10 +681,37 @@ ecs::EntityId GameIntroFlowState::CreateCharacterSprite(const IntroCharacter int
                 SPRITE_SCALE,
                 mWorld
             );
-        }break;
+        } break;
 
         default: return ecs::NULL_ENTITY_ID;
     }       
+}
+
+ecs::EntityId GameIntroFlowState::CreatePlayerTransformationSprite() const
+{
+    const auto playerTransformationSpriteEntityId = mWorld.CreateEntity();
+
+    auto& resourceLoadingService = ResourceLoadingService::GetInstance();
+
+    auto renderableComponent = std::make_unique<RenderableComponent>();
+
+    const auto texturePath = ResourceLoadingService::RES_TEXTURES_ROOT + PLAYER_TRANSFORMATION_TEXTURE_NAME_PREFIX + std::to_string(mPlayerTransformationStep) + ".png";
+    renderableComponent->mTextureResourceId     = resourceLoadingService.LoadResource(texturePath);
+    renderableComponent->mActiveAnimationNameId = StringId("default");
+    renderableComponent->mShaderNameId          = StringId("gui");
+    renderableComponent->mAffectedByPerspective = false;
+
+    const auto modelPath = ResourceLoadingService::RES_MODELS_ROOT + PLAYER_TRANSFORMATION_MODEL_FILE_NAME;
+    renderableComponent->mAnimationsToMeshes[StringId("default")].push_back(resourceLoadingService.LoadResource(modelPath));
+
+    auto transformComponent = std::make_unique<TransformComponent>();
+    transformComponent->mPosition = SPRITE_POSITION_CENTER;
+    transformComponent->mScale    = SPRITE_SCALE;
+
+    mWorld.AddComponent<RenderableComponent>(playerTransformationSpriteEntityId, std::move(renderableComponent));
+    mWorld.AddComponent<TransformComponent>(playerTransformationSpriteEntityId, std::move(transformComponent));
+
+    return playerTransformationSpriteEntityId;
 }
 
 void GameIntroFlowState::CreateNameSelectionList(const bool forPlayer) const
