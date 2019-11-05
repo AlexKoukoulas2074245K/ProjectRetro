@@ -1,5 +1,7 @@
 # ProjectRetro - A 3D Reinterpretation of Pokemon Yellow
 
+https://youtu.be/AosWRDqO3H0
+
 ![Pallet image](res/screenshots/pallet_screenshot.png)
 
 ## The Story
