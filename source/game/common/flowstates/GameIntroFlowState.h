@@ -57,6 +57,14 @@ private:
     void UpdatePlayerMovingBackToCenterState(const float dt);
     void UpdatePlayerNameConfirmationSpeechState(const float dt);
     void UpdatePlayerNameConfirmationSpeechFadeOutState(const float dt);
+    void UpdateRivalFadingInState(const float dt);
+    void UpdateRivalIntroSpeechState(const float dt);
+    void UpdateRivalMovingToTheSideState(const float dt);
+    void UpdatePreDefinedRivalNameListState(const float dt);
+    void UpdateRivalMovingBackToCenterState(const float dt);
+    void UpdateRivalNameConfirmationSpeechState(const float dt);
+    void UpdateRivalNameConfirmationSpeechFadeOutState(const float dt);
+
     ecs::EntityId CreateCharacterSprite(const IntroCharacter) const;    
     void CreateNameSelectionList(const bool forPlayer) const;
     std::string ExtractPredefinedNameFromList() const;

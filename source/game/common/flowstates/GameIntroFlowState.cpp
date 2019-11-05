@@ -64,20 +64,26 @@ void GameIntroFlowState::VUpdate(const float dt)
 
     switch (introStateComponent.mIntroState)
     {
-        case IntroState::OAK_FADING_IN: UpdateOakFadingInState(dt); break;
-        case IntroState::OAK_WELCOME_SPEECH: UpdateOakWelcomeSpeechState(dt); break;
-        case IntroState::OAK_WELCOME_SPEECH_FADE_OUT: UpdateOakWelcomeSpeechFadeOutState(dt); break;
-        case IntroState::PIKACHU_MOVING_IN: UpdatePikachuMovingInState(dt); break;
-        case IntroState::PIKACHU_CRY_TRIGGER: UpdatePikachuCryTriggerState(dt); break;
-        case IntroState::POKEMON_INTRO_SPEECH: UpdatePokemonIntroSpeechState(dt); break;
-        case IntroState::POKEMON_INTRO_SPEECH_FADE_OUT: UpdatePokemonIntroSpeechFadeOutState(dt); break;
-        case IntroState::PLAYER_MOVING_IN: UpdatePlayerMovingInState(dt); break;
-        case IntroState::PLAYERS_NAME_QUESTION: UpdatePlayersNameQuestionState(dt); break;
-        case IntroState::PLAYER_MOVING_TO_THE_SIDE: UpdatePlayerMovingToTheSideState(dt); break;
-        case IntroState::PRE_DEFINED_PLAYER_NAME_LIST: UpdatePreDefinedPlayerNameListState(dt); break;
-        case IntroState::PLAYER_MOVING_BACK_TO_CENTER: UpdatePlayerMovingBackToCenterState(dt); break;
-        case IntroState::PLAYER_NAME_CONFIRMATION_SPEECH: UpdatePlayerNameConfirmationSpeechState(dt); break;
-        case IntroState::PLAYER_NAME_CONFIRMATION_SPEEH_FADE_OUT: UpdatePlayerNameConfirmationSpeechFadeOutState(dt); break;
+        case IntroState::OAK_FADING_IN:                            UpdateOakFadingInState(dt); break;
+        case IntroState::OAK_WELCOME_SPEECH:                       UpdateOakWelcomeSpeechState(dt); break;
+        case IntroState::OAK_WELCOME_SPEECH_FADE_OUT:              UpdateOakWelcomeSpeechFadeOutState(dt); break;
+        case IntroState::PIKACHU_MOVING_IN:                        UpdatePikachuMovingInState(dt); break;
+        case IntroState::PIKACHU_CRY_TRIGGER:                      UpdatePikachuCryTriggerState(dt); break;
+        case IntroState::POKEMON_INTRO_SPEECH:                     UpdatePokemonIntroSpeechState(dt); break;
+        case IntroState::POKEMON_INTRO_SPEECH_FADE_OUT:            UpdatePokemonIntroSpeechFadeOutState(dt); break;
+        case IntroState::PLAYER_MOVING_IN:                         UpdatePlayerMovingInState(dt); break;
+        case IntroState::PLAYERS_NAME_QUESTION:                    UpdatePlayersNameQuestionState(dt); break;
+        case IntroState::PLAYER_MOVING_TO_THE_SIDE:                UpdatePlayerMovingToTheSideState(dt); break;
+        case IntroState::PRE_DEFINED_PLAYER_NAME_LIST:             UpdatePreDefinedPlayerNameListState(dt); break;
+        case IntroState::PLAYER_MOVING_BACK_TO_CENTER:             UpdatePlayerMovingBackToCenterState(dt); break;
+        case IntroState::PLAYER_NAME_CONFIRMATION_SPEECH:          UpdatePlayerNameConfirmationSpeechState(dt); break;
+        case IntroState::PLAYER_NAME_CONFIRMATION_SPEECH_FADE_OUT: UpdatePlayerNameConfirmationSpeechFadeOutState(dt); break;
+        case IntroState::RIVAL_FADING_IN:                          UpdateRivalFadingInState(dt); break;
+        case IntroState::RIVAL_INTRO_SPEECH:                       UpdateRivalIntroSpeechState(dt); break;
+        case IntroState::RIVAL_MOVING_TO_THE_SIDE:                 UpdateRivalMovingToTheSideState(dt); break;
+        case IntroState::RIVAL_MOVING_BACK_TO_CENTER:              UpdateRivalMovingBackToCenterState(dt); break;
+        case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH:           UpdateRivalNameConfirmationSpeechState(dt); break;
+        case IntroState::RIVAL_NAME_CONFIRMATION_SPEECH_FADE_OUT:  UpdateRivalNameConfirmationSpeechFadeOutState(dt); break;
     }
 }
 
@@ -335,17 +341,17 @@ void GameIntroFlowState::UpdatePlayerNameConfirmationSpeechState(const float)
     {
         const auto trailingChatboxEntityId = CreateChatbox(mWorld);
         WriteTextAtTextboxCoords(trailingChatboxEntityId, "Right! So your", 1, 2, mWorld);
-        WriteTextAtTextboxCoords(trailingChatboxEntityId, "name is " + playerStateComponent.mPlayerTrainerName.GetString(), 1, 4, mWorld);
+        WriteTextAtTextboxCoords(trailingChatboxEntityId, "name is " + playerStateComponent.mPlayerTrainerName.GetString() + "!", 1, 4, mWorld);
 
         SetColorFlipProgressionStep(6);
 
-        introStateComponent.mIntroState = IntroState::PLAYER_NAME_CONFIRMATION_SPEEH_FADE_OUT;
+        introStateComponent.mIntroState = IntroState::PLAYER_NAME_CONFIRMATION_SPEECH_FADE_OUT;
     }
 }
 
 void GameIntroFlowState::UpdatePlayerNameConfirmationSpeechFadeOutState(const float dt)
 {
-    //auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
 
     mColorFlipTimer.Update(dt);
     if (mColorFlipTimer.HasTicked())
@@ -355,11 +361,174 @@ void GameIntroFlowState::UpdatePlayerNameConfirmationSpeechFadeOutState(const fl
         SetColorFlipProgressionStep(GetColorFlipProgressionStep() + 1);
         if (GetColorFlipProgressionStep() == 9)
         {
-            SetColorFlipProgressionStep(0);
+            SetColorFlipProgressionStep(1);
             DestroyActiveTextbox(mWorld);
             mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
 
             mActiveCharacterSpriteEntityId = CreateCharacterSprite(IntroCharacter::RIVAL);            
+            introStateComponent.mIntroState = IntroState::RIVAL_FADING_IN;
+        }
+    }
+}
+
+void GameIntroFlowState::UpdateRivalFadingInState(const float dt)
+{
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    mColorFlipTimer.Update(dt);
+    if (mColorFlipTimer.HasTicked())
+    {
+        mColorFlipTimer.Reset();
+        SetColorFlipProgressionStep(GetColorFlipProgressionStep() + 1);
+        if (GetColorFlipProgressionStep() == 6)
+        {
+            SetColorFlipProgressionStep(0);
+
+            QueueDialogForChatbox
+            (
+                CreateChatbox(mWorld),
+                "This is my grand-#son. He's been#your rival since#you were a baby.#@...Erm, what is#his name again?#+END",
+                mWorld
+            );
+
+            introStateComponent.mIntroState = IntroState::RIVAL_INTRO_SPEECH;
+        }
+    }
+}
+
+void GameIntroFlowState::UpdateRivalIntroSpeechState(const float)
+{
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        const auto trailingChatboxEntityId = CreateChatbox(mWorld);
+        WriteTextAtTextboxCoords(trailingChatboxEntityId, "...Erm, what is", 1, 2, mWorld);
+        WriteTextAtTextboxCoords(trailingChatboxEntityId, "his name again?", 1, 4, mWorld);
+        
+        introStateComponent.mIntroState = IntroState::RIVAL_MOVING_TO_THE_SIDE;
+    }
+}
+
+void GameIntroFlowState::UpdateRivalMovingToTheSideState(const float dt)
+{
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+    auto& rivalTransformComponent = mWorld.GetComponent<TransformComponent>(mActiveCharacterSpriteEntityId);
+    rivalTransformComponent.mPosition.x += SPRITE_ANIMATION_SPEED * dt;
+
+    if (rivalTransformComponent.mPosition.x > SPRITE_POSITION_SIDE.x)
+    {
+        rivalTransformComponent.mPosition.x = SPRITE_POSITION_SIDE.x;
+
+        CreateNameSelectionList(false);
+
+        introStateComponent.mIntroState = IntroState::PRE_DEFINED_RIVAL_NAME_LIST;
+    }
+}
+
+void GameIntroFlowState::UpdatePreDefinedRivalNameListState(const float)
+{
+    const auto& inputStateComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+    const auto& cursorComponent     = mWorld.GetComponent<CursorComponent>(GetActiveTextboxEntityId(mWorld));
+
+    auto& playerStateComponent        = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
+    auto& introStateComponent         = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+    auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
+
+    const auto cursorRow = cursorComponent.mCursorRow;
+
+    if (IsActionTypeKeyTapped(VirtualActionType::A_BUTTON, inputStateComponent))
+    {
+        if (cursorRow == 0)
+        {
+            // Destroy name selection list
+            DestroyActiveTextbox(mWorld);
+
+            // Destroy chatbox
+            DestroyActiveTextbox(mWorld);
+
+            mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
+
+            introStateComponent.mIntroState = IntroState::RIVAL_NAME_CONFIRMATION_SPEECH;
+
+            nameSelectionStateComponent.mNameSelectionMode = NameSelectionMode::RIVAL_NAME;
+            CompleteAndTransitionTo<NameSelectionFlowState>();
+        }
+        else
+        {
+            playerStateComponent.mRivalName = StringId(ExtractPredefinedNameFromList());
+            DestroyActiveTextbox(mWorld);
+            introStateComponent.mIntroState = IntroState::RIVAL_MOVING_BACK_TO_CENTER;
+        }
+    }
+}
+
+void GameIntroFlowState::UpdateRivalMovingBackToCenterState(const float dt)
+{
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    auto& rivalTransformComponent = mWorld.GetComponent<TransformComponent>(mActiveCharacterSpriteEntityId);
+    rivalTransformComponent.mPosition.x -= SPRITE_ANIMATION_SPEED * dt;
+
+    if (rivalTransformComponent.mPosition.x < SPRITE_POSITION_CENTER.x)
+    {
+        rivalTransformComponent.mPosition.x = SPRITE_POSITION_CENTER.x;
+
+        DestroyActiveTextbox(mWorld);
+        QueueDialogForChatbox(CreateChatbox(mWorld), "That's right! I#remember now! His#name is " + playerStateComponent.mRivalName.GetString() + "!#+END", mWorld);
+
+        introStateComponent.mIntroState = IntroState::RIVAL_NAME_CONFIRMATION_SPEECH;
+    }
+}
+
+void GameIntroFlowState::UpdateRivalNameConfirmationSpeechState(const float)
+{
+    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    if (mActiveCharacterSpriteEntityId == ecs::NULL_ENTITY_ID)
+    {
+        mActiveCharacterSpriteEntityId = CreateCharacterSprite(IntroCharacter::PLAYER);
+        auto& rivalTransformComponent = mWorld.GetComponent<TransformComponent>(mActiveCharacterSpriteEntityId);
+        rivalTransformComponent.mPosition.x = SPRITE_POSITION_CENTER.x;
+
+        QueueDialogForChatbox(CreateChatbox(mWorld), "That's right! I#remember now! His#name is " + playerStateComponent.mRivalName.GetString() + "!#+END", mWorld);
+    }
+
+    if (GetActiveTextboxEntityId(mWorld) == ecs::NULL_ENTITY_ID)
+    {
+        const auto trailingChatboxEntityId = CreateChatbox(mWorld);
+        WriteTextAtTextboxCoords(trailingChatboxEntityId, "remember now! His", 1, 2, mWorld);
+        WriteTextAtTextboxCoords(trailingChatboxEntityId, "name is " + playerStateComponent.mRivalName.GetString() + "!", 1, 4, mWorld);
+
+        SetColorFlipProgressionStep(6);
+
+        introStateComponent.mIntroState = IntroState::RIVAL_NAME_CONFIRMATION_SPEECH_FADE_OUT;
+    }
+}
+
+void GameIntroFlowState::UpdateRivalNameConfirmationSpeechFadeOutState(const float dt)
+{
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
+
+    mColorFlipTimer.Update(dt);
+    if (mColorFlipTimer.HasTicked())
+    {
+        mColorFlipTimer.Reset();
+
+        SetColorFlipProgressionStep(GetColorFlipProgressionStep() + 1);
+        if (GetColorFlipProgressionStep() == 9)
+        {
+            SetColorFlipProgressionStep(8);
+            DestroyActiveTextbox(mWorld);
+            mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
+
+            mActiveCharacterSpriteEntityId = CreateCharacterSprite(IntroCharacter::PLAYER);
+            auto& playerTransformComponent = mWorld.GetComponent<TransformComponent>(mActiveCharacterSpriteEntityId);
+            playerTransformComponent.mPosition.x = SPRITE_POSITION_CENTER.x;
+
+            introStateComponent.mIntroState = IntroState::PLAYER_FADING_IN;
         }
     }
 }
