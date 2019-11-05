@@ -85,10 +85,9 @@
 
 const float App::MIN_DT = 0.00001f;
 const float App::MAX_DT = 1.0f;
-
 const float App::DEBUG_DT_SPEEDUP = 10.0f;
-#ifndef NDEBUG
-#endif
+
+const std::string App::WINDOW_TITLE = "Pokemon Yellow 3D";
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -172,14 +171,15 @@ void App::GameLoop()
             const auto entityCountString    = " - Entities: " + std::to_string(mWorld.GetActiveEntities().size());
             const auto renderingCallsString = " - Render Calls: " + std::to_string(renderingContextComponent.mRenderedEntities);
             SDL_SetWindowTitle(windowComponent.mWindowHandle, (windowComponent.mWindowTitle + fpsString + frustumCulledString + entityCountString + renderingCallsString).c_str());
-
+           
+#ifdef NDEBUG
+            SDL_SetWindowTitle(windowComponent.mWindowHandle, (WINDOW_TITLE + fpsString).c_str());
+#endif
             framesAccumulator = 0;
             dtAccumulator = 0.0f;
         }                
         
 #ifndef NDEBUG          
-#else        
-#endif      
         if (IsActionTypeKeyPressed(VirtualActionType::DEBUG_SPEED_UP, inputStateSingletonComponent))
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt * DEBUG_DT_SPEEDUP, MAX_DT)));
@@ -188,6 +188,10 @@ void App::GameLoop()
         {
             mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
         }
+#else    
+        mWorld.Update(math::Max(MIN_DT, math::Min(dt, MAX_DT)));
+#endif      
+        
 
         if (IsActionTypeKeyTapped(VirtualActionType::DEBUG_CAMERA_BACKWARD, inputStateSingletonComponent))
         {
