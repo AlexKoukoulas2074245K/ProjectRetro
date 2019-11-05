@@ -48,6 +48,10 @@ inline glm::vec4 GetBackgroundColorBasedOnTransitionStep
 
         return colors::GLOBAL_WHITE_COLOR;
     }
+    else if (currentLevelNameId.GetString() == "intro")
+    {
+        return colors::GLOBAL_WHITE_COLOR;
+    }
     
     if (IsLevelIndoors(currentLevelNameId))
     {

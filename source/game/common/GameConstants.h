@@ -37,8 +37,10 @@ static const StringId CANCEL_ITEM_NAME      = StringId("CANCEL");
 static const StringId OAKS_PARCEL_ITEM_NAME = StringId("OAK's_PARCEL");
 static const StringId POKEDEX_ITEM_NAME     = StringId("POK^DEX");
 
-static const int MAX_ROSTER_SIZE = 6;
-static const int MAX_POKEMON_ID  = 151;
+static constexpr int MAX_ROSTER_SIZE              = 6;
+static constexpr int MAX_POKEMON_ID               = 151;
+static constexpr int PLAYER_STARTING_POKE_DOLLARS = 3000;
+static constexpr int MAX_TRAINER_ID               = 65535;
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

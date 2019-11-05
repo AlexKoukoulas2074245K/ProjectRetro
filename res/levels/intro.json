@@ -1,0 +1,29 @@
+{
+    "level_header":
+    {
+        "name": "intro",
+        "dimensions": { "cols": 1, "rows": 1},
+        "color": "PALLET",
+		"music": "oak_speech"
+    },
+    "level_ground_layer_editor":
+    [
+        { "editor_col": 0, "editor_row": 0, "game_position_x": 0.0, "game_position_z": 0.0, "atlas_col": 0, "atlas_row": 0 }
+    ],
+    "level_ground_layer_game":
+    [
+        { "texture_name": "battle_groundLayer", "game_position_x": 0.0, "game_position_z":0.0 }
+    ],
+    "level_npc_sprites":
+    [
+    ],
+    "level_model_list":
+    [
+    ],
+    "level_tile_traits":
+    [
+    ],
+	"level_npc_attributes":
+    [
+	]
+}

@@ -11,6 +11,8 @@ uniform vec4 global_white_color  = vec4(0.9725, 0.9725, 0.9725, 1.0);
 uniform vec4 global_blue_color   = vec4(0.3450, 0.7215, 0.9725, 1.0);
 uniform vec4 global_black_color  = vec4(0.0941, 0.0941, 0.0941, 1.0);
 uniform vec4 global_yellow_color = vec4(0.9725, 0.9803, 0.0000, 1.0);
+uniform vec4 intro_yellow_color  = vec4(0.97254902, 0.97254902, 0.0000, 1.0);
+uniform vec4 intro_red_color     = vec4(0.97254902, 0.031372549, 0.031372549, 1.0);
 
 uniform vec4 current_level_color;
 uniform vec4 primary_light_color;
@@ -143,6 +145,151 @@ vec4 getWhiteFlipStep3Color()
 	return global_white_color;
 }
 
+vec4 getIntroSequenceStep1Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return intro_yellow_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return intro_yellow_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return intro_yellow_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep2Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return intro_red_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return intro_red_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return intro_red_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep3Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return global_black_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep4Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return intro_red_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep5Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return intro_yellow_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return global_black_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep6Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return global_white_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return intro_yellow_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return intro_red_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep7Color()
+{
+	if (distance(intro_yellow_color, frag_color) < 0.01)
+    {
+        return global_white_color;
+    }
+	else if (distance(intro_red_color, frag_color) < 0.01)
+	{
+		return global_white_color;
+	}
+	else if (distance(global_black_color, frag_color) < 0.01)
+	{
+		return intro_yellow_color;
+	}
+	else
+	{
+		return frag_color;
+	}
+}
+
+vec4 getIntroSequenceStep8Color()
+{
+	return global_white_color;
+}
+
 vec4 getTransitionAnimationColor()
 {
 	if (transition_progression_step < -3)
@@ -193,6 +340,41 @@ void main()
             frag_color = getTransitionAnimationColor();
 			return;
         }
+		else if (intro_flip_progression_step != 0)
+		{
+			if (intro_flip_progression_step == 1)
+			{
+				frag_color = getIntroSequenceStep1Color();
+			}
+			else if (intro_flip_progression_step == 2)
+			{
+				frag_color = getIntroSequenceStep2Color();
+			}	
+			else if (intro_flip_progression_step == 3)
+			{
+				frag_color = getIntroSequenceStep3Color();
+			}
+			else if (intro_flip_progression_step == 4)
+			{
+				frag_color = getIntroSequenceStep4Color();
+			}
+			else if (intro_flip_progression_step == 5)
+			{
+				frag_color = getIntroSequenceStep5Color();
+			}
+			else if (intro_flip_progression_step == 6)
+			{
+				frag_color = getIntroSequenceStep6Color();
+			}
+			else if (intro_flip_progression_step == 7)
+			{
+				frag_color = getIntroSequenceStep7Color();
+			}	
+			else if (intro_flip_progression_step == 8)
+			{
+				frag_color = getIntroSequenceStep8Color();
+			}		
+		}
 		else if (dark_flip_progression_step != 0)
 		{
 			if (dark_flip_progression_step == 1)

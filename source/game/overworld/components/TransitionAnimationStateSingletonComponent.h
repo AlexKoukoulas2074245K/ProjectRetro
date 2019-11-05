@@ -45,6 +45,7 @@ public:
     int mAnimationProgressionStep                    = 0;
     int mDarkFlipProgressionStep                     = 0;
     int mWhiteFlipProgressionStep                    = 0;
+    int mIntroFlipProgressionStep                    = 0;
     int mAnimationCycleCompletionCount               = 0;
     bool mBlackAndWhiteModeEnabled                   = false;
     bool mAscendingPalette                           = false;

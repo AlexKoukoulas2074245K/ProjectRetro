@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "GameIntroFlowState.h"
 #include "NameSelectionFlowState.h"
 #include "DeterminePokemonPlacementFlowState.h"
 #include "../components/CursorComponent.h"
@@ -56,6 +57,10 @@ const float NameSelectionFlowState::SPRITE_ANIMATION_FRAME_DURATION_MEDIUM = 0.1
 
 NameSelectionFlowState::NameSelectionFlowState(ecs::World& world)
     : BaseOverworldFlowState(world)
+    , mBackgroundCoverEntityId(ecs::NULL_ENTITY_ID)
+    , mCharactersEnclosingTextboxEntityId(ecs::NULL_ENTITY_ID)
+    , mTitleTextboxEntityId(ecs::NULL_ENTITY_ID)
+    , mPokemonSpriteEntityId(ecs::NULL_ENTITY_ID)
     , mUppercaseMode(true)
 {
     auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
@@ -118,7 +123,7 @@ void NameSelectionFlowState::VUpdate(const float)
         {
             const auto maxAllowedSize = 1U + (nameSelectionStateComponent.mNameSelectionMode == NameSelectionMode::POKEMON_NICKNAME ?
                 SELECTED_POKEMON_NAME_END_COORDS.mCol - SELECTED_NAME_START_COORDS.mCol :
-                SELECTED_POKEMON_NAME_END_COORDS.mCol - SELECTED_TRAINER_NAME_END_COORDS.mCol);
+                SELECTED_TRAINER_NAME_END_COORDS.mCol - SELECTED_NAME_START_COORDS.mCol);
             
             // Max name capacity reached
             if (nameSelectionStateComponent.mSelectedName.size() == maxAllowedSize)
@@ -286,7 +291,7 @@ void NameSelectionFlowState::RedrawSelectedText()
     
     const auto maxAllowedSize = 1 + (nameSelectionStateComponent.mNameSelectionMode == NameSelectionMode::POKEMON_NICKNAME ?
         SELECTED_POKEMON_NAME_END_COORDS.mCol - SELECTED_NAME_START_COORDS.mCol :
-        SELECTED_POKEMON_NAME_END_COORDS.mCol - SELECTED_TRAINER_NAME_END_COORDS.mCol);
+        SELECTED_TRAINER_NAME_END_COORDS.mCol - SELECTED_NAME_START_COORDS.mCol);
     
     for (int i = 0; i < maxAllowedSize; ++i)
     {        
@@ -348,7 +353,11 @@ void NameSelectionFlowState::FinishNamingFlow()
     mWorld.DestroyEntity(mBackgroundCoverEntityId);
     DestroyGenericOrBareTextbox(mCharactersEnclosingTextboxEntityId, mWorld);
     DestroyGenericOrBareTextbox(mTitleTextboxEntityId, mWorld);
-    mWorld.DestroyEntity(mPokemonSpriteEntityId);
+
+    if (mPokemonSpriteEntityId != ecs::NULL_ENTITY_ID)
+    {
+        mWorld.DestroyEntity(mPokemonSpriteEntityId);
+    }
     
     if (nameSelectionStateComponent.mNameSelectionMode == NameSelectionMode::POKEMON_NICKNAME)
     {
@@ -369,10 +378,12 @@ void NameSelectionFlowState::FinishNamingFlow()
     else if (nameSelectionStateComponent.mNameSelectionMode == NameSelectionMode::PLAYER_NAME)
     {
         playerStateComponent.mPlayerTrainerName = StringId(nameSelectionStateComponent.mSelectedName);
+        CompleteAndTransitionTo<GameIntroFlowState>();
     }
     else if (nameSelectionStateComponent.mNameSelectionMode == NameSelectionMode::RIVAL_NAME)
     {
         playerStateComponent.mRivalName = StringId(nameSelectionStateComponent.mSelectedName);
+        CompleteAndTransitionTo<GameIntroFlowState>();
     }
 }
 
