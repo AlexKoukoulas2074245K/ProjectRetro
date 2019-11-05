@@ -142,10 +142,11 @@ void App::GameLoop()
         StartIntroSequence();
     }
     
-
     const auto& windowComponent              = mWorld.GetSingletonComponent<WindowSingletonComponent>();
     const auto& renderingContextComponent    = mWorld.GetSingletonComponent<RenderingContextSingletonComponent>();
     const auto& inputStateSingletonComponent = mWorld.GetSingletonComponent<InputStateSingletonComponent>();
+
+    SDL_SetWindowTitle(windowComponent.mWindowHandle, WINDOW_TITLE.c_str());
 
     auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
 
