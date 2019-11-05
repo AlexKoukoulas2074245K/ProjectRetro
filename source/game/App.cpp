@@ -276,31 +276,6 @@ void App::StartIntroSequence()
     StartOverworldFlowState<GameIntroFlowState>(mWorld);
 }
 
-void App::DummyInitialization()
-{
-    auto playerStateComponent = std::make_unique<PlayerStateSingletonComponent>();
-    playerStateComponent->mSecondsPlayed = 0;
-    playerStateComponent->mTrainerId = math::RandomInt(0, 65535);
-    playerStateComponent->mPokeDollarCredits = 3000;
-    playerStateComponent->mPlayerTrainerName = StringId("Caro");
-    playerStateComponent->mRivalName         = StringId("Jake");
-
-    mWorld.SetSingletonComponent<PlayerStateSingletonComponent>(std::move(playerStateComponent));
-
-    InitializePlayerBag(mWorld);
-
-    const auto levelEntityId  = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
-    auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
-
-    auto activeLevelComponent = std::make_unique<ActiveLevelSingletonComponent>();
-    activeLevelComponent->mActiveLevelNameId = levelModelComponent.mLevelName;
-    mWorld.SetSingletonComponent<ActiveLevelSingletonComponent>(std::move(activeLevelComponent));
-
-    CreatePlayerOverworldSprite(levelEntityId, Direction::NORTH, 7, 5, mWorld);
-
-    SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
-}
-
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////

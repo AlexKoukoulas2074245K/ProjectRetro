@@ -48,7 +48,8 @@ enum class IntroState
     PLAYER_FADING_IN,
     JOURNEY_START_SPEECH,
     PLAYER_TRANSFORMATION,
-    PLAYER_TRANSFORMATION_FADE_OUT    
+    PLAYER_TRANSFORMATION_FADE_OUT,
+    PREPARING_OVERWORLD
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

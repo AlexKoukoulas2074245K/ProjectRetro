@@ -48,7 +48,7 @@ const glm::vec3 GameIntroFlowState::SPRITE_SCALE                    = glm::vec3(
 
 const float GameIntroFlowState::SPRITE_ANIMATION_SPEED            = 2.0f;
 const float GameIntroFlowState::COLOR_FLIP_TIMER_DELAY            = 0.18f;
-const float GameIntroFlowState::PLAYER_TRANSFORMATION_TIMER_DELAY = 1.0f;
+const float GameIntroFlowState::PLAYER_TRANSFORMATION_TIMER_DELAY = 0.5f;
 
 const int GameIntroFlowState::MAX_PLAYER_TRANSFORMATION_STEP = 3;
 
@@ -102,6 +102,7 @@ void GameIntroFlowState::VUpdate(const float dt)
         case IntroState::JOURNEY_START_SPEECH:                     UpdateJourneyStartSpeechState(dt); break;
         case IntroState::PLAYER_TRANSFORMATION:                    UpdatePlayerTransformationState(dt); break;
         case IntroState::PLAYER_TRANSFORMATION_FADE_OUT:           UpdatePlayerTransformationFadeOutState(dt); break;
+        case IntroState::PREPARING_OVERWORLD:                      UpdatePrepareOverworldState(dt); break;
     }
 }
 
@@ -607,6 +608,7 @@ void GameIntroFlowState::UpdatePlayerTransformationState(const float dt)
 
 void GameIntroFlowState::UpdatePlayerTransformationFadeOutState(const float dt)
 {    
+    auto& introStateComponent = mWorld.GetSingletonComponent<GameIntroStateSingletonComponent>();
     mColorFlipTimer.Update(dt);
     if (mColorFlipTimer.HasTicked())
     {
@@ -615,28 +617,32 @@ void GameIntroFlowState::UpdatePlayerTransformationFadeOutState(const float dt)
         SetColorFlipProgressionStep(GetColorFlipProgressionStep() - 1);
         if (GetColorFlipProgressionStep() == 0)
         {
-            SetColorFlipProgressionStep(8);
-
-            DestroyActiveTextbox(mWorld);
-            mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
-
-            auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
-
-            DestroyLevel(activeLevelComponent.mActiveLevelNameId, mWorld);
-
-            const auto levelEntityId = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
-            auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
-            
-            activeLevelComponent.mActiveLevelNameId = levelModelComponent.mLevelName;            
-
-            CreatePlayerOverworldSprite(levelEntityId, Direction::NORTH, 7, 5, mWorld);
-
-            SoundService::GetInstance().UnmuteMusic();
-            SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName, false);
-            
-            CompleteOverworldFlow();
+            SetColorFlipProgressionStep(8);            
+            introStateComponent.mIntroState = IntroState::PREPARING_OVERWORLD;
         }
     }
+}
+
+void GameIntroFlowState::UpdatePrepareOverworldState(const float)
+{    
+    DestroyActiveTextbox(mWorld);
+    mWorld.DestroyEntity(mActiveCharacterSpriteEntityId);
+
+    auto& activeLevelComponent = mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>();
+
+    DestroyLevel(activeLevelComponent.mActiveLevelNameId, mWorld);
+
+    const auto levelEntityId = LoadAndCreateLevelByName(StringId("in_players_home_top"), mWorld);
+    auto& levelModelComponent = mWorld.GetComponent<LevelModelComponent>(levelEntityId);
+
+    activeLevelComponent.mActiveLevelNameId = levelModelComponent.mLevelName;
+
+    CreatePlayerOverworldSprite(levelEntityId, Direction::NORTH, 7, 5, mWorld);
+
+    SoundService::GetInstance().UnmuteMusic();
+    SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName, false);
+
+    CompleteOverworldFlow();
 }
 
 ecs::EntityId GameIntroFlowState::CreateCharacterSprite(const IntroCharacter introCharacter) const

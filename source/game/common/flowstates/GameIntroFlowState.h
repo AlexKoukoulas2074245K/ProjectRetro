@@ -71,6 +71,7 @@ private:
     void UpdateJourneyStartSpeechState(const float dt);
     void UpdatePlayerTransformationState(const float dt);
     void UpdatePlayerTransformationFadeOutState(const float dt);
+    void UpdatePrepareOverworldState(const float dt);
 
     ecs::EntityId CreateCharacterSprite(const IntroCharacter) const;    
     ecs::EntityId CreatePlayerTransformationSprite() const;

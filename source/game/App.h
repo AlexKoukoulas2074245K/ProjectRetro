@@ -33,8 +33,7 @@ private:
     bool AppShouldQuit();
     void SingletonComponentsInitialization();
     void InitializationFromSaveFile();
-    void StartIntroSequence();
-    void DummyInitialization();
+    void StartIntroSequence();    
     
 private:
     static const float MIN_DT;
