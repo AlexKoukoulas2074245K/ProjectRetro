@@ -26,7 +26,8 @@
 		{"level_name": "in_oaks_lab", "npc_level_index": 10, "flow_state_name": "OakDialogOverworldFlowState"},
 		{"level_name": "in_oaks_lab", "npc_level_index": 12, "flow_state_name": "OaksLabPokeBallDialogOverworldFlowState"},
 		{"level_name": "in_pewter_poke_center", "npc_level_index": 4, "flow_state_name": "PewterPokeCenterJigglypuffOverworldFlowState"},
-		{"level_name": "in_pewter_gym", "npc_level_index": 4, "flow_state_name": "PewterCityGymInstructorOverworldFlowState"}
+		{"level_name": "in_pewter_gym", "npc_level_index": 4, "flow_state_name": "PewterCityGymInstructorOverworldFlowState"},
+		{"level_name": "in_pokemon_league_entrance", "npc_level_index": 0, "flow_state_name": "BoulderbadgeGuardOverworldFlowState"}
 	],
 
 	"trigger_flow_states":
@@ -42,6 +43,8 @@
 		{"level_name": "pallet_town", "level_col": 16, "level_row": 23, "flow_state_name": "PikachuCatchIntroSequenceOverworldFlowState"},
 		{"level_name": "pallet_town", "level_col": 17, "level_row": 23, "flow_state_name": "PikachuCatchIntroSequenceOverworldFlowState"},
 		{"level_name": "in_oaks_lab", "level_col": 7, "level_row": 6, "flow_state_name": "OaksLabMovementAndBattleTriggerOverworldFlowState"},
-		{"level_name": "in_oaks_lab", "level_col": 8, "level_row": 6, "flow_state_name": "OaksLabMovementAndBattleTriggerOverworldFlowState"}
+		{"level_name": "in_oaks_lab", "level_col": 8, "level_row": 6, "flow_state_name": "OaksLabMovementAndBattleTriggerOverworldFlowState"},
+		{"level_name": "in_pokemon_league_entrance", "level_col": 7, "level_row": 9, "flow_state_name": "BoulderbadgeGuardOverworldFlowState"},
+		{"level_name": "in_pokemon_league_entrance", "level_col": 8, "level_row": 9, "flow_state_name": "BoulderbadgeGuardOverworldFlowState"}
 	]
 }
