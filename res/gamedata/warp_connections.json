@@ -87,6 +87,12 @@
 		{ "from": { "level_name": "in_pewter_topright_house", "level_col": 7, "level_row": 4 }, "to": { "level_name": "pewter_city", "level_col": 40, "level_row": 38 } },
 		{ "from": { "level_name": "in_pokemon_league_entrance", "level_col": 7, "level_row": 4 }, "to": { "level_name": "route_22", "level_col": 21, "level_row": 19 } },
 		{ "from": { "level_name": "in_pokemon_league_entrance", "level_col": 8, "level_row": 4 }, "to": { "level_name": "route_22", "level_col": 21, "level_row": 19 } },
-		{ "from": { "level_name": "route_22", "level_col": 21, "level_row": 19 }, "to": { "level_name": "in_pokemon_league_entrance", "level_col": 7, "level_row": 4 } }
+		{ "from": { "level_name": "route_22", "level_col": 21, "level_row": 19 }, "to": { "level_name": "in_pokemon_league_entrance", "level_col": 7, "level_row": 4 } },
+		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 16, "level_row": 12 }, "to": { "level_name": "pewter_city", "level_col": 24, "level_row": 44 } },
+		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 17, "level_row": 12 }, "to": { "level_name": "pewter_city", "level_col": 24, "level_row": 44 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 24, "level_row": 44 }, "to": { "level_name": "in_pewter_museum_ground_floor", "level_col": 16, "level_row": 12 } },
+		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 22, "level_row": 12 }, "to": { "level_name": "pewter_city", "level_col": 30, "level_row": 47 } },
+		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 23, "level_row": 12 }, "to": { "level_name": "pewter_city", "level_col": 30, "level_row": 47 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 30, "level_row": 47 }, "to": { "level_name": "in_pewter_museum_ground_floor", "level_col": 22, "level_row": 12 } }
 	]
 }
