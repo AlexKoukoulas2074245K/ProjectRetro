@@ -113,6 +113,7 @@ namespace milestones
     static constexpr unsigned long MARSHBADGE                  = 1UL << 11;
     static constexpr unsigned long VOLCANOBADGE                = 1UL << 12;
     static constexpr unsigned long EARTHBADGE                  = 1UL << 13;
+    static constexpr unsigned long RECEIVED_AMBER              = 1UL << 14;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ public:
     bool mBillInteractionCompleted         = false;
     bool mJustDefeatedGymLeader            = false;
     bool mRivalBattleJustEnded             = false;
+    bool mHasPurchasedMuseumTicket         = false;
 
     ItemDiscoveryType mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
 };
