@@ -1179,6 +1179,7 @@
         { "tile_traits": "SOLID", "editor_col": 20, "editor_row": 18, "game_col": 20, "game_row": 13, "game_position_x": 32.0, "game_position_z": 20.8 },
         { "tile_traits": "SOLID", "editor_col": 26, "editor_row": 18, "game_col": 26, "game_row": 13, "game_position_x": 41.6, "game_position_z": 20.8 },
         { "tile_traits": "SOLID", "editor_col": 5, "editor_row": 19, "game_col": 5, "game_row": 12, "game_position_x": 8.0, "game_position_z": 19.2 },
+        { "tile_traits": "WARP", "editor_col": 13, "editor_row": 19, "game_col": 13, "game_row": 12, "game_position_x": 20.8, "game_position_z": 19.2 },
         { "tile_traits": "SOLID", "editor_col": 14, "editor_row": 19, "game_col": 14, "game_row": 12, "game_position_x": 22.4, "game_position_z": 19.2 },
         { "tile_traits": "PRESS_WARP", "editor_col": 16, "editor_row": 19, "game_col": 16, "game_row": 12, "game_position_x": 25.6, "game_position_z": 19.2 },
         { "tile_traits": "PRESS_WARP", "editor_col": 17, "editor_row": 19, "game_col": 17, "game_row": 12, "game_position_x": 27.2, "game_position_z": 19.2 },
