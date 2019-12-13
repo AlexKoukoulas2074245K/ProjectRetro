@@ -27,8 +27,9 @@
 #include "../../common/flowstates/PewterCityGymInstructorOverworldFlowState.h"
 #include "../../common/flowstates/PewterFarmerDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumAerodactylFossilOverworldFlowState.h"
-#include "../../common/flowstates/PewterMuseumKabutopsFossilOverworldFlowState.h"
+#include "../../common/flowstates/PewterMuseumEntryOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumGuideOverworldFlowState.h"
+#include "../../common/flowstates/PewterMuseumKabutopsFossilOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumReceptionistBackdoorOverworldFlowState.h"
 #include "../../common/flowstates/PewterMuseumReceptionistSideDialogOverworldFlowState.h"
 #include "../../common/flowstates/PewterPokeCenterJigglypuffOverworldFlowState.h"
@@ -173,6 +174,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(PewterMuseumReceptionistSideDialogOverworldFlowState);
     RegisterNamedFlowState(PewterMuseumAerodactylFossilOverworldFlowState);
     RegisterNamedFlowState(PewterMuseumKabutopsFossilOverworldFlowState);
+    RegisterNamedFlowState(PewterMuseumEntryOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const

@@ -114,23 +114,23 @@ void WarpConnectionsSystem::VUpdateAssociatedComponents(const float) const
         activeLevelSingletonComponent.mActiveLevelNameId   = targetWarp.mLevelName;
         warpConnectionsComponent.mHasPendingWarpConnection = false;
         
-        mWorld.GetSingletonComponent<PlayerStateSingletonComponent>().mLastOverworldLevelName = targetWarp.mLevelName;
+        playerStateComponent.mLastOverworldLevelName = targetWarp.mLevelName;
 
         // Only on the scripted event of pikachu's capture, skip the music update
         if (HasMilestone(milestones::SEEN_OAK_FIRST_TIME, mWorld) && !HasMilestone(milestones::RECEIVED_PIKACHU, mWorld))
         {
             return;
         }
+                
+        if (newTile.mTileTrait == TileTrait::FLOW_TRIGGER)
+        {
+            mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHookTriggered = true;
+        }
 
         if (oldMusicTrackName != levelModelComponent.mLevelMusicTrackName)
         {
             SoundService::GetInstance().UnmuteMusic();
             SoundService::GetInstance().PlayMusic(levelModelComponent.mLevelMusicTrackName);
-        }
-        
-        if (newTile.mTileTrait == TileTrait::FLOW_TRIGGER)
-        {
-            mWorld.GetSingletonComponent<OverworldFlowStateSingletonComponent>().mFlowHookTriggered = true;
         }
     }
 }

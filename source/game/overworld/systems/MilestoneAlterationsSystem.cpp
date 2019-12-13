@@ -22,6 +22,8 @@
 
 namespace
 {
+    const std::string PEWTER_MUSEUM_LEVEL_PREFIX = "in_pewter_museum_";
+
     const StringId OAKS_LAB_LEVEL_NAME        = StringId("in_oaks_lab");
     const StringId PALLET_TOWN_LEVEL_NAME     = StringId("pallet_town");
     const StringId RIVALS_HOUSE_LEVEL_NAME    = StringId("in_rivals_home");
@@ -71,7 +73,7 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
 {
     const auto& activeEntities = mWorld.GetActiveEntities();
 
-    const auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
+    auto& playerStateComponent = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();    
 
     for (const auto& entityId : activeEntities)
     {
@@ -164,6 +166,11 @@ void MilestoneAlterationsSystem::VUpdateAssociatedComponents(const float) const
                 statue2AiComponent.mDialog += "#" + playerStateComponent.mPlayerTrainerName.GetString();
             }
             
+            if (StringStartsWith(levelName.GetString(), PEWTER_MUSEUM_LEVEL_PREFIX) == false)
+            {
+                playerStateComponent.mHasPurchasedMuseumTicket = false;
+            }
+
             mWorld.RemoveComponent<MilestoneAlterationTagComponent>(entityId);
         }
     }
