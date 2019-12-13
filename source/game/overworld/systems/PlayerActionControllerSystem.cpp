@@ -11,6 +11,7 @@
 
 #include "PlayerActionControllerSystem.h"
 #include "MovementControllerSystem.h"
+#include "../components/MilestoneAlterationTagComponent.h"
 #include "../components/WarpConnectionsSingletonComponent.h"
 #include "../../common/components/DirectionComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
@@ -234,6 +235,15 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
             
             return;
+        }
+        else if (GetItemStats(playerStateComponent.mPendingItemToBeAdded, mWorld).mEffect == StringId("AMBER"))
+        {
+            SetMilestone(milestones::RECEIVED_AMBER, mWorld);         
+
+            // Force the milstone alterations system to rerun on the level since the player just got the above milestone,
+            // and so the amber stand model will change, etc.
+            const auto activeLevelEntityId = GetLevelIdFromNameId(mWorld.GetSingletonComponent<ActiveLevelSingletonComponent>().mActiveLevelNameId, mWorld);
+            mWorld.AddComponent<MilestoneAlterationTagComponent>(activeLevelEntityId, std::make_unique<MilestoneAlterationTagComponent>());
         }
         else if (playerStateComponent.mPendingItemToBeAdded == OAKS_PARCEL_ITEM_NAME)
         {

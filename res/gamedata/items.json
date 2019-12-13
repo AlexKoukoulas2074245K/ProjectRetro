@@ -115,7 +115,7 @@
     {
         "usage": -1,
         "unique": true,
-        "effect": "#",
+        "effect": "AMBER",
         "price": 0
     },
     
