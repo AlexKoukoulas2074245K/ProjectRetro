@@ -1,16 +1,16 @@
 //
-//  PewterMuseumAerodactylFossilOverworldFlowState.h
+//  PewterMuseumKabutopsFossilOverworldFlowState.h
 //  ProjectRetro
 //
-//  Created by Alex Koukoulas on 12/12/2019.
+//  Created by Alex Koukoulas on 13/12/2019.
 //
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef PewterMuseumAerodactylFossilOverworldFlowState_h
-#define PewterMuseumAerodactylFossilOverworldFlowState_h
+#ifndef PewterMuseumKabutopsFossilOverworldFlowState_h
+#define PewterMuseumKabutopsFossilOverworldFlowState_h
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -25,33 +25,33 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PewterMuseumAerodactylFossilOverworldFlowState final: public BaseOverworldFlowState
+class PewterMuseumKabutopsFossilOverworldFlowState final: public BaseOverworldFlowState
 {
 public:
-    PewterMuseumAerodactylFossilOverworldFlowState(ecs::World&);
+    PewterMuseumKabutopsFossilOverworldFlowState(ecs::World&);
     
     void VUpdate(const float dt) override;
 
 private: 
-    static const std::string AERODACTYL_IMAGE_TEXTURE_FILE_NAME;
-    static const std::string AERODACTYL_IMAGE_MODEL_FILE_NAME;
+    static const std::string KABUTOPS_IMAGE_TEXTURE_FILE_NAME;
+    static const std::string KABUTOPS_IMAGE_MODEL_FILE_NAME;
 
-    static const glm::vec3 AERODACTYL_FOSSIL_TEXTBOX_POSITION;
-    static const glm::vec3 AERODACTYL_IMAGE_POSITION;    
-    static const glm::vec3 AERODACTYL_IMAGE_SCALE;
+    static const glm::vec3 KABUTOPS_FOSSIL_TEXTBOX_POSITION;
+    static const glm::vec3 KABUTOPS_IMAGE_POSITION;    
+    static const glm::vec3 KABUTOPS_IMAGE_SCALE;
 
-    static const int AERODACTYL_FOSSIL_TEXTBOX_COLS;
-    static const int AERODACTYL_FOSSIL_TEXTBOX_ROWS;    
+    static const int KABUTOPS_FOSSIL_TEXTBOX_COLS;
+    static const int KABUTOPS_FOSSIL_TEXTBOX_ROWS;    
     
-    void CreateAerodactylTextbox();
-    void LoadAndCreateAerodactylImage();
+    void CreateKabutopsTextbox();
+    void LoadAndCreateKabutopsImage();
 
-    ecs::EntityId mAerodactylFossilTextboxEntityId;
-    ecs::EntityId mAerodactylImageEntityId;
+    ecs::EntityId mKabutopsFossilTextboxEntityId;
+    ecs::EntityId mKabutopsImageEntityId;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#endif /* PewterMuseumAerodactylFossilOverworldFlowState_h */
+#endif /* PewterMuseumKabutopsFossilOverworldFlowState_h */
