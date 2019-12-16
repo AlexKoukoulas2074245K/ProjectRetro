@@ -1,0 +1,16 @@
+{
+    "density": 20,
+    "encounters": 
+    [
+        { "pokemon": "SPEAROW", "level": 8, "rate": 51 },
+        { "pokemon": "SPEAROW", "level": 9, "rate": 51 },        
+        { "pokemon": "MANKEY", "level": 9, "rate": 39 },
+        { "pokemon": "SPEAROW", "level": 10, "rate": 25 },
+        { "pokemon": "SANDSHREW", "level": 8, "rate": 25 },
+        { "pokemon": "RATTATA", "level": 10, "rate": 25 },
+	{ "pokemon": "SANDSHREW", "level": 10, "rate": 13 },
+	{ "pokemon": "RATTATA", "level": 12, "rate": 13 },
+	{ "pokemon": "SPEAROW", "level": 11, "rate": 11 },
+	{ "pokemon": "SPEAROW", "level": 12, "rate": 3 }
+    ]
+}

@@ -95,6 +95,14 @@
 		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 23, "level_row": 12 }, "to": { "level_name": "pewter_city", "level_col": 30, "level_row": 47 } },
 		{ "from": { "level_name": "pewter_city", "level_col": 30, "level_row": 47 }, "to": { "level_name": "in_pewter_museum_ground_floor", "level_col": 22, "level_row": 12 } },
 		{ "from": { "level_name": "in_pewter_museum_first_floor", "level_col": 8, "level_row": 4 }, "to": { "level_name": "in_pewter_museum_ground_floor", "level_col": 13, "level_row": 12 } },
-		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 13, "level_row": 12 }, "to": { "level_name": "in_pewter_museum_first_floor", "level_col": 8, "level_row": 4 } }
+		{ "from": { "level_name": "in_pewter_museum_ground_floor", "level_col": 13, "level_row": 12 }, "to": { "level_name": "in_pewter_museum_first_floor", "level_col": 8, "level_row": 4 } },
+		{ "from": { "level_name": "route_3", "level_col": 7, "level_row": 22 }, "to": { "level_name": "pewter_city", "level_col": 51, "level_row": 35 } },
+		{ "from": { "level_name": "route_3", "level_col": 7, "level_row": 21 }, "to": { "level_name": "pewter_city", "level_col": 51, "level_row": 34 } },
+		{ "from": { "level_name": "route_3", "level_col": 7, "level_row": 20 }, "to": { "level_name": "pewter_city", "level_col": 51, "level_row": 33 } },
+		{ "from": { "level_name": "route_3", "level_col": 7, "level_row": 19 }, "to": { "level_name": "pewter_city", "level_col": 51, "level_row": 32 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 52, "level_row": 35 }, "to": { "level_name": "route_3", "level_col": 8, "level_row": 22 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 52, "level_row": 34 }, "to": { "level_name": "route_3", "level_col": 8, "level_row": 21 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 52, "level_row": 33 }, "to": { "level_name": "route_3", "level_col": 8, "level_row": 20 } },
+		{ "from": { "level_name": "pewter_city", "level_col": 52, "level_row": 32 }, "to": { "level_name": "route_3", "level_col": 8, "level_row": 19 } }
 	]
 }
