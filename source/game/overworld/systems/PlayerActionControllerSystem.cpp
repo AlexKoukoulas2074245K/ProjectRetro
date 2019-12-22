@@ -217,7 +217,16 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         if (DoesPokemonExistWithName(playerStateComponent.mPendingItemToBeAdded, mWorld))
         {
             ChangePokedexEntryForPokemon(playerStateComponent.mPendingItemToBeAdded, PokedexEntryType::OWNED, mWorld);
-            playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(playerStateComponent.mPendingItemToBeAdded, 5, false, mWorld));
+            
+            if (playerStateComponent.mPlayerPokemonRoster.size() >= MAX_ROSTER_SIZE)
+            {
+                playerStateComponent.mPlayerBoxedPokemon.push_back(CreatePokemon(playerStateComponent.mPendingItemToBeAdded, 5, false, mWorld));
+            }
+            else
+            {
+                playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(playerStateComponent.mPendingItemToBeAdded, 5, false, mWorld));
+            }
+            
             playerStateComponent.mPendingItemToBeAdded = StringId();
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
             
