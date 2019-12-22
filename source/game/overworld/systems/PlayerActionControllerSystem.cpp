@@ -18,6 +18,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PlayerTagComponent.h"
 #include "../../common/flowstates/MainMenuOverworldFlowState.h"
+#include "../../common/flowstates/PokemonNicknameQuestionTextEncounterFlowState.h"
 #include "../../common/utils/MilestoneUtils.h"
 #include "../../common/utils/PokedexUtils.h"
 #include "../../common/utils/PokemonUtils.h"
@@ -215,12 +216,11 @@ void PlayerActionControllerSystem::AddPendingItemsToBag() const
         // Pokemon collection handling
         if (DoesPokemonExistWithName(playerStateComponent.mPendingItemToBeAdded, mWorld))
         {
-            //TODO: Handle more than 6?
-            //TODO: level?
-            playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(StringId("PIKACHU"), 5, false, mWorld));
+            ChangePokedexEntryForPokemon(playerStateComponent.mPendingItemToBeAdded, PokedexEntryType::OWNED, mWorld);
+            playerStateComponent.mPlayerPokemonRoster.push_back(CreatePokemon(playerStateComponent.mPendingItemToBeAdded, 5, false, mWorld));
             playerStateComponent.mPendingItemToBeAdded = StringId();
             playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
-            ChangePokedexEntryForPokemon(StringId("PIKACHU"), PokedexEntryType::OWNED, mWorld);
+            
             return;
         }
         // Milestone handling

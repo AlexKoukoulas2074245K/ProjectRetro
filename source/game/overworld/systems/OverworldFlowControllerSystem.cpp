@@ -19,6 +19,7 @@
 #include "../../common/components/PlayerStateSingletonComponent.h"
 #include "../../common/components/PokedexStateSingletonComponent.h"
 #include "../../common/flowstates/BoulderbadgeGuardOverworldFlowState.h"
+#include "../../common/flowstates/MtMoonPokeCenterMagikarpOverworldFlowState.h"
 #include "../../common/flowstates/OakDialogOverworldFlowState.h"
 #include "../../common/flowstates/OaksLabMovementAndBattleTriggerOverworldFlowState.h"
 #include "../../common/flowstates/OaksLabPokeBallDialogOverworldFlowState.h"
@@ -175,6 +176,7 @@ void OverworldFlowControllerSystem::RegisterNamedFlowStateFactories()
     RegisterNamedFlowState(PewterMuseumAerodactylFossilOverworldFlowState);
     RegisterNamedFlowState(PewterMuseumKabutopsFossilOverworldFlowState);
     RegisterNamedFlowState(PewterMuseumEntryOverworldFlowState);
+    RegisterNamedFlowState(MtMoonPokeCenterMagikarpOverworldFlowState);
 }
 
 void OverworldFlowControllerSystem::UpdateExposedNamedFlowStatesFile() const

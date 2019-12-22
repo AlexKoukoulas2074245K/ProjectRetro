@@ -114,6 +114,7 @@ namespace milestones
     static constexpr unsigned long VOLCANOBADGE                = 1UL << 12;
     static constexpr unsigned long EARTHBADGE                  = 1UL << 13;
     static constexpr unsigned long RECEIVED_AMBER              = 1UL << 14;
+    static constexpr unsigned long RECEIVED_MAGIKARP           = 1UL << 15;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

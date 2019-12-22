@@ -31,7 +31,10 @@
 		{"level_name": "in_pewter_museum_ground_floor", "npc_level_index": 5, "flow_state_name": "PewterMuseumReceptionistBackdoorOverworldFlowState"},
 		{"level_name": "in_pewter_museum_ground_floor", "npc_level_index": 7, "flow_state_name": "PewterMuseumReceptionistSideDialogOverworldFlowState"},
 		{"level_name": "in_pewter_museum_ground_floor", "npc_level_index": 2, "flow_state_name": "PewterMuseumAerodactylFossilOverworldFlowState"},
-		{"level_name": "in_pewter_museum_ground_floor", "npc_level_index": 8, "flow_state_name": "PewterMuseumKabutopsFossilOverworldFlowState"}
+		{"level_name": "in_pewter_museum_ground_floor", "npc_level_index": 8, "flow_state_name": "PewterMuseumKabutopsFossilOverworldFlowState"},
+		{"level_name": "in_mtmoon_poke_center", "npc_level_index": 2, "flow_state_name": "PokeCenterHealingIntroDialogOverworldFlowState"},
+		{"level_name": "in_mtmoon_poke_center", "npc_level_index": 7, "flow_state_name": "PCIntroDialogOverworldFlowState"},
+		{"level_name": "in_mtmoon_poke_center", "npc_level_index": 8, "flow_state_name": "MtMoonPokeCenterMagikarpOverworldFlowState"}
 	],
 
 	"trigger_flow_states":

@@ -16,6 +16,8 @@
 #include "../../common/components/CursorComponent.h"
 #include "../../common/components/GuiStateSingletonComponent.h"
 #include "../../common/components/NameSelectionStateSingletonComponent.h"
+#include "../../common/utils/PokedexUtils.h"
+#include "../../common/utils/PokemonUtils.h"
 #include "../../common/utils/TextboxUtils.h"
 #include "../../encounter/components/EncounterStateSingletonComponent.h"
 #include "../../encounter/utils/EncounterSpriteUtils.h"
@@ -35,16 +37,29 @@ const glm::vec3 PokemonNicknameQuestionTextEncounterFlowState::YES_NO_TEXTBOX_PO
 PokemonNicknameQuestionTextEncounterFlowState::PokemonNicknameQuestionTextEncounterFlowState(ecs::World& world)
     : BaseFlowState(world)
 {
-    const auto& encounterStsateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
-    const auto mainChatboxEntityId       = CreateChatbox(mWorld);
+    auto& encounterStateComponent = mWorld.GetSingletonComponent<EncounterStateSingletonComponent>();
+    auto& playerStateComponent    = mWorld.GetSingletonComponent<PlayerStateSingletonComponent>();
     
-    if (encounterStsateComponent.mIsPikachuCaptureFlowActive == false)
+    if (encounterStateComponent.mActiveEncounterType == EncounterType::NONE)
+    {
+        auto pokemonName = playerStateComponent.mPendingItemToBeAdded;
+        encounterStateComponent.mOpponentPokemonRoster.push_back(CreatePokemon(pokemonName, 5, false, mWorld));
+        playerStateComponent.mPendingItemToBeAdded = StringId();
+        playerStateComponent.mPendingItemToBeAddedDiscoveryType = ItemDiscoveryType::NO_ITEM;
+        ChangePokedexEntryForPokemon(pokemonName, PokedexEntryType::OWNED, mWorld);
+        
+        DestroyActiveTextbox(mWorld);
+    }
+    
+    CreateChatbox(mWorld);
+    
+    if (encounterStateComponent.mIsPikachuCaptureFlowActive == false)
     {
         QueueDialogForChatbox
         (
-            mainChatboxEntityId,
+            GetActiveTextboxEntityId(mWorld),
             "Do you want to#give a nickname#to " +
-            encounterStsateComponent.mOpponentPokemonRoster.at(0)->mName.GetString() +
+            encounterStateComponent.mOpponentPokemonRoster.front()->mName.GetString() +
             "?+FREEZE",
             mWorld
         );
@@ -68,8 +83,10 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
         return;
     }
     
+    const auto nicknameQuestionChatboxActive = encounterStateComponent.mActiveEncounterType != EncounterType::NONE ? 2 : 1;
+    
     // Nickname question chatbox active
-    if (guiStateComponent.mActiveTextboxesStack.size() == 2)
+    if (nicknameQuestionChatboxActive)
     {
         if (guiStateComponent.mActiveChatboxDisplayState == ChatboxDisplayState::FROZEN)
         {
@@ -87,13 +104,13 @@ void PokemonNicknameQuestionTextEncounterFlowState::VUpdate(const float)
             {
                 // Destroy Yes/No textbox
                 DestroyActiveTextbox(mWorld);
-                
+                    
                 // Destroy Nickname Chatbox
                 DestroyActiveTextbox(mWorld);
-                
+                    
                 // Destroy placeholder chatbox
                 DestroyActiveTextbox(mWorld);
-                
+                    
                 auto& nameSelectionStateComponent = mWorld.GetSingletonComponent<NameSelectionStateSingletonComponent>();
                 nameSelectionStateComponent.mNameSelectionMode = NameSelectionMode::POKEMON_NICKNAME;
                 nameSelectionStateComponent.mPokemonToSelectNameFor = encounterStateComponent.mOpponentPokemonRoster.at(0).get();
